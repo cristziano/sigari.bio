@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Pirata+One&family=Permanent+Marker&family=VT323&family=Rubik+Mono+One&family=Space+Mono&family=Bodoni+Moda:ital,wght@1,400;1,700&family=Rubik+Glitch&family=Major+Mono+Display&family=Monoton&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root {
     --bg:#000; --fg:#f4f4f4; --m:#8f8f8f; --d:#555; --s1:#090909; --s2:#101010;
@@ -71,10 +72,69 @@
 
   /* ---------- Hero ---------- */
   .hero { position:relative; height:100svh; min-height:640px; overflow:hidden; isolation:isolate; }
-  #fx, #dots { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  #fx { position:absolute; inset:0; width:100%; height:100%; display:block; }
   #fx { z-index:-2; }
-  #dots { z-index:-1; }
   html[data-mood="dither"] #fx, html[data-mood="ascii"] #fx { image-rendering:pixelated; }
+  /* ---------- Card deck (hero) ---------- */
+  .deck { position:absolute; right:clamp(24px, 6vw, 110px); top:50%; width:clamp(280px, 32vw, 500px); aspect-ratio:1.586; transform:translateY(-62%); perspective:1400px; z-index:0; }
+  .card { position:absolute; inset:0; border-radius:4.6% / 7.3%; overflow:hidden; isolation:isolate; color:#fff; background:#0b0b0b; font-family:var(--sans);
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 30px 80px -20px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.08);
+    transform-origin:50% 80%; transition:transform .75s var(--ease), opacity .6s var(--ease), filter .6s; will-change:transform; container-type:inline-size; }
+  .card.p0 { transform:translate3d(0,0,0) rotate(-5deg) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)); z-index:4; }
+  .card.p1 { transform:translate3d(5%,-9%,0) rotate(2deg) scale(.94); z-index:3; filter:brightness(.55); }
+  .card.p2 { transform:translate3d(10%,-18%,0) rotate(8deg) scale(.88); z-index:2; filter:brightness(.3); }
+  .card.p3 { transform:translate3d(12%,-22%,0) rotate(11deg) scale(.84); z-index:1; opacity:0; }
+  .card.out { transform:translate3d(-38%,46%,0) rotate(-24deg) scale(.96); opacity:0; z-index:5; transition:transform .55s cubic-bezier(.6,0,.8,.4), opacity .5s .05s; }
+  .card .sheen { position:absolute; inset:0; z-index:9; pointer-events:none; mix-blend-mode:overlay; opacity:.55;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) calc(var(--sx,50%) - 4%), transparent calc(var(--sx,50%) + 12%)); }
+  .card .grainy { position:absolute; inset:0; z-index:8; pointer-events:none; opacity:.18; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .card .ph { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.15) brightness(.8); }
+  .card .el { position:absolute; transition:transform .6s var(--ease), left .6s var(--ease), top .6s var(--ease); }
+  .card .brand { position:absolute; left:6%; top:8%; font:600 3.4cqw var(--sans); letter-spacing:-.02em; z-index:6; }
+  .card .brand i { font-style:normal; opacity:.55; }
+  .card .chip { position:absolute; left:6%; top:34%; width:13%; aspect-ratio:1.3; border-radius:14%; z-index:6;
+    background:linear-gradient(135deg, #e9e9e9, #8d8d8d 45%, #d8d8d8 60%, #7a7a7a); box-shadow:inset 0 0 0 1px rgba(0,0,0,.35); }
+  .card .chip::after { content:""; position:absolute; inset:22% 18%; border:1px solid rgba(0,0,0,.35); border-radius:3px; border-left:0; border-right:0; }
+  .card .nfc { position:absolute; left:22%; top:36%; width:6%; z-index:6; opacity:.8; }
+  .card .num { position:absolute; left:6%; bottom:24%; font:500 4.3cqw var(--mono); letter-spacing:.12em; z-index:6; white-space:nowrap; }
+  .card .who { position:absolute; left:6%; bottom:8%; z-index:6; line-height:1; max-width:70%; overflow-wrap:anywhere; }
+  .card .meta2 { position:absolute; right:6%; bottom:8%; z-index:6; font:500 2.4cqw var(--mono); text-align:right; opacity:.75; line-height:1.4; }
+  .card .stk { position:absolute; z-index:7; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
+  .card .stk svg { display:block; width:100%; height:100%; }
+  .card .pill { position:absolute; z-index:7; padding:.5cqw 1.6cqw; border-radius:99px; background:#fff; color:#000; font:700 2.6cqw var(--mono); letter-spacing:.06em; box-shadow:0 0 0 .5cqw #000, 0 3px 6px rgba(0,0,0,.4); }
+  .card .stamp { position:absolute; z-index:7; width:17cqw; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; border:.5cqw solid #fff; font:700 2.5cqw var(--mono); letter-spacing:.1em; text-align:center; line-height:1.15; color:#fff; }
+  .card .pol { position:absolute; z-index:6; width:34cqw; padding:1.6cqw 1.6cqw 6cqw; background:#f2f2f2; box-shadow:0 6px 16px rgba(0,0,0,.5); }
+  .card .pol img { display:block; width:100%; aspect-ratio:1; object-fit:cover; filter:grayscale(1) contrast(1.1); background:#222; }
+  .card .tape { position:absolute; z-index:8; width:14cqw; height:4cqw; background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .card .big { position:absolute; z-index:5; line-height:.8; pointer-events:none; }
+  .card .bar { position:absolute; z-index:6; height:9cqw; width:34cqw; background:repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 3px, currentColor 3px 5px, transparent 5px 6px, currentColor 6px 7px, transparent 7px 10px); }
+  .card .lines { position:absolute; z-index:6; font:400 4.4cqw/1.15 'VT323', var(--mono); white-space:pre; }
+  .card .scan { position:absolute; inset:0; z-index:7; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
+  .card .dith { position:absolute; inset:0; z-index:2; background:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/3px 3px; opacity:.55; }
+  .card .shade2 { position:absolute; inset:0; z-index:3; background:linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
+  .card.light { color:#0b0b0b; }
+  .card.light .chip { box-shadow:inset 0 0 0 1px rgba(0,0,0,.45); }
+  .deck-ui { position:absolute; left:0; right:0; bottom:-44px; display:flex; justify-content:space-between; align-items:center; font:400 11px var(--mono); color:#777; }
+  .deck-ui b { color:#ddd; font-weight:500; }
+  .deck-ui button { border:1px solid var(--line2); background:rgba(0,0,0,.4); color:#ccc; border-radius:7px; padding:5px 9px; font:500 11px var(--mono); cursor:pointer; }
+  .deck-ui button:hover { color:#fff; border-color:#fff; }
+  @media (max-width:860px){
+    .deck { right:auto; left:50%; top:104px; width:min(76vw, 330px); transform:translateX(-46%); }
+    .deck-ui { bottom:-36px; }
+  }
+  @media (max-width:860px) and (max-height:760px){ .deck { width:min(64vw, 280px); } }
+
+  /* ---------- Page-wide smoke (light) ---------- */
+  .haze { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .haze i { position:absolute; width:70vmax; height:70vmax; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.075), rgba(255,255,255,.02) 40%, transparent 68%); animation:haze 46s ease-in-out infinite alternate; will-change:transform; }
+  .haze i:nth-child(1){ left:-30vmax; top:10vh; }
+  .haze i:nth-child(2){ right:-34vmax; top:40vh; animation-duration:58s; animation-delay:-14s; }
+  .haze i:nth-child(3){ left:20vw; top:80vh; width:60vmax; height:60vmax; animation-duration:64s; animation-delay:-30s; }
+  @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
+  main, footer { position:relative; z-index:1; }
+
+
   .fx-fallback { position:absolute; inset:0; z-index:-3; background:radial-gradient(60% 50% at 70% 35%, #2a2a2a, #000 70%); }
   .shade { position:absolute; inset:0; z-index:-1; pointer-events:none;
     background:linear-gradient(180deg, rgba(0,0,0,.75) 0%, transparent 22%), linear-gradient(90deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.45) 42%, transparent 66%), linear-gradient(0deg, #000 0%, transparent 32%); }
@@ -83,6 +143,8 @@
   .hud-r { right:var(--gut); text-align:right; }
   .hud b, .hud-r b { color:#d8d8d8; font-weight:500; }
   .hero-c > div { min-width:0; }
+  .hero-c { pointer-events:none; }
+  .hero-c > * { pointer-events:auto; }
   .hero-c { position:absolute; left:var(--gut); right:var(--gut); bottom:84px; display:grid; grid-template-columns:minmax(0, 620px) 1fr; gap:24px; align-items:end; }
   .eyebrow-row { display:flex; gap:10px; align-items:center; font:500 11.5px var(--mono); color:#bdbdbd; }
   .live { display:inline-flex; align-items:center; gap:7px; height:24px; padding:0 9px; border:1px solid var(--line2); border-radius:6px; background:rgba(0,0,0,.4); }
@@ -134,7 +196,7 @@
   .ticker-t em { font-style:normal; color:#555; margin-left:6px; }
 
   @media (max-width:860px){
-    .hud-r { display:none; }
+    .hud-r, .hud { display:none; }
     .hero { min-height:720px; }
     .shade { background:linear-gradient(180deg, rgba(0,0,0,.7) 0%, transparent 16%), linear-gradient(0deg, #000 0%, rgba(0,0,0,.8) 48%, transparent 72%); }
     .hero-c { grid-template-columns:1fr; bottom:62px; }
@@ -463,6 +525,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
+<div class="haze" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="ring" id="ring" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
@@ -485,8 +548,10 @@
   <section class="hero" id="top" aria-label="Claim your handle">
     <div class="fx-fallback" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
-    <canvas id="dots" aria-hidden="true"></canvas>
     <div class="shade" aria-hidden="true"></div>
+    <div class="deck intro" id="deck" style="--d:.5s" aria-label="Example profile cards, one every two seconds">
+      <div class="deck-ui"><span>card <b id="deckN">01</b> / 12 · <b id="deckT"></b></span><button id="deckNext" type="button">shuffle</button></div>
+    </div>
 
     <div class="hud intro" style="--d:.1s" aria-hidden="true">
       <span><b>sigari.bio</b> / public beta</span>
@@ -496,7 +561,7 @@
     </div>
     <div class="hud-r intro" style="--d:.15s" aria-hidden="true">
       <span>local <b id="hudClock">--:--:--</b></span>
-      <span>particles <b id="hudN">0</b></span>
+      <span>card <b id="hudCard">–</b></span>
       <span>render <b id="hudR">webgl</b></span>
     </div>
 
@@ -1033,82 +1098,98 @@
     };
   })();
 
-  /* ---------- Particle @ that morphs into the handle ---------- */
-  const dots = (() => {
-    const cv = $("#dots"), ctx = cv.getContext("2d");
-    let W = 0, H = 0, P = [], text = "@", running = false, raf = 0;
-    const mouse = { x: -9999, y: -9999 };
-    const small = () => innerWidth < 861;
-    const fontFor = size => state.mood === "ascii" ? `400 ${size}px Silkscreen, monospace` : state.mood === "dither" ? `600 ${size}px 'Geist Mono', monospace` : `700 ${size}px Geist, sans-serif`;
-    function build() {
-      if (!W) return;
-      const off = document.createElement("canvas"); off.width = W; off.height = H;
-      const o = off.getContext("2d", { willReadFrequently: true });
-      const area = small() ? { x: W * .06, y: H * .12, w: W * .88, h: H * .3 } : { x: W * .44, y: H * .12, w: W * .52, h: H * .58 };
-      let size = area.h * (text.length <= 1 ? 1.05 : .62);
-      o.font = fontFor(size);
-      const tw = o.measureText(text).width;
-      if (tw > area.w) { size *= area.w / tw; o.font = fontFor(size); }
-      o.fillStyle = "#fff"; o.textAlign = "center"; o.textBaseline = "middle";
-      o.fillText(text, area.x + area.w / 2, area.y + area.h / 2);
-      const data = o.getImageData(0, 0, W, H).data;
-      const gap = Math.max(4, Math.round(size / (text.length <= 1 ? 72 : 32)));
-      const targets = [];
-      for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) if (data[(y * W + x) * 4 + 3] > 140) targets.push([x, y]);
-      for (let i = targets.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [targets[i], targets[j]] = [targets[j], targets[i]]; }
-      while (P.length < targets.length) P.push({ x: Math.random() * W, y: H + Math.random() * 80, vx: 0, vy: 0, a: 0 });
-      P.forEach((p, i) => {
-        if (i < targets.length) { p.tx = targets[i][0]; p.ty = targets[i][1]; p.on = true; }
-        else { p.tx = p.x + (Math.random() - .5) * 240; p.ty = p.y - Math.random() * 160; p.on = false; }
-      });
-      $("#hudN").textContent = targets.length;
-      if (!running) draw(true);
+  /* ---------- Card deck: 12 templates, re-arranged every time a card comes up ---------- */
+  const deck = (() => {
+    const el = $("#deck");
+    const PHOTOS = [9694694, 38226823, 34000505, 28641320, 28540855, 17957285, 17527812, 34167246, 31687151, 29833481, 18557766, 31746347, 38705665, 37767696];
+    const photo = (id, w = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+    const R = (a, b) => a + Math.random() * (b - a);
+    const pick = arr => arr[(Math.random() * arr.length) | 0];
+    const SVG = {
+      star: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/></svg>',
+      smile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#000" stroke-width="1.2"/><circle cx="8.5" cy="10" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M7.5 14.2c2.4 2.8 6.6 2.8 9 0" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round"/></svg>',
+      heart: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/></svg>',
+      bolt: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round" d="M13.5 1.5L4 14h7l-1.5 8.5L20 9.5h-7z"/></svg>',
+      flower: '<svg viewBox="0 0 24 24"><g fill="#fff" stroke="#000" stroke-width="1"><circle cx="12" cy="6" r="4"/><circle cx="17.7" cy="10.2" r="4"/><circle cx="15.5" cy="17" r="4"/><circle cx="8.5" cy="17" r="4"/><circle cx="6.3" cy="10.2" r="4"/></g><circle cx="12" cy="12" r="2.6"/></svg>',
+      cross: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg>',
+      cig: '<svg viewBox="0 0 40 14"><rect x="1" y="4" width="30" height="6" rx="1" fill="#fff" stroke="#000"/><rect x="25" y="4" width="6" height="6" fill="#bbb" stroke="#000"/><path d="M33 6c2-2 4 0 6-2M33 9c2-2 4 0 6-2" stroke="#fff" fill="none"/></svg>'
+    };
+    const CHIP = '<div class="chip"></div><svg class="nfc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 8a6 6 0 0 1 0 8M11.5 5.5a10 10 0 0 1 0 13M15 3a14 14 0 0 1 0 18"/></svg>';
+    const AT = () => `@<span class="c-h">${state.handle || "you"}</span>`;
+    const INI = () => `<span class="c-i">${(state.handle || "you")[0].toUpperCase()}</span>`;
+    const stk = (name, x, y, w, r) => `<div class="stk" style="left:${x}%;top:${y}%;width:${w}cqw;aspect-ratio:${name === "cig" ? "40/14" : "1"};transform:rotate(${r}deg)">${SVG[name]}</div>`;
+    const scatter = (names, n, box = [4, 92, 4, 80]) => Array.from({ length: n }, () => stk(pick(names), R(box[0], box[1]), R(box[2], box[3]), R(11, 19), R(-30, 30))).join("");
+    const num = () => `•••• •••• •••• ${String(Math.floor(R(1000, 9999)))}`;
+    const brand = (light) => `<div class="brand">sigari<i>.bio</i></div>`;
+
+    // Each template returns [className, innerHTML]. Positions, photos and stickers are random every time.
+    const T = [
+      ["full photo", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div>${brand()}${CHIP}<div class="who" style="font:italic 400 9cqw 'Instrument Serif', serif">${AT()}</div><div class="meta2">MEMBER<br>SINCE 26</div>`]],
+      ["blackletter", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}${CHIP}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>`]],
+      ["sticker bomb", () => ["light", `<div style="position:absolute;inset:0;background:#efefef"></div>${scatter(["star", "smile", "heart", "bolt", "flower", "cig"], 8, [0, 84, 0, 70])}<div class="pill" style="left:${R(50, 70)}%;top:${R(10, 30)}%;transform:rotate(${R(-14, 14)}deg)">OG</div>${brand()}<div class="who" style="font:400 9.5cqw 'Permanent Marker', cursive;background:#efefef;padding:0 1.5cqw;transform:rotate(${R(-4, 4)}deg)">${AT()}</div>`]],
+      ["terminal", () => ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(10, 22)}%">&gt; whoami\n${AT()}\n&gt; rank --this-week\n#${Math.floor(R(1, 99))} ▮</div><div class="scan"></div><div class="meta2" style="font-family:'VT323',monospace;font-size:4cqw">sigari.bio</div>${stk("cross", R(70, 84), R(12, 30), 12, 0)}`]],
+      ["pixel dither", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
+      ["polaroid", () => ["light", `<div style="position:absolute;inset:0;background:#d9d9d9"></div><div class="pol" style="left:${R(46, 58)}%;top:${R(6, 14)}%;transform:rotate(${R(-12, 12)}deg)"><img src="${photo(pick(PHOTOS), 500)}" alt="" loading="lazy"></div><div class="tape" style="left:${R(56, 66)}%;top:${R(2, 6)}%;transform:rotate(${R(-20, 20)}deg)"></div>${brand()}${CHIP}<div class="who" style="font:400 9cqw 'Permanent Marker', cursive">${AT()}</div>${stk(pick(["heart", "star", "flower"]), R(8, 30), R(56, 64), 10, R(-20, 20))}`]],
+      ["chrome", () => ["light", `<div style="position:absolute;inset:0;background:conic-gradient(from ${R(0, 360)}deg at ${R(30, 70)}% ${R(30, 70)}%, #f5f5f5, #6f6f6f, #fdfdfd, #3c3c3c, #e0e0e0, #8a8a8a, #f5f5f5)"></div>${brand()}${CHIP}<div class="num">${num()}</div><div class="who" style="font:400 7cqw 'Rubik Mono One', sans-serif;text-shadow:0 1px 0 rgba(255,255,255,.8), 0 -1px 0 rgba(0,0,0,.4)">${AT()}</div><div class="meta2">VALID<br>THRU ∞</div>`]],
+      ["receipt", () => ["light", `<div style="position:absolute;inset:0;background:#f4f2ee"></div><div class="lines" style="left:6%;top:9%;font:400 3.6cqw/1.35 'Space Mono', monospace">SIGARI.BIO  ·  RECEIPT\n------------------------\n1x HANDLE ......... ${AT()}\n1x GLOW ........... ON\n1x SMOKE .......... 80%\nTOTAL ............. 0.00€</div><div class="bar" style="left:6%;bottom:9%"></div><div class="meta2" style="font-family:'Space Mono',monospace">THANK<br>YOU</div>`]],
+      ["magazine", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div><div class="big" style="left:5%;top:4%;font:italic 700 15cqw 'Bodoni Moda', serif;letter-spacing:-.04em">SIGARI</div><div class="who" style="font:italic 400 7.5cqw 'Bodoni Moda', serif">${AT()}</div><div class="meta2" style="font-family:'Bodoni Moda',serif;font-style:italic">issue nº ${Math.floor(R(1, 40))}<br>black &amp; white</div>`]],
+      ["glitch", () => ["", `<div style="position:absolute;inset:0;background:#000"></div><img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.35;clip-path:inset(${R(10, 40)}% 0 ${R(20, 40)}% 0);transform:translateX(${R(-6, 6)}%)"><div class="who" style="bottom:auto;top:${R(30, 50)}%;font:400 12cqw 'Rubik Glitch', sans-serif">${AT()}</div>${brand()}<div class="num">${num()}</div>`]],
+      ["minimal", () => ["light", `<div style="position:absolute;inset:0;background:#fafafa"></div><div class="big" style="right:${R(4, 12)}%;top:${R(4, 20)}%;font:400 46cqw 'Major Mono Display', monospace;color:#111">@</div>${brand()}<div class="who" style="font:500 5.4cqw var(--sans);letter-spacing:-.02em">${AT()}</div><div class="meta2">${rarity(state.handle || "you")[0]}</div>`]],
+      ["neon tube", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.2"><div class="who" style="bottom:auto;top:${R(28, 44)}%;left:6%;font:400 10cqw 'Monoton', cursive;text-shadow:0 0 6px #fff, 0 0 22px rgba(255,255,255,.7)">${AT()}</div>${brand()}${CHIP.replace('class="chip"', 'class="chip" style="top:auto;bottom:10%"')}${stk("star", R(76, 88), R(8, 20), 9, R(-20, 20))}`]]
+    ];
+
+    const N = 4;
+    const cards = Array.from({ length: N }, () => { const c = document.createElement("div"); el.prepend(c); return c; });
+    let next = 0, order = [];
+    function fill(card) {
+      const [name, make] = T[next % T.length];
+      const [cls, html] = make();
+      card.dataset.t = name; card.dataset.n = (next % T.length) + 1;
+      card.className = "card " + cls;
+      card.innerHTML = html + '<div class="grainy"></div><div class="sheen"></div>';
+      card.querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove(), { once: true }));
+      next++;
     }
-    function resize() {
-      const dpr = Math.min(devicePixelRatio || 1, 2);
-      W = cv.clientWidth; H = cv.clientHeight;
-      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      build();
+    function place() {
+      order.forEach((c, i) => { c.classList.remove("p0", "p1", "p2", "p3", "out"); c.classList.add("p" + Math.min(i, 3)); });
+      const top = order[0];
+      $("#deckN").textContent = String(top.dataset.n).padStart(2, "0");
+      $("#deckT").textContent = top.dataset.t;
+      $("#hudCard").textContent = top.dataset.t;
     }
-    function step() {
-      const R = 90, R2 = R * R;
-      for (const p of P) {
-        const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
-        if (d2 < R2) { const f = (1 - d2 / R2) * 2.4, d = Math.sqrt(d2) || 1; p.vx += dx / d * f; p.vy += dy / d * f; }
-        p.vx += (p.tx - p.x) * .045; p.vy += (p.ty - p.y) * .045;
-        p.vx *= .82; p.vy *= .82; p.x += p.vx; p.y += p.vy;
-        p.a += ((p.on ? 1 : 0) - p.a) * .06;
-      }
-      P = P.filter(p => p.on || p.a > .02);
+    cards.forEach(c => { fill(c); order.push(c); });
+    place();
+    let busy = false;
+    function shuffle() {
+      if (busy) return; busy = true;
+      const top = order.shift();
+      top.classList.remove("p0"); top.classList.add("out");
+      order.push(top);
+      order.slice(0, 3).forEach((c, i) => { c.classList.remove("p1", "p2", "p3"); c.classList.add("p" + i); });
+      setTimeout(() => { fill(top); place(); busy = false; }, 560);
+      $("#deckN").textContent = String(order[0].dataset.n).padStart(2, "0");
+      $("#deckT").textContent = order[0].dataset.t;
+      $("#hudCard").textContent = order[0].dataset.t;
     }
-    function draw(snap) {
-      ctx.clearRect(0, 0, W, H);
-      const textured = state.mood !== "smoke";
-      const s = state.mood === "smoke" ? 2.1 : 3;
-      if (snap && reduce) P.forEach(p => { p.x = p.tx; p.y = p.ty; p.a = p.on ? 1 : 0; });
-      if (textured) {
-        // dark halo so the name stays readable on top of the bright dither and ascii textures
-        ctx.fillStyle = "#000";
-        for (const p of P) { ctx.globalAlpha = p.a * .9; ctx.fillRect(p.x - 3, p.y - 3, s + 6, s + 6); }
-      }
-      ctx.fillStyle = "#fff";
-      for (const p of P) {
-        const sp = Math.min(1, Math.abs(p.vx) + Math.abs(p.vy));
-        ctx.globalAlpha = p.a * (.7 + .3 * (1 - sp));
-        ctx.fillRect(p.x, p.y, s, s);
-      }
-      ctx.globalAlpha = 1;
-    }
-    function loop() { step(); draw(); if (running) raf = requestAnimationFrame(loop); }
-    addEventListener("resize", () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 150); });
-    cv.parentElement.addEventListener("pointermove", e => { const b = cv.getBoundingClientRect(); mouse.x = e.clientX - b.left; mouse.y = e.clientY - b.top; });
-    cv.parentElement.addEventListener("pointerleave", () => { mouse.x = mouse.y = -9999; });
+    let timer = 0, running = false, hover = false;
+    const loop = () => { if (!running) return; if (!hover) shuffle(); timer = setTimeout(loop, 2000); };
+    el.addEventListener("pointerenter", () => { hover = true; });
+    el.addEventListener("pointerleave", () => { hover = false; order[0].style.removeProperty("--ry"); order[0].style.removeProperty("--rx"); });
+    el.addEventListener("pointermove", e => {
+      if (!fine || reduce) return;
+      const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      const c = order[0];
+      c.style.setProperty("--ry", (x - .5) * 22 + "deg"); c.style.setProperty("--rx", -(y - .5) * 16 + "deg"); c.style.setProperty("--sx", x * 100 + "%");
+    });
+    $("#deckNext").addEventListener("click", shuffle);
     return {
-      init: resize,
-      setText(t) { text = t.length > 1 ? t : "@"; build(); },
-      rebuild: build,
-      start() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); },
-      stop() { running = false; cancelAnimationFrame(raf); }
+      start() { if (running || reduce) return; running = true; timer = setTimeout(loop, 2000); },
+      stop() { running = false; clearTimeout(timer); },
+      setHandle() {
+        const h = state.handle || "you";
+        el.querySelectorAll(".c-h").forEach(s => s.textContent = h);
+        el.querySelectorAll(".c-i").forEach(s => s.textContent = h[0].toUpperCase());
+      }
     };
   })();
 
@@ -1129,7 +1210,7 @@
       el.querySelector("[data-rarity-name]").textContent = name;
       el.querySelectorAll(".pips i").forEach((p, i) => p.classList.toggle("on", i < n));
     });
-    dots.setText("@" + state.handle);
+    deck.setHandle();
     renderBoard();
     if (typeof renderLink === "function" && $("#ptLink").textContent) renderLink();
   }
@@ -1190,17 +1271,16 @@
     $$("button[data-mood]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mood === m));
     $("#hudMood").textContent = m;
     fx.setMood(m);
-    dots.rebuild();
     if (save) store.set("sigari-mood", m);
   }
   $$("button[data-mood]").forEach(b => b.addEventListener("click", () => setMood(b.dataset.mood, true)));
   const saved = store.get("sigari-mood");
-  const boot = () => { dots.init(); setMood(MOODS.includes(saved) ? saved : "smoke"); renderHandle(); };
+  const boot = () => { setMood(MOODS.includes(saved) ? saved : "smoke"); renderHandle(); };
   document.fonts ? document.fonts.ready.then(boot) : boot();
 
   // Heavy hero rendering runs only while the hero is on screen and the tab is visible
   let heroVisible = true;
-  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); dots.start(); } else { fx.stop(); dots.stop(); } };
+  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); deck.start(); } else { fx.stop(); deck.stop(); } };
   new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; runHero(); }, { threshold: .02 }).observe($("#top"));
   document.addEventListener("visibilitychange", runHero);
 

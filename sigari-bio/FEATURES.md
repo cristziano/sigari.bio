@@ -20,6 +20,7 @@ La landing mostra solo le 6 feature principali (sezione "features"); la lista co
 | Mercato dei nomi rari | IN ARRIVO | haunt |
 | Domini dei partner (es. sigari.gin/@nome, sollary.gg/nome) | IN ARRIVO | idea sigari.bio |
 | Preset del link da condividere: dominio, formato (/@nome, /nome, nome.dominio), stile anteprima | IN ARRIVO | idea sigari.bio |
+| Carta profilo stile carta di credito (12 template: foto intera, blackletter, sticker, terminale, pixel, polaroid, chrome, scontrino, rivista, glitch, minimal, neon) | IN ARRIVO | idea sigari.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Chi ce l'ha |
