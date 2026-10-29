@@ -112,6 +112,14 @@
   .idc .dith { position:absolute; inset:0; z-index:2; background:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/3px 3px; opacity:.55; }
   .idc .shade2 { position:absolute; inset:0; z-index:3; background:linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
   .idc.light { color:#0b0b0b; }
+  .idc .glove { position:absolute; z-index:4; right:-4%; top:2%; width:62cqw; transform:rotate(-10deg); overflow:visible; }
+  .idc .ice { background:radial-gradient(circle, #fff 0 .6px, transparent 1.3px) 0 0 / 3px 3px, linear-gradient(115deg, #8ea3b6, #fff 20%, #bfe7ff 36%, #fff 50%, #7b92a7 64%, #e9f7ff 80%, #9db2c5) 0 0 / 220% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 .7cqw rgba(170,225,255,.6)) drop-shadow(0 .35cqw 0 rgba(0,0,0,.85)); animation:iceShine 3.2s linear infinite; }
+  @keyframes iceShine { to { background-position:0 0, -220% 0; } }
+  .idc .glint { position:absolute; z-index:9; width:4.4cqw; aspect-ratio:1; pointer-events:none; animation:glint 1.9s ease-in-out infinite; }
+  .idc .glint svg { display:block; width:100%; height:100%; }
+  @keyframes glint { 0%, 100% { transform:scale(0) rotate(0deg); opacity:0; } 45% { transform:scale(1) rotate(45deg); opacity:1; } 70% { transform:scale(.2) rotate(70deg); opacity:.2; } }
+  @media (prefers-reduced-motion: reduce) { .idc .ice, .idc .glint { animation:none; } }
   .deck-ui { position:absolute; left:0; right:0; bottom:-44px; display:flex; justify-content:space-between; align-items:center; font:400 11px var(--mono); color:#777; }
   .deck-ui b { color:#ddd; font-weight:500; }
   .deck-ui button { border:1px solid var(--line2); background:rgba(0,0,0,.4); color:#ccc; border-radius:7px; padding:5px 9px; font:500 11px var(--mono); cursor:pointer; }
@@ -267,9 +275,6 @@
   .tg-pv > .pk { position:absolute; left:0; top:0; width:200%; height:200%; transform:scale(.5); transform-origin:0 0; }
   .tg-use { position:absolute; right:10px; bottom:10px; z-index:5; padding:5px 9px; border-radius:99px; background:#fff; color:#000; font:600 10.5px var(--mono); opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; }
   .tg-card:hover .tg-use, .tg-card:focus-visible .tg-use { opacity:1; transform:none; }
-  .tg-note { display:grid; place-items:center; width:calc(170px * var(--k)); aspect-ratio:1; padding:16px; background:#efefef; color:#0b0b0b; text-align:center; transform:rotate(var(--r, 0deg)); box-shadow:0 18px 40px -14px rgba(0,0,0,.9);
-    font:400 calc(21px * var(--k))/1.15 'Permanent Marker', cursive; }
-  .tg-note::before { content:""; position:absolute; left:50%; top:-9px; width:64px; height:18px; transform:translateX(-50%) rotate(-4deg); background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.25); }
   .tg-cta { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:12px; padding:16px 18px; border:1px solid var(--line2); border-radius:14px; background:linear-gradient(90deg, #111, #070707); font-size:14px; color:#aaa; }
   .tg-cta b { color:#fff; }
   @media (max-width:900px) { .tg { --k:.72; } }
@@ -1414,7 +1419,7 @@
     const T = [
       ["foto intera", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div>${brand()}<div class="who" style="font:italic 400 9cqw 'Instrument Serif', serif">${AT()}</div><div class="meta2">MEMBRO<br>DAL 2026</div>`]],
       ["gotico", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>`]],
-      ["sticker", () => ["light", `<div style="position:absolute;inset:0;background:#efefef"></div>${scatter(["star", "smile", "heart", "bolt", "flower", "cig"], 8, [0, 84, 0, 70])}<div class="pill" style="left:${R(50, 70)}%;top:${R(10, 30)}%;transform:rotate(${R(-14, 14)}deg)">OG</div>${brand()}<div class="who" style="font:400 9.5cqw 'Permanent Marker', cursive;background:#efefef;padding:0 1.5cqw;transform:rotate(${R(-4, 4)}deg)">${AT()}</div>`]],
+      ["iceman", () => ["", `<div style="position:absolute;inset:0;background:radial-gradient(110% 90% at 72% 38%, #141a20, #000 62%)"></div><svg class="glove" viewBox="0 0 200 220" aria-hidden="true"><defs><radialGradient id="gm" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#cfe6f5"/><stop offset="1" stop-color="#3a4652"/></radialGradient><pattern id="rh" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#11161b"/><circle cx="3.5" cy="3.5" r="2.9" fill="url(#gm)"/></pattern><filter id="mb" x="-40%" y="-10%" width="180%" height="120%"><feGaussianBlur stdDeviation="9 1"/></filter><g id="hand"><path d="M70 214 L76 168 Q58 150 60 124 Q62 104 80 98 L132 98 Q150 102 150 122 L148 160 Q140 182 122 190 L126 214 Z"/><rect x="92" y="18" width="21" height="96" rx="10.5" transform="rotate(-6 102 66)"/><rect x="117" y="28" width="20" height="88" rx="10" transform="rotate(4 127 72)"/><rect x="139" y="50" width="18" height="74" rx="9" transform="rotate(14 148 87)"/><circle cx="58" cy="86" r="24" fill="none" stroke-width="17"/><path d="M60 124 Q40 112 36 96" fill="none" stroke-width="17" stroke-linecap="round"/></g></defs><use href="#hand" fill="#cfe6f5" stroke="#cfe6f5" opacity=".28" filter="url(#mb)" transform="translate(-26 4)"/><use href="#hand" fill="url(#rh)" stroke="url(#rh)"/><use href="#hand" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/></svg>${brand()}<div class="big" style="left:6%;top:24%;font:400 4cqw var(--mono);letter-spacing:.5em;opacity:.55">ICED OUT</div><div class="who ice" style="font:400 8.6cqw 'Rubik Mono One', sans-serif">${AT()}</div>${Array.from({ length: 5 }, (_, i) => `<div class="glint" style="left:${R(4, 70)}%;top:${R(48, 86)}%;animation-delay:${(i * .37).toFixed(2)}s"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.2 9.8L24 12l-9.8 2.2L12 24l-2.2-9.8L0 12l9.8-2.2z"/></svg></div>`).join("")}<div class="meta2">❄ 1/1</div>`]],
       ["terminale", () => ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(10, 22)}%">&gt; whoami\n${AT()}\n&gt; classifica --settimana\n#${Math.floor(R(1, 99))} ▮</div><div class="scan"></div><div class="meta2" style="font-family:'VT323',monospace;font-size:4cqw">sigari.bio</div>${stk("cross", R(70, 84), R(12, 30), 12, 0)}`]],
       ["pixel", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
       ["polaroid", () => ["light", `<div style="position:absolute;inset:0;background:#d9d9d9"></div><div class="pol" style="left:${R(46, 58)}%;top:${R(6, 14)}%;transform:rotate(${R(-12, 12)}deg)"><img src="${photo(pick(PHOTOS), 500)}" alt="" loading="lazy"></div><div class="tape" style="left:${R(56, 66)}%;top:${R(2, 6)}%;transform:rotate(${R(-20, 20)}deg)"></div>${brand()}<div class="who" style="font:400 9cqw 'Permanent Marker', cursive">${AT()}</div>${stk(pick(["heart", "star", "flower"]), R(8, 30), R(56, 64), 10, R(-20, 20))}`]],
@@ -1485,14 +1490,12 @@
   // A messy pile, not a grid: fixed sizes, tilts and offsets so it looks the same on every visit
   const MESS = [[200, -5, 14, .74], [168, 4, -26, .8], [236, -2, 30, .7], [180, 7, -8, .76], [160, -6, 22, .82], [214, 3, -30, .72],
     [176, -4, 10, .78], [226, 5, -14, .7], [190, -7, 26, .74], [164, 2, -20, .8], [210, -3, 6, .72], [184, 6, -24, .76]];
-  const NOTE_AT = 5;
   function buildGallery() {
     const grid = $("#tplGrid");
     const items = GALLERY.map((t, i) => {
       const [w, r, y, ar] = MESS[i % MESS.length];
       return `<div class="tg-item rv" style="--d:${(i % 6) * .05}s;--z:${(i * 7) % 5 + 1}"><a class="tg-card" data-guest data-tpl-id="${t.id}" href="dashboard.html" style="--w:${w}px;--r:${r}deg;--y:${y}px;--ar:${ar}" aria-label="Usa questo template"><div class="tg-pv"><div></div></div><span class="tg-use">usalo →</span></a></div>`;
     });
-    items.splice(NOTE_AT, 0, `<div class="tg-item rv" style="--z:6" aria-hidden="true"><div class="tg-note" style="--r:-6deg">cambia tutto, come vuoi tu ✎</div></div>`);
     grid.innerHTML = items.join("");
     $$(".tg-item", grid).forEach(card => io.observe(card));
     let mounted = false;
