@@ -45,12 +45,10 @@
   .grain { position:fixed; inset:-50%; z-index:90; pointer-events:none; opacity:.07; mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   .progress { position:fixed; left:0; top:0; height:1px; width:100%; z-index:120; background:#fff; transform-origin:0 50%; transform:scaleX(0); }
-  .ring { position:fixed; left:0; top:0; z-index:150; width:34px; height:34px; margin:-17px 0 0 -17px; border:1px solid #fff; border-radius:50%; pointer-events:none; mix-blend-mode:difference;
-    transition:width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), background .35s, opacity .3s; opacity:0; }
+  .ring { position:fixed; left:0; top:0; z-index:150; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:50%; background:#fff; pointer-events:none; mix-blend-mode:difference;
+    transition:width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease), opacity .3s; opacity:0; }
   .ring.on { opacity:1; }
-  .ring.big { width:64px; height:64px; margin:-32px 0 0 -32px; background:#fff; }
-  .ring span { position:absolute; inset:0; display:grid; place-items:center; font:500 9px var(--mono); letter-spacing:.08em; color:#000; opacity:0; transition:opacity .2s; }
-  .ring.big span { opacity:1; }
+  .ring.big { width:22px; height:22px; margin:-11px 0 0 -11px; }
 
   /* ---------- Nav ---------- */
   .nav { position:fixed; inset:0 0 auto 0; z-index:100; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; height:60px; padding:0 var(--gut);
@@ -155,34 +153,20 @@
   .sub { margin-top:16px; color:var(--m); max-width:520px; }
   @media (max-width:760px){ .sh { grid-template-columns:1fr; gap:10px; } section.s { padding:72px var(--gut); } }
 
-  /* Index (feature catalog) */
-  .idx-top { display:flex; justify-content:space-between; align-items:end; gap:20px; flex-wrap:wrap; margin-top:44px; }
-  .counters { display:flex; gap:28px; }
-  .counter { display:grid; gap:6px; }
-  .counter small { font:400 11px var(--mono); color:#6a6a6a; }
-  .flapnum { display:flex; gap:3px; perspective:300px; }
-  .flapnum span, .board span { position:relative; display:grid; place-items:center; width:30px; height:42px; background:#111; border-radius:4px; font:600 24px var(--mono); color:#fff; overflow:hidden; }
-  .flapnum span::after, .board span::after { content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:#000; }
-  .flapnum span.f, .board span.f { animation:flap .09s linear; }
-  @keyframes flap { 0% { transform:rotateX(0); } 50% { transform:rotateX(-80deg); filter:brightness(.6); } 100% { transform:rotateX(0); } }
-  .idx-tools { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .search { display:flex; align-items:center; gap:8px; height:38px; padding:0 12px; border:1px solid var(--line2); border-radius:9px; font:400 12.5px var(--mono); color:#777; }
-  .search input { background:none; border:0; outline:0; width:150px; font:400 12.5px var(--mono); color:#fff; }
-  .idx { margin-top:26px; columns:4 260px; column-gap:14px; }
-  .cat { break-inside:avoid; margin-bottom:14px; border:1px solid var(--line); border-radius:12px; background:var(--s1); overflow:hidden; }
-  .cat h3 { display:flex; justify-content:space-between; padding:11px 14px; font:500 12px var(--mono); color:#cfcfcf; border-bottom:1px solid var(--line); }
-  .cat h3 span { color:#555; }
-  .cat ul { list-style:none; }
-  .cat li { display:flex; align-items:center; gap:10px; padding:8px 14px; font-size:13.5px; color:#cfcfcf; border-bottom:1px dashed rgba(255,255,255,.05); transition:background .2s, color .2s; }
-  .cat li:last-child { border-bottom:0; }
-  .cat li:hover { background:#fff; color:#000; }
-  .cat li .nm { flex:1; min-width:0; }
-  .cat li .src { font:400 10.5px var(--mono); color:#555; white-space:nowrap; }
-  .tag { font:500 10px var(--mono); padding:2px 6px; border-radius:4px; white-space:nowrap; }
-  .tag.live { background:#fff; color:#000; }
-  .tag.soon { border:1px solid #333; color:#777; }
-  .cat li:hover .tag.live { background:#000; color:#fff; }
-  .idx-empty { margin-top:20px; font:400 13px var(--mono); color:#777; }
+  /* Feature highlights */
+  .hl { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:44px; }
+  .hl-c { position:relative; overflow:hidden; border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:20px; min-height:170px; transition:border-color .3s, background .3s; }
+  .hl-c:hover { border-color:var(--line2); background:#0e0e0e; }
+  .hl-c.big { grid-column:span 2; grid-row:span 2; display:flex; flex-direction:column; }
+  .hl-c .k { font:400 11px var(--mono); color:#5e5e5e; }
+  .hl-c h3 { margin-top:28px; font-size:19px; font-weight:600; letter-spacing:-.03em; }
+  .hl-c.big h3 { font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(28px, 3vw, 40px); line-height:1; }
+  .hl-c p { margin-top:8px; color:var(--m); font-size:14px; max-width:34ch; }
+  .hl-at { margin-top:auto; padding-top:24px; font:500 clamp(40px, 6vw, 88px)/1 var(--mono); letter-spacing:-.04em; overflow-wrap:anywhere; text-shadow:0 0 30px rgba(255,255,255,.35); }
+  .hl-c.wide { grid-column:1 / -1; min-height:0; display:grid; grid-template-columns:60px 240px 1fr; align-items:center; gap:16px; }
+  .hl-c.wide h3, .hl-c.wide p { margin-top:0; }
+  @media (max-width:900px){ .hl { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px){ .hl { grid-template-columns:1fr; } .hl-c.big { grid-column:auto; grid-row:auto; } .hl-c { min-height:0; } .hl-c.wide { display:block; } .hl-c.wide h3 { margin-top:28px; } .hl-c.wide p { margin-top:8px; } }
 
   /* Build showcase (sticky) */
   .show { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(24px, 5vw, 80px); margin-top:44px; }
@@ -362,12 +346,12 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
-<div class="ring" id="ring" aria-hidden="true"><span id="ringLabel"></span></div>
+<div class="ring" id="ring" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
   <a class="logo" href="#top" aria-label="sigari.bio home"><i></i>sigari<span>.bio</span></a>
   <nav class="links" aria-label="Sections">
-    <a href="#index">index</a>
+    <a href="#index">features</a>
     <a href="#build">build</a>
     <a href="#share">share</a>
     <a href="#plans">plans</a>
@@ -432,26 +416,18 @@
   <!-- INDEX -->
   <section class="s" id="index">
     <div class="wrap">
-      <div class="sh rv"><span class="no">01 / index</span><div>
-        <h2 class="h2">Everything a bio can do. <span class="g">In one list.</span></h2>
-        <p class="sub">We went through every bio-link site worth knowing and wrote down every feature. White tags work today. The rest is the build order.</p>
+      <div class="sh rv"><span class="no">01 / features</span><div>
+        <h2 class="h2">The good stuff. <span class="g">Live today.</span></h2>
+        <p class="sub">What you get the moment you claim your @. More lands every week.</p>
       </div></div>
-      <div class="idx-top rv">
-        <div class="counters">
-          <div class="counter"><div class="flapnum" data-flap="total"></div><small>features</small></div>
-          <div class="counter"><div class="flapnum" data-flap="live"></div><small>live today</small></div>
-        </div>
-        <div class="idx-tools">
-          <div class="seg" role="group" aria-label="Filter features">
-            <button type="button" data-filter="all" aria-pressed="true">all</button>
-            <button type="button" data-filter="live" aria-pressed="false">live</button>
-            <button type="button" data-filter="soon" aria-pressed="false">soon</button>
-          </div>
-          <label class="search"><span aria-hidden="true">/</span><span class="sr-only">Search features</span><input id="q" type="search" placeholder="search" autocomplete="off"></label>
-        </div>
+      <div class="hl">
+        <div class="hl-c big rv"><span class="k">01</span><h3>Your @, locked</h3><p>Claim it, check it live, see how rare it is. One @ per account, nobody can take it after.</p><div class="hl-at" aria-hidden="true" data-at>@you</div></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Glow</h3><p>Light up your name, socials and badges.</p></div>
+        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Smoke background</h3><p>Drifting smoke behind your page, as strong as you want.</p></div>
+        <div class="hl-c rv"><span class="k">04</span><h3>Button styles</h3><p>Solid, outline, glass or hard shadow.</p></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>25 socials</h3><p>Discord, Instagram, TikTok, Spotify, X and more, as clean icons.</p></div>
+        <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Live preview</h3><p>See every change on your page while you edit.</p></div>
       </div>
-      <div class="idx" id="idx"></div>
-      <p class="idx-empty" id="idxEmpty" hidden>Nothing matches. Ask for it on Discord.</p>
     </div>
   </section>
 
@@ -650,41 +626,6 @@
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
   const rarity = h => h.length === 3 ? ["legendary", 4] : h.length === 4 ? ["epic", 3] : h.length === 5 ? ["rare", 2] : ["classic", 1];
 
-  /* ---------- Feature catalog (keep in sync with FEATURES.md) ---------- */
-  const L = "live", S = "soon";
-  const FEATURES = [
-    ["identity", [["Claim your @", L, "all"], ["Live availability check", L, "guns, feds"], ["Handle rarity", L, "haunt"], ["One @ per account, locked", L], ["Page aliases", S, "guns"], ["Custom domain", S, "haunt, carrd"], ["Verified badge", S, "guns"], ["Custom badge", S, "guns"], ["Badge colors", S, "guns"], ["Early member badge", S, "haunt"], ["Rare name marketplace", S, "haunt"]]],
-    ["profile", [["Avatar upload", L], ["Name, bio, location, tags", L], ["Links", L], ["25 social platforms", L, "fakecrime"], ["Banner image, GIF or video", S, "fakecrime"], ["Background image or video", S, "guns, feds"], ["Typewriter bio", S, "guns"], ["Rich text bio", S, "feds"], ["Link groups and sections", S, "lnk.bio"], ["Scheduled links", S, "lnk.bio"], ["Password links", S, "lnk.bio"], ["Video and music embeds", S, "lnk.bio"], ["Contact form", S, "carrd"], ["Newsletter", S, "beacons"], ["Multiple profiles", S, "haunt"]]],
-    ["look", [["Themes", L], ["6 custom colors", L, "guns, feds"], ["Card opacity and blur", L, "guns"], ["Glow on name, socials, badges", L, "guns"], ["Button styles", L, "feds"], ["Smoke effect and intensity", L, "guns, feds"], ["Crosshair cursor", L], ["Moods: smoke, dither, ascii", S], ["Custom cursor upload", S, "feds"], ["Cursor trails", S, "guns, feds"], ["Username effects", S, "guns"], ["Text animations", S, "feds"], ["Custom fonts", S, "guns, feds"], ["Layouts", S, "guns, feds"], ["Community templates", S, "feds"], ["Overlays and avatar decorations", S, "feds"], ["Profile borders", S, "guns"], ["Click to enter", S, "guns"], ["Sound effects", S, "haunt"]]],
-    ["music", [["Music player", S, "feds, haunt"], ["Playlist, shuffle, loop", S, "haunt"], ["Synced lyrics", S, "haunt"], ["Cover art backdrop", S, "haunt"], ["Audio visualizer", S, "feds"], ["Plays after enter", S, "guns"]]],
-    ["widgets", [["Discord presence", S, "fakecrime"], ["Spotify now playing", S, "haunt"], ["GitHub stats", S, "haunt"], ["Valorant rank", S, "haunt"], ["YouTube and Twitch live", S, "guns"], ["Telegram, Roblox, Steam", S, "guns"]]],
-    ["community", [["Public view counter", S, "guns"], ["Comments and guestbook", S, "feds"], ["Leaderboard and explore", S, "fakecrime"], ["Gift premium", S, "guns"], ["Affiliate code", S, "haunt"], ["Discord server role", S, "guns"]]],
-    ["insights", [["Live preview while editing", L, "feds"], ["Views and clicks", S], ["Referrers, countries, devices", S, "linktree"], ["SEO title, description, image", S, "guns"], ["Custom favicon", S, "lnk.bio"], ["QR code", S, "linktree"], ["UTM links", S, "lnk.bio"], ["Hide views and badges", S, "guns"]]],
-    ["hosting", [["Image host", S, "guns, fakecrime"], ["Custom upload domain", S, "guns"], ["Gallery", S, "guns"], ["Text pastes", S, "guns"]]],
-    ["account", [["Google sign-in", L], ["Email and password", L], ["Discord sign-in", S, "guns, feds"], ["Light and dark dashboard", L], ["Lifetime premium", S, "guns, feds"]]]
-  ];
-  const ALL = FEATURES.flatMap(([c, list]) => list.map(([n, s, src]) => ({ c, n, s, src: src || "" })));
-  let filter = "all", query = "";
-  function renderIndex() {
-    const q = query.trim().toLowerCase();
-    let shown = 0;
-    $("#idx").innerHTML = FEATURES.map(([cat]) => {
-      const rows = ALL.filter(f => f.c === cat && (filter === "all" || f.s === filter) && (!q || `${f.n} ${f.c} ${f.src}`.toLowerCase().includes(q)));
-      shown += rows.length;
-      if (!rows.length) return "";
-      return `<div class="cat"><h3>${cat}<span>${String(rows.length).padStart(2, "0")}</span></h3><ul>${rows.map(f =>
-        `<li><span class="nm">${f.n}</span>${f.src ? `<span class="src">${f.src}</span>` : ""}<span class="tag ${f.s}">${f.s}</span></li>`).join("")}</ul></div>`;
-    }).join("");
-    $("#idxEmpty").hidden = shown > 0;
-  }
-  renderIndex();
-  $$("[data-filter]").forEach(b => b.addEventListener("click", () => {
-    filter = b.dataset.filter;
-    $$("[data-filter]").forEach(o => o.setAttribute("aria-pressed", o === b));
-    renderIndex();
-  }));
-  $("#q").addEventListener("input", e => { query = e.target.value; renderIndex(); });
-
   /* ---------- Split-flap ---------- */
   const FLAP = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@./";
   function flapTo(cells, text) {
@@ -702,8 +643,6 @@
     });
   }
   const makeCells = (el, n) => { el.innerHTML = "<span></span>".repeat(n); return [...el.children]; };
-  const counts = { total: ALL.length, live: ALL.filter(f => f.s === L).length };
-  const flapNums = $$("[data-flap]").map(el => ({ cells: makeCells(el, 3), val: String(counts[el.dataset.flap]).padStart(3, "0") }));
   const BOARD_W = innerWidth < 420 ? 16 : 18;
   const board = [0, 1, 2].map(i => makeCells($(`[data-row="${i}"]`), BOARD_W));
   const center = s => { s = s.slice(0, BOARD_W); const p = Math.floor((BOARD_W - s.length) / 2); return " ".repeat(p) + s + " ".repeat(BOARD_W - s.length - p); };
@@ -1042,19 +981,17 @@
   }
 
   if (fine && !reduce) {
-    const ring = $("#ring"), label = $("#ringLabel");
+    const ring = $("#ring");
     let rx = innerWidth / 2, ry = innerHeight / 2, tx = rx, ty = ry;
     addEventListener("pointermove", e => {
       tx = e.clientX; ty = e.clientY; ring.classList.add("on");
       $("#hudXY").textContent = String(Math.round(tx)).padStart(4, "0") + " · " + String(Math.round(ty)).padStart(4, "0");
     }, { passive: true });
     document.addEventListener("pointerleave", () => ring.classList.remove("on"));
-    (function follow() { rx += (tx - rx) * .2; ry += (ty - ry) * .2; ring.style.transform = `translate3d(${rx}px,${ry}px,0)`; requestAnimationFrame(follow); })();
+    (function follow() { rx += (tx - rx) * .35; ry += (ty - ry) * .35; ring.style.transform = `translate3d(${rx}px,${ry}px,0)`; requestAnimationFrame(follow); })();
     document.addEventListener("pointerover", e => {
-      const t = e.target.closest("a, button, summary, input, .cat li");
-      const isInput = t && t.matches("input");
-      ring.classList.toggle("big", !!t && !isInput);
-      label.textContent = t && !isInput ? (t.matches(".cat li") ? "" : "go") : "";
+      const t = e.target.closest("a, button, summary");
+      ring.classList.toggle("big", !!t);
     });
     $$("[data-mag]").forEach(b => {
       b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .28}px)`; });
@@ -1078,7 +1015,6 @@
   const io = new IntersectionObserver(entries => entries.forEach(en => {
     if (!en.isIntersecting) return;
     en.target.classList.add("in");
-    if (en.target.classList.contains("idx-top")) flapNums.forEach(f => flapTo(f.cells, f.val));
     if (en.target.id === "board") { boardSeen = true; renderBoard(); }
     io.unobserve(en.target);
   }), { threshold: .15 });

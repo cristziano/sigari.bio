@@ -2,7 +2,7 @@
 
 Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.bio, lnk.bio, Linktree, Beacons, bio.link e Carrd.
 Legenda stato: **LIVE** = c'è già nella dashboard di sigari.bio · **IN ARRIVO** = da costruire.
-La stessa lista (in inglese) è la sezione "Index" della landing page: se cambi uno stato qui, cambialo anche in `FEATURES` dentro `index.html`.
+La landing mostra solo le 6 feature principali (sezione "features"); la lista completa sta solo qui.
 
 ## 1. Identità e @
 | Feature | Stato | Chi ce l'ha |
