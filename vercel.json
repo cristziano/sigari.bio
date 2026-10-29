@@ -1,0 +1,7 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    { "source": "/", "destination": "/sigari-bio/index.html" },
+    { "source": "/:path((?!sigari-bio/).*)", "destination": "/sigari-bio/:path" }
+  ]
+}
