@@ -425,7 +425,7 @@
   </nav>
     <div class="userbox">
       <div class="name" id="sideHandle">@you</div>
-      <div class="url" id="sideUrl">sigari.bio/you</div>
+      <div class="url" id="sideUrl">sigari.bio/@you</div>
       <button class="linkbtn" id="logoutBtn" type="button">Log out</button>
     </div>
   </aside>
@@ -1850,7 +1850,7 @@
   // ---------- Boot: the dashboard requires a signed-in user with a profile ----------
   function initDashboard() {
     $("sideHandle").textContent = "@" + profile.handle;
-    $("sideUrl").textContent = "sigari.bio/" + profile.handle;
+    $("sideUrl").textContent = "sigari.bio/@" + profile.handle;
     appearance = { ...structuredClone(DEFAULT_APPEARANCE), ...(profile.appearance || {}) };
     appearance.buttons = { ...DEFAULT_BUTTONS, ...(profile.appearance?.buttons || {}) };
     userLinks = profile.links ? profile.links.map(l => ({ ...l })) : [];
@@ -1874,7 +1874,7 @@
 
   let bootedUid = null;
   onAuthStateChanged(auth, async u => {
-    if (!u) return location.replace("index.html");
+    if (!u) return location.replace("login.html");
     if (bootedUid === u.uid) return;   // duplicate auth callbacks must not re-initialise the dashboard
     let snap;
     try {
@@ -1883,7 +1883,7 @@
       $("loading").textContent = "Could not load your profile. Reload the page or sign in again.";
       return;
     }
-    if (!snap.exists()) return location.replace("index.html");
+    if (!snap.exists()) return location.replace("login.html");
     profile = snap.data();
     bootedUid = u.uid;
     $("loading").classList.add("hidden");
