@@ -202,7 +202,19 @@
   }
 
   // Creates the username reservation and the user profile in one transaction.
+  // What a guest built in the dashboard (saved in this browser) becomes the new profile.
+  function guestDraft() {
+    try {
+      const d = JSON.parse(localStorage.getItem("sigari-draft") || "null");
+      if (!d || typeof d !== "object") return null;
+      const out = {};
+      ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance"].forEach(k => { if (d[k] !== undefined) out[k] = d[k]; });
+      return out;
+    } catch (_) { return null; }
+  }
+
   async function claimHandle(uid, handle, extra) {
+    const carried = guestDraft();
     await runTransaction(db, async tx => {
       const handleRef = doc(db, "usernames", handle);
       const snap = await tx.get(handleRef);
@@ -212,15 +224,19 @@
         handle,
         ...extra,
         displayName: handle,
-        bio: "discord.gg/sigari",
+        bio: "",
         tags: ["dark", "tech", "minimal"],
         avatarUrl: null,
         appearance: DEFAULT_APPEARANCE,
         links: DEFAULT_LINKS,
         plan: "free",
+        badges: ["beta"],
+        ...(carried || {}),
+        handle,
         createdAt: serverTimestamp()
       }, { merge: true });
     });
+    if (carried) { try { localStorage.removeItem("sigari-draft"); } catch (_) { /* storage blocked */ } }
   }
 
   // Goes to the dashboard only when the user has a profile in Firestore.
@@ -334,10 +350,15 @@
   const params = new URLSearchParams(location.search);
   setMode(params.get("mode") === "login" ? "login" : "signup");
   const preset = (params.get("handle") || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+  if (params.get("from") === "ospite") {
+    $("authTitle").textContent = "Salva il tuo profilo.";
+    $("usernameHint").textContent = "Tutto quello che hai fatto nella dashboard passa nel tuo account.";
+  }
   if (preset) {
     $("username").value = preset;
-    $("authTitle").textContent = "Prendi @" + preset + ".";
-    $("usernameHint").textContent = "Completa l'iscrizione per bloccarla.";
+    const guest = params.get("from") === "ospite";
+    $("authTitle").textContent = (guest ? "Salva @" : "Prendi @") + preset + ".";
+    $("usernameHint").textContent = guest ? "Tutto quello che hai fatto nella dashboard passa nel tuo account." : "Completa l'iscrizione per bloccarla.";
   }
   $("username").addEventListener("input", e => {
     const v = e.target.value.toLowerCase().replace(/^@+/, "").replace(/[^a-z0-9_]/g, "");

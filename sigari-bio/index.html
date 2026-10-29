@@ -76,51 +76,39 @@
   #fx { position:absolute; inset:0; width:100%; height:100%; display:block; }
   #fx { z-index:-2; }
   html[data-mood="dither"] #fx, html[data-mood="ascii"] #fx { image-rendering:pixelated; }
-  /* ---------- Card deck (hero) ---------- */
-  .deck { position:absolute; right:clamp(24px, 6vw, 110px); top:50%; width:clamp(280px, 32vw, 500px); aspect-ratio:1.586; transform:translateY(-62%); perspective:1400px; z-index:0; }
-  .card { position:absolute; inset:0; border-radius:4.6% / 7.3%; overflow:hidden; isolation:isolate; color:#fff; background:#0b0b0b; font-family:var(--sans);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 30px 80px -20px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.08);
-    transform-origin:50% 80%; transition:transform .75s var(--ease), opacity .6s var(--ease), filter .6s; will-change:transform; container-type:inline-size; }
-  .card.p0 { transform:translate3d(0,0,0) rotate(-5deg) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)); z-index:4; }
-  .card.p1 { transform:translate3d(5%,-9%,0) rotate(2deg) scale(.94); z-index:3; filter:brightness(.55); }
-  .card.p2 { transform:translate3d(10%,-18%,0) rotate(8deg) scale(.88); z-index:2; filter:brightness(.3); }
-  .card.p3 { transform:translate3d(12%,-22%,0) rotate(11deg) scale(.84); z-index:1; opacity:0; }
-  .card.out { transform:translate3d(-38%,46%,0) rotate(-24deg) scale(.96); opacity:0; z-index:5; transition:transform .55s cubic-bezier(.6,0,.8,.4), opacity .5s .05s; }
-  .card .sheen { position:absolute; inset:0; z-index:9; pointer-events:none; mix-blend-mode:overlay; opacity:.55;
-    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) calc(var(--sx,50%) - 4%), transparent calc(var(--sx,50%) + 12%)); }
-  .card .grainy { position:absolute; inset:0; z-index:8; pointer-events:none; opacity:.18; mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .card .ph { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.15) brightness(.8); }
-  .card .el { position:absolute; transition:transform .6s var(--ease), left .6s var(--ease), top .6s var(--ease); }
-  .card .brand { position:absolute; left:6%; top:8%; font:600 3.4cqw var(--sans); letter-spacing:-.02em; z-index:6; }
-  .card .brand i { font-style:normal; opacity:.55; }
-  .card .who { position:absolute; left:6%; bottom:8%; z-index:8; text-shadow:0 2px 14px rgba(0,0,0,.55); line-height:1; max-width:70%; overflow-wrap:anywhere; }
-  .card .stk { position:absolute; z-index:7; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
-  .card .stk svg { display:block; width:100%; height:100%; }
-  .card .pill { position:absolute; z-index:7; padding:.5cqw 1.6cqw; border-radius:99px; background:#fff; color:#000; font:700 2.6cqw var(--mono); letter-spacing:.06em; box-shadow:0 0 0 .5cqw #000, 0 3px 6px rgba(0,0,0,.4); }
-  .card .stamp { position:absolute; z-index:7; width:17cqw; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; border:.5cqw solid #fff; font:700 2.5cqw var(--mono); letter-spacing:.1em; text-align:center; line-height:1.15; color:#fff; }
-  .card .tape { position:absolute; z-index:6; width:14cqw; height:4cqw; background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.2); }
-  .card .big { position:absolute; z-index:5; line-height:.8; pointer-events:none; }
-  .card .lines { position:absolute; z-index:6; font:400 4.4cqw/1.15 'VT323', var(--mono); white-space:pre; }
-  .card .vibe { position:absolute; right:6%; top:8%; z-index:8; font:500 2.5cqw var(--mono); letter-spacing:.04em; padding:.6cqw 1.4cqw; border-radius:99px; background:rgba(0,0,0,.55); color:#fff; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
-  .card.light .vibe { background:rgba(255,255,255,.7); color:#000; }
-  .card.light .who { text-shadow:0 2px 14px rgba(255,255,255,.7); }
-  .card .checker { position:absolute; left:0; right:0; height:6cqw; z-index:4; background:repeating-conic-gradient(#fff 0 25%, #000 0 50%) 0 0/3cqw 3cqw; opacity:.85; }
-  .card .strip { position:absolute; left:-4%; width:108%; height:7cqw; z-index:6; filter:drop-shadow(0 2px 2px rgba(0,0,0,.6)); }
-  .card .chrome { position:absolute; inset:0; z-index:3; mix-blend-mode:screen; background:linear-gradient(135deg, rgba(255,255,255,.4), transparent 38%, rgba(255,255,255,.28) 58%, transparent 75%); }
-  .card .halo { position:absolute; z-index:8; width:15cqw; filter:drop-shadow(0 0 6px rgba(255,255,255,.9)); }
-  .card .scan { position:absolute; inset:0; z-index:7; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
-  .card .shade2 { position:absolute; inset:0; z-index:3; background:linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
-  .card.light { color:#0b0b0b; }
-  .deck-ui { position:absolute; left:0; right:0; bottom:-44px; display:flex; justify-content:space-between; align-items:center; font:400 11px var(--mono); color:#777; }
-  .deck-ui b { color:#ddd; font-weight:500; }
-  .deck-ui button { border:1px solid var(--line2); background:rgba(0,0,0,.4); color:#ccc; border-radius:7px; padding:5px 9px; font:500 11px var(--mono); cursor:pointer; }
-  .deck-ui button:hover { color:#fff; border-color:#fff; }
-  @media (max-width:860px){
-    .deck { right:auto; left:50%; top:104px; width:min(76vw, 330px); transform:translateX(-46%); }
-    .deck-ui { bottom:-36px; }
+  /* ---------- Hero studio: a live profile you can restyle ---------- */
+  .studio { position:absolute; right:clamp(20px, 5vw, 96px); top:50%; transform:translateY(-52%); width:320px; display:flex; flex-direction:column; gap:10px; z-index:1; }
+  .studio-frame { position:relative; height:min(500px, 58vh); border-radius:30px; overflow:hidden; background:#000; box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 40px 120px -30px rgba(0,0,0,.9); }
+  .studio-frame::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow:inset 0 0 0 6px rgba(0,0,0,.55); }
+  .studio-root { position:absolute; inset:0; }
+  .studio-dock { display:grid; gap:6px; padding:10px; border:1px solid var(--line2); border-radius:14px; background:rgba(0,0,0,.55); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+  .sd-row { display:flex; align-items:center; gap:8px; min-height:28px; }
+  .sd-k { width:50px; flex-shrink:0; font:400 10.5px var(--mono); color:#6f6f6f; }
+  .sd-row b { flex:1; text-align:center; font:500 12px var(--mono); color:#e8e8e8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sd-arrow { width:28px; height:28px; border-radius:7px; border:1px solid var(--line2); background:none; color:#ccc; cursor:pointer; font:500 15px var(--mono); }
+  .sd-arrow:hover { color:#fff; border-color:#fff; }
+  .sd-seg { display:flex; gap:3px; flex-wrap:wrap; flex:1; }
+  .sd-seg button, .sd-up { border:1px solid transparent; background:none; color:#8f8f8f; cursor:pointer; padding:3px 6px; border-radius:6px; font:500 10.5px var(--mono); }
+  .sd-seg button:hover, .sd-up:hover { color:#fff; }
+  .sd-seg button[aria-pressed="true"] { background:#fff; color:#000; }
+  .sd-up { border-color:var(--line2); color:#ddd; }
+  .sd-sw { display:flex; gap:6px; flex:1; }
+  .sd-sw button { width:20px; height:20px; border-radius:50%; border:1px solid rgba(255,255,255,.25); cursor:pointer; padding:0; }
+  .sd-sw button[aria-pressed="true"] { outline:2px solid #fff; outline-offset:2px; }
+  .sd-font button { font-size:13px; padding:2px 7px; }
+  .hud-r { display:none !important; }
+  .hero-c { grid-template-columns:minmax(0, 720px) !important; }
+  .hero-c .moods { justify-self:start; justify-items:start; margin-top:4px; }
+  .studio-hint { display:none; font:400 10.5px var(--mono); color:#777; text-align:center; }
+  @media (max-width:1180px) { .studio { width:290px; } .studio-frame { height:min(440px, 52vh); } }
+  @media (max-width:860px) {
+    .studio { right:auto; left:50%; top:78px; transform:translateX(-50%); width:200px; gap:6px; }
+    .studio-frame { height:300px; border-radius:22px; }
+    .studio-root.pk { width:161%; height:161%; transform:scale(.62); transform-origin:0 0; }
+    .studio-dock { display:none; }
+    .studio-hint { display:block; }
   }
-  @media (max-width:860px) and (max-height:760px){ .deck { width:min(64vw, 280px); } }
+  @media (max-width:860px) and (max-height:760px) { .studio-frame { height:240px; } .studio { width:170px; } }
 
   /* ---------- Page-wide smoke (light) ---------- */
   .haze { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
@@ -141,6 +129,8 @@
   .hud b, .hud-r b { color:#d8d8d8; font-weight:500; }
   .hero-c > div { min-width:0; }
   .hero-c { pointer-events:none; }
+  .guest-link { display:inline-block; margin-top:12px; margin-left:4px; font:400 12px var(--mono); color:#8f8f8f; text-decoration:underline; text-underline-offset:3px; }
+  .guest-link:hover { color:#fff; }
   .hero-c > * { pointer-events:auto; }
   .hero-c { position:absolute; left:var(--gut); right:var(--gut); bottom:84px; display:grid; grid-template-columns:minmax(0, 720px) 1fr; gap:24px; align-items:end; }
   .eyebrow-row { display:flex; gap:10px; align-items:center; font:500 11.5px var(--mono); color:#bdbdbd; }
@@ -227,43 +217,73 @@
   @media (max-width:900px){ .hl { grid-template-columns:1fr 1fr; } }
   @media (max-width:520px){ .hl { grid-template-columns:1fr; } .hl-c.big { grid-column:auto; grid-row:auto; } .hl-c { min-height:0; } .hl-c.wide { display:block; } .hl-c.wide h3 { margin-top:28px; } .hl-c.wide p { margin-top:8px; } }
 
-  /* Stats */
-  .stx { display:grid; grid-template-columns:1.25fr 1fr; gap:12px; margin-top:44px; }
-  .stx-main, .stx-card, .cl-card, .pt-builder { border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:20px; }
-  .stx-main { display:flex; flex-direction:column; position:relative; overflow:hidden; }
-  .stx-h { display:flex; justify-content:space-between; align-items:center; gap:10px; font:400 11px var(--mono); color:#6a6a6a; }
-  .stx-h b { color:#ddd; font-weight:500; }
+  /* Stats: dot-matrix component */
+  .led { margin-top:44px; border:1px solid var(--line); border-radius:16px; background:var(--s1); overflow:hidden; }
+  .led-top { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 16px; border-bottom:1px solid var(--line); }
+  .led-tag { display:inline-flex; align-items:center; font:400 11px var(--mono); color:#6a6a6a; }
   .pulse { display:inline-block; width:6px; height:6px; margin-right:8px; border-radius:50%; background:#fff; box-shadow:0 0 10px #fff; animation:tick 1.2s steps(1) infinite; }
-  .odo { display:flex; margin-top:36px; font:700 clamp(56px, 8.4vw, 128px)/1 var(--sans); letter-spacing:-.06em; font-variant-numeric:tabular-nums; }
+  .led-body { display:grid; grid-template-columns:minmax(0, 300px) minmax(0, 1fr); gap:24px; align-items:end; padding:22px 18px 18px; }
+  .led-num .odo { display:flex; font:700 clamp(54px, 7vw, 104px)/1 var(--sans); letter-spacing:-.06em; font-variant-numeric:tabular-nums; }
   .odo .d { display:inline-block; height:1em; overflow:hidden; }
   .odo .d > span { display:flex; flex-direction:column; transition:transform 1.1s var(--ease); }
   .odo .d i { font-style:normal; height:1em; }
-  .odo .c { display:inline-block; }
-  .stx-l { margin-top:8px; font:400 12px var(--mono); color:#777; }
-  .stx-spark { width:100%; height:110px; margin-top:auto; padding-top:20px; }
-  .stx-spark .ln { fill:none; stroke:#fff; stroke-width:2; stroke-dasharray:1000; stroke-dashoffset:1000; transition:stroke-dashoffset 2.4s var(--ease); }
-  .in .stx-spark .ln { stroke-dashoffset:0; }
-  .stx-chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; font:400 11.5px var(--mono); color:#777; }
-  .stx-chips span { padding:5px 9px; border:1px solid var(--line); border-radius:6px; }
-  .stx-chips b { color:#fff; font-weight:500; }
-  .stx-side { display:grid; gap:12px; }
-  .ix { list-style:none; margin-top:14px; display:grid; gap:9px; }
-  .ix li, .src-row { display:grid; grid-template-columns:130px 1fr 54px; align-items:center; gap:10px; font-size:13px; color:#cfcfcf; }
-  .ix i, .src-row i { position:relative; height:4px; border-radius:2px; background:#1c1c1c; overflow:hidden; }
-  .ix i::after, .src-row i::after { content:""; position:absolute; inset:0; width:var(--w); background:#fff; transform:scaleX(0); transform-origin:left; transition:transform 1.4s var(--ease); }
-  .in .ix i::after, .in.src-row i::after, .in .src-row i::after { transform:scaleX(1); }
-  .ix b, .src-row b { font:500 12.5px var(--mono); text-align:right; }
-  .feed { list-style:none; margin-top:12px; display:grid; gap:6px; min-height:168px; font:400 12.5px var(--mono); }
-  .feed li { display:grid; grid-template-columns:62px 1fr auto; gap:8px; align-items:center; color:#cfcfcf; animation:feedIn .6s var(--ease); }
-  .feed li em { font-style:normal; color:#000; background:#fff; border-radius:4px; padding:1px 6px; font-size:10.5px; text-align:center; }
-  .feed li small { color:#555; }
-  .feed li:nth-child(n+2) { opacity:.7; } .feed li:nth-child(n+4) { opacity:.4; }
+  .led-sub { display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .led-delta { font:500 11px var(--mono); padding:2px 7px; border-radius:5px; background:#fff; color:#000; }
+  .led-sub small { font:400 12px var(--mono); color:#777; }
+  .led-chart { position:relative; min-width:0; }
+  .led-chart canvas { display:block; width:100%; height:180px; cursor:crosshair; }
+  .led-tip { position:absolute; top:-6px; transform:translate(-50%, -100%); pointer-events:none; white-space:nowrap; font:500 11px var(--mono); padding:5px 8px; border-radius:6px; background:#fff; color:#000; }
+  .led-foot { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); border-top:1px solid var(--line); }
+  .led-foot div { padding:12px 16px; border-left:1px solid var(--line); }
+  .led-foot div:first-child { border-left:0; }
+  .led-foot small { display:block; font:400 10.5px var(--mono); color:#6a6a6a; }
+  .led-foot b { display:block; margin-top:3px; font-size:14px; font-weight:600; }
+  @media (max-width:900px) { .led-body { grid-template-columns:1fr; } .led-foot { grid-template-columns:1fr 1fr; } .led-foot div:nth-child(3) { border-left:0; } .led-foot div:nth-child(n+3) { border-top:1px solid var(--line); } }
+
   @keyframes feedIn { from { opacity:0; transform:translateY(-8px); } }
-  .stx-src { grid-column:1 / -1; display:grid; grid-template-columns:repeat(4, 1fr) ; gap:10px 24px; }
-  .stx-src .stx-h { grid-column:1 / -1; }
-  .src-row { grid-template-columns:70px 1fr 40px; }
-  @media (max-width:900px){ .stx { grid-template-columns:1fr; } .stx-src { grid-template-columns:1fr 1fr; } }
-  @media (max-width:520px){ .stx-src { grid-template-columns:1fr; } .ix li { grid-template-columns:110px 1fr 48px; } }
+  /* Templates gallery */
+  .tg { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-top:44px; }
+  .tg-card { border:1px solid var(--line); border-radius:14px; background:var(--s1); overflow:hidden; display:flex; flex-direction:column; transition:border-color .3s; }
+  .tg-card:hover { border-color:var(--line2); }
+  .tg-pv { position:relative; height:300px; overflow:hidden; pointer-events:none; }
+  .tg-pv > .pk { position:absolute; left:0; top:0; width:166.66%; height:166.66%; transform:scale(.6); transform-origin:0 0; }
+  .tg-body { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; }
+  .tg-body b { display:block; font-size:14px; }
+  .tg-body small { display:block; font:400 10.5px var(--mono); color:#6a6a6a; }
+  .tg-body .btn { height:32px; padding:0 12px; font-size:12.5px; border-radius:8px; }
+  .tg-cta { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:12px; padding:16px 18px; border:1px solid var(--line2); border-radius:14px; background:linear-gradient(90deg, #111, #070707); font-size:14px; color:#aaa; }
+  .tg-cta b { color:#fff; }
+  @media (max-width:980px) { .tg { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+  @media (max-width:520px) { .tg-pv { height:240px; } .tg-cta { flex-direction:column; align-items:flex-start; } }
+
+  /* Topic of the week */
+  .tp { display:grid; grid-template-columns:minmax(0, 1.4fr) minmax(0, 1fr); gap:12px; margin-top:44px; }
+  .tp-main { position:relative; overflow:hidden; border:1px solid var(--line2); border-radius:16px; padding:26px; background:radial-gradient(120% 140% at 100% 0%, #1b1b1b, #080808 60%); }
+  .tp-k { font:400 11px var(--mono); color:#7a7a7a; }
+  .tp-main h3 { margin-top:12px; font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(30px, 3.6vw, 48px); line-height:1; max-width:16ch; }
+  html[data-mood="ascii"] .tp-main h3 { font-size:clamp(24px, 2.8vw, 36px); }
+  .tp-main p { margin-top:10px; color:var(--m); }
+  .tp-cd { display:flex; gap:6px; margin:22px 0; flex-wrap:wrap; }
+  .tp-cd .cell { display:grid; gap:4px; justify-items:center; }
+  .tp-cd .digits { display:flex; gap:2px; }
+  .tp-cd span.dg { position:relative; display:grid; place-items:center; width:30px; height:42px; background:#111; border-radius:4px; font:600 24px var(--mono); overflow:hidden; }
+  .tp-cd span.dg::after { content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:#000; }
+  .tp-cd span.dg.f { animation:flap .09s linear; }
+  .tp-cd small { font:400 10px var(--mono); color:#6a6a6a; }
+  .tp-steps { list-style:none; display:grid; gap:10px; align-content:start; }
+  .tp-steps li { display:flex; gap:14px; align-items:flex-start; padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--s1); font-size:14px; color:#cfcfcf; }
+  .tp-steps b { font:500 11px var(--mono); color:#000; background:#fff; border-radius:4px; padding:2px 6px; }
+  .tp-steps a { text-decoration:underline; }
+  .label-row { display:flex; justify-content:space-between; margin-top:28px; font:400 11px var(--mono); color:#6a6a6a; }
+  .tp-entries { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin-top:10px; }
+  .tp-entry { display:flex; gap:12px; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--s1); text-decoration:none; min-width:0; }
+  .tp-entry:hover { border-color:var(--line2); }
+  .tp-entry .av { width:36px; height:36px; font-size:14px; }
+  .tp-entry b { display:block; font:500 13px var(--mono); }
+  .tp-entry span { display:block; font-size:12.5px; color:#9a9a9a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tp-empty { grid-column:1 / -1; padding:18px; border:1px dashed var(--line2); border-radius:12px; font:400 12.5px var(--mono); color:#777; text-align:center; }
+  @media (max-width:900px) { .tp { grid-template-columns:1fr; } .tp-entries { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px) { .tp-entries { grid-template-columns:1fr; } }
 
   /* Clans + leaderboard */
   .cl { display:grid; grid-template-columns:1fr 1.1fr; gap:12px; margin-top:44px; }
@@ -305,7 +325,7 @@
   @media (max-width:520px){ .lb-list li { grid-template-columns:24px 1fr auto 56px; } .lb-list .av { display:none; } }
 
   /* Partners */
-  .pt > *, .stx > *, .cl > *, .stx-side > * { min-width:0; }
+  .pt > *, .cl > *, .led-body > * { min-width:0; }
   .pt { display:grid; grid-template-columns:1.15fr 1fr; gap:12px; margin-top:44px; }
   @media (max-width:900px){ .pt { grid-template-columns:1fr; } }
   .pt-link { display:flex; align-items:center; gap:10px; margin-top:16px; padding:6px 6px 6px 16px; min-height:64px; border-radius:12px; background:#050505; border:1px solid var(--line2); }
@@ -337,90 +357,6 @@
   .pt-cta:hover { border-color:#fff; }
   .pt-cta b { color:#fff; font-weight:600; }
   @media (max-width:520px){ .pt-cta { flex-direction:column; align-items:flex-start; } .pt-row { grid-template-columns:1fr; gap:6px; } .pt-k { padding-top:0; } }
-
-  /* Build showcase (sticky) */
-  .show { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(24px, 5vw, 80px); margin-top:44px; }
-  .stage { position:sticky; top:84px; height:calc(100svh - 120px); max-height:760px; min-height:620px; display:grid; place-items:center; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#050505; }
-  .stage::before { content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.13) 1px, transparent 1px); background-size:18px 18px; -webkit-mask-image:radial-gradient(circle at 50% 50%, #000, transparent 70%); mask-image:radial-gradient(circle at 50% 50%, #000, transparent 70%); }
-  .stage-meta { position:absolute; left:14px; right:14px; top:12px; display:flex; justify-content:space-between; gap:10px; font:400 11px var(--mono); color:#666; z-index:2; }
-  .stage-meta b { color:#ccc; font-weight:500; }
-
-  .phone { position:relative; width:300px; height:600px; border-radius:42px; padding:10px; background:#161616; box-shadow:0 0 0 1px #2a2a2a, 0 40px 120px -30px rgba(255,255,255,.12); transform:perspective(1600px) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)); transition:transform .8s var(--ease); }
-  .scr { position:relative; height:100%; border-radius:33px; overflow:hidden; background:#000; isolation:isolate; }
-  .notch { position:absolute; top:9px; left:50%; width:84px; height:24px; transform:translateX(-50%); background:#000; border-radius:14px; z-index:5; box-shadow:0 0 0 1px #1a1a1a; }
-  .pbg { position:absolute; inset:0; z-index:-1; transition:opacity .6s; }
-  .pbg i { position:absolute; border-radius:50%; background:#fff; filter:blur(38px); opacity:.24; animation:drift 16s ease-in-out infinite alternate; }
-  .pbg i:nth-child(1){ width:220px; height:220px; left:-60px; top:-40px; }
-  .pbg i:nth-child(2){ width:260px; height:260px; right:-90px; top:220px; background:#888; animation-duration:20s; }
-  .pbg i:nth-child(3){ width:180px; height:180px; left:30px; bottom:-70px; background:#bbb; animation-duration:18s; animation-delay:-6s; }
-  @keyframes drift { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(40px,-30px,0) scale(1.15)} 100%{transform:translate3d(-25px,35px,0) scale(.9)} }
-  .pdith { position:absolute; inset:0; z-index:-1; opacity:0; transition:opacity .6s;
-    background:radial-gradient(circle at 30% 20%, #fff 0, transparent 55%), radial-gradient(circle at 80% 70%, #bbb 0, transparent 50%); }
-  .pdith::after { content:""; position:absolute; inset:0; background:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/4px 4px; }
-  .phone[data-bg="dither"] .pdith { opacity:.5; }
-  .phone[data-bg="dither"] .pbg, .phone[data-bg="none"] .pbg { opacity:0; }
-  .pc { position:absolute; inset:0; padding:56px 20px 22px; display:flex; flex-direction:column; text-align:center; }
-  .p-av { position:relative; width:84px; height:84px; margin:0 auto; border-radius:50%; display:grid; place-items:center; font:700 34px var(--sans); text-transform:uppercase;
-    background:radial-gradient(circle at 30% 25%, #444, #0b0b0b 70%); box-shadow:0 0 0 1px rgba(255,255,255,.3), 0 0 36px rgba(255,255,255,.15); flex-shrink:0; }
-  .p-av::after { content:""; position:absolute; inset:-7px; border-radius:50%; border:1px dashed rgba(255,255,255,.3); animation:spin 22s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  .p-name { margin-top:14px; font:500 21px var(--mono); overflow-wrap:anywhere; transition:text-shadow .5s; }
-  .phone[data-glow="on"] .p-name { text-shadow:0 0 16px rgba(255,255,255,.7), 0 0 2px #fff; }
-  .p-badges { display:flex; gap:5px; justify-content:center; margin-top:8px; }
-  .p-badges span { width:22px; height:22px; display:grid; place-items:center; border-radius:6px; background:rgba(255,255,255,.07); border:1px solid var(--line); transition:box-shadow .5s; }
-  .phone[data-glow="on"] .p-badges span { box-shadow:0 0 10px rgba(255,255,255,.35); }
-  .p-bio { margin-top:10px; font-size:13px; color:#c9c9c9; min-height:20px; }
-  .caret { display:inline-block; width:1px; height:13px; margin-left:2px; vertical-align:-2px; background:#fff; animation:tick 1s steps(1) infinite; }
-  .p-soc { display:flex; gap:6px; justify-content:center; margin-top:14px; }
-  .p-soc span { width:32px; height:32px; display:grid; place-items:center; border-radius:9px; transition:filter .4s; }
-  .phone[data-glow="on"] .p-soc span { filter:drop-shadow(0 0 6px rgba(255,255,255,.8)); }
-  .p-links { display:grid; gap:8px; margin-top:auto; }
-  .p-links a { height:42px; display:grid; place-items:center; font-size:13px; font-weight:500; border:1px solid #fff; background:#fff; color:#000; border-radius:12px; transition:all .45s var(--ease); }
-  .phone[data-btn="1"] .p-links a { background:transparent; color:#fff; border-radius:999px; }
-  .phone[data-btn="2"] .p-links a { background:rgba(255,255,255,.08); color:#fff; border-color:rgba(255,255,255,.22); border-radius:4px; backdrop-filter:blur(8px); }
-  .phone[data-btn="3"] .p-links a { border-radius:8px; box-shadow:4px 4px 0 #6b6b6b; }
-  .p-player { display:flex; align-items:center; gap:10px; margin-top:12px; padding:8px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid var(--line); text-align:left; }
-  .cover { width:36px; height:36px; border-radius:8px; flex-shrink:0; background:conic-gradient(from 200deg, #111, #666, #111, #aaa, #111); }
-  .trk { flex:1; min-width:0; font-size:12px; } .trk b { display:block; font-weight:500; } .trk small { color:#777; }
-  .eq { display:flex; align-items:flex-end; gap:2px; height:18px; }
-  .eq i { width:3px; height:100%; background:#fff; transform-origin:bottom; animation:eq 1s ease-in-out infinite alternate; }
-  .eq i:nth-child(2){ animation-delay:-.3s } .eq i:nth-child(3){ animation-delay:-.6s } .eq i:nth-child(4){ animation-delay:-.15s }
-  @keyframes eq { 0%{transform:scaleY(.2)} 100%{transform:scaleY(1)} }
-  .phone[data-layout="banner"] .pc { text-align:left; padding-top:0; }
-  .phone[data-layout="banner"] .pc::before { content:""; display:block; height:120px; margin:0 -20px; flex-shrink:0; background:linear-gradient(135deg, #3a3a3a, #0a0a0a 60%); border-bottom:1px solid var(--line); }
-  .phone[data-layout="banner"] .p-av { margin:-42px 0 0; width:76px; height:76px; }
-  .phone[data-layout="banner"] .p-badges, .phone[data-layout="banner"] .p-soc { justify-content:flex-start; }
-  .phone[data-layout="terminal"] .pc { font-family:var(--mono); text-align:left; }
-  .phone[data-layout="terminal"] .p-av { display:none; }
-  .phone[data-layout="terminal"] .p-name::before { content:"> "; color:#666; }
-  .phone[data-layout="terminal"] .p-name { font-size:19px; margin-top:6px; }
-  .phone[data-layout="terminal"] .p-bio::before { content:"$ cat bio\A"; white-space:pre; color:#666; }
-  .phone[data-layout="terminal"] .p-badges, .phone[data-layout="terminal"] .p-soc { justify-content:flex-start; }
-  .phone[data-layout="terminal"] .p-links a { justify-items:start; padding:0 12px; font-family:var(--mono); border-radius:2px; }
-  .phone[data-layout="terminal"] .p-links a::before { content:"→ "; }
-  .phone[data-layout="terminal"] .p-player { border-radius:2px; }
-
-  .steps { display:grid; }
-  .step { min-height:72svh; display:flex; flex-direction:column; justify-content:center; padding:32px 0; border-bottom:1px solid var(--line); opacity:.35; transition:opacity .5s; }
-  .step.act { opacity:1; }
-  .step .k { font:400 11px var(--mono); color:#6a6a6a; }
-  .step h3 { margin-top:10px; font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(28px, 3vw, 42px); line-height:1; }
-  html[data-mood="ascii"] .step h3 { font-size:clamp(22px, 2.4vw, 32px); }
-  .step p { margin-top:12px; color:var(--m); max-width:420px; }
-  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:20px; }
-  .chip { display:inline-flex; align-items:center; gap:8px; height:34px; padding:0 12px; border:1px solid var(--line2); border-radius:8px; background:none; cursor:pointer; font:500 12px var(--mono); color:#bbb; transition:all .25s; }
-  .chip:hover { border-color:#fff; color:#fff; }
-  .chip[aria-pressed="true"] { background:#fff; color:#000; border-color:#fff; }
-  .chip small { font-size:9.5px; color:#666; }
-  .chip[aria-pressed="true"] small { color:#555; }
-  @media (max-width:900px){
-    .show { grid-template-columns:1fr; }
-    .stage { position:relative; top:0; height:auto; min-height:0; padding:44px 0 6px; }
-    .phone { transform:scale(.88); margin:-30px 0; }
-    .steps { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:10px; margin:0 calc(var(--gut) * -1); padding:0 var(--gut); scrollbar-width:none; }
-    .steps::-webkit-scrollbar { display:none; }
-    .step { min-height:0; flex:0 0 86%; scroll-snap-align:start; border:1px solid var(--line); border-radius:14px; padding:20px; opacity:1; background:var(--s1); }
-  }
 
   /* Share */
   .drops { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:12px; margin-top:44px; }
@@ -489,9 +425,17 @@
   .dock span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .dock .btn { height:40px; }
 
-  /* Reveal */
-  .rv { opacity:0; transform:translateY(22px); transition:opacity .9s var(--ease), transform .9s var(--ease); transition-delay:var(--d, 0s); }
-  .rv.in { opacity:1; transform:none; }
+  /* Reveal: blocks resolve in pixel steps, never a smooth fade */
+  .rv { opacity:0; }
+  .rv.in { opacity:1; animation:pixin .5s steps(1, end) both; animation-delay:var(--d, 0s); }
+  @keyframes pixin {
+    0% { -webkit-mask:linear-gradient(transparent, transparent); mask:linear-gradient(transparent, transparent); transform:translateX(-4px); }
+    20% { -webkit-mask:conic-gradient(#000 0 25%, transparent 0) 0 0/16px 16px; mask:conic-gradient(#000 0 25%, transparent 0) 0 0/16px 16px; transform:translateX(3px); }
+    40% { -webkit-mask:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/16px 16px; mask:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/16px 16px; transform:none; }
+    60% { -webkit-mask:conic-gradient(#000 0 75%, transparent 0) 0 0/16px 16px; mask:conic-gradient(#000 0 75%, transparent 0) 0 0/16px 16px; }
+    80% { -webkit-mask:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/4px 4px; mask:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/4px 4px; }
+    100% { -webkit-mask:none; mask:none; transform:none; }
+  }
   .intro { opacity:0; animation:intro .32s steps(4, end) forwards; animation-delay:var(--d, 0s); }
   @keyframes intro { to { opacity:1; } }
   /* Typewriter headline: chars decode through pixel glyphs, layout is reserved up front */
@@ -515,6 +459,7 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
     .rv, .intro { opacity:1; transform:none; }
+    .rv.in { animation:none; }
   }
 </style>
 </head>
@@ -530,8 +475,9 @@
   <nav class="links" aria-label="Sezioni">
     <a href="#index">funzioni</a>
     <a href="#stats">statistiche</a>
+    <a href="#template">template</a>
+    <a href="#topic">topic</a>
     <a href="#clans">clan</a>
-    <a href="#partners">partner</a>
     <a href="#plans">piani</a>
   </nav>
   <div class="nav-r">
@@ -546,8 +492,15 @@
     <div class="fx-fallback" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
     <div class="shade" aria-hidden="true"></div>
-    <div class="deck intro" id="deck" style="--d:.5s" aria-label="Carte profilo di esempio, una nuova ogni due secondi">
-      <div class="deck-ui"><span>vibe <b id="deckN">01</b> / 12 · <b id="deckT"></b></span><button id="deckNext" type="button">mischia</button></div>
+    <div class="studio intro" id="studio" style="--d:.5s">
+      <div class="studio-frame" id="studioFrame"><div class="studio-root" id="studioRoot"></div></div>
+      <p class="studio-hint">tocca il profilo per cambiare stile</p>
+      <div class="studio-dock" role="group" aria-label="Prova a personalizzare il profilo">
+        <div class="sd-row"><span class="sd-k">template</span><button type="button" class="sd-arrow" data-tpl="-1" aria-label="Template precedente">‹</button><b id="sdTpl">Nero puro</b><button type="button" class="sd-arrow" data-tpl="1" aria-label="Template successivo">›</button></div>
+        <div class="sd-row"><span class="sd-k">sfondo</span><div class="sd-seg" id="sdBg"><button type="button" data-bg="image">foto</button><button type="button" data-bg="gradient">gradiente</button><button type="button" data-bg="color">colore</button><label class="sd-up">la tua<input type="file" id="sdFile" accept="image/*" hidden></label></div></div>
+        <div class="sd-row"><span class="sd-k">colore</span><div class="sd-sw" id="sdSw"></div></div>
+        <div class="sd-row"><span class="sd-k">font</span><div class="sd-seg sd-font" id="sdFont"></div></div>
+      </div>
     </div>
 
     <div class="hud intro" style="--d:.1s" aria-hidden="true">
@@ -558,7 +511,7 @@
     </div>
     <div class="hud-r intro" style="--d:.15s" aria-hidden="true">
       <span>ora <b id="hudClock">--:--:--</b></span>
-      <span>vibe <b id="hudCard">–</b></span>
+      <span>template <b id="hudCard">–</b></span>
       <span>render <b id="hudR">webgl</b></span>
     </div>
 
@@ -566,7 +519,7 @@
       <div>
         <div class="eyebrow-row intro" style="--d:.2s"><span class="live"><i></i>beta</span><span>chi prima arriva, meglio alloggia</span></div>
         <h1 class="h1" id="h1t" aria-label="Prendi la tua @.">Prendi la tua <span class="at">@</span>.</h1>
-        <p class="lede intro" style="--d:1.15s">Un nome, una pagina, tutto quello che fai. Link, social, glow ed effetti, in <b>bianco e nero</b> e con tre mood. Scrivi un nome e guardalo prendere forma.</p>
+        <p class="lede intro" style="--d:1.15s">Un nome, una pagina, tutto quello che fai. Colori, foto, musica, effetti: lo decidi tu. Prova a cambiarlo qui accanto, poi scrivi il tuo nome.</p>
         <form class="claim intro" style="--d:1.3s" data-claim novalidate>
           <label class="sr-only" for="h1in">Scegli la tua @</label>
           <div class="bar">
@@ -579,9 +532,10 @@
             <span class="rar" data-rarity hidden><span class="lbl" data-rarity-name></span><span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
           </div>
         </form>
+        <a class="guest-link intro" style="--d:1.4s" href="dashboard.html" data-guest>oppure prova la dashboard senza account</a>
       </div>
       <div class="moods intro" style="--d:1.45s">
-        <span class="moods-l">mood / stesso bianco e nero, tre texture</span>
+        <span class="moods-l">mood del sito</span>
         <div class="seg" role="group" aria-label="Mood della pagina">
           <button type="button" data-mood="smoke" aria-pressed="true">fumo</button>
           <button type="button" data-mood="dither" aria-pressed="false">dither</button>
@@ -598,15 +552,15 @@
     <div class="wrap">
       <div class="sh rv"><span class="no">01 / funzioni</span><div>
         <h2 class="h2">Il meglio. <span class="g">Già attivo.</span></h2>
-        <p class="sub">Quello che hai appena prendi la tua @. Ogni settimana arriva qualcosa di nuovo.</p>
+        <p class="sub">Quello che hai appena prendi la tua @. E puoi provarlo prima di registrarti.</p>
       </div></div>
       <div class="hl">
         <div class="hl-c big rv"><span class="k">01</span><h3>La tua @, bloccata</h3><p>Prendila, controlla dal vivo se è libera e quanto è rara. Una @ per account: dopo, nessuno può prendertela.</p><div class="hl-at" aria-hidden="true" data-at>@tuonome</div></div>
-        <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Glow</h3><p>Fai brillare nome, social e badge.</p></div>
-        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Sfondo di fumo</h3><p>Fumo che si muove dietro la tua pagina, forte quanto vuoi.</p></div>
-        <div class="hl-c rv"><span class="k">04</span><h3>Stili dei bottoni</h3><p>Pieni, solo contorno, vetro o con ombra netta.</p></div>
-        <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>25 social</h3><p>Discord, Instagram, TikTok, Spotify, X e altri, con icone pulite.</p></div>
-        <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Anteprima dal vivo</h3><p>Vedi ogni modifica sulla tua pagina mentre la fai.</p></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Colori e gradienti</h3><p>Ogni colore del profilo è tuo. Gradienti a 2, 3 o 4 colori.</p></div>
+        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Foto, video, effetti</h3><p>La tua immagine o un video di sfondo, più 12 effetti: fumo, neve, matrix, cuori…</p></div>
+        <div class="hl-c rv"><span class="k">04</span><h3>Musica</h3><p>Spotify, SoundCloud, YouTube o il tuo mp3. E Last.fm per quello che ascolti.</p></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>20 font, 5 layout</h3><p>Dal gotico al pixel. Effetti sul nome: glitch, arcobaleno, macchina da scrivere.</p></div>
+        <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Prova senza account</h3><p>Apri la dashboard e costruisci il profilo. Ti registri solo quando vuoi salvarlo. <a href="dashboard.html" data-guest style="text-decoration:underline">Provala ora</a></p></div>
       </div>
     </div>
   </section>
@@ -616,45 +570,26 @@
     <div class="wrap">
       <div class="sh rv"><span class="no">02 / statistiche</span><div>
         <h2 class="h2">Ogni visita conta. <span class="g">Davvero.</span></h2>
-        <p class="sub">Un contatore pubblico delle visite sulla tua pagina, e dietro ogni interazione: chi l'ha aperta, cosa ha cliccato, cosa ha ascoltato, da dove arriva.</p>
+        <p class="sub">Un contatore pubblico sulla tua pagina e, nella dashboard, ogni giorno in un colpo d'occhio: visite, clic, ascolti. Passa il mouse sui punti.</p>
       </div></div>
-      <div class="stx">
-        <div class="stx-main rv">
-          <div class="stx-h"><span><i class="pulse"></i>live · <b data-at>@tuonome</b></span><span>dati di esempio</span></div>
-          <div class="odo" id="odo" aria-live="off"></div>
-          <div class="stx-l">visite al profilo</div>
-          <svg class="stx-spark" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
-            <defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
-            <path d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8 L600,120 L0,120 Z" fill="url(#sg)"/>
-            <path class="ln" d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8"/>
-          </svg>
-          <div class="stx-chips"><span>oggi <b>+214</b></span><span>questa settimana <b>+1.902</b></span><span>unici <b>8.311</b></span></div>
-        </div>
-        <div class="stx-side">
-          <div class="stx-card rv" style="--d:.06s">
-            <div class="stx-h"><span>interazioni</span><span>7 giorni</span></div>
-            <ul class="ix">
-              <li><span>clic sui link</span><i style="--w:92%"></i><b>3.204</b></li>
-              <li><span>tap sui social</span><i style="--w:60%"></i><b>1.877</b></li>
-              <li><span>ascolti</span><i style="--w:38%"></i><b>1.120</b></li>
-              <li><span>mi piace</span><i style="--w:31%"></i><b>932</b></li>
-              <li><span>link copiati</span><i style="--w:22%"></i><b>642</b></li>
-              <li><span>condivisioni</span><i style="--w:9%"></i><b>211</b></li>
-              <li><span>commenti</span><i style="--w:4%"></i><b>87</b></li>
-              <li><span>tempo medio</span><i style="--w:48%"></i><b>0:41</b></li>
-            </ul>
+      <div class="led rv" id="led">
+        <div class="led-top">
+          <div class="seg" role="group" aria-label="Cosa mostrare">
+            <button type="button" data-metric="views" aria-pressed="true">visite</button>
+            <button type="button" data-metric="clicks" aria-pressed="false">clic</button>
+            <button type="button" data-metric="plays" aria-pressed="false">ascolti</button>
           </div>
-          <div class="stx-card rv" style="--d:.12s">
-            <div class="stx-h"><span>feed</span><span>adesso</span></div>
-            <ol class="feed" id="feed" aria-hidden="true"></ol>
-          </div>
+          <span class="led-tag"><i class="pulse"></i>dati di esempio · ultimi 30 giorni</span>
         </div>
-        <div class="stx-card stx-src rv">
-          <div class="stx-h"><span>da dove arrivano</span><span>7 giorni</span></div>
-          <div class="src-row"><span>discord</span><i style="--w:46%"></i><b>46%</b></div>
-          <div class="src-row"><span>tiktok</span><i style="--w:28%"></i><b>28%</b></div>
-          <div class="src-row"><span>instagram</span><i style="--w:17%"></i><b>17%</b></div>
-          <div class="src-row"><span>diretto</span><i style="--w:9%"></i><b>9%</b></div>
+        <div class="led-body">
+          <div class="led-num"><div class="odo" id="odo" aria-live="off"></div><div class="led-sub"><span class="led-delta" id="ledDelta">+18%</span><small id="ledLbl">visite al profilo</small></div></div>
+          <div class="led-chart"><canvas id="ledCv" role="img" aria-label="Grafico a punti degli ultimi 30 giorni"></canvas><div class="led-tip" id="ledTip" hidden></div></div>
+        </div>
+        <div class="led-foot">
+          <div><small>visitatori unici</small><b>8.311</b></div>
+          <div><small>tempo medio</small><b>0:41</b></div>
+          <div><small>arrivano da</small><b>discord 46%</b></div>
+          <div><small>link più cliccato</small><b>Ultima uscita</b></div>
         </div>
       </div>
     </div>
@@ -663,7 +598,7 @@
   <!-- CLANS + LEADERBOARD -->
   <section class="s" id="clans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">03 / clan</span><div>
+      <div class="sh rv"><span class="no">05 / clan</span><div>
         <h2 class="h2">Scegli da che parte stare. <span class="g">Porta la tag.</span></h2>
         <p class="sub">Fonda un clan e riserva la sua TAG: nessun altro potrà mai usarla. Entra in massimo 3 clan, poi scegli 1 gruppo primario: è la tag che la gente vede accanto al tuo nome.</p>
       </div></div>
@@ -702,95 +637,48 @@
     </div>
   </section>
 
-  <!-- BUILD -->
-  <section class="s" id="build">
+  <!-- TEMPLATES -->
+  <section class="s" id="template">
     <div class="wrap">
-      <div class="sh rv"><span class="no">04 / crea</span><div>
-        <h2 class="h2">Stesso bianco e nero. <span class="g">Mai la stessa pagina.</span></h2>
-        <p class="sub">Scorri e la pagina si costruisce da sola. Tocca un'opzione per provarla. Quelle con scritto presto stanno arrivando.</p>
+      <div class="sh rv"><span class="no">03 / template</span><div>
+        <h2 class="h2">Prendi uno stile. <span class="g">Fallo tuo.</span></h2>
+        <p class="sub">Parti da un template, cambia quello che vuoi, oppure pubblica il tuo: pubblico, non in elenco o privato. Puoi prendere anche solo lo sfondo, i colori o il font.</p>
       </div></div>
+      <div class="tg" id="tplGrid"></div>
+      <div class="tg-cta rv"><span><b>Hai fatto qualcosa di bello?</b> Pubblicalo come template e guarda quante persone lo usano.</span><a class="btn" href="dashboard.html#templates" data-guest>Apri i template</a></div>
+    </div>
+  </section>
 
-      <div class="show">
-        <div class="stage">
-          <div class="stage-meta"><span>anteprima / <b data-at>@tuonome</b></span><span id="stageInfo">classico · fumo · pieno</span></div>
-          <div class="phone" id="phone" data-layout="classic" data-bg="lava" data-btn="0" data-glow="on">
-            <div class="scr">
-              <div class="notch"></div>
-              <div class="pbg"><i></i><i></i><i></i></div>
-              <div class="pdith"></div>
-              <div class="pc">
-                <div class="p-av" data-initial>T</div>
-                <div class="p-name" data-at>@tuonome</div>
-                <div class="p-badges" aria-hidden="true">
-                  <span><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></span>
-                  <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></span>
-                  <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15h15v4H3zM18 15h3v4h-3M7 11c0-2 2-2 2-4s-2-2-2-4M12 11c0-2 2-2 2-4s-2-2-2-4"/></svg></span>
-                </div>
-                <p class="p-bio"><span id="typed">discord.gg/ECF4vzWKz</span><span class="caret" aria-hidden="true"></span></p>
-                <div class="p-soc" aria-hidden="true">
-                  <span><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.4a18.3 18.3 0 0 0-6.4 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9-.2 13.5.2 18a19.9 19.9 0 0 0 6 3l1.3-2.1a12.8 12.8 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1L16.8 21a19.8 19.8 0 0 0 6-3c.5-5.2-.9-9.6-2.5-13.6zM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4z"/></svg></span>
-                  <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor"/></svg></span>
-                  <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.6 2.1 4.3 5 4.5"/></svg></span>
-                  <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M7 9.5c3.5-1 7-.6 10 1M7.5 12.8c3-.8 5.8-.4 8.3.9M8 15.8c2.3-.5 4.4-.3 6.3.7"/></svg></span>
-                  <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l16 16M20 4L4 20"/></svg></span>
-                </div>
-                <div class="p-player"><div class="cover"></div><div class="trk"><b>smoke signals</b><small>sigari &amp; gin</small></div><div class="eq"><i></i><i></i><i></i><i></i></div></div>
-                <div class="p-links"><a>Ultima uscita</a><a>Portfolio</a><a>Contatti</a></div>
-              </div>
-            </div>
-          </div>
+  <!-- TOPIC -->
+  <section class="s" id="topic">
+    <div class="wrap">
+      <div class="sh rv"><span class="no">04 / topic</span><div>
+        <h2 class="h2">Una cosa a settimana. <span class="g">Chi la fa meglio vince.</span></h2>
+        <p class="sub">Ogni lunedì esce un topic. Lo metti sul profilo, la community vota sul Discord, chi vince prende il badge e finisce in vetrina qui sotto.</p>
+      </div></div>
+      <div class="tp rv">
+        <div class="tp-main">
+          <span class="tp-k" id="tpWeek">questa settimana</span>
+          <h3 id="tpTitle"></h3>
+          <p id="tpHint"></p>
+          <div class="tp-cd" id="tpCd" aria-label="Tempo che manca alla fine del topic"></div>
+          <a class="btn" href="dashboard.html#topic" data-guest>Partecipa</a>
         </div>
-
-        <div class="steps" id="steps">
-          <div class="step" data-preset='{"layout":"classic","bg":"lava","btn":"0","glow":"on"}'>
-            <span class="k">passo 01 / layout</span>
-            <h3>Scegli la forma.</h3>
-            <p>Centrata come un poster, con un banner in alto, o solo testo come un terminale.</p>
-            <div class="chips" data-key="layout">
-              <button class="chip" type="button" data-v="classic">classico <small>attivo</small></button>
-              <button class="chip" type="button" data-v="banner">banner <small>presto</small></button>
-              <button class="chip" type="button" data-v="terminal">terminale <small>presto</small></button>
-            </div>
-          </div>
-          <div class="step" data-preset='{"layout":"classic","bg":"dither","btn":"2","glow":"on"}'>
-            <span class="k">passo 02 / sfondo</span>
-            <h3>Scegli la texture.</h3>
-            <p>Fumo che si muove, un dither netto o nero puro. Decidi tu quanto è forte.</p>
-            <div class="chips" data-key="bg">
-              <button class="chip" type="button" data-v="lava">fumo <small>attivo</small></button>
-              <button class="chip" type="button" data-v="dither">dither <small>presto</small></button>
-              <button class="chip" type="button" data-v="none">niente <small>attivo</small></button>
-            </div>
-          </div>
-          <div class="step" data-preset='{"layout":"banner","bg":"lava","btn":"3","glow":"off"}'>
-            <span class="k">passo 03 / bottoni</span>
-            <h3>Rendili cliccabili.</h3>
-            <p>Pieni, solo contorno, vetro o con ombra netta, con la forma e l'hover che preferisci.</p>
-            <div class="chips" data-key="btn">
-              <button class="chip" type="button" data-v="0">pieno <small>attivo</small></button>
-              <button class="chip" type="button" data-v="1">contorno <small>attivo</small></button>
-              <button class="chip" type="button" data-v="2">vetro <small>attivo</small></button>
-              <button class="chip" type="button" data-v="3">ombra <small>attivo</small></button>
-            </div>
-          </div>
-          <div class="step" data-preset='{"layout":"terminal","bg":"none","btn":"1","glow":"on"}'>
-            <span class="k">passo 04 / glow</span>
-            <h3>Accendi la luce.</h3>
-            <p>Glow su nome, social e badge. Poi salvi, ed è online.</p>
-            <div class="chips" data-key="glow">
-              <button class="chip" type="button" data-v="on">glow acceso <small>attivo</small></button>
-              <button class="chip" type="button" data-v="off">glow spento <small>attivo</small></button>
-            </div>
-          </div>
-        </div>
+        <ol class="tp-steps">
+          <li><b>01</b><span>Metti la tua risposta sul profilo, dalla dashboard.</span></li>
+          <li><b>02</b><span>La community vota sul <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">Discord</a>.</span></li>
+          <li><b>03</b><span>Chi vince prende il badge "vincitore del topic" e la vetrina.</span></li>
+        </ol>
       </div>
+      <div class="label-row rv"><span>risposte di questa settimana</span><span id="tpCount"></span></div>
+      <div class="tp-entries" id="tpEntries"></div>
     </div>
   </section>
 
   <!-- PARTNERS -->
   <section class="s" id="partners">
     <div class="wrap">
-      <div class="sh rv"><span class="no">05 / partner</span><div>
+      <div class="sh rv"><span class="no">06 / partner</span><div>
         <h2 class="h2">Il tuo server, il tuo link. <span class="g">Per ogni membro.</span></h2>
         <p class="sub">Ogni server partner può mettere il suo nome nei link dei profili dei suoi membri. Stessa pagina, con il nome che la tua community conosce già. Poi scegli formato e stile dell'anteprima tra tanti preset.</p>
       </div></div>
@@ -822,7 +710,7 @@
   <!-- SHARE -->
   <section class="s" id="share">
     <div class="wrap">
-      <div class="sh rv"><span class="no">06 / condividi</span><div>
+      <div class="sh rv"><span class="no">07 / condividi</span><div>
         <h2 class="h2">Mettilo ovunque. <span class="g">Si legge come il tuo nome.</span></h2>
         <p class="sub">Usa la stessa @ che hai su ogni app, così ti trovano al primo colpo. Ecco come appare il tuo link quando l'hai presa.</p>
       </div></div>
@@ -855,7 +743,7 @@
   <!-- PLANS + FAQ -->
   <section class="s" id="plans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">07 / piani</span><div>
+      <div class="sh rv"><span class="no">08 / piani</span><div>
         <h2 class="h2">Gratis adesso. <span class="g">Domande e risposte.</span></h2>
       </div></div>
       <div class="pf">
@@ -863,13 +751,13 @@
           <div class="plan">
             <div class="t"><span>gratis</span><span>per sempre</span></div>
             <div class="pr">0€ <small>/ a vita</small></div>
-            <ul><li>La tua @ su sigari.bio</li><li>Link, 25 social, avatar, bio</li><li>Effetto fumo e stili dei bottoni</li><li>Glow e anteprima dal vivo</li></ul>
+            <ul><li>La tua @ su sigari.bio</li><li>Colori, gradienti, foto e video</li><li>12 effetti, 20 font, 5 layout</li><li>Musica, widget, template e topic</li></ul>
             <a class="go" href="#top" data-focus-claim>Prendi la tua @</a>
           </div>
           <div class="plan pro">
             <div class="t"><span>premium</span><span>in lavorazione</span></div>
             <div class="pr">Presto</div>
-            <ul><li>Più mood, cursori e font</li><li>Lettore musicale e widget</li><li>Badge e statistiche</li><li>Chi entra prima lo sa per primo</li></ul>
+            <ul><li>Effetti e font in più</li><li>Badge esclusivi</li><li>Statistiche complete</li><li>Chi entra prima lo sa per primo</li></ul>
             <a class="go" href="#top" data-focus-claim>Entra per primo</a>
           </div>
         </div>
@@ -881,7 +769,9 @@
           <details><summary>Come mi iscrivo?</summary><p>Con Google, oppure con email e password. L'accesso con Discord sta arrivando.</p></details>
           <details><summary>Come funzionano i clan?</summary><p>Un clan riserva una TAG da 2 a 4 lettere o numeri che nessun altro può usare. Puoi avere fino a 3 tag e scegliere 1 gruppo primario: quella tag appare accanto al tuo nome.</p></details>
           <details><summary>Come fa il mio server a diventare partner?</summary><p>Chiedi sul nostro <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener" style="text-decoration:underline">Discord</a>. I server partner hanno un link col loro nome per ogni membro, tipo sigari.gin/@nome.</p></details>
-          <details><summary>Cosa sono i mood?</summary><p>Lo stesso stile in bianco e nero in tre texture: fumo, dither e ASCII. Provali in cima a questa pagina.</p></details>
+          <details><summary>Posso provare senza registrarmi?</summary><p>Sì. Apri la dashboard senza account e costruisci il profilo: resta salvato nel tuo browser. Quando ti registri, tutto passa nel tuo account e la @ diventa tua.</p></details>
+          <details><summary>Come collego Spotify o Last.fm?</summary><p>Dalla sezione Musica della dashboard: incolli il link di Spotify, oppure scrivi il tuo nome di Last.fm per mostrare cosa stai ascoltando.</p></details>
+          <details><summary>Il profilo deve essere in bianco e nero?</summary><p>No. Il sito è in bianco e nero, il tuo profilo no: colori, gradienti, foto e font li scegli tu.</p></details>
         </div>
       </div>
     </div>
@@ -921,6 +811,7 @@
 <div class="dock" id="dock"><a href="#top" data-focus-claim><span data-url>sigari.bio/@tuonome</span><span class="btn">Prendila</span></a></div>
 
 <script type="module">
+  import { mountProfile, TEMPLATES, applyTemplate, DEFAULT_APPEARANCE, normalizeAppearance, currentTopic, ensureFonts, FONTS } from "./profile-kit.js";
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   const root = document.documentElement;
@@ -1095,141 +986,6 @@
     };
   })();
 
-  /* ---------- Card deck: one card per vibe, re-arranged every time it comes up ---------- */
-  const deck = (() => {
-    const el = $("#deck");
-    const photo = (id, w = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
-    const R = (a, b) => a + Math.random() * (b - a);
-    const pick = arr => arr[(Math.random() * arr.length) | 0];
-    const W = 'fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"';
-    const SVG = {
-      heart: `<svg viewBox="0 0 24 24"><path ${W} d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/></svg>`,
-      broken: `<svg viewBox="0 0 24 24"><path ${W} d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/><path d="M12 7l-1.6 3.4 2.6 2-2 3.2 1 2.4" fill="none" stroke="#000" stroke-width="1.5"/></svg>`,
-      sparkle: `<svg viewBox="0 0 24 24"><path ${W} d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/></svg>`,
-      skull: `<svg viewBox="0 0 24 24"><path ${W} d="M12 2.5c-4.7 0-8 3.2-8 7.6 0 2.6 1.2 4.4 3 5.4v3.2c0 .7.5 1.3 1.2 1.3h1.3v-2h1.2v2h2.6v-2h1.2v2h1.3c.7 0 1.2-.6 1.2-1.3v-3.2c1.8-1 3-2.8 3-5.4 0-4.4-3.3-7.6-8-7.6z"/><circle cx="9" cy="10.6" r="2"/><circle cx="15" cy="10.6" r="2"/><path d="M12 13.2l-1 2h2z"/></svg>`,
-      cross: `<svg viewBox="0 0 24 24"><path ${W} d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg>`,
-      bat: `<svg viewBox="0 0 24 24"><path ${W} d="M12 10.5c.6-1.2 1.4-1.6 1.4-1.6l.4 1.4c1.8-1.6 4.6-2.4 8.2-.8-1.6.8-2.6 2.4-2.6 4.2-1.8-.8-3.6 0-4.6 1.6-.8-.8-1.8-1-2.8-1s-2 .2-2.8 1c-1-1.6-2.8-2.4-4.6-1.6 0-1.8-1-3.4-2.6-4.2 3.6-1.6 6.4-.8 8.2.8l.4-1.4s.8.4 1.4 1.6z"/></svg>`,
-      moon: `<svg viewBox="0 0 24 24"><path ${W} d="M15 3a9 9 0 1 0 6 15 8 8 0 0 1-6-15z"/></svg>`,
-      butterfly: `<svg viewBox="0 0 24 24"><path ${W} d="M12 12C9 5 3 4 3 8s4 5 9 4zm0 0c3-7 9-8 9-4s-4 5-9 4zm0 0c-3 2-7 3-6 6s5 0 6-6zm0 0c3 2 7 3 6 6s-5 0-6-6z"/><path d="M12 7v11" stroke="#000" stroke-width="1.6"/></svg>`,
-      diamond: `<svg viewBox="0 0 24 24"><path ${W} d="M7 3h10l5 6-10 12L2 9z"/><path d="M2 9h20M7 3l5 18M17 3l-5 18M7 3l2.5 6M17 3l-2.5 6" fill="none" stroke="#000" stroke-width=".8"/></svg>`,
-      crown: `<svg viewBox="0 0 24 24"><path ${W} d="M3 17l1.4-10 4.6 4.4L12 4l3 7.4L19.6 7 21 17zM3 18.5h18V21H3z"/></svg>`,
-      flame: `<svg viewBox="0 0 24 21"><path ${W} d="M12 1c.8 3.8 5.6 5.6 5.6 11.4A5.6 5.6 0 0 1 12 18c-3.1 0-5.6-2.5-5.6-5.6 0-2.7 1.7-4.1 1.9-6.4 1.8 1 2.8 2.4 2.8 3.9 1-2 .9-4.9.9-8.9z"/></svg>`,
-      dollar: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" font-family="Arial, sans-serif">$</text></svg>`,
-      target: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="4" fill="#fff"/><circle cx="12" cy="12" r="1.6"/></svg>`,
-      bullet: `<svg viewBox="0 0 24 24"><path ${W} d="M9 22V10.5C9 6 10.5 3 12 2c1.5 1 3 4 3 8.5V22z"/><path d="M9 16h6" stroke="#000" stroke-width="1.2"/></svg>`,
-      pistol: `<svg viewBox="0 0 48 30"><path ${W} d="M3 5h40v8H25c0 4-2 6-5.5 6.5L18 27H9.5l3-14H3z"/><path d="M20 13c0 3 1.5 4.5 4.5 4.5" fill="none" stroke="#000" stroke-width="1.4"/><path d="M37 7.5h4" stroke="#000"/></svg>`,
-      crosshair: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg>`,
-      bolt: `<svg viewBox="0 0 24 24"><path ${W} d="M13.5 1.5L4 14h7l-1.5 8.5L20 9.5h-7z"/></svg>`,
-      smile: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="8.5" cy="10" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M7.5 14.2c2.4 2.8 6.6 2.8 9 0" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round"/></svg>`,
-      flower: `<svg viewBox="0 0 24 24"><g ${W}><circle cx="12" cy="6" r="4"/><circle cx="17.7" cy="10.2" r="4"/><circle cx="15.5" cy="17" r="4"/><circle cx="8.5" cy="17" r="4"/><circle cx="6.3" cy="10.2" r="4"/></g><circle cx="12" cy="12" r="2.6"/></svg>`,
-      cd: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="12" cy="12" r="4" fill="none" stroke="#000"/><circle cx="12" cy="12" r="1.6"/><path d="M5 9a8 8 0 0 1 4-4" fill="none" stroke="#999" stroke-width="1.4"/></svg>`,
-      cloud: `<svg viewBox="0 0 24 24"><path ${W} d="M7 19a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4-1.4A4.6 4.6 0 0 1 18 19z"/></svg>`,
-      bandaid: `<svg viewBox="0 0 24 24"><g transform="rotate(-35 12 12)"><rect x="2" y="8" width="20" height="8" rx="4" ${W}/><rect x="9" y="8" width="6" height="8" fill="#ddd" stroke="#000" stroke-width=".8"/></g></svg>`,
-      cig: `<svg viewBox="0 0 40 14"><rect x="1" y="4" width="30" height="6" rx="1" ${W}/><rect x="25" y="4" width="6" height="6" fill="#bbb" stroke="#000"/><path d="M33 6c2-2 4 0 6-2M33 9c2-2 4 0 6-2" stroke="#fff" fill="none"/></svg>`
-    };
-    const RATIO = { pistol: "48/30", cig: "40/14", flame: "24/21" };
-    const stk = (name, x, y, w, r) => `<div class="stk" style="left:${x}%;top:${y}%;width:${w}cqw;aspect-ratio:${RATIO[name] || "1"};transform:rotate(${r}deg)">${SVG[name]}</div>`;
-    const strip = (kind, top, rot) => {
-      const inner = kind === "barbed"
-        ? `<path d="M0 10 C15 2 30 18 45 10 S75 2 90 10 S112 18 120 10" stroke="#fff" stroke-width="2" fill="none"/>` + [22, 52, 82, 110].map(x => `<path d="M${x - 3} 5l6 10M${x + 3} 5l-6 10" stroke="#fff" stroke-width="1.6"/>`).join("")
-        : Array.from({ length: 9 }, (_, i) => `<rect x="${i * 13.5}" y="${i % 2 ? 6 : 3}" width="16" height="${i % 2 ? 8 : 14}" rx="${i % 2 ? 4 : 5}" fill="none" stroke="#fff" stroke-width="2.2"/>`).join("");
-      return `<svg class="strip" viewBox="0 0 120 20" preserveAspectRatio="none" style="top:${top}%;transform:rotate(${rot}deg)">${inner}</svg>`;
-    };
-    const hole = (x, y) => `<svg class="stk" viewBox="0 0 24 24" style="left:${x}%;top:${y}%;width:7cqw;filter:none"><path d="M12 12L3 4M12 12l9-6M12 12l7 9M12 12l-8 7M12 12V1M12 12l11 2" stroke="#fff" stroke-width=".6" opacity=".8"/><circle cx="12" cy="12" r="3.2" fill="#000" stroke="#fff" stroke-width=".8"/></svg>`;
-    const H = () => state.handle || "tuonome";
-    const AT = () => `@<span class="c-h">${H()}</span>`;
-
-    const VIBES = [
-      { name: "egirl", font: "400 9.5cqw 'Cherry Bomb One', cursive", photos: [20439042, 37364254, 17990049, 29810941], stickers: ["heart", "sparkle", "butterfly", "bandaid", "smile"], words: ["xoxo", "uwu", "<3"], pills: ["xoxo", "e-girl", "♡ solo per te"], extra: () => `<div class="checker" style="${Math.random() < .5 ? "top" : "bottom"}:0"></div>` },
-      { name: "emo", font: "400 9cqw 'Metal Mania', cursive", photos: [37364257, 33777230, 35855458, 37324670], stickers: ["broken", "skull", "sparkle", "bat"], words: ["rawr", "xD", "sad"], pills: ["rawr", "emo per sempre", "non sto bene"], extra: () => strip("barbed", R(28, 58), R(-9, 9)) },
-      { name: "rapper", font: "400 11cqw 'Anton', sans-serif", photos: [23314638, 27268762, 17413080, 31853515], stickers: ["diamond", "crown", "dollar", "flame"], words: ["$$$", "OG", "ICE"], pills: ["OG", "$$$", "ghiacciato"], extra: () => strip("chain", R(4, 14), R(-4, 4)) },
-      { name: "rap italiano", font: "400 11.5cqw 'Bebas Neue', sans-serif", photos: [17432931, 36781354, 15005781, 34462429, 34737256], stickers: ["crown", "flame", "diamond", "sparkle"], words: ["MILANO", "ROMA", "NAPOLI", "TORINO"], outline: true, pills: ["zona 7", "fuori dal blocco", "trap ita"] },
-      { name: "armi", font: "400 9cqw 'Black Ops One', cursive", photos: [33961226, 19893293], stickers: ["target", "bullet", "pistol", "crosshair"], words: ["LOCKED", "AIM", "CAL. 9"], pills: ["locked in", "mira giusta"], extra: () => hole(R(55, 80), R(10, 40)) + hole(R(20, 45), R(15, 45)) + stk("crosshair", R(40, 60), R(30, 50), 14, 0) },
-      { name: "drill", font: "400 11cqw 'Rubik Wet Paint', cursive", photos: [27437410, 27329848, 34462429], stickers: ["skull", "flame", "bolt"], words: ["DRILL", "808", "BLOCK"], pills: ["drill", "808"] },
-      { name: "goth", font: "400 11cqw 'UnifrakturMaguntia', serif", photos: [32488813, 30692341, 37034734], stickers: ["cross", "bat", "moon", "skull"], words: ["nox", "†", "luna"], pills: ["notturna", "solo di notte"], initial: true },
-      { name: "y2k", font: "400 8.5cqw 'Audiowide', sans-serif", photos: [28771653, 32077391, 29397033], stickers: ["sparkle", "butterfly", "cd", "smile", "flower"], words: ["Y2K", "2000", "online"], pills: ["y2k", "sempre online"], extra: () => `<div class="chrome"></div>` },
-      { name: "skater", font: "400 9.5cqw 'Permanent Marker', cursive", photos: [28847208, 36075825, 39405394], stickers: ["smile", "flame", "bolt", "sparkle"], words: ["SKATE", "BAIL", "KICKFLIP"], pills: ["skate o muori", "ancora una"], extra: () => `<div class="tape" style="left:${R(8, 70)}%;top:${R(2, 12)}%;transform:rotate(${R(-25, 25)}deg)"></div><div class="tape" style="left:${R(8, 70)}%;top:${R(70, 85)}%;transform:rotate(${R(-25, 25)}deg)"></div>` },
-      { name: "angel", font: "400 12cqw 'Pinyon Script', cursive", photos: [28540855, 31746347, 38705665], stickers: ["cloud", "heart", "sparkle"], words: ["angel", "♡", "cielo"], pills: ["angelcore", "luce"], light: true, halo: true },
-      { name: "hacker", terminal: true },
-      { name: "sigari", font: "italic 400 9cqw 'Bodoni Moda', serif", photos: [9694694, 38226823], stickers: ["cig", "sparkle"], words: ["fumo", "gin"], pills: ["dal 2026"], extra: () => `<div class="stamp" style="right:${R(6, 22)}%;top:${R(14, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>` }
-    ];
-
-    function render(v) {
-      if (v.terminal) {
-        return ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(12, 24)}%">&gt; whoami\n${AT()}\n&gt; vibe --random\n${pick(["egirl", "emo", "goth", "drill"])} ▮</div><div class="scan"></div><div class="vibe">vibe · hacker</div><div class="brand" style="top:auto;bottom:9%;font-family:'VT323',monospace;font-size:4.4cqw">sigari.bio</div>${stk("crosshair", R(66, 82), R(14, 34), 13, 0)}`];
-      }
-      const corner = pick(["bl", "tl", "br"]);
-      const at = { bl: "left:6%;bottom:9%", tl: "left:6%;top:15%;bottom:auto", br: "left:auto;right:6%;bottom:9%;text-align:right" }[corner];
-      const low = corner !== "tl";
-      const shade = v.light
-        ? `<div class="shade2" style="background:linear-gradient(${low ? 0 : 180}deg, rgba(255,255,255,.88), rgba(255,255,255,.25) 60%, rgba(255,255,255,.1))"></div>`
-        : `<div class="shade2" style="background:linear-gradient(${low ? 0 : 180}deg, rgba(0,0,0,.88), transparent 62%)"></div>`;
-      const word = pick(v.words);
-      const outlined = v.outline || Math.random() < .4;
-      const bigTxt = v.initial && Math.random() < .6 ? H()[0].toUpperCase() : word;
-      const big = `<div class="big" style="${low ? `top:${R(4, 16)}%` : `bottom:${R(6, 16)}%`};${Math.random() < .5 ? `left:${R(3, 20)}%` : `right:${R(3, 14)}%`};font:${v.font};font-size:${R(20, 30)}cqw;transform:rotate(${R(-9, 9)}deg);${outlined ? `color:transparent;-webkit-text-stroke:.35cqw ${v.light ? "#111" : "#fff"}` : ""};opacity:.88">${bigTxt}</div>`;
-      // keep stickers off the corner where the @ sits, so the name always reads
-      const clear = (x, y) => !(x > 60 && y < 16) && !(x < 26 && y < 16) && (corner === "bl" ? !(x < 52 && y > 56) : corner === "tl" ? !(x < 52 && y < 36) : !(x > 40 && y > 56));
-      const spot = () => { for (let k = 0; k < 8; k++) { const x = R(2, 84), y = R(2, 72); if (clear(x, y)) return [x, y]; } return [R(60, 84), R(4, 30)]; };
-      const stickers = Array.from({ length: Math.round(R(3, 5)) }, () => { const [x, y] = spot(); return stk(pick(v.stickers), x, y, R(10, 17), R(-28, 28)); }).join("");
-      const pill = `<div class="pill" style="${low ? `top:${R(40, 58)}%` : `top:${R(62, 76)}%`};${Math.random() < .5 ? `left:${R(5, 40)}%` : `right:${R(5, 30)}%`};transform:rotate(${R(-12, 12)}deg)">${pick(v.pills)}</div>`;
-      const halo = v.halo ? `<svg class="halo" viewBox="0 0 40 14" style="${corner === "br" ? "right:8%" : "left:8%"};${low ? "bottom:25%" : "top:7%"}"><ellipse cx="20" cy="7" rx="17" ry="4.5" fill="none" stroke="${v.light ? "#111" : "#fff"}" stroke-width="2.4"/></svg>` : "";
-      const brand = `<div class="brand" style="${low ? "" : "top:auto;bottom:9%"}">sigari<i>.bio</i></div>`;
-      return [v.light ? "light" : "", `<img class="ph" src="${photo(pick(v.photos))}" alt="" loading="lazy">${shade}${v.extra ? v.extra() : ""}${big}${stickers}${pill}${halo}<div class="who" style="${at};font:${v.font}">${AT()}</div>${brand}<div class="vibe">vibe · ${v.name}</div>`];
-    }
-
-    const N = 4;
-    const cards = Array.from({ length: N }, () => { const c = document.createElement("div"); el.prepend(c); return c; });
-    let next = 0;
-    const order = [];
-    function fill(card) {
-      const v = VIBES[next % VIBES.length];
-      const [cls, html] = render(v);
-      card.dataset.t = v.name; card.dataset.n = (next % VIBES.length) + 1;
-      card.className = "card " + cls;
-      card.innerHTML = html + '<div class="grainy"></div><div class="sheen"></div>';
-      card.querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove(), { once: true }));
-      next++;
-    }
-    function label(c) {
-      $("#deckN").textContent = String(c.dataset.n).padStart(2, "0");
-      $("#deckT").textContent = c.dataset.t;
-      $("#hudCard").textContent = c.dataset.t;
-    }
-    function place() {
-      order.forEach((c, i) => { c.classList.remove("p0", "p1", "p2", "p3", "out"); c.classList.add("p" + Math.min(i, 3)); });
-      label(order[0]);
-    }
-    cards.forEach(c => { fill(c); order.push(c); });
-    place();
-    let busy = false;
-    function shuffle() {
-      if (busy) return; busy = true;
-      const top = order.shift();
-      top.classList.remove("p0"); top.classList.add("out");
-      order.push(top);
-      order.slice(0, 3).forEach((c, i) => { c.classList.remove("p1", "p2", "p3"); c.classList.add("p" + i); });
-      label(order[0]);
-      setTimeout(() => { fill(top); place(); busy = false; }, 560);
-    }
-    let timer = 0, running = false, hover = false;
-    const loop = () => { if (!running) return; if (!hover) shuffle(); timer = setTimeout(loop, 2000); };
-    el.addEventListener("pointerenter", () => { hover = true; });
-    el.addEventListener("pointerleave", () => { hover = false; order[0].style.removeProperty("--ry"); order[0].style.removeProperty("--rx"); });
-    el.addEventListener("pointermove", e => {
-      if (!fine || reduce) return;
-      const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-      const c = order[0];
-      c.style.setProperty("--ry", (x - .5) * 22 + "deg"); c.style.setProperty("--rx", -(y - .5) * 16 + "deg"); c.style.setProperty("--sx", x * 100 + "%");
-    });
-    $("#deckNext").addEventListener("click", shuffle);
-    return {
-      start() { if (running || reduce) return; running = true; timer = setTimeout(loop, 2000); },
-      stop() { running = false; clearTimeout(timer); },
-      setHandle() { el.querySelectorAll(".c-h").forEach(s => s.textContent = H()); }
-    };
-  })();
-
   /* ---------- Handle ---------- */
   const sanitize = v => v.toLowerCase().replace(/^@+/, "").replace(/[^a-z0-9_]/g, "").slice(0, 20);
   function renderHandle() {
@@ -1247,7 +1003,15 @@
       el.querySelector("[data-rarity-name]").textContent = name;
       el.querySelectorAll(".pips i").forEach((p, i) => p.classList.toggle("on", i < n));
     });
-    deck.setHandle();
+    studio.setHandle();
+    $$("[data-guest]").forEach(a => {
+      const base = a.dataset.base || (a.dataset.base = a.getAttribute("href"));
+      const [path, hash] = base.split("#");
+      const q = new URLSearchParams();
+      if (HANDLE_RE.test(state.handle)) q.set("handle", state.handle);
+      if (a.dataset.tplId) q.set("template", "builtin:" + a.dataset.tplId);
+      a.href = path + (q.toString() ? "?" + q : "") + (hash ? "#" + hash : "");
+    });
     renderBoard();
     if (typeof renderLink === "function" && $("#ptLink").textContent) renderLink();
   }
@@ -1317,7 +1081,7 @@
 
   // Heavy hero rendering runs only while the hero is on screen and the tab is visible
   let heroVisible = true;
-  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); deck.start(); } else { fx.stop(); deck.stop(); } };
+  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); studio.start(); } else { fx.stop(); studio.stop(); } };
   new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; runHero(); }, { threshold: .02 }).observe($("#top"));
   document.addEventListener("visibilitychange", runHero);
 
@@ -1414,14 +1178,15 @@
   const io = new IntersectionObserver(entries => entries.forEach(en => {
     if (!en.isIntersecting) return;
     en.target.classList.add("in");
+    if (en.target.classList.contains("sh")) en.target.querySelectorAll(".h2, .no").forEach(decode);
     if (en.target.id === "board") { boardSeen = true; renderBoard(); }
     io.unobserve(en.target);
   }), { threshold: .15 });
   $$(".rv").forEach(el => io.observe(el));
 
-  /* ---------- Stats: odometer + interaction feed (example data) ---------- */
+  /* ---------- Stats: odometer + dot-matrix chart (example data) ---------- */
   const odoEl = $("#odo");
-  let views = 12480, odoLen = 0;
+  let odoLen = 0;
   function setOdo(n) {
     const s = n.toLocaleString("it-IT");
     if (s.length !== odoLen) {
@@ -1430,25 +1195,88 @@
     }
     [...s].forEach((c, i) => { const strip = odoEl.children[i].firstElementChild; if (strip) strip.style.transform = `translateY(-${+c}em)`; });
   }
-  setOdo(views);
-  const FEED = [["visita", "nuovo visitatore da tiktok"], ["clic", "Ultima uscita"], ["tap", "instagram"], ["play", "smoke signals"], ["like", "+1 alla tua pagina"], ["copia", "link copiato"], ["visita", "nuovo visitatore da discord"], ["invio", "mandato a un amico"], ["tap", "spotify"], ["clic", "Portfolio"]];
-  const feed = $("#feed");
-  let fi = 0, statsOn = false, statsTimer = 0;
-  function pushFeed() {
-    const [k, t] = FEED[fi++ % FEED.length];
-    const li = document.createElement("li");
-    li.innerHTML = `<em>${k}</em><span>${t}</span><small>adesso</small>`;
-    feed.prepend(li);
-    [...feed.children].forEach((el, i) => { if (i) el.querySelector("small").textContent = i * 3 + "s"; if (i > 5) el.remove(); });
-    if (k === "visita") { views += 1 + ((Math.random() * 3) | 0); setOdo(views); }
-  }
-  for (let i = 0; i < 5; i++) pushFeed();
-  const statsLoop = () => { if (!statsOn) return; pushFeed(); statsTimer = setTimeout(statsLoop, 1400 + Math.random() * 1600); };
-  new IntersectionObserver(([e]) => {
-    statsOn = e.isIntersecting && !reduce;
-    clearTimeout(statsTimer);
-    if (statsOn) statsTimer = setTimeout(statsLoop, 900);
-  }, { threshold: .2 }).observe($("#stats"));
+  const led = (() => {
+    const cv = $("#ledCv"), ctx = cv.getContext("2d"), tip = $("#ledTip");
+    const DAYS = 30, ROWS = 12;
+    const rng = s => () => (s = (s * 16807) % 2147483647) / 2147483647;
+    const make = (base, amp, s) => { const r = rng(s); return Array.from({ length: DAYS }, (_, i) => Math.round((base + amp * (.4 + .3 * Math.sin(i / 4.3) + .3 * r())) * (.75 + i / DAYS * .5))); };
+    const SETS = {
+      views: { data: make(260, 380, 7), label: "visite al profilo", delta: "+18%" },
+      clicks: { data: make(70, 150, 11), label: "clic sui link", delta: "+9%" },
+      plays: { data: make(30, 110, 23), label: "ascolti", delta: "+31%" }
+    };
+    let metric = "views", prog = 0, hover = -1, W = 0, H = 0, visible = false, blink = 0, live = 0, revealed = false;
+    const total = () => SETS[metric].data.reduce((s, v) => s + v, 0);
+    function size() {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+    function draw() {
+      if (!W) return;
+      ctx.clearRect(0, 0, W, H);
+      const data = SETS[metric].data, m = Math.max(...data);
+      const cw = W / DAYS, ch = H / ROWS, s = Math.max(2, Math.min(cw, ch) * .56);
+      const on = Math.floor(performance.now() / 500) % 2;
+      for (let x = 0; x < DAYS; x++) {
+        const lit = Math.max(1, Math.round(data[x] / m * ROWS * prog));
+        for (let y = 0; y < ROWS; y++) {
+          const isOn = y < lit && prog > 0;
+          let col = "#1a1a1a";
+          if (isOn) col = hover === -1 || hover === x ? "#ffffff" : "#4a4a4a";
+          if (isOn && x === DAYS - 1 && y === lit - 1 && on) col = "#6a6a6a";
+          ctx.fillStyle = col;
+          ctx.fillRect(x * cw + (cw - s) / 2, H - (y + 1) * ch + (ch - s) / 2, s, s);
+        }
+      }
+    }
+    function animateIn() {
+      prog = 0;
+      let step = 0;
+      const steps = reduce ? 1 : 10;
+      const t = setInterval(() => { step++; prog = step / steps; draw(); if (step >= steps) clearInterval(t); }, 55);
+    }
+    function setMetric(mtr) {
+      metric = mtr;
+      $$("[data-metric]").forEach(b => b.setAttribute("aria-pressed", b.dataset.metric === mtr));
+      $("#ledLbl").textContent = SETS[mtr].label;
+      $("#ledDelta").textContent = SETS[mtr].delta;
+      setOdo(total());
+      animateIn();
+    }
+    $$("[data-metric]").forEach(b => b.addEventListener("click", () => setMetric(b.dataset.metric)));
+    cv.addEventListener("pointermove", e => {
+      const r = cv.getBoundingClientRect();
+      const x = Math.min(DAYS - 1, Math.max(0, Math.floor((e.clientX - r.left) / r.width * DAYS)));
+      if (x === hover) return;
+      hover = x;
+      const d = new Date(); d.setDate(d.getDate() - (DAYS - 1 - x));
+      tip.hidden = false;
+      tip.style.left = ((x + .5) / DAYS * 100) + "%";
+      tip.textContent = `${d.toLocaleDateString("it-IT", { day: "numeric", month: "short" })} · ${SETS[metric].data[x].toLocaleString("it-IT")} ${SETS[metric].label.split(" ")[0]}`;
+      draw();
+    });
+    cv.addEventListener("pointerleave", () => { hover = -1; tip.hidden = true; draw(); });
+    addEventListener("resize", () => { clearTimeout(size._t); size._t = setTimeout(size, 120); });
+    setOdo(total());
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      clearInterval(blink); clearTimeout(live);
+      if (!visible) return;
+      if (!revealed) { revealed = true; size(); animateIn(); }
+      blink = setInterval(draw, 500);
+      const tickLive = () => {
+        if (!visible) return;
+        if (metric === "views" && !reduce) { const add = 1 + ((Math.random() * 3) | 0); SETS.views.data[DAYS - 1] += add; setOdo(total()); }
+        live = setTimeout(tickLive, 2500 + Math.random() * 2500);
+      };
+      live = setTimeout(tickLive, 2000);
+    }, { threshold: .2 }).observe($("#led"));
+    return { size };
+  })();
 
   /* ---------- Clans: tag slots (demo) + leaderboard (example data) ---------- */
   const TAKEN = ["SGR", "VOID", "GIN", "NYX", "ASH", "MONO", "HEX", "OG"];
@@ -1500,7 +1328,7 @@
   };
   function renderLB(kind) {
     $("#lb").innerHTML = LB[kind].map((r, i) => kind === "profiles"
-      ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span><span class="ctag tagc">${r[1]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`
+      ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span>${r[1] ? `<span class="ctag tagc">${r[1]}</span>` : "<span></span>"}<span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`
       : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]} <small style="color:#555">· ${r[3]} membri</small></span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`).join("");
   }
   $$("[data-lb]").forEach(b => b.addEventListener("click", () => {
@@ -1511,7 +1339,7 @@
 
   /* ---------- Partners: link presets + partner wall ---------- */
   const INVITE = "https://discord.gg/ECF4vzWKz";
-  const DOMAINS = [["sigari.bio", "predefinito"], ["sigari.gin", "partner"], ["sollary.gin", "partner"], ["sollary.gg", "partner"]];
+  const DOMAINS = [["sigari.bio", "predefinito"], ["sigari.gin", "partner"], ["tuoserver.gg", "il tuo server"]];
   const FORMATS = [["/@", "/@nome"], ["/", "/nome"], ["sub", "nome.dominio"]];
   const EMBEDS = ["classica", "banner", "mono"];
   const pt = { domain: 0, format: 0, embed: 0 };
@@ -1547,45 +1375,197 @@
   $$("#ptWall [data-at]").forEach(el => el.textContent = "@" + (state.handle || "tuonome"));
   renderLink();
 
-  /* ---------- Build showcase ---------- */
-  const phone = $("#phone"), steps = $$(".step");
-  function applyPreset(p) {
-    Object.entries(p).forEach(([k, v]) => { phone.dataset[k] = v; });
-    $$(".chips").forEach(c => c.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", phone.dataset[c.dataset.key] === ch.dataset.v)));
-    const btnName = ["pieno", "contorno", "vetro", "ombra"][+phone.dataset.btn];
-    const lay = { classic: "classico", banner: "banner", terminal: "terminale" }[phone.dataset.layout];
-    const bg = { lava: "fumo", dither: "dither", none: "niente" }[phone.dataset.bg];
-    $("#stageInfo").textContent = `${lay} · ${bg} · ${btnName}`;
-  }
-  $$(".chips").forEach(c => c.addEventListener("click", e => {
-    const ch = e.target.closest(".chip"); if (!ch) return;
-    applyPreset({ [c.dataset.key]: ch.dataset.v });
-  }));
-  applyPreset(JSON.parse(steps[0].dataset.preset));
-  const wide = matchMedia("(min-width: 901px)");
-  const stepIO = new IntersectionObserver(entries => entries.forEach(en => {
-    if (!en.isIntersecting || !wide.matches) return;
-    steps.forEach(s => s.classList.toggle("act", s === en.target));
-    applyPreset(JSON.parse(en.target.dataset.preset));
-  }), { rootMargin: "-45% 0px -45% 0px" });
-  steps.forEach(s => stepIO.observe(s));
-  if (fine && !reduce) {
-    const stage = $(".stage");
-    stage.addEventListener("pointermove", e => { const r = stage.getBoundingClientRect(); phone.style.setProperty("--ry", ((e.clientX - r.left) / r.width - .5) * 16 + "deg"); phone.style.setProperty("--rx", -((e.clientY - r.top) / r.height - .5) * 12 + "deg"); });
-    stage.addEventListener("pointerleave", () => { phone.style.setProperty("--ry", "0deg"); phone.style.setProperty("--rx", "0deg"); });
-  }
-
-  const LINES = ["discord.gg/ECF4vzWKz", "nero, bianco e senza filtri", "vota la mia pagina", "fumo & gin"];
-  if (!reduce) {
-    const el = $("#typed"); let li = 0, ci = LINES[0].length, deleting = true;
-    const loop = () => {
-      if (deleting) { el.textContent = LINES[li].slice(0, --ci); if (ci === 0) { deleting = false; li = (li + 1) % LINES.length; return setTimeout(loop, 350); } return setTimeout(loop, 35); }
-      el.textContent = LINES[li].slice(0, ++ci);
-      if (ci === LINES[li].length) { deleting = true; return setTimeout(loop, 2200); }
-      setTimeout(loop, 70);
+  /* ---------- Hero studio: a live profile visitors can restyle themselves ---------- */
+  const studio = (() => {
+    const rootEl = $("#studioRoot");
+    const PX = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=900`;
+    const PHOTOS = [17432931, 9694694, 34000505, 28540855, 37364254, 31746347].map(PX);
+    const GRADS = [["#ff6ad5", "#c774e8", "#8795e8", "#94d0ff"], ["#ff7e5f", "#feb47b", "#6a2c70"], ["#0f2027", "#203a43", "#2c5364"], ["#f5c542", "#2a1f06"], ["#00ff66", "#001a0a"], ["#ff5fc8", "#2a0420"]];
+    const SOLIDS = ["#0b0b0b", "#1a0414", "#07040c", "#03141c", "#1a150a", "#160606"];
+    const SWATCHES = ["#ffffff", "#ff5fc8", "#ff2a2a", "#f5c542", "#00ff66", "#7fe7ff", "#b48cff"];
+    const FONT_IDS = ["geist", "bebas", "unifraktur", "cherry", "vt323", "pinyon"];
+    const LIST = TEMPLATES;
+    let ti = 0, a = applyTemplate(DEFAULT_APPEARANCE, LIST[0].a, "all");
+    const k = { image: 0, gradient: 0, color: 0 };
+    let auto = !reduce, running = false, loopTimer = 0, resumeTimer = 0;
+    const data = () => {
+      const h = state.handle || "tuonome";
+      return { handle: h, displayName: h, bio: "nero, bianco e senza filtri", location: "Milano", views: 12480, badges: ["beta", "early"],
+        links: [{ title: "Ultima uscita", url: "https://sigari.bio" }, { title: "Portfolio", url: "https://sigari.bio" }],
+        socials: { instagram: "sigari", tiktok: "sigari", discord: "sigari", spotify: "sigari" }, appearance: a };
     };
-    setTimeout(loop, 2400);
+    ensureFonts(FONT_IDS);
+    $("#sdSw").innerHTML = SWATCHES.map(c => `<button type="button" data-c="${c}" style="background:${c}" aria-label="Colore ${c}"></button>`).join("");
+    $("#sdFont").innerHTML = FONT_IDS.map(f => `<button type="button" data-f="${f}" style="font-family:${FONTS.find(x => x[0] === f)[2]}" aria-label="Font ${FONTS.find(x => x[0] === f)[1]}">Aa</button>`).join("");
+    const ctl = mountProfile(rootEl, data(), { preview: true });
+    rootEl.querySelector(".pk-scroll").style.pointerEvents = "none";
+
+    function sync() {
+      $("#sdTpl").textContent = LIST[ti].name;
+      $("#hudCard").textContent = LIST[ti].name.toLowerCase();
+      $$("#sdBg button").forEach(b => b.setAttribute("aria-pressed", a.bg.type === b.dataset.bg));
+      $$("#sdSw button").forEach(b => b.setAttribute("aria-pressed", a.colors.accent === b.dataset.c));
+      $$("#sdFont button").forEach(b => b.setAttribute("aria-pressed", a.font.name === b.dataset.f));
+    }
+    function refresh(replay) { ctl.update(data()); if (replay) ctl.replay("pixel"); sync(); }
+    function setTpl(i) { ti = (i + LIST.length) % LIST.length; a = applyTemplate(DEFAULT_APPEARANCE, LIST[ti].a, "all"); refresh(true); }
+    function touched() {
+      auto = false;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { auto = !reduce; schedule(); }, 15000);
+    }
+    function schedule() {
+      clearTimeout(loopTimer);
+      if (!running || !auto) return;
+      loopTimer = setTimeout(() => { if (running && auto) setTpl(ti + 1); schedule(); }, 3600);
+    }
+
+    $$("[data-tpl]").forEach(b => b.addEventListener("click", () => { touched(); setTpl(ti + Number(b.dataset.tpl)); }));
+    $("#studioFrame").addEventListener("click", () => { touched(); setTpl(ti + 1); });
+    $("#sdBg").addEventListener("click", e => {
+      const b = e.target.closest("button[data-bg]");
+      if (!b) return;
+      touched();
+      const t = b.dataset.bg;
+      if (t === "image") a.bg = { ...a.bg, type: "image", image: PHOTOS[k.image++ % PHOTOS.length], dim: 40, blur: 0 };
+      if (t === "gradient") a.bg = { ...a.bg, type: "gradient", gradient: { kind: "linear", angle: 150, stops: GRADS[k.gradient++ % GRADS.length] } };
+      if (t === "color") a.bg = { ...a.bg, type: "color", color: SOLIDS[k.color++ % SOLIDS.length] };
+      a = normalizeAppearance(a);
+      refresh(true);
+    });
+    $("#sdFile").addEventListener("change", e => {
+      const f = e.target.files[0];
+      e.target.value = "";
+      if (!f || !/^image\//.test(f.type)) return;
+      touched();
+      // Shrunk into a data URL: it never leaves the visitor's browser
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, 1100 / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(img.src);
+        a.bg = { ...a.bg, type: "image", image: c.toDataURL("image/jpeg", .85), dim: 30, blur: 0 };
+        a = normalizeAppearance(a);
+        refresh(true);
+      };
+      img.src = URL.createObjectURL(f);
+    });
+    $("#sdSw").addEventListener("click", e => {
+      const b = e.target.closest("button[data-c]");
+      if (!b) return;
+      touched();
+      const c = b.dataset.c;
+      a.colors = { ...a.colors, accent: c, icon: c };
+      a.buttons = { ...a.buttons, palette: "accent" };
+      a.card = { ...a.card, border: "glow" };
+      refresh(false);
+    });
+    $("#sdFont").addEventListener("click", e => {
+      const b = e.target.closest("button[data-f]");
+      if (!b) return;
+      touched();
+      a.font = { ...a.font, name: b.dataset.f };
+      refresh(false);
+    });
+    sync();
+    return {
+      start() { if (running) return; running = true; schedule(); },
+      stop() { running = false; clearTimeout(loopTimer); },
+      setHandle() { ctl.update(data()); }
+    };
+  })();
+
+  /* ---------- Template gallery (built from the same renderer as the profile) ---------- */
+  const GALLERY = ["vapor", "egirl", "emo", "rap", "goth", "y2k", "terminale", "angel"].map(id => TEMPLATES.find(t => t.id === id)).filter(Boolean);
+  const CANVAS_FX = ["snow", "rain", "stars", "particles", "hearts", "matrix"];
+  function buildGallery() {
+    const grid = $("#tplGrid");
+    grid.innerHTML = GALLERY.map((t, i) => `<div class="tg-card rv" style="--d:${(i % 4) * .06}s"><div class="tg-pv"><div></div></div><div class="tg-body"><div><b>${t.name}</b><small>${t.tags.join(" · ")}</small></div><a class="btn" data-guest data-tpl-id="${t.id}" href="dashboard.html">Usa</a></div></div>`).join("");
+    $$(".tg-card", grid).forEach((card, i) => io.observe(card));
+    let mounted = false;
+    new IntersectionObserver(([e], obs) => {
+      if (!e.isIntersecting || mounted) return;
+      mounted = true; obs.disconnect();
+      $$(".tg-pv > div", grid).forEach((box, i) => {
+        const a = applyTemplate(DEFAULT_APPEARANCE, GALLERY[i].a, "all");
+        if (CANVAS_FX.includes(a.effect)) a.effect = "none";
+        const h = state.handle || "tuonome";
+        mountProfile(box, { handle: h, displayName: h, bio: "nero, bianco e senza filtri", views: 3200, badges: ["beta"], links: [{ title: "Ultima uscita", url: "https://sigari.bio" }, { title: "Portfolio", url: "https://sigari.bio" }], appearance: a }, { preview: true, entrance: false });
+      });
+    }, { rootMargin: "200px" }).observe(grid);
+  }
+  buildGallery();
+
+  /* ---------- Topic of the week ---------- */
+  const topic = currentTopic();
+  $("#tpWeek").textContent = `settimana ${topic.week} · fino a domenica`;
+  $("#tpTitle").textContent = topic.title;
+  $("#tpHint").textContent = topic.hint;
+  const cdCells = [["giorni", 2], ["ore", 2], ["minuti", 2], ["secondi", 2]].map(([l, n]) => {
+    const cell = document.createElement("div"); cell.className = "cell";
+    const dg = document.createElement("div"); dg.className = "digits";
+    dg.innerHTML = '<span class="dg">0</span>'.repeat(n);
+    const sm = document.createElement("small"); sm.textContent = l;
+    cell.append(dg, sm); $("#tpCd").appendChild(cell);
+    return [...dg.children];
+  });
+  function tickTopic() {
+    const ms = Math.max(0, topic.endsAt - Date.now());
+    const parts = [Math.floor(ms / 864e5), Math.floor(ms / 36e5) % 24, Math.floor(ms / 6e4) % 60, Math.floor(ms / 1e3) % 60].map(v => String(v).padStart(2, "0"));
+    parts.forEach((p, i) => cdCells[i].forEach((c, j) => { if (c.textContent !== p[j]) { c.textContent = p[j]; if (!reduce) { c.classList.remove("f"); void c.offsetWidth; c.classList.add("f"); } } }));
+  }
+  tickTopic(); setInterval(tickTopic, 1000);
+  function renderEntries(list) {
+    const box = $("#tpEntries");
+    $("#tpCount").textContent = list.length ? `${list.length}` : "";
+    if (!list.length) { box.innerHTML = '<div class="tp-empty">Ancora nessuna risposta questa settimana. La prima può essere la tua.</div>'; return; }
+    box.replaceChildren(...list.map(p => {
+      const a = document.createElement("a"); a.className = "tp-entry"; a.href = `/@${p.handle}`;
+      const av = document.createElement("span"); av.className = "av"; av.textContent = p.handle[0].toUpperCase();
+      const txt = document.createElement("div"); txt.style.minWidth = "0";
+      const b = document.createElement("b"); b.textContent = "@" + p.handle;
+      const s = document.createElement("span"); s.textContent = p.weekly.text || "ha partecipato";
+      txt.append(b, s); a.append(av, txt);
+      return a;
+    }));
+  }
+  renderEntries([]);
+
+  /* ---------- Live data when the database is reachable: leaderboard and topic entries ---------- */
+  (window.requestIdleCallback || (fn => setTimeout(fn, 1500)))(async () => {
+    try {
+      const { db, fs } = await firebase();
+      const pub = d => d && !d.private && !d.unlisted && d.handle;
+      const top = await fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.orderBy("views", "desc"), fs.limit(25)));
+      const rows = top.docs.map(d => d.data()).filter(pub).slice(0, 7).map(d => [d.handle, "", d.views || 0]);
+      if (rows.length >= 3) { LB.profiles = rows; renderLB("profiles"); $(".lb-foot span").textContent = "dal vivo"; }
+      const entries = await fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.where("weekly.week", "==", topic.id), fs.limit(24)));
+      renderEntries(entries.docs.map(d => d.data()).filter(d => pub(d) && d.weekly && d.weekly.show).slice(0, 12));
+    } catch (_) { /* rules not deployed yet: example data stays */ }
+  });
+
+  /* ---------- Headings decode like a terminal when they scroll in ---------- */
+  const GLYPHS = "#%&*+=$@01/<>";
+  function decode(el) {
+    if (reduce || el.dataset.dec) return;
+    el.dataset.dec = "1";
+    const nodes = [];
+    const walk = n => n.childNodes.forEach(c => c.nodeType === 3 ? (c.textContent.trim() && nodes.push(c)) : walk(c));
+    walk(el);
+    const orig = nodes.map(n => n.textContent);
+    const start = performance.now(), dur = 560;
+    (function tick(now) {
+      const p = Math.min(1, (now - start) / dur);
+      nodes.forEach((n, i) => {
+        const t = orig[i], k = Math.floor(t.length * p);
+        n.textContent = t.slice(0, k) + [...t.slice(k)].map(ch => ch === " " ? " " : GLYPHS[(Math.random() * GLYPHS.length) | 0]).join("");
+      });
+      if (p < 1) requestAnimationFrame(tick); else nodes.forEach((n, i) => { n.textContent = orig[i]; });
+    })(start);
   }
 </script>
+
 </body>
 </html>

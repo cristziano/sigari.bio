@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>sigari.bio</title>
+<meta name="description" content="Un profilo su sigari.bio">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:#000; color:#fff; font-family:"Geist",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  #root { position:fixed; inset:0; }
+  .msg[hidden] { display:none; }
+  .msg { position:fixed; inset:0; display:grid; place-items:center; text-align:center; padding:24px; }
+  .msg h1 { font-size:clamp(34px, 7vw, 64px); letter-spacing:-.05em; line-height:1; }
+  .msg p { margin-top:14px; color:#8f8f8f; font-size:15px; }
+  .msg a { display:inline-flex; align-items:center; height:44px; padding:0 18px; margin-top:22px; border-radius:10px; background:#fff; color:#000; font-weight:600; text-decoration:none; }
+  .brand { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:30; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.55); text-decoration:none; padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+  .brand:hover { color:#fff; }
+  .loading { color:#555; font:400 13px "Geist Mono",monospace; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="msg" id="msg"><span class="loading">caricamento…</span></div>
+<a class="brand" href="/" id="brand">sigari.bio</a>
+
+<script type="module">
+  import { mountProfile, normalizeProfile } from "./profile-kit.js";
+
+  const msg = document.getElementById("msg");
+  const show = (title, text, cta) => {
+    msg.innerHTML = "";
+    const box = document.createElement("div");
+    const h = document.createElement("h1"); h.textContent = title;
+    const p = document.createElement("p"); p.textContent = text;
+    box.append(h, p);
+    if (cta) { const a = document.createElement("a"); a.href = cta[1]; a.textContent = cta[0]; box.appendChild(a); }
+    msg.appendChild(box);
+    msg.hidden = false;
+  };
+
+  // /@nyx on Vercel, or profile.html?u=nyx anywhere else
+  const fromPath = decodeURIComponent(location.pathname).match(/\/@([a-z0-9_]{3,20})\/?$/i);
+  const handle = ((fromPath && fromPath[1]) || new URLSearchParams(location.search).get("u") || "").toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRVxG-AaLh7nCevtUxqmbkPVk3I4dWAMg",
+    authDomain: "sigari-bio-52324.firebaseapp.com",
+    projectId: "sigari-bio-52324",
+    storageBucket: "sigari-bio-52324.firebasestorage.app",
+    messagingSenderId: "265808515501",
+    appId: "1:265808515501:web:0395a4c9bc3522a1bd1124"
+  };
+
+  function animateTitle(text) {
+    const chars = [...text];
+    let i = 0, dir = 1;
+    setInterval(() => {
+      i += dir;
+      if (i >= chars.length) { dir = -1; i = chars.length; }
+      if (i <= 1) dir = 1;
+      document.title = chars.slice(0, Math.max(1, i)).join("") || text;
+    }, 260);
+  }
+
+  (async () => {
+    if (handle.length < 3) return show("Profilo non trovato", "Questo link non porta a nessun profilo.", ["Vai a sigari.bio", "/"]);
+    let lite;
+    try {
+      const base = "https://www.gstatic.com/firebasejs/10.12.5/";
+      const [{ initializeApp }, F] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-firestore-lite.js")]);
+      const db = F.getFirestore(initializeApp(firebaseConfig));
+      lite = { F, db };
+    } catch (_) {
+      return show("Non riesco a caricare", "Controlla la connessione e ricarica la pagina.");
+    }
+    const { F, db } = lite;
+    const ref = F.doc(db, "profiles", handle);
+    let snap;
+    try { snap = await F.getDoc(ref); }
+    catch (_) { return show("Non riesco a caricare", "Il profilo non è raggiungibile adesso. Riprova tra poco."); }
+
+    if (!snap.exists()) {
+      // Not published yet: tell people whether the name is still free
+      let taken = false;
+      try { taken = (await F.getDoc(F.doc(db, "usernames", handle))).exists(); } catch (_) { /* unknown */ }
+      return taken
+        ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a sigari.bio", "/"])
+        : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
+    }
+    const data = snap.data();
+    if (data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a sigari.bio", "/"]);
+
+    msg.hidden = true;
+    const p = normalizeProfile({ ...data, handle });
+    const a = p.appearance;
+    const title = a.title.text || `${p.displayName} · sigari.bio`;
+    document.title = title;
+    if (a.title.animated && !matchMedia("(prefers-reduced-motion: reduce)").matches) animateTitle(title);
+    const desc = a.seo.description || p.bio;
+    if (desc) document.querySelector('meta[name="description"]').content = desc;
+    document.querySelector('meta[name="theme-color"]').content = a.bg.color;
+    if (p.avatarUrl && !p.avatarUrl.startsWith("data:")) {
+      const icon = document.createElement("link"); icon.rel = "icon"; icon.href = p.avatarUrl; document.head.appendChild(icon);
+    }
+    mountProfile(document.getElementById("root"), p, { preview: false });
+
+    // One view per browser session; the rules only allow +1 on this field
+    const key = "sigari-view-" + handle;
+    let counted = false;
+    try { counted = sessionStorage.getItem(key) === "1"; } catch (_) { /* storage blocked */ }
+    if (!counted) {
+      try {
+        await F.updateDoc(ref, { views: F.increment(1) });
+        try { sessionStorage.setItem(key, "1"); } catch (_) { /* storage blocked */ }
+      } catch (_) { /* rules not deployed yet */ }
+    }
+  })();
+</script>
+</body>
+</html>
