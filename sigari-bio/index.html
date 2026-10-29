@@ -433,8 +433,14 @@
   /* Reveal */
   .rv { opacity:0; transform:translateY(22px); transition:opacity .9s var(--ease), transform .9s var(--ease); transition-delay:var(--d, 0s); }
   .rv.in { opacity:1; transform:none; }
-  .intro { opacity:0; transform:translateY(18px); animation:intro 1s var(--ease) forwards; animation-delay:var(--d, 0s); }
-  @keyframes intro { to { opacity:1; transform:none; } }
+  .intro { opacity:0; animation:intro .32s steps(4, end) forwards; animation-delay:var(--d, 0s); }
+  @keyframes intro { to { opacity:1; } }
+  /* Typewriter headline: chars decode through pixel glyphs, layout is reserved up front */
+  .h1 .ch { visibility:hidden; }
+  .h1 .ch.on { visibility:visible; }
+  .h1 .ch.g { font-family:var(--pixel); font-weight:400; color:#bdbdbd; }
+  .cur { display:inline-block; width:.36em; height:.72em; margin-left:.06em; margin-right:-.42em; background:#fff; vertical-align:-.02em; animation:tick 1.05s steps(1) infinite; }
+  .typing .cur { animation:none; }
 
   @media (max-width:520px){
     body { font-size:14.5px; }
@@ -497,9 +503,9 @@
     <div class="hero-c">
       <div>
         <div class="eyebrow-row intro" style="--d:.2s"><span class="live"><i></i>beta</span><span>first come, first served</span></div>
-        <h1 class="h1 intro" style="--d:.3s">Own your <span class="at">@</span>.</h1>
-        <p class="lede intro" style="--d:.42s">One handle, one page, everything you do. Links, socials, glow and effects, in <b>black and white</b> and three moods. Type a name and watch it take shape.</p>
-        <form class="claim intro" style="--d:.52s" data-claim novalidate>
+        <h1 class="h1" id="h1t" aria-label="Own your @.">Own your <span class="at">@</span>.</h1>
+        <p class="lede intro" style="--d:1.15s">One handle, one page, everything you do. Links, socials, glow and effects, in <b>black and white</b> and three moods. Type a name and watch it take shape.</p>
+        <form class="claim intro" style="--d:1.3s" data-claim novalidate>
           <label class="sr-only" for="h1in">Choose your handle</label>
           <div class="bar">
             <span class="pre">sigari.bio/<b>@</b></span>
@@ -512,7 +518,7 @@
           </div>
         </form>
       </div>
-      <div class="moods intro" style="--d:.6s">
+      <div class="moods intro" style="--d:1.45s">
         <span class="moods-l">mood / same black and white, three textures</span>
         <div class="seg" role="group" aria-label="Mood">
           <button type="button" data-mood="smoke" aria-pressed="true">smoke</button>
@@ -1197,6 +1203,44 @@
   const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); dots.start(); } else { fx.stop(); dots.stop(); } };
   new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; runHero(); }, { threshold: .02 }).observe($("#top"));
   document.addEventListener("visibilitychange", runHero);
+
+  /* ---------- Typewriter headline ---------- */
+  (() => {
+    const h = $("#h1t");
+    const at = h.querySelector(".at");
+    // Split into char spans (keeping the @ span so the ascii mood can restyle it), then reveal one by one
+    const chars = [];
+    const wrap = (node, into) => [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) [...n.textContent].forEach(c => { const sp = document.createElement("span"); sp.className = "ch"; sp.textContent = c; sp.dataset.c = c; into.appendChild(sp); chars.push(sp); });
+      else { const clone = n.cloneNode(false); into.appendChild(clone); wrap(n, clone); }
+    });
+    const frag = document.createDocumentFragment(); wrap(h, frag);
+    h.textContent = ""; h.appendChild(frag);
+    h.querySelectorAll("*").forEach(el => el.setAttribute("aria-hidden", "true"));
+    const cur = document.createElement("span"); cur.className = "cur"; cur.setAttribute("aria-hidden", "true");
+    if (reduce) { chars.forEach(c => c.classList.add("on")); h.appendChild(cur); return; }
+    const GLYPHS = "#%&*+=$@01/<>";
+    h.classList.add("typing");
+    chars[0].before(cur);
+    let i = 0;
+    const next = () => {
+      if (i >= chars.length) { h.classList.remove("typing"); return; }
+      const c = chars[i++];
+      c.classList.add("on");
+      c.after(cur);
+      if (c.dataset.c.trim()) {
+        c.classList.add("g");
+        let k = 0;
+        const flick = () => {
+          if (k++ < 2) { c.textContent = GLYPHS[(Math.random() * GLYPHS.length) | 0]; setTimeout(flick, 38); }
+          else { c.textContent = c.dataset.c; c.classList.remove("g"); }
+        };
+        flick();
+      }
+      setTimeout(next, c.dataset.c === " " ? 40 : 62 + Math.random() * 40);
+    };
+    setTimeout(next, 380);
+  })();
 
   /* ---------- HUD, ticker, cursor, magnetic, progress, dock ---------- */
   const clock = () => { $("#hudClock").textContent = new Date().toLocaleTimeString("en-GB"); };
