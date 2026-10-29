@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>sigari.bio · Own your @</title>
-<meta name="description" content="One handle, one page, everything you do. A black and white link-in-bio with smoke, dither and ASCII moods, glow, music and custom cursors.">
+<title>sigari.bio · Prendi la tua @</title>
+<meta name="description" content="Un nome, una pagina, tutto quello che fai. Il link in bio in bianco e nero con mood fumo, dither e ASCII, glow, musica e cursori personalizzati.">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
+<meta property="og:locale" content="it_IT">
 <meta property="og:type" content="website">
-<meta property="og:title" content="sigari.bio · Own your @">
-<meta property="og:description" content="One handle, one page, everything you do. Claim yours before someone else does.">
+<meta property="og:title" content="sigari.bio · Prendi la tua @">
+<meta property="og:description" content="Un nome, una pagina, tutto quello che fai. Prendila prima che lo faccia qualcun altro.">
 <meta property="og:site_name" content="sigari.bio">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Pirata+One&family=Permanent+Marker&family=VT323&family=Rubik+Mono+One&family=Space+Mono&family=Bodoni+Moda:ital,wght@1,400;1,700&family=Rubik+Glitch&family=Major+Mono+Display&family=Monoton&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Metal+Mania&family=Anton&family=Bebas+Neue&family=Black+Ops+One&family=Rubik+Wet+Paint&family=UnifrakturMaguntia&family=Audiowide&family=Permanent+Marker&family=Pinyon+Script&family=VT323&family=Bodoni+Moda:ital,wght@1,400;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root {
     --bg:#000; --fg:#f4f4f4; --m:#8f8f8f; --d:#555; --s1:#090909; --s2:#101010;
@@ -93,28 +94,24 @@
   .card .el { position:absolute; transition:transform .6s var(--ease), left .6s var(--ease), top .6s var(--ease); }
   .card .brand { position:absolute; left:6%; top:8%; font:600 3.4cqw var(--sans); letter-spacing:-.02em; z-index:6; }
   .card .brand i { font-style:normal; opacity:.55; }
-  .card .chip { position:absolute; left:6%; top:34%; width:13%; aspect-ratio:1.3; border-radius:14%; z-index:6;
-    background:linear-gradient(135deg, #e9e9e9, #8d8d8d 45%, #d8d8d8 60%, #7a7a7a); box-shadow:inset 0 0 0 1px rgba(0,0,0,.35); }
-  .card .chip::after { content:""; position:absolute; inset:22% 18%; border:1px solid rgba(0,0,0,.35); border-radius:3px; border-left:0; border-right:0; }
-  .card .nfc { position:absolute; left:22%; top:36%; width:6%; z-index:6; opacity:.8; }
-  .card .num { position:absolute; left:6%; bottom:24%; font:500 4.3cqw var(--mono); letter-spacing:.12em; z-index:6; white-space:nowrap; }
-  .card .who { position:absolute; left:6%; bottom:8%; z-index:6; line-height:1; max-width:70%; overflow-wrap:anywhere; }
-  .card .meta2 { position:absolute; right:6%; bottom:8%; z-index:6; font:500 2.4cqw var(--mono); text-align:right; opacity:.75; line-height:1.4; }
+  .card .who { position:absolute; left:6%; bottom:8%; z-index:8; text-shadow:0 2px 14px rgba(0,0,0,.55); line-height:1; max-width:70%; overflow-wrap:anywhere; }
   .card .stk { position:absolute; z-index:7; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
   .card .stk svg { display:block; width:100%; height:100%; }
   .card .pill { position:absolute; z-index:7; padding:.5cqw 1.6cqw; border-radius:99px; background:#fff; color:#000; font:700 2.6cqw var(--mono); letter-spacing:.06em; box-shadow:0 0 0 .5cqw #000, 0 3px 6px rgba(0,0,0,.4); }
   .card .stamp { position:absolute; z-index:7; width:17cqw; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; border:.5cqw solid #fff; font:700 2.5cqw var(--mono); letter-spacing:.1em; text-align:center; line-height:1.15; color:#fff; }
-  .card .pol { position:absolute; z-index:6; width:34cqw; padding:1.6cqw 1.6cqw 6cqw; background:#f2f2f2; box-shadow:0 6px 16px rgba(0,0,0,.5); }
-  .card .pol img { display:block; width:100%; aspect-ratio:1; object-fit:cover; filter:grayscale(1) contrast(1.1); background:#222; }
-  .card .tape { position:absolute; z-index:8; width:14cqw; height:4cqw; background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .card .tape { position:absolute; z-index:6; width:14cqw; height:4cqw; background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.2); }
   .card .big { position:absolute; z-index:5; line-height:.8; pointer-events:none; }
-  .card .bar { position:absolute; z-index:6; height:9cqw; width:34cqw; background:repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 3px, currentColor 3px 5px, transparent 5px 6px, currentColor 6px 7px, transparent 7px 10px); }
   .card .lines { position:absolute; z-index:6; font:400 4.4cqw/1.15 'VT323', var(--mono); white-space:pre; }
+  .card .vibe { position:absolute; right:6%; top:8%; z-index:8; font:500 2.5cqw var(--mono); letter-spacing:.04em; padding:.6cqw 1.4cqw; border-radius:99px; background:rgba(0,0,0,.55); color:#fff; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  .card.light .vibe { background:rgba(255,255,255,.7); color:#000; }
+  .card.light .who { text-shadow:0 2px 14px rgba(255,255,255,.7); }
+  .card .checker { position:absolute; left:0; right:0; height:6cqw; z-index:4; background:repeating-conic-gradient(#fff 0 25%, #000 0 50%) 0 0/3cqw 3cqw; opacity:.85; }
+  .card .strip { position:absolute; left:-4%; width:108%; height:7cqw; z-index:6; filter:drop-shadow(0 2px 2px rgba(0,0,0,.6)); }
+  .card .chrome { position:absolute; inset:0; z-index:3; mix-blend-mode:screen; background:linear-gradient(135deg, rgba(255,255,255,.4), transparent 38%, rgba(255,255,255,.28) 58%, transparent 75%); }
+  .card .halo { position:absolute; z-index:8; width:15cqw; filter:drop-shadow(0 0 6px rgba(255,255,255,.9)); }
   .card .scan { position:absolute; inset:0; z-index:7; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
-  .card .dith { position:absolute; inset:0; z-index:2; background:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/3px 3px; opacity:.55; }
   .card .shade2 { position:absolute; inset:0; z-index:3; background:linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
   .card.light { color:#0b0b0b; }
-  .card.light .chip { box-shadow:inset 0 0 0 1px rgba(0,0,0,.45); }
   .deck-ui { position:absolute; left:0; right:0; bottom:-44px; display:flex; justify-content:space-between; align-items:center; font:400 11px var(--mono); color:#777; }
   .deck-ui b { color:#ddd; font-weight:500; }
   .deck-ui button { border:1px solid var(--line2); background:rgba(0,0,0,.4); color:#ccc; border-radius:7px; padding:5px 9px; font:500 11px var(--mono); cursor:pointer; }
@@ -145,11 +142,11 @@
   .hero-c > div { min-width:0; }
   .hero-c { pointer-events:none; }
   .hero-c > * { pointer-events:auto; }
-  .hero-c { position:absolute; left:var(--gut); right:var(--gut); bottom:84px; display:grid; grid-template-columns:minmax(0, 620px) 1fr; gap:24px; align-items:end; }
+  .hero-c { position:absolute; left:var(--gut); right:var(--gut); bottom:84px; display:grid; grid-template-columns:minmax(0, 720px) 1fr; gap:24px; align-items:end; }
   .eyebrow-row { display:flex; gap:10px; align-items:center; font:500 11.5px var(--mono); color:#bdbdbd; }
   .live { display:inline-flex; align-items:center; gap:7px; height:24px; padding:0 9px; border:1px solid var(--line2); border-radius:6px; background:rgba(0,0,0,.4); }
   .live i { width:6px; height:6px; border-radius:50%; background:#fff; box-shadow:0 0 10px #fff; animation:tick 1.6s steps(1) infinite; }
-  .h1 { margin-top:18px; font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(46px, 7.2vw, 116px); line-height:.9; }
+  .h1 { margin-top:18px; font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(44px, 6vw, 100px); line-height:.9; }
   html[data-mood="ascii"] .h1 .at { font-family:var(--mono); font-weight:600; }
   html[data-mood="ascii"] .h1 { font-size:clamp(36px, 5.6vw, 92px); line-height:1; }
   .lede { margin-top:18px; max-width:440px; color:#a5a5a5; font-size:15.5px; line-height:1.55; }
@@ -522,71 +519,71 @@
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">Vai al contenuto</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="haze" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="ring" id="ring" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
-  <a class="logo" href="#top" aria-label="sigari.bio home"><i></i>sigari<span>.bio</span></a>
-  <nav class="links" aria-label="Sections">
-    <a href="#index">features</a>
-    <a href="#stats">stats</a>
-    <a href="#clans">clans</a>
-    <a href="#partners">partners</a>
-    <a href="#plans">plans</a>
+  <a class="logo" href="#top" aria-label="sigari.bio, home"><i></i>sigari<span>.bio</span></a>
+  <nav class="links" aria-label="Sezioni">
+    <a href="#index">funzioni</a>
+    <a href="#stats">statistiche</a>
+    <a href="#clans">clan</a>
+    <a href="#partners">partner</a>
+    <a href="#plans">piani</a>
   </nav>
   <div class="nav-r">
-    <a class="ghost" href="login.html?mode=login" id="navLogin">log in</a>
-    <a class="btn" href="#top" id="navClaim" data-mag data-focus-claim>Claim your @</a>
+    <a class="ghost" href="login.html?mode=login" id="navLogin">accedi</a>
+    <a class="btn" href="#top" id="navClaim" data-mag data-focus-claim>Prendi la tua @</a>
   </div>
 </header>
 
 <main id="main">
   <!-- HERO -->
-  <section class="hero" id="top" aria-label="Claim your handle">
+  <section class="hero" id="top" aria-label="Prendi la tua @">
     <div class="fx-fallback" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
     <div class="shade" aria-hidden="true"></div>
-    <div class="deck intro" id="deck" style="--d:.5s" aria-label="Example profile cards, one every two seconds">
-      <div class="deck-ui"><span>card <b id="deckN">01</b> / 12 · <b id="deckT"></b></span><button id="deckNext" type="button">shuffle</button></div>
+    <div class="deck intro" id="deck" style="--d:.5s" aria-label="Carte profilo di esempio, una nuova ogni due secondi">
+      <div class="deck-ui"><span>vibe <b id="deckN">01</b> / 12 · <b id="deckT"></b></span><button id="deckNext" type="button">mischia</button></div>
     </div>
 
     <div class="hud intro" style="--d:.1s" aria-hidden="true">
-      <span><b>sigari.bio</b> / public beta</span>
-      <span>mood: <b id="hudMood">smoke</b></span>
-      <span class="opt">target: <b id="hudTarget">@</b></span>
-      <span class="opt">pointer: <b id="hudXY">0000 · 0000</b></span>
+      <span><b>sigari.bio</b> / beta pubblica</span>
+      <span>mood: <b id="hudMood">fumo</b></span>
+      <span class="opt">nome: <b id="hudTarget">@</b></span>
+      <span class="opt">puntatore: <b id="hudXY">0000 · 0000</b></span>
     </div>
     <div class="hud-r intro" style="--d:.15s" aria-hidden="true">
-      <span>local <b id="hudClock">--:--:--</b></span>
-      <span>card <b id="hudCard">–</b></span>
+      <span>ora <b id="hudClock">--:--:--</b></span>
+      <span>vibe <b id="hudCard">–</b></span>
       <span>render <b id="hudR">webgl</b></span>
     </div>
 
     <div class="hero-c">
       <div>
-        <div class="eyebrow-row intro" style="--d:.2s"><span class="live"><i></i>beta</span><span>first come, first served</span></div>
-        <h1 class="h1" id="h1t" aria-label="Own your @.">Own your <span class="at">@</span>.</h1>
-        <p class="lede intro" style="--d:1.15s">One handle, one page, everything you do. Links, socials, glow and effects, in <b>black and white</b> and three moods. Type a name and watch it take shape.</p>
+        <div class="eyebrow-row intro" style="--d:.2s"><span class="live"><i></i>beta</span><span>chi prima arriva, meglio alloggia</span></div>
+        <h1 class="h1" id="h1t" aria-label="Prendi la tua @.">Prendi la tua <span class="at">@</span>.</h1>
+        <p class="lede intro" style="--d:1.15s">Un nome, una pagina, tutto quello che fai. Link, social, glow ed effetti, in <b>bianco e nero</b> e con tre mood. Scrivi un nome e guardalo prendere forma.</p>
         <form class="claim intro" style="--d:1.3s" data-claim novalidate>
-          <label class="sr-only" for="h1in">Choose your handle</label>
+          <label class="sr-only" for="h1in">Scegli la tua @</label>
           <div class="bar">
             <span class="pre">sigari.bio/<b>@</b></span>
-            <input id="h1in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="yourname" data-handle>
-            <button class="btn" type="submit" data-mag>Claim</button>
+            <input id="h1in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="iltuonome" data-handle>
+            <button class="btn" type="submit" data-mag>Prendila</button>
           </div>
           <div class="meta">
-            <span class="st" data-status aria-live="polite">3 to 20 letters, numbers or _</span>
+            <span class="st" data-status aria-live="polite">da 3 a 20 tra lettere, numeri o _</span>
             <span class="rar" data-rarity hidden><span class="lbl" data-rarity-name></span><span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
           </div>
         </form>
       </div>
       <div class="moods intro" style="--d:1.45s">
-        <span class="moods-l">mood / same black and white, three textures</span>
-        <div class="seg" role="group" aria-label="Mood">
-          <button type="button" data-mood="smoke" aria-pressed="true">smoke</button>
+        <span class="moods-l">mood / stesso bianco e nero, tre texture</span>
+        <div class="seg" role="group" aria-label="Mood della pagina">
+          <button type="button" data-mood="smoke" aria-pressed="true">fumo</button>
           <button type="button" data-mood="dither" aria-pressed="false">dither</button>
           <button type="button" data-mood="ascii" aria-pressed="false">ascii</button>
         </div>
@@ -599,17 +596,17 @@
   <!-- INDEX -->
   <section class="s" id="index">
     <div class="wrap">
-      <div class="sh rv"><span class="no">01 / features</span><div>
-        <h2 class="h2">The good stuff. <span class="g">Live today.</span></h2>
-        <p class="sub">What you get the moment you claim your @. More lands every week.</p>
+      <div class="sh rv"><span class="no">01 / funzioni</span><div>
+        <h2 class="h2">Il meglio. <span class="g">Già attivo.</span></h2>
+        <p class="sub">Quello che hai appena prendi la tua @. Ogni settimana arriva qualcosa di nuovo.</p>
       </div></div>
       <div class="hl">
-        <div class="hl-c big rv"><span class="k">01</span><h3>Your @, locked</h3><p>Claim it, check it live, see how rare it is. One @ per account, nobody can take it after.</p><div class="hl-at" aria-hidden="true" data-at>@you</div></div>
-        <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Glow</h3><p>Light up your name, socials and badges.</p></div>
-        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Smoke background</h3><p>Drifting smoke behind your page, as strong as you want.</p></div>
-        <div class="hl-c rv"><span class="k">04</span><h3>Button styles</h3><p>Solid, outline, glass or hard shadow.</p></div>
-        <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>25 socials</h3><p>Discord, Instagram, TikTok, Spotify, X and more, as clean icons.</p></div>
-        <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Live preview</h3><p>See every change on your page while you edit.</p></div>
+        <div class="hl-c big rv"><span class="k">01</span><h3>La tua @, bloccata</h3><p>Prendila, controlla dal vivo se è libera e quanto è rara. Una @ per account: dopo, nessuno può prendertela.</p><div class="hl-at" aria-hidden="true" data-at>@tuonome</div></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Glow</h3><p>Fai brillare nome, social e badge.</p></div>
+        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Sfondo di fumo</h3><p>Fumo che si muove dietro la tua pagina, forte quanto vuoi.</p></div>
+        <div class="hl-c rv"><span class="k">04</span><h3>Stili dei bottoni</h3><p>Pieni, solo contorno, vetro o con ombra netta.</p></div>
+        <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>25 social</h3><p>Discord, Instagram, TikTok, Spotify, X e altri, con icone pulite.</p></div>
+        <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Anteprima dal vivo</h3><p>Vedi ogni modifica sulla tua pagina mentre la fai.</p></div>
       </div>
     </div>
   </section>
@@ -617,47 +614,47 @@
   <!-- STATS -->
   <section class="s" id="stats">
     <div class="wrap">
-      <div class="sh rv"><span class="no">02 / stats</span><div>
-        <h2 class="h2">Every view counts. <span class="g">Literally.</span></h2>
-        <p class="sub">A public view counter on your page, and behind it every interaction: who opened it, what they clicked, what they played, where they came from.</p>
+      <div class="sh rv"><span class="no">02 / statistiche</span><div>
+        <h2 class="h2">Ogni visita conta. <span class="g">Davvero.</span></h2>
+        <p class="sub">Un contatore pubblico delle visite sulla tua pagina, e dietro ogni interazione: chi l'ha aperta, cosa ha cliccato, cosa ha ascoltato, da dove arriva.</p>
       </div></div>
       <div class="stx">
         <div class="stx-main rv">
-          <div class="stx-h"><span><i class="pulse"></i>live · <b data-at>@you</b></span><span>example data</span></div>
+          <div class="stx-h"><span><i class="pulse"></i>live · <b data-at>@tuonome</b></span><span>dati di esempio</span></div>
           <div class="odo" id="odo" aria-live="off"></div>
-          <div class="stx-l">profile views</div>
+          <div class="stx-l">visite al profilo</div>
           <svg class="stx-spark" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
             <defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
             <path d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8 L600,120 L0,120 Z" fill="url(#sg)"/>
             <path class="ln" d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8"/>
           </svg>
-          <div class="stx-chips"><span>today <b>+214</b></span><span>this week <b>+1,902</b></span><span>unique <b>8,311</b></span></div>
+          <div class="stx-chips"><span>oggi <b>+214</b></span><span>questa settimana <b>+1.902</b></span><span>unici <b>8.311</b></span></div>
         </div>
         <div class="stx-side">
           <div class="stx-card rv" style="--d:.06s">
-            <div class="stx-h"><span>interactions</span><span>7 days</span></div>
+            <div class="stx-h"><span>interazioni</span><span>7 giorni</span></div>
             <ul class="ix">
-              <li><span>link clicks</span><i style="--w:92%"></i><b>3,204</b></li>
-              <li><span>social taps</span><i style="--w:60%"></i><b>1,877</b></li>
-              <li><span>music plays</span><i style="--w:38%"></i><b>1,120</b></li>
-              <li><span>likes</span><i style="--w:31%"></i><b>932</b></li>
-              <li><span>link copies</span><i style="--w:22%"></i><b>642</b></li>
-              <li><span>shares</span><i style="--w:9%"></i><b>211</b></li>
-              <li><span>comments</span><i style="--w:4%"></i><b>87</b></li>
-              <li><span>avg. time on page</span><i style="--w:48%"></i><b>0:41</b></li>
+              <li><span>clic sui link</span><i style="--w:92%"></i><b>3.204</b></li>
+              <li><span>tap sui social</span><i style="--w:60%"></i><b>1.877</b></li>
+              <li><span>ascolti</span><i style="--w:38%"></i><b>1.120</b></li>
+              <li><span>mi piace</span><i style="--w:31%"></i><b>932</b></li>
+              <li><span>link copiati</span><i style="--w:22%"></i><b>642</b></li>
+              <li><span>condivisioni</span><i style="--w:9%"></i><b>211</b></li>
+              <li><span>commenti</span><i style="--w:4%"></i><b>87</b></li>
+              <li><span>tempo medio</span><i style="--w:48%"></i><b>0:41</b></li>
             </ul>
           </div>
           <div class="stx-card rv" style="--d:.12s">
-            <div class="stx-h"><span>feed</span><span>right now</span></div>
+            <div class="stx-h"><span>feed</span><span>adesso</span></div>
             <ol class="feed" id="feed" aria-hidden="true"></ol>
           </div>
         </div>
         <div class="stx-card stx-src rv">
-          <div class="stx-h"><span>where they come from</span><span>7 days</span></div>
+          <div class="stx-h"><span>da dove arrivano</span><span>7 giorni</span></div>
           <div class="src-row"><span>discord</span><i style="--w:46%"></i><b>46%</b></div>
           <div class="src-row"><span>tiktok</span><i style="--w:28%"></i><b>28%</b></div>
           <div class="src-row"><span>instagram</span><i style="--w:17%"></i><b>17%</b></div>
-          <div class="src-row"><span>direct</span><i style="--w:9%"></i><b>9%</b></div>
+          <div class="src-row"><span>diretto</span><i style="--w:9%"></i><b>9%</b></div>
         </div>
       </div>
     </div>
@@ -666,40 +663,40 @@
   <!-- CLANS + LEADERBOARD -->
   <section class="s" id="clans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">03 / clans</span><div>
-        <h2 class="h2">Pick a side. <span class="g">Wear the tag.</span></h2>
-        <p class="sub">Start a clan and reserve its TAG, so nobody else can ever use it. Join up to 3 clans, then pick 1 as your primary group: that is the tag people see next to your name.</p>
+      <div class="sh rv"><span class="no">03 / clan</span><div>
+        <h2 class="h2">Scegli da che parte stare. <span class="g">Porta la tag.</span></h2>
+        <p class="sub">Fonda un clan e riserva la sua TAG: nessun altro potrà mai usarla. Entra in massimo 3 clan, poi scegli 1 gruppo primario: è la tag che la gente vede accanto al tuo nome.</p>
       </div></div>
       <div class="cl">
         <div class="cl-card rv">
-          <div class="stx-h"><span>your tags</span><span id="slotCount">2 / 3 slots</span></div>
+          <div class="stx-h"><span>le tue tag</span><span id="slotCount">2 / 3 slot</span></div>
           <div class="cl-id">
-            <div class="av" data-initial>Y</div>
-            <div><div class="cl-name"><span data-at>@you</span> <span class="ctag prim" id="primTag">SGR</span></div><small>primary group shows next to your name</small></div>
+            <div class="av" data-initial>T</div>
+            <div><div class="cl-name"><span data-at>@tuonome</span> <span class="ctag prim" id="primTag">SGR</span></div><small>il gruppo primario appare accanto al tuo nome</small></div>
           </div>
           <div class="slots" id="slots"></div>
           <form class="cl-add" id="tagForm" novalidate>
-            <label class="sr-only" for="tagIn">Reserve a clan tag</label>
+            <label class="sr-only" for="tagIn">Riserva la tag di un clan</label>
             <span class="pre">[</span><input id="tagIn" maxlength="4" placeholder="TAG" autocomplete="off" spellcheck="false"><span class="pre">]</span>
-            <button class="btn" type="submit">Reserve</button>
+            <button class="btn" type="submit">Riserva</button>
           </form>
-          <p class="cl-msg" id="tagMsg" aria-live="polite">2 to 4 letters or numbers. Try one.</p>
+          <p class="cl-msg" id="tagMsg" aria-live="polite">Da 2 a 4 lettere o numeri. Provane una.</p>
           <ul class="rules">
-            <li><b>TAG</b> reserved for one clan only</li>
-            <li><b>3</b> tag slots per profile</li>
-            <li><b>1</b> primary group, the one on your name</li>
+            <li><b>TAG</b> riservata a un solo clan</li>
+            <li><b>3</b> slot per le tag in ogni profilo</li>
+            <li><b>1</b> gruppo primario, quello sul tuo nome</li>
           </ul>
         </div>
         <div class="cl-card lb rv" style="--d:.08s">
           <div class="stx-h">
-            <span>leaderboard</span>
-            <div class="seg" role="group" aria-label="Leaderboard type">
-              <button type="button" data-lb="profiles" aria-pressed="true">profiles</button>
+            <span>classifica</span>
+            <div class="seg" role="group" aria-label="Tipo di classifica">
+              <button type="button" data-lb="profiles" aria-pressed="true">profili</button>
               <button type="button" data-lb="clans" aria-pressed="false">clans</button>
             </div>
           </div>
           <ol class="lb-list" id="lb"></ol>
-          <div class="lb-foot"><span>example data</span><span>ranked by views this week</span></div>
+          <div class="lb-foot"><span>dati di esempio</span><span>in base alle visite di questa settimana</span></div>
         </div>
       </div>
     </div>
@@ -708,22 +705,22 @@
   <!-- BUILD -->
   <section class="s" id="build">
     <div class="wrap">
-      <div class="sh rv"><span class="no">04 / build</span><div>
-        <h2 class="h2">Same black and white. <span class="g">Never the same page twice.</span></h2>
-        <p class="sub">Scroll and the page builds itself. Tap any option to try it. Options tagged soon are on the way.</p>
+      <div class="sh rv"><span class="no">04 / crea</span><div>
+        <h2 class="h2">Stesso bianco e nero. <span class="g">Mai la stessa pagina.</span></h2>
+        <p class="sub">Scorri e la pagina si costruisce da sola. Tocca un'opzione per provarla. Quelle con scritto presto stanno arrivando.</p>
       </div></div>
 
       <div class="show">
         <div class="stage">
-          <div class="stage-meta"><span>preview / <b data-at>@you</b></span><span id="stageInfo">classic · smoke · solid</span></div>
+          <div class="stage-meta"><span>anteprima / <b data-at>@tuonome</b></span><span id="stageInfo">classico · fumo · pieno</span></div>
           <div class="phone" id="phone" data-layout="classic" data-bg="lava" data-btn="0" data-glow="on">
             <div class="scr">
               <div class="notch"></div>
               <div class="pbg"><i></i><i></i><i></i></div>
               <div class="pdith"></div>
               <div class="pc">
-                <div class="p-av" data-initial>Y</div>
-                <div class="p-name" data-at>@you</div>
+                <div class="p-av" data-initial>T</div>
+                <div class="p-name" data-at>@tuonome</div>
                 <div class="p-badges" aria-hidden="true">
                   <span><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></span>
                   <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></span>
@@ -738,7 +735,7 @@
                   <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l16 16M20 4L4 20"/></svg></span>
                 </div>
                 <div class="p-player"><div class="cover"></div><div class="trk"><b>smoke signals</b><small>sigari &amp; gin</small></div><div class="eq"><i></i><i></i><i></i><i></i></div></div>
-                <div class="p-links"><a>Latest release</a><a>Portfolio</a><a>Contact</a></div>
+                <div class="p-links"><a>Ultima uscita</a><a>Portfolio</a><a>Contatti</a></div>
               </div>
             </div>
           </div>
@@ -746,43 +743,43 @@
 
         <div class="steps" id="steps">
           <div class="step" data-preset='{"layout":"classic","bg":"lava","btn":"0","glow":"on"}'>
-            <span class="k">step 01 / layout</span>
-            <h3>Pick the shape.</h3>
-            <p>Centered like a poster, a banner on top, or plain text like a terminal.</p>
+            <span class="k">passo 01 / layout</span>
+            <h3>Scegli la forma.</h3>
+            <p>Centrata come un poster, con un banner in alto, o solo testo come un terminale.</p>
             <div class="chips" data-key="layout">
-              <button class="chip" type="button" data-v="classic">classic <small>live</small></button>
-              <button class="chip" type="button" data-v="banner">banner <small>soon</small></button>
-              <button class="chip" type="button" data-v="terminal">terminal <small>soon</small></button>
+              <button class="chip" type="button" data-v="classic">classico <small>attivo</small></button>
+              <button class="chip" type="button" data-v="banner">banner <small>presto</small></button>
+              <button class="chip" type="button" data-v="terminal">terminale <small>presto</small></button>
             </div>
           </div>
           <div class="step" data-preset='{"layout":"classic","bg":"dither","btn":"2","glow":"on"}'>
-            <span class="k">step 02 / background</span>
-            <h3>Pick the texture.</h3>
-            <p>Smoke that drifts, a hard dither, or pure black. You choose how strong it is.</p>
+            <span class="k">passo 02 / sfondo</span>
+            <h3>Scegli la texture.</h3>
+            <p>Fumo che si muove, un dither netto o nero puro. Decidi tu quanto è forte.</p>
             <div class="chips" data-key="bg">
-              <button class="chip" type="button" data-v="lava">smoke <small>live</small></button>
-              <button class="chip" type="button" data-v="dither">dither <small>soon</small></button>
-              <button class="chip" type="button" data-v="none">none <small>live</small></button>
+              <button class="chip" type="button" data-v="lava">fumo <small>attivo</small></button>
+              <button class="chip" type="button" data-v="dither">dither <small>presto</small></button>
+              <button class="chip" type="button" data-v="none">niente <small>attivo</small></button>
             </div>
           </div>
           <div class="step" data-preset='{"layout":"banner","bg":"lava","btn":"3","glow":"off"}'>
-            <span class="k">step 03 / buttons</span>
-            <h3>Make them clickable.</h3>
-            <p>Solid, outline, glass or hard shadow, with the shape and hover you like.</p>
+            <span class="k">passo 03 / bottoni</span>
+            <h3>Rendili cliccabili.</h3>
+            <p>Pieni, solo contorno, vetro o con ombra netta, con la forma e l'hover che preferisci.</p>
             <div class="chips" data-key="btn">
-              <button class="chip" type="button" data-v="0">solid <small>live</small></button>
-              <button class="chip" type="button" data-v="1">outline <small>live</small></button>
-              <button class="chip" type="button" data-v="2">glass <small>live</small></button>
-              <button class="chip" type="button" data-v="3">shadow <small>live</small></button>
+              <button class="chip" type="button" data-v="0">pieno <small>attivo</small></button>
+              <button class="chip" type="button" data-v="1">contorno <small>attivo</small></button>
+              <button class="chip" type="button" data-v="2">vetro <small>attivo</small></button>
+              <button class="chip" type="button" data-v="3">ombra <small>attivo</small></button>
             </div>
           </div>
           <div class="step" data-preset='{"layout":"terminal","bg":"none","btn":"1","glow":"on"}'>
-            <span class="k">step 04 / glow</span>
-            <h3>Turn on the light.</h3>
-            <p>Glow on your name, socials and badges. Then save, and it is live.</p>
+            <span class="k">passo 04 / glow</span>
+            <h3>Accendi la luce.</h3>
+            <p>Glow su nome, social e badge. Poi salvi, ed è online.</p>
             <div class="chips" data-key="glow">
-              <button class="chip" type="button" data-v="on">glow on <small>live</small></button>
-              <button class="chip" type="button" data-v="off">glow off <small>live</small></button>
+              <button class="chip" type="button" data-v="on">glow acceso <small>attivo</small></button>
+              <button class="chip" type="button" data-v="off">glow spento <small>attivo</small></button>
             </div>
           </div>
         </div>
@@ -793,29 +790,29 @@
   <!-- PARTNERS -->
   <section class="s" id="partners">
     <div class="wrap">
-      <div class="sh rv"><span class="no">05 / partners</span><div>
-        <h2 class="h2">Your server, your link. <span class="g">For every member.</span></h2>
-        <p class="sub">Every partner server can put its own name on the links of its members' profiles. Same page, the name your community already knows. Then pick the format and the preview style from a set of presets.</p>
+      <div class="sh rv"><span class="no">05 / partner</span><div>
+        <h2 class="h2">Il tuo server, il tuo link. <span class="g">Per ogni membro.</span></h2>
+        <p class="sub">Ogni server partner può mettere il suo nome nei link dei profili dei suoi membri. Stessa pagina, con il nome che la tua community conosce già. Poi scegli formato e stile dell'anteprima tra tanti preset.</p>
       </div></div>
       <div class="pt">
         <div class="pt-builder rv">
-          <div class="stx-h"><span>share link</span><span>presets</span></div>
-          <div class="pt-link"><span id="ptLink" class="mono"></span><button class="btn" type="button" id="ptCopy" data-mag>Copy</button></div>
-          <div class="pt-row"><span class="pt-k">domain</span><div class="chips" id="ptDomain"></div></div>
-          <div class="pt-row"><span class="pt-k">format</span><div class="chips" id="ptFormat"></div></div>
-          <div class="pt-row"><span class="pt-k">preview</span><div class="chips" id="ptEmbed"></div></div>
+          <div class="stx-h"><span>link da condividere</span><span>preset</span></div>
+          <div class="pt-link"><span id="ptLink" class="mono"></span><button class="btn" type="button" id="ptCopy" data-mag>Copia</button></div>
+          <div class="pt-row"><span class="pt-k">dominio</span><div class="chips" id="ptDomain"></div></div>
+          <div class="pt-row"><span class="pt-k">formato</span><div class="chips" id="ptFormat"></div></div>
+          <div class="pt-row"><span class="pt-k">anteprima</span><div class="chips" id="ptEmbed"></div></div>
           <div class="pt-prev" id="ptPrev" data-embed="classic">
             <div class="pt-emb">
-              <div style="min-width:0"><small id="ptSite">sigari.bio</small><b data-at>@you</b><p>links, socials, music and more</p></div>
-              <div class="av" data-initial>Y</div>
+              <div style="min-width:0"><small id="ptSite">sigari.bio</small><b data-at>@tuonome</b><p>link, social, musica e altro</p></div>
+              <div class="av" data-initial>T</div>
             </div>
           </div>
         </div>
         <div class="pt-wall">
           <div id="ptWall" class="pt-grid"></div>
           <a class="pt-cta rv" href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">
-            <span><b>Run a server?</b> Become a partner and get your own link for every member.</span>
-            <span class="btn">Apply on Discord</span>
+            <span><b>Hai un server?</b> Diventa partner e dai a ogni membro il link con il vostro nome.</span>
+            <span class="btn">Candidati su Discord</span>
           </a>
         </div>
       </div>
@@ -825,31 +822,31 @@
   <!-- SHARE -->
   <section class="s" id="share">
     <div class="wrap">
-      <div class="sh rv"><span class="no">06 / share</span><div>
-        <h2 class="h2">Drop it anywhere. <span class="g">It reads like your name.</span></h2>
-        <p class="sub">Use the same @ you have on every app, so people find you on the first try. This is how your link looks once you claim it.</p>
+      <div class="sh rv"><span class="no">06 / condividi</span><div>
+        <h2 class="h2">Mettilo ovunque. <span class="g">Si legge come il tuo nome.</span></h2>
+        <p class="sub">Usa la stessa @ che hai su ogni app, così ti trovano al primo colpo. Ecco come appare il tuo link quando l'hai presa.</p>
       </div></div>
       <div class="drops">
         <div class="shot rv">
           <div class="shot-h"><span># general</span><span>discord</span></div>
-          <div class="dc"><div class="av" data-initial>Y</div><div style="min-width:0">
-            <div class="dc-n"><span data-name>you</span><time>Today at 21:04</time></div>
-            <div class="dc-m">new page, rate it <u data-url-full>https://sigari.bio/@you</u></div>
-            <div class="embed"><div style="min-width:0"><small>sigari.bio</small><b data-at>@you</b><p>discord.gg/ECF4vzWKz · links, music and more</p></div><div class="av" data-initial>Y</div></div>
+          <div class="dc"><div class="av" data-initial>T</div><div style="min-width:0">
+            <div class="dc-n"><span data-name>tuonome</span><time>Oggi alle 21:04</time></div>
+            <div class="dc-m">pagina nuova, votatela <u data-url-full>https://sigari.bio/@tuonome</u></div>
+            <div class="embed"><div style="min-width:0"><small>sigari.bio</small><b data-at>@tuonome</b><p>discord.gg/ECF4vzWKz · link, musica e altro</p></div><div class="av" data-initial>T</div></div>
           </div></div>
         </div>
         <div class="shot rv" style="--d:.08s">
-          <div class="shot-h"><span data-name>you</span><span>instagram</span></div>
-          <div class="ig"><div class="ringed"><div class="av" data-initial>Y</div></div><div class="stats"><div><b>48</b>posts</div><div><b>2.1k</b>followers</div><div><b>312</b>following</div></div></div>
-          <div class="bio2"><b style="color:#fff">smoke &amp; gin</b><br>black, white and loud<br><span class="lk">↗ <span data-url>sigari.bio/@you</span></span></div>
+          <div class="shot-h"><span data-name>tuonome</span><span>instagram</span></div>
+          <div class="ig"><div class="ringed"><div class="av" data-initial>T</div></div><div class="stats"><div><b>48</b>post</div><div><b>2.100</b>follower</div><div><b>312</b>seguiti</div></div></div>
+          <div class="bio2"><b style="color:#fff">fumo &amp; gin</b><br>nero, bianco e senza filtri<br><span class="lk">↗ <span data-url>sigari.bio/@tuonome</span></span></div>
         </div>
         <div class="shot tt rv" style="--d:.16s">
-          <div class="shot-h"><span>profile</span><span>tiktok</span></div>
-          <div class="ringed"><div class="av" data-initial>Y</div></div>
-          <div class="hn" data-at>@you</div>
-          <div class="stats"><div><b>312</b>following</div><div><b>9.4k</b>followers</div><div><b>120k</b>likes</div></div>
-          <div class="bb"><span>Follow</span><span>Message</span></div>
-          <div class="bio2"><span class="lk">↗ <span data-url>sigari.bio/@you</span></span></div>
+          <div class="shot-h"><span>profilo</span><span>tiktok</span></div>
+          <div class="ringed"><div class="av" data-initial>T</div></div>
+          <div class="hn" data-at>@tuonome</div>
+          <div class="stats"><div><b>312</b>seguiti</div><div><b>9.400</b>follower</div><div><b>120.000</b>mi piace</div></div>
+          <div class="bb"><span>Segui</span><span>Messaggio</span></div>
+          <div class="bio2"><span class="lk">↗ <span data-url>sigari.bio/@tuonome</span></span></div>
         </div>
       </div>
     </div>
@@ -858,33 +855,33 @@
   <!-- PLANS + FAQ -->
   <section class="s" id="plans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">07 / plans</span><div>
-        <h2 class="h2">Free now. <span class="g">Questions answered.</span></h2>
+      <div class="sh rv"><span class="no">07 / piani</span><div>
+        <h2 class="h2">Gratis adesso. <span class="g">Domande e risposte.</span></h2>
       </div></div>
       <div class="pf">
         <div class="plans rv">
           <div class="plan">
-            <div class="t"><span>free</span><span>forever</span></div>
-            <div class="pr">0€ <small>/ lifetime</small></div>
-            <ul><li>Your @ on sigari.bio</li><li>Links, 25 socials, avatar, bio</li><li>Smoke effect and button styles</li><li>Glow and live preview</li></ul>
-            <a class="go" href="#top" data-focus-claim>Claim your @</a>
+            <div class="t"><span>gratis</span><span>per sempre</span></div>
+            <div class="pr">0€ <small>/ a vita</small></div>
+            <ul><li>La tua @ su sigari.bio</li><li>Link, 25 social, avatar, bio</li><li>Effetto fumo e stili dei bottoni</li><li>Glow e anteprima dal vivo</li></ul>
+            <a class="go" href="#top" data-focus-claim>Prendi la tua @</a>
           </div>
           <div class="plan pro">
-            <div class="t"><span>premium</span><span>in the works</span></div>
-            <div class="pr">Soon</div>
-            <ul><li>More moods, cursors and fonts</li><li>Music player and widgets</li><li>Badges and analytics</li><li>Early accounts hear first</li></ul>
-            <a class="go" href="#top" data-focus-claim>Get in early</a>
+            <div class="t"><span>premium</span><span>in lavorazione</span></div>
+            <div class="pr">Presto</div>
+            <ul><li>Più mood, cursori e font</li><li>Lettore musicale e widget</li><li>Badge e statistiche</li><li>Chi entra prima lo sa per primo</li></ul>
+            <a class="go" href="#top" data-focus-claim>Entra per primo</a>
           </div>
         </div>
         <div class="faq rv" style="--d:.08s">
-          <details><summary>What is sigari.bio?</summary><p>A link-in-bio page built around your handle. You get sigari.bio/@yourname, and on it your links, socials and the look you choose.</p></details>
-          <details><summary>Is it free?</summary><p>Yes. Everything tagged live is free. Premium with extra effects and badges is in the works.</p></details>
-          <details><summary>What can my @ be?</summary><p>3 to 20 characters: lowercase letters, numbers and underscores. Each @ belongs to one account.</p></details>
-          <details><summary>Can I change my @ later?</summary><p>Not for now. A claimed @ is locked to your account, so pick carefully.</p></details>
-          <details><summary>How do I sign up?</summary><p>With Google, or with email and password. Discord login is coming.</p></details>
-          <details><summary>How do clans work?</summary><p>A clan reserves a TAG of 2 to 4 letters or numbers that no one else can use. You can wear up to 3 tags, and pick 1 primary group: that tag shows next to your name.</p></details>
-          <details><summary>How does my server become a partner?</summary><p>Ask on our <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener" style="text-decoration:underline">Discord</a>. Partner servers get their own link for every member, like sigari.gin/@name.</p></details>
-          <details><summary>What are moods?</summary><p>The same black and white look in three textures: smoke, dither and ASCII. Try them at the top of this page.</p></details>
+          <details><summary>Cos'è sigari.bio?</summary><p>Una pagina link in bio costruita intorno alla tua @. Hai sigari.bio/@iltuonome, e lì sopra i tuoi link, i tuoi social e lo stile che scegli.</p></details>
+          <details><summary>È gratis?</summary><p>Sì. Tutto quello che è già attivo è gratis. Il premium, con effetti e badge in più, è in lavorazione.</p></details>
+          <details><summary>Come può essere la mia @?</summary><p>Da 3 a 20 caratteri: lettere minuscole, numeri e trattino basso. Ogni @ appartiene a un solo account.</p></details>
+          <details><summary>Posso cambiare la mia @ dopo?</summary><p>Per ora no. Una @ presa resta bloccata sul tuo account, quindi sceglila bene.</p></details>
+          <details><summary>Come mi iscrivo?</summary><p>Con Google, oppure con email e password. L'accesso con Discord sta arrivando.</p></details>
+          <details><summary>Come funzionano i clan?</summary><p>Un clan riserva una TAG da 2 a 4 lettere o numeri che nessun altro può usare. Puoi avere fino a 3 tag e scegliere 1 gruppo primario: quella tag appare accanto al tuo nome.</p></details>
+          <details><summary>Come fa il mio server a diventare partner?</summary><p>Chiedi sul nostro <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener" style="text-decoration:underline">Discord</a>. I server partner hanno un link col loro nome per ogni membro, tipo sigari.gin/@nome.</p></details>
+          <details><summary>Cosa sono i mood?</summary><p>Lo stesso stile in bianco e nero in tre texture: fumo, dither e ASCII. Provali in cima a questa pagina.</p></details>
         </div>
       </div>
     </div>
@@ -897,16 +894,16 @@
       <div class="row" data-row="1"></div>
       <div class="row s" data-row="2"></div>
     </div>
-    <h2 class="h2 rv" id="finalTitle">Someone else wants your @ too.</h2>
+    <h2 class="h2 rv" id="finalTitle">Qualcun altro vuole la tua @.</h2>
     <form class="claim rv" data-claim novalidate>
-      <label class="sr-only" for="h2in">Choose your handle</label>
+      <label class="sr-only" for="h2in">Scegli la tua @</label>
       <div class="bar">
         <span class="pre">sigari.bio/<b>@</b></span>
-        <input id="h2in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="yourname" data-handle>
-        <button class="btn" type="submit" data-mag>Claim</button>
+        <input id="h2in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="iltuonome" data-handle>
+        <button class="btn" type="submit" data-mag>Prendila</button>
       </div>
       <div class="meta">
-        <span class="st" data-status aria-live="polite">3 to 20 letters, numbers or _</span>
+        <span class="st" data-status aria-live="polite">da 3 a 20 tra lettere, numeri o _</span>
         <span class="rar" data-rarity hidden><span class="lbl" data-rarity-name></span><span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
       </div>
     </form>
@@ -915,13 +912,13 @@
 
 <footer>
   <div class="foot">
-    <span>Built by the devs at Sigari &amp; Gin, all rights reserved.</span>
-    <nav aria-label="Footer"><a href="login.html?mode=login">log in</a><a href="#top" data-focus-claim>claim</a><a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">discord</a></nav>
+    <span>Fatto dai dev di Sigari &amp; Gin, tutti i diritti riservati.</span>
+    <nav aria-label="Piè di pagina"><a href="login.html?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">discord</a></nav>
   </div>
   <div class="word" aria-hidden="true">sigari.bio</div>
 </footer>
 
-<div class="dock" id="dock"><a href="#top" data-focus-claim><span data-url>sigari.bio/@you</span><span class="btn">Claim</span></a></div>
+<div class="dock" id="dock"><a href="#top" data-focus-claim><span data-url>sigari.bio/@tuonome</span><span class="btn">Prendila</span></a></div>
 
 <script type="module">
   const $ = s => document.querySelector(s);
@@ -932,7 +929,7 @@
   const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
   const state = { handle: "", avail: null, mood: "smoke" };
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
-  const rarity = h => h.length === 3 ? ["legendary", 4] : h.length === 4 ? ["epic", 3] : h.length === 5 ? ["rare", 2] : ["classic", 1];
+  const rarity = h => h.length === 3 ? ["leggendaria", 4] : h.length === 4 ? ["epica", 3] : h.length === 5 ? ["rara", 2] : ["classica", 1];
 
   /* ---------- Split-flap ---------- */
   const FLAP = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@./";
@@ -959,8 +956,8 @@
     if (!boardSeen) return;
     const h = state.handle;
     flapTo(board[0], center("SIGARI.BIO/"));
-    flapTo(board[1], center("@" + (h || "YOURNAME")));
-    const st = !h ? "CLAIM IT" : h.length < 3 ? "KEEP TYPING" : state.avail === true ? "AVAILABLE" : state.avail === false ? "TAKEN" : rarity(h)[0].toUpperCase();
+    flapTo(board[1], center("@" + (h || "TUONOME")));
+    const st = !h ? "PRENDILA" : h.length < 3 ? "CONTINUA" : state.avail === true ? "LIBERA" : state.avail === false ? "GIA PRESA" : rarity(h)[0].toUpperCase();
     flapTo(board[2], center(st));
   }
 
@@ -1098,64 +1095,110 @@
     };
   })();
 
-  /* ---------- Card deck: 12 templates, re-arranged every time a card comes up ---------- */
+  /* ---------- Card deck: one card per vibe, re-arranged every time it comes up ---------- */
   const deck = (() => {
     const el = $("#deck");
-    const PHOTOS = [9694694, 38226823, 34000505, 28641320, 28540855, 17957285, 17527812, 34167246, 31687151, 29833481, 18557766, 31746347, 38705665, 37767696];
     const photo = (id, w = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
     const R = (a, b) => a + Math.random() * (b - a);
     const pick = arr => arr[(Math.random() * arr.length) | 0];
+    const W = 'fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"';
     const SVG = {
-      star: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/></svg>',
-      smile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#000" stroke-width="1.2"/><circle cx="8.5" cy="10" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M7.5 14.2c2.4 2.8 6.6 2.8 9 0" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round"/></svg>',
-      heart: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/></svg>',
-      bolt: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round" d="M13.5 1.5L4 14h7l-1.5 8.5L20 9.5h-7z"/></svg>',
-      flower: '<svg viewBox="0 0 24 24"><g fill="#fff" stroke="#000" stroke-width="1"><circle cx="12" cy="6" r="4"/><circle cx="17.7" cy="10.2" r="4"/><circle cx="15.5" cy="17" r="4"/><circle cx="8.5" cy="17" r="4"/><circle cx="6.3" cy="10.2" r="4"/></g><circle cx="12" cy="12" r="2.6"/></svg>',
-      cross: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg>',
-      cig: '<svg viewBox="0 0 40 14"><rect x="1" y="4" width="30" height="6" rx="1" fill="#fff" stroke="#000"/><rect x="25" y="4" width="6" height="6" fill="#bbb" stroke="#000"/><path d="M33 6c2-2 4 0 6-2M33 9c2-2 4 0 6-2" stroke="#fff" fill="none"/></svg>'
+      heart: `<svg viewBox="0 0 24 24"><path ${W} d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/></svg>`,
+      broken: `<svg viewBox="0 0 24 24"><path ${W} d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/><path d="M12 7l-1.6 3.4 2.6 2-2 3.2 1 2.4" fill="none" stroke="#000" stroke-width="1.5"/></svg>`,
+      sparkle: `<svg viewBox="0 0 24 24"><path ${W} d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/></svg>`,
+      skull: `<svg viewBox="0 0 24 24"><path ${W} d="M12 2.5c-4.7 0-8 3.2-8 7.6 0 2.6 1.2 4.4 3 5.4v3.2c0 .7.5 1.3 1.2 1.3h1.3v-2h1.2v2h2.6v-2h1.2v2h1.3c.7 0 1.2-.6 1.2-1.3v-3.2c1.8-1 3-2.8 3-5.4 0-4.4-3.3-7.6-8-7.6z"/><circle cx="9" cy="10.6" r="2"/><circle cx="15" cy="10.6" r="2"/><path d="M12 13.2l-1 2h2z"/></svg>`,
+      cross: `<svg viewBox="0 0 24 24"><path ${W} d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z"/></svg>`,
+      bat: `<svg viewBox="0 0 24 24"><path ${W} d="M12 10.5c.6-1.2 1.4-1.6 1.4-1.6l.4 1.4c1.8-1.6 4.6-2.4 8.2-.8-1.6.8-2.6 2.4-2.6 4.2-1.8-.8-3.6 0-4.6 1.6-.8-.8-1.8-1-2.8-1s-2 .2-2.8 1c-1-1.6-2.8-2.4-4.6-1.6 0-1.8-1-3.4-2.6-4.2 3.6-1.6 6.4-.8 8.2.8l.4-1.4s.8.4 1.4 1.6z"/></svg>`,
+      moon: `<svg viewBox="0 0 24 24"><path ${W} d="M15 3a9 9 0 1 0 6 15 8 8 0 0 1-6-15z"/></svg>`,
+      butterfly: `<svg viewBox="0 0 24 24"><path ${W} d="M12 12C9 5 3 4 3 8s4 5 9 4zm0 0c3-7 9-8 9-4s-4 5-9 4zm0 0c-3 2-7 3-6 6s5 0 6-6zm0 0c3 2 7 3 6 6s-5 0-6-6z"/><path d="M12 7v11" stroke="#000" stroke-width="1.6"/></svg>`,
+      diamond: `<svg viewBox="0 0 24 24"><path ${W} d="M7 3h10l5 6-10 12L2 9z"/><path d="M2 9h20M7 3l5 18M17 3l-5 18M7 3l2.5 6M17 3l-2.5 6" fill="none" stroke="#000" stroke-width=".8"/></svg>`,
+      crown: `<svg viewBox="0 0 24 24"><path ${W} d="M3 17l1.4-10 4.6 4.4L12 4l3 7.4L19.6 7 21 17zM3 18.5h18V21H3z"/></svg>`,
+      flame: `<svg viewBox="0 0 24 21"><path ${W} d="M12 1c.8 3.8 5.6 5.6 5.6 11.4A5.6 5.6 0 0 1 12 18c-3.1 0-5.6-2.5-5.6-5.6 0-2.7 1.7-4.1 1.9-6.4 1.8 1 2.8 2.4 2.8 3.9 1-2 .9-4.9.9-8.9z"/></svg>`,
+      dollar: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" font-family="Arial, sans-serif">$</text></svg>`,
+      target: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="4" fill="#fff"/><circle cx="12" cy="12" r="1.6"/></svg>`,
+      bullet: `<svg viewBox="0 0 24 24"><path ${W} d="M9 22V10.5C9 6 10.5 3 12 2c1.5 1 3 4 3 8.5V22z"/><path d="M9 16h6" stroke="#000" stroke-width="1.2"/></svg>`,
+      pistol: `<svg viewBox="0 0 48 30"><path ${W} d="M3 5h40v8H25c0 4-2 6-5.5 6.5L18 27H9.5l3-14H3z"/><path d="M20 13c0 3 1.5 4.5 4.5 4.5" fill="none" stroke="#000" stroke-width="1.4"/><path d="M37 7.5h4" stroke="#000"/></svg>`,
+      crosshair: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg>`,
+      bolt: `<svg viewBox="0 0 24 24"><path ${W} d="M13.5 1.5L4 14h7l-1.5 8.5L20 9.5h-7z"/></svg>`,
+      smile: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="8.5" cy="10" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M7.5 14.2c2.4 2.8 6.6 2.8 9 0" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+      flower: `<svg viewBox="0 0 24 24"><g ${W}><circle cx="12" cy="6" r="4"/><circle cx="17.7" cy="10.2" r="4"/><circle cx="15.5" cy="17" r="4"/><circle cx="8.5" cy="17" r="4"/><circle cx="6.3" cy="10.2" r="4"/></g><circle cx="12" cy="12" r="2.6"/></svg>`,
+      cd: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" ${W}/><circle cx="12" cy="12" r="4" fill="none" stroke="#000"/><circle cx="12" cy="12" r="1.6"/><path d="M5 9a8 8 0 0 1 4-4" fill="none" stroke="#999" stroke-width="1.4"/></svg>`,
+      cloud: `<svg viewBox="0 0 24 24"><path ${W} d="M7 19a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4-1.4A4.6 4.6 0 0 1 18 19z"/></svg>`,
+      bandaid: `<svg viewBox="0 0 24 24"><g transform="rotate(-35 12 12)"><rect x="2" y="8" width="20" height="8" rx="4" ${W}/><rect x="9" y="8" width="6" height="8" fill="#ddd" stroke="#000" stroke-width=".8"/></g></svg>`,
+      cig: `<svg viewBox="0 0 40 14"><rect x="1" y="4" width="30" height="6" rx="1" ${W}/><rect x="25" y="4" width="6" height="6" fill="#bbb" stroke="#000"/><path d="M33 6c2-2 4 0 6-2M33 9c2-2 4 0 6-2" stroke="#fff" fill="none"/></svg>`
     };
-    const CHIP = '<div class="chip"></div><svg class="nfc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 8a6 6 0 0 1 0 8M11.5 5.5a10 10 0 0 1 0 13M15 3a14 14 0 0 1 0 18"/></svg>';
-    const AT = () => `@<span class="c-h">${state.handle || "you"}</span>`;
-    const INI = () => `<span class="c-i">${(state.handle || "you")[0].toUpperCase()}</span>`;
-    const stk = (name, x, y, w, r) => `<div class="stk" style="left:${x}%;top:${y}%;width:${w}cqw;aspect-ratio:${name === "cig" ? "40/14" : "1"};transform:rotate(${r}deg)">${SVG[name]}</div>`;
-    const scatter = (names, n, box = [4, 92, 4, 80]) => Array.from({ length: n }, () => stk(pick(names), R(box[0], box[1]), R(box[2], box[3]), R(11, 19), R(-30, 30))).join("");
-    const num = () => `•••• •••• •••• ${String(Math.floor(R(1000, 9999)))}`;
-    const brand = (light) => `<div class="brand">sigari<i>.bio</i></div>`;
+    const RATIO = { pistol: "48/30", cig: "40/14", flame: "24/21" };
+    const stk = (name, x, y, w, r) => `<div class="stk" style="left:${x}%;top:${y}%;width:${w}cqw;aspect-ratio:${RATIO[name] || "1"};transform:rotate(${r}deg)">${SVG[name]}</div>`;
+    const strip = (kind, top, rot) => {
+      const inner = kind === "barbed"
+        ? `<path d="M0 10 C15 2 30 18 45 10 S75 2 90 10 S112 18 120 10" stroke="#fff" stroke-width="2" fill="none"/>` + [22, 52, 82, 110].map(x => `<path d="M${x - 3} 5l6 10M${x + 3} 5l-6 10" stroke="#fff" stroke-width="1.6"/>`).join("")
+        : Array.from({ length: 9 }, (_, i) => `<rect x="${i * 13.5}" y="${i % 2 ? 6 : 3}" width="16" height="${i % 2 ? 8 : 14}" rx="${i % 2 ? 4 : 5}" fill="none" stroke="#fff" stroke-width="2.2"/>`).join("");
+      return `<svg class="strip" viewBox="0 0 120 20" preserveAspectRatio="none" style="top:${top}%;transform:rotate(${rot}deg)">${inner}</svg>`;
+    };
+    const hole = (x, y) => `<svg class="stk" viewBox="0 0 24 24" style="left:${x}%;top:${y}%;width:7cqw;filter:none"><path d="M12 12L3 4M12 12l9-6M12 12l7 9M12 12l-8 7M12 12V1M12 12l11 2" stroke="#fff" stroke-width=".6" opacity=".8"/><circle cx="12" cy="12" r="3.2" fill="#000" stroke="#fff" stroke-width=".8"/></svg>`;
+    const H = () => state.handle || "tuonome";
+    const AT = () => `@<span class="c-h">${H()}</span>`;
 
-    // Each template returns [className, innerHTML]. Positions, photos and stickers are random every time.
-    const T = [
-      ["full photo", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div>${brand()}${CHIP}<div class="who" style="font:italic 400 9cqw 'Instrument Serif', serif">${AT()}</div><div class="meta2">MEMBER<br>SINCE 26</div>`]],
-      ["blackletter", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}${CHIP}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>`]],
-      ["sticker bomb", () => ["light", `<div style="position:absolute;inset:0;background:#efefef"></div>${scatter(["star", "smile", "heart", "bolt", "flower", "cig"], 8, [0, 84, 0, 70])}<div class="pill" style="left:${R(50, 70)}%;top:${R(10, 30)}%;transform:rotate(${R(-14, 14)}deg)">OG</div>${brand()}<div class="who" style="font:400 9.5cqw 'Permanent Marker', cursive;background:#efefef;padding:0 1.5cqw;transform:rotate(${R(-4, 4)}deg)">${AT()}</div>`]],
-      ["terminal", () => ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(10, 22)}%">&gt; whoami\n${AT()}\n&gt; rank --this-week\n#${Math.floor(R(1, 99))} ▮</div><div class="scan"></div><div class="meta2" style="font-family:'VT323',monospace;font-size:4cqw">sigari.bio</div>${stk("cross", R(70, 84), R(12, 30), 12, 0)}`]],
-      ["pixel dither", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
-      ["polaroid", () => ["light", `<div style="position:absolute;inset:0;background:#d9d9d9"></div><div class="pol" style="left:${R(46, 58)}%;top:${R(6, 14)}%;transform:rotate(${R(-12, 12)}deg)"><img src="${photo(pick(PHOTOS), 500)}" alt="" loading="lazy"></div><div class="tape" style="left:${R(56, 66)}%;top:${R(2, 6)}%;transform:rotate(${R(-20, 20)}deg)"></div>${brand()}${CHIP}<div class="who" style="font:400 9cqw 'Permanent Marker', cursive">${AT()}</div>${stk(pick(["heart", "star", "flower"]), R(8, 30), R(56, 64), 10, R(-20, 20))}`]],
-      ["chrome", () => ["light", `<div style="position:absolute;inset:0;background:conic-gradient(from ${R(0, 360)}deg at ${R(30, 70)}% ${R(30, 70)}%, #f5f5f5, #6f6f6f, #fdfdfd, #3c3c3c, #e0e0e0, #8a8a8a, #f5f5f5)"></div>${brand()}${CHIP}<div class="num">${num()}</div><div class="who" style="font:400 7cqw 'Rubik Mono One', sans-serif;text-shadow:0 1px 0 rgba(255,255,255,.8), 0 -1px 0 rgba(0,0,0,.4)">${AT()}</div><div class="meta2">VALID<br>THRU ∞</div>`]],
-      ["receipt", () => ["light", `<div style="position:absolute;inset:0;background:#f4f2ee"></div><div class="lines" style="left:6%;top:9%;font:400 3.6cqw/1.35 'Space Mono', monospace">SIGARI.BIO  ·  RECEIPT\n------------------------\n1x HANDLE ......... ${AT()}\n1x GLOW ........... ON\n1x SMOKE .......... 80%\nTOTAL ............. 0.00€</div><div class="bar" style="left:6%;bottom:9%"></div><div class="meta2" style="font-family:'Space Mono',monospace">THANK<br>YOU</div>`]],
-      ["magazine", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div><div class="big" style="left:5%;top:4%;font:italic 700 15cqw 'Bodoni Moda', serif;letter-spacing:-.04em">SIGARI</div><div class="who" style="font:italic 400 7.5cqw 'Bodoni Moda', serif">${AT()}</div><div class="meta2" style="font-family:'Bodoni Moda',serif;font-style:italic">issue nº ${Math.floor(R(1, 40))}<br>black &amp; white</div>`]],
-      ["glitch", () => ["", `<div style="position:absolute;inset:0;background:#000"></div><img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.35;clip-path:inset(${R(10, 40)}% 0 ${R(20, 40)}% 0);transform:translateX(${R(-6, 6)}%)"><div class="who" style="bottom:auto;top:${R(30, 50)}%;font:400 12cqw 'Rubik Glitch', sans-serif">${AT()}</div>${brand()}<div class="num">${num()}</div>`]],
-      ["minimal", () => ["light", `<div style="position:absolute;inset:0;background:#fafafa"></div><div class="big" style="right:${R(4, 12)}%;top:${R(4, 20)}%;font:400 46cqw 'Major Mono Display', monospace;color:#111">@</div>${brand()}<div class="who" style="font:500 5.4cqw var(--sans);letter-spacing:-.02em">${AT()}</div><div class="meta2">${rarity(state.handle || "you")[0]}</div>`]],
-      ["neon tube", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.2"><div class="who" style="bottom:auto;top:${R(28, 44)}%;left:6%;font:400 10cqw 'Monoton', cursive;text-shadow:0 0 6px #fff, 0 0 22px rgba(255,255,255,.7)">${AT()}</div>${brand()}${CHIP.replace('class="chip"', 'class="chip" style="top:auto;bottom:10%"')}${stk("star", R(76, 88), R(8, 20), 9, R(-20, 20))}`]]
+    const VIBES = [
+      { name: "egirl", font: "400 9.5cqw 'Cherry Bomb One', cursive", photos: [20439042, 37364254, 17990049, 29810941], stickers: ["heart", "sparkle", "butterfly", "bandaid", "smile"], words: ["xoxo", "uwu", "<3"], pills: ["xoxo", "e-girl", "♡ solo per te"], extra: () => `<div class="checker" style="${Math.random() < .5 ? "top" : "bottom"}:0"></div>` },
+      { name: "emo", font: "400 9cqw 'Metal Mania', cursive", photos: [37364257, 33777230, 35855458, 37324670], stickers: ["broken", "skull", "sparkle", "bat"], words: ["rawr", "xD", "sad"], pills: ["rawr", "emo per sempre", "non sto bene"], extra: () => strip("barbed", R(28, 58), R(-9, 9)) },
+      { name: "rapper", font: "400 11cqw 'Anton', sans-serif", photos: [23314638, 27268762, 17413080, 31853515], stickers: ["diamond", "crown", "dollar", "flame"], words: ["$$$", "OG", "ICE"], pills: ["OG", "$$$", "ghiacciato"], extra: () => strip("chain", R(4, 14), R(-4, 4)) },
+      { name: "rap italiano", font: "400 11.5cqw 'Bebas Neue', sans-serif", photos: [17432931, 36781354, 15005781, 34462429, 34737256], stickers: ["crown", "flame", "diamond", "sparkle"], words: ["MILANO", "ROMA", "NAPOLI", "TORINO"], outline: true, pills: ["zona 7", "fuori dal blocco", "trap ita"] },
+      { name: "armi", font: "400 9cqw 'Black Ops One', cursive", photos: [33961226, 19893293], stickers: ["target", "bullet", "pistol", "crosshair"], words: ["LOCKED", "AIM", "CAL. 9"], pills: ["locked in", "mira giusta"], extra: () => hole(R(55, 80), R(10, 40)) + hole(R(20, 45), R(15, 45)) + stk("crosshair", R(40, 60), R(30, 50), 14, 0) },
+      { name: "drill", font: "400 11cqw 'Rubik Wet Paint', cursive", photos: [27437410, 27329848, 34462429], stickers: ["skull", "flame", "bolt"], words: ["DRILL", "808", "BLOCK"], pills: ["drill", "808"] },
+      { name: "goth", font: "400 11cqw 'UnifrakturMaguntia', serif", photos: [32488813, 30692341, 37034734], stickers: ["cross", "bat", "moon", "skull"], words: ["nox", "†", "luna"], pills: ["notturna", "solo di notte"], initial: true },
+      { name: "y2k", font: "400 8.5cqw 'Audiowide', sans-serif", photos: [28771653, 32077391, 29397033], stickers: ["sparkle", "butterfly", "cd", "smile", "flower"], words: ["Y2K", "2000", "online"], pills: ["y2k", "sempre online"], extra: () => `<div class="chrome"></div>` },
+      { name: "skater", font: "400 9.5cqw 'Permanent Marker', cursive", photos: [28847208, 36075825, 39405394], stickers: ["smile", "flame", "bolt", "sparkle"], words: ["SKATE", "BAIL", "KICKFLIP"], pills: ["skate o muori", "ancora una"], extra: () => `<div class="tape" style="left:${R(8, 70)}%;top:${R(2, 12)}%;transform:rotate(${R(-25, 25)}deg)"></div><div class="tape" style="left:${R(8, 70)}%;top:${R(70, 85)}%;transform:rotate(${R(-25, 25)}deg)"></div>` },
+      { name: "angel", font: "400 12cqw 'Pinyon Script', cursive", photos: [28540855, 31746347, 38705665], stickers: ["cloud", "heart", "sparkle"], words: ["angel", "♡", "cielo"], pills: ["angelcore", "luce"], light: true, halo: true },
+      { name: "hacker", terminal: true },
+      { name: "sigari", font: "italic 400 9cqw 'Bodoni Moda', serif", photos: [9694694, 38226823], stickers: ["cig", "sparkle"], words: ["fumo", "gin"], pills: ["dal 2026"], extra: () => `<div class="stamp" style="right:${R(6, 22)}%;top:${R(14, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>` }
     ];
+
+    function render(v) {
+      if (v.terminal) {
+        return ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(12, 24)}%">&gt; whoami\n${AT()}\n&gt; vibe --random\n${pick(["egirl", "emo", "goth", "drill"])} ▮</div><div class="scan"></div><div class="vibe">vibe · hacker</div><div class="brand" style="top:auto;bottom:9%;font-family:'VT323',monospace;font-size:4.4cqw">sigari.bio</div>${stk("crosshair", R(66, 82), R(14, 34), 13, 0)}`];
+      }
+      const corner = pick(["bl", "tl", "br"]);
+      const at = { bl: "left:6%;bottom:9%", tl: "left:6%;top:15%;bottom:auto", br: "left:auto;right:6%;bottom:9%;text-align:right" }[corner];
+      const low = corner !== "tl";
+      const shade = v.light
+        ? `<div class="shade2" style="background:linear-gradient(${low ? 0 : 180}deg, rgba(255,255,255,.88), rgba(255,255,255,.25) 60%, rgba(255,255,255,.1))"></div>`
+        : `<div class="shade2" style="background:linear-gradient(${low ? 0 : 180}deg, rgba(0,0,0,.88), transparent 62%)"></div>`;
+      const word = pick(v.words);
+      const outlined = v.outline || Math.random() < .4;
+      const bigTxt = v.initial && Math.random() < .6 ? H()[0].toUpperCase() : word;
+      const big = `<div class="big" style="${low ? `top:${R(4, 16)}%` : `bottom:${R(6, 16)}%`};${Math.random() < .5 ? `left:${R(3, 20)}%` : `right:${R(3, 14)}%`};font:${v.font};font-size:${R(20, 30)}cqw;transform:rotate(${R(-9, 9)}deg);${outlined ? `color:transparent;-webkit-text-stroke:.35cqw ${v.light ? "#111" : "#fff"}` : ""};opacity:.88">${bigTxt}</div>`;
+      // keep stickers off the corner where the @ sits, so the name always reads
+      const clear = (x, y) => !(x > 60 && y < 16) && !(x < 26 && y < 16) && (corner === "bl" ? !(x < 52 && y > 56) : corner === "tl" ? !(x < 52 && y < 36) : !(x > 40 && y > 56));
+      const spot = () => { for (let k = 0; k < 8; k++) { const x = R(2, 84), y = R(2, 72); if (clear(x, y)) return [x, y]; } return [R(60, 84), R(4, 30)]; };
+      const stickers = Array.from({ length: Math.round(R(3, 5)) }, () => { const [x, y] = spot(); return stk(pick(v.stickers), x, y, R(10, 17), R(-28, 28)); }).join("");
+      const pill = `<div class="pill" style="${low ? `top:${R(40, 58)}%` : `top:${R(62, 76)}%`};${Math.random() < .5 ? `left:${R(5, 40)}%` : `right:${R(5, 30)}%`};transform:rotate(${R(-12, 12)}deg)">${pick(v.pills)}</div>`;
+      const halo = v.halo ? `<svg class="halo" viewBox="0 0 40 14" style="${corner === "br" ? "right:8%" : "left:8%"};${low ? "bottom:25%" : "top:7%"}"><ellipse cx="20" cy="7" rx="17" ry="4.5" fill="none" stroke="${v.light ? "#111" : "#fff"}" stroke-width="2.4"/></svg>` : "";
+      const brand = `<div class="brand" style="${low ? "" : "top:auto;bottom:9%"}">sigari<i>.bio</i></div>`;
+      return [v.light ? "light" : "", `<img class="ph" src="${photo(pick(v.photos))}" alt="" loading="lazy">${shade}${v.extra ? v.extra() : ""}${big}${stickers}${pill}${halo}<div class="who" style="${at};font:${v.font}">${AT()}</div>${brand}<div class="vibe">vibe · ${v.name}</div>`];
+    }
 
     const N = 4;
     const cards = Array.from({ length: N }, () => { const c = document.createElement("div"); el.prepend(c); return c; });
-    let next = 0, order = [];
+    let next = 0;
+    const order = [];
     function fill(card) {
-      const [name, make] = T[next % T.length];
-      const [cls, html] = make();
-      card.dataset.t = name; card.dataset.n = (next % T.length) + 1;
+      const v = VIBES[next % VIBES.length];
+      const [cls, html] = render(v);
+      card.dataset.t = v.name; card.dataset.n = (next % VIBES.length) + 1;
       card.className = "card " + cls;
       card.innerHTML = html + '<div class="grainy"></div><div class="sheen"></div>';
       card.querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove(), { once: true }));
       next++;
     }
+    function label(c) {
+      $("#deckN").textContent = String(c.dataset.n).padStart(2, "0");
+      $("#deckT").textContent = c.dataset.t;
+      $("#hudCard").textContent = c.dataset.t;
+    }
     function place() {
       order.forEach((c, i) => { c.classList.remove("p0", "p1", "p2", "p3", "out"); c.classList.add("p" + Math.min(i, 3)); });
-      const top = order[0];
-      $("#deckN").textContent = String(top.dataset.n).padStart(2, "0");
-      $("#deckT").textContent = top.dataset.t;
-      $("#hudCard").textContent = top.dataset.t;
+      label(order[0]);
     }
     cards.forEach(c => { fill(c); order.push(c); });
     place();
@@ -1166,10 +1209,8 @@
       top.classList.remove("p0"); top.classList.add("out");
       order.push(top);
       order.slice(0, 3).forEach((c, i) => { c.classList.remove("p1", "p2", "p3"); c.classList.add("p" + i); });
+      label(order[0]);
       setTimeout(() => { fill(top); place(); busy = false; }, 560);
-      $("#deckN").textContent = String(order[0].dataset.n).padStart(2, "0");
-      $("#deckT").textContent = order[0].dataset.t;
-      $("#hudCard").textContent = order[0].dataset.t;
     }
     let timer = 0, running = false, hover = false;
     const loop = () => { if (!running) return; if (!hover) shuffle(); timer = setTimeout(loop, 2000); };
@@ -1185,24 +1226,20 @@
     return {
       start() { if (running || reduce) return; running = true; timer = setTimeout(loop, 2000); },
       stop() { running = false; clearTimeout(timer); },
-      setHandle() {
-        const h = state.handle || "you";
-        el.querySelectorAll(".c-h").forEach(s => s.textContent = h);
-        el.querySelectorAll(".c-i").forEach(s => s.textContent = h[0].toUpperCase());
-      }
+      setHandle() { el.querySelectorAll(".c-h").forEach(s => s.textContent = H()); }
     };
   })();
 
   /* ---------- Handle ---------- */
   const sanitize = v => v.toLowerCase().replace(/^@+/, "").replace(/[^a-z0-9_]/g, "").slice(0, 20);
   function renderHandle() {
-    const h = state.handle || "you";
+    const h = state.handle || "tuonome";
     $$("[data-at]").forEach(el => el.textContent = "@" + h);
     $$("[data-name]").forEach(el => el.textContent = h);
     $$("[data-url]").forEach(el => el.textContent = "sigari.bio/@" + h);
     $$("[data-url-full]").forEach(el => el.textContent = "https://sigari.bio/@" + h);
     $$("[data-initial]").forEach(el => el.textContent = h[0].toUpperCase());
-    $("#finalTitle").textContent = state.handle ? `Someone else wants @${h} too.` : "Someone else wants your @ too.";
+    $("#finalTitle").textContent = state.handle ? `Qualcun altro vuole @${h}.` : "Qualcun altro vuole la tua @.";
     $("#hudTarget").textContent = "@" + state.handle;
     const [name, n] = rarity(state.handle);
     $$("[data-rarity]").forEach(el => {
@@ -1222,18 +1259,18 @@
   async function check() {
     const h = state.handle, mine = ++seq;
     state.avail = null;
-    if (!h) { setStatus("", "3 to 20 letters, numbers or _"); return renderBoard(); }
-    if (h.length < 3) { setStatus("", `${3 - h.length} more to go`); return renderBoard(); }
-    setStatus("wait", "checking…");
+    if (!h) { setStatus("", "da 3 a 20 tra lettere, numeri o _"); return renderBoard(); }
+    if (h.length < 3) { setStatus("", `ancora ${3 - h.length}`); return renderBoard(); }
+    setStatus("wait", "controllo…");
     try {
       const { db, fs } = await firebase();
       const snap = await fs.getDoc(fs.doc(db, "usernames", h));
       if (mine !== seq) return;
       state.avail = !snap.exists();
-      state.avail ? setStatus("ok", `@${h} is available`) : setStatus("no", `@${h} is taken`);
+      state.avail ? setStatus("ok", `@${h} è libera`) : setStatus("no", `@${h} è già presa`);
     } catch (_) {
       if (mine !== seq) return;
-      setStatus("", "can't check now, we'll check at sign up");
+      setStatus("", "non riesco a controllare ora, lo vediamo all'iscrizione");
     }
     renderBoard();
   }
@@ -1251,7 +1288,7 @@
     if (!HANDLE_RE.test(state.handle) || state.avail === false) {
       bar.classList.remove("shake"); void bar.offsetWidth; bar.classList.add("shake");
       input.focus();
-      if (!state.handle) setStatus("", "type the @ you want first");
+      if (!state.handle) setStatus("", "prima scrivi la @ che vuoi");
       return;
     }
     location.href = "login.html?handle=" + encodeURIComponent(state.handle);
@@ -1269,7 +1306,7 @@
     state.mood = m;
     root.dataset.mood = m;
     $$("button[data-mood]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mood === m));
-    $("#hudMood").textContent = m;
+    $("#hudMood").textContent = { smoke: "fumo", dither: "dither", ascii: "ascii" }[m];
     fx.setMood(m);
     if (save) store.set("sigari-mood", m);
   }
@@ -1386,7 +1423,7 @@
   const odoEl = $("#odo");
   let views = 12480, odoLen = 0;
   function setOdo(n) {
-    const s = n.toLocaleString("en-US");
+    const s = n.toLocaleString("it-IT");
     if (s.length !== odoLen) {
       odoLen = s.length;
       odoEl.innerHTML = [...s].map(c => /\d/.test(c) ? `<span class="d"><span>${"0123456789".split("").map(d => `<i>${d}</i>`).join("")}</span></span>` : `<span class="c">${c}</span>`).join("");
@@ -1394,16 +1431,16 @@
     [...s].forEach((c, i) => { const strip = odoEl.children[i].firstElementChild; if (strip) strip.style.transform = `translateY(-${+c}em)`; });
   }
   setOdo(views);
-  const FEED = [["view", "new visitor from tiktok"], ["click", "Latest release"], ["tap", "instagram"], ["play", "smoke signals"], ["like", "+1 on your page"], ["copy", "link copied"], ["view", "new visitor from discord"], ["share", "sent to a friend"], ["tap", "spotify"], ["click", "Portfolio"]];
+  const FEED = [["visita", "nuovo visitatore da tiktok"], ["clic", "Ultima uscita"], ["tap", "instagram"], ["play", "smoke signals"], ["like", "+1 alla tua pagina"], ["copia", "link copiato"], ["visita", "nuovo visitatore da discord"], ["invio", "mandato a un amico"], ["tap", "spotify"], ["clic", "Portfolio"]];
   const feed = $("#feed");
   let fi = 0, statsOn = false, statsTimer = 0;
   function pushFeed() {
     const [k, t] = FEED[fi++ % FEED.length];
     const li = document.createElement("li");
-    li.innerHTML = `<em>${k}</em><span>${t}</span><small>now</small>`;
+    li.innerHTML = `<em>${k}</em><span>${t}</span><small>adesso</small>`;
     feed.prepend(li);
     [...feed.children].forEach((el, i) => { if (i) el.querySelector("small").textContent = i * 3 + "s"; if (i > 5) el.remove(); });
-    if (k === "view") { views += 1 + ((Math.random() * 3) | 0); setOdo(views); }
+    if (k === "visita") { views += 1 + ((Math.random() * 3) | 0); setOdo(views); }
   }
   for (let i = 0; i < 5; i++) pushFeed();
   const statsLoop = () => { if (!statsOn) return; pushFeed(); statsTimer = setTimeout(statsLoop, 1400 + Math.random() * 1600); };
@@ -1420,10 +1457,10 @@
   function renderSlots() {
     const box = $("#slots");
     box.innerHTML = slots.map((s, i) => s
-      ? `<button class="slot${i === primary ? " prim" : ""}" type="button" data-slot="${i}" aria-pressed="${i === primary}" title="Make primary"><b>${s.tag}</b><small>${i === primary ? "primary" : "set primary"}</small><span class="x" data-remove="${i}" role="button" aria-label="Leave ${s.tag}">×</span></button>`
-      : `<div class="slot empty">empty slot</div>`).join("");
+      ? `<button class="slot${i === primary ? " prim" : ""}" type="button" data-slot="${i}" aria-pressed="${i === primary}" title="Rendi primario"><b>${s.tag}</b><small>${i === primary ? "primario" : "rendi primario"}</small><span class="x" data-remove="${i}" role="button" aria-label="Esci da ${s.tag}">×</span></button>`
+      : `<div class="slot empty">slot libero</div>`).join("");
     const used = slots.filter(Boolean).length;
-    $("#slotCount").textContent = `${used} / 3 slots`;
+    $("#slotCount").textContent = `${used} / 3 slot`;
     const p = slots[primary];
     $("#primTag").hidden = !p;
     if (p) $("#primTag").textContent = p.tag;
@@ -1444,15 +1481,15 @@
     e.preventDefault();
     const t = $("#tagIn").value, msg = $("#tagMsg");
     const say = (k, s) => { msg.className = "cl-msg " + k; msg.textContent = s; };
-    if (t.length < 2) return say("no", "2 to 4 letters or numbers.");
-    if (slots.some(s => s && s.tag === t)) return say("no", `You already wear [${t}].`);
-    if (TAKEN.includes(t)) return say("no", `[${t}] is reserved by another clan. Ask them for an invite.`);
+    if (t.length < 2) return say("no", "Da 2 a 4 lettere o numeri.");
+    if (slots.some(s => s && s.tag === t)) return say("no", `Hai già [${t}].`);
+    if (TAKEN.includes(t)) return say("no", `[${t}] è già riservata da un altro clan. Chiedi a loro un invito.`);
     const free = slots.indexOf(null);
-    if (free < 0) return say("no", "All 3 slots are full. Leave a clan first.");
+    if (free < 0) return say("no", "Hai già 3 slot pieni. Prima esci da un clan.");
     slots[free] = { tag: t, name: t.toLowerCase() };
     TAKEN.push(t);
     $("#tagIn").value = "";
-    say("ok", `[${t}] is yours in this demo. Make it primary to show it on your name.`);
+    say("ok", `[${t}] è tua in questa demo. Rendila primaria per vederla sul tuo nome.`);
     renderSlots();
   });
   renderSlots();
@@ -1463,8 +1500,8 @@
   };
   function renderLB(kind) {
     $("#lb").innerHTML = LB[kind].map((r, i) => kind === "profiles"
-      ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span><span class="ctag tagc">${r[1]}</span><span class="vw">${r[2].toLocaleString("en-US")}</span></li>`
-      : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]} <small style="color:#555">· ${r[3]} members</small></span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("en-US")}</span></li>`).join("");
+      ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span><span class="ctag tagc">${r[1]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`
+      : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]} <small style="color:#555">· ${r[3]} membri</small></span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`).join("");
   }
   $$("[data-lb]").forEach(b => b.addEventListener("click", () => {
     $$("[data-lb]").forEach(o => o.setAttribute("aria-pressed", o === b));
@@ -1474,9 +1511,9 @@
 
   /* ---------- Partners: link presets + partner wall ---------- */
   const INVITE = "https://discord.gg/ECF4vzWKz";
-  const DOMAINS = [["sigari.bio", "default"], ["sigari.gin", "partner"], ["sollary.gin", "partner"], ["sollary.gg", "partner"]];
-  const FORMATS = [["/@", "/@name"], ["/", "/name"], ["sub", "name.domain"]];
-  const EMBEDS = ["classic", "banner", "mono"];
+  const DOMAINS = [["sigari.bio", "predefinito"], ["sigari.gin", "partner"], ["sollary.gin", "partner"], ["sollary.gg", "partner"]];
+  const FORMATS = [["/@", "/@nome"], ["/", "/nome"], ["sub", "nome.dominio"]];
+  const EMBEDS = ["classica", "banner", "mono"];
   const pt = { domain: 0, format: 0, embed: 0 };
   const chipRow = (el, items, key) => {
     el.innerHTML = items.map((it, i) => `<button class="chip" type="button" data-i="${i}" aria-pressed="${pt[key] === i}">${it}</button>`).join("");
@@ -1486,7 +1523,7 @@
   chipRow($("#ptFormat"), FORMATS.map(f => f[1]), "format");
   chipRow($("#ptEmbed"), EMBEDS, "embed");
   const linkText = () => {
-    const h = state.handle || "you", d = DOMAINS[pt.domain][0], f = FORMATS[pt.format][0];
+    const h = state.handle || "tuonome", d = DOMAINS[pt.domain][0], f = FORMATS[pt.format][0];
     return f === "sub" ? [`${h}.`, d, true] : [d + f, h, false];
   };
   function renderLink() {
@@ -1497,17 +1534,17 @@
   }
   $("#ptCopy").addEventListener("click", async () => {
     const [a, b] = linkText(), url = "https://" + a + b, btn = $("#ptCopy");
-    try { await navigator.clipboard.writeText(url); btn.textContent = "Copied"; }
-    catch (_) { btn.textContent = "Select it"; }
-    setTimeout(() => { btn.textContent = "Copy"; }, 1600);
+    try { await navigator.clipboard.writeText(url); btn.textContent = "Copiato"; }
+    catch (_) { btn.textContent = "Selezionalo"; }
+    setTimeout(() => { btn.textContent = "Copia"; }, 1600);
   });
   // Partner list: add real partner servers here
-  const PARTNERS = [{ name: "Sigari & Gin", role: "owner", domain: "sigari.gin", mark: "S&G", href: INVITE }];
+  const PARTNERS = [{ name: "Sigari & Gin", role: "proprietario", domain: "sigari.gin", mark: "S&G", href: INVITE }];
   const OPEN_SLOTS = 3;
-  $("#ptWall").innerHTML = PARTNERS.map((p, i) => `<a class="pc2 rv" style="--d:${i * .06}s" href="${p.href}" target="_blank" rel="noopener"><span class="lg">${p.mark}</span><b>${p.name}</b><small>${p.role}</small><span class="dm">${p.domain}/<span data-at>@you</span></span></a>`).join("")
-    + Array.from({ length: OPEN_SLOTS }, (_, i) => `<a class="pc2 open rv" style="--d:${(PARTNERS.length + i) * .06}s" href="${INVITE}" target="_blank" rel="noopener"><span class="lg">+</span><b>Your server</b><small>open partner slot</small><span class="dm">yourserver.gg/<span data-at>@you</span></span></a>`).join("");
+  $("#ptWall").innerHTML = PARTNERS.map((p, i) => `<a class="pc2 rv" style="--d:${i * .06}s" href="${p.href}" target="_blank" rel="noopener"><span class="lg">${p.mark}</span><b>${p.name}</b><small>${p.role}</small><span class="dm">${p.domain}/<span data-at>@tuonome</span></span></a>`).join("")
+    + Array.from({ length: OPEN_SLOTS }, (_, i) => `<a class="pc2 open rv" style="--d:${(PARTNERS.length + i) * .06}s" href="${INVITE}" target="_blank" rel="noopener"><span class="lg">+</span><b>Il tuo server</b><small>posto partner libero</small><span class="dm">tuoserver.gg/<span data-at>@tuonome</span></span></a>`).join("");
   $$("#ptWall .rv").forEach(el => io.observe(el));
-  $$("#ptWall [data-at]").forEach(el => el.textContent = "@" + (state.handle || "you"));
+  $$("#ptWall [data-at]").forEach(el => el.textContent = "@" + (state.handle || "tuonome"));
   renderLink();
 
   /* ---------- Build showcase ---------- */
@@ -1515,8 +1552,10 @@
   function applyPreset(p) {
     Object.entries(p).forEach(([k, v]) => { phone.dataset[k] = v; });
     $$(".chips").forEach(c => c.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", phone.dataset[c.dataset.key] === ch.dataset.v)));
-    const btnName = ["solid", "outline", "glass", "shadow"][+phone.dataset.btn];
-    $("#stageInfo").textContent = `${phone.dataset.layout} · ${phone.dataset.bg === "lava" ? "smoke" : phone.dataset.bg} · ${btnName}`;
+    const btnName = ["pieno", "contorno", "vetro", "ombra"][+phone.dataset.btn];
+    const lay = { classic: "classico", banner: "banner", terminal: "terminale" }[phone.dataset.layout];
+    const bg = { lava: "fumo", dither: "dither", none: "niente" }[phone.dataset.bg];
+    $("#stageInfo").textContent = `${lay} · ${bg} · ${btnName}`;
   }
   $$(".chips").forEach(c => c.addEventListener("click", e => {
     const ch = e.target.closest(".chip"); if (!ch) return;
@@ -1536,7 +1575,7 @@
     stage.addEventListener("pointerleave", () => { phone.style.setProperty("--ry", "0deg"); phone.style.setProperty("--rx", "0deg"); });
   }
 
-  const LINES = ["discord.gg/ECF4vzWKz", "black, white and loud", "rate my page", "smoke & gin"];
+  const LINES = ["discord.gg/ECF4vzWKz", "nero, bianco e senza filtri", "vota la mia pagina", "fumo & gin"];
   if (!reduce) {
     const el = $("#typed"); let li = 0, ci = LINES[0].length, deleting = true;
     const loop = () => {

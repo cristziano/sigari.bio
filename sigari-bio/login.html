@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>sigari.bio · Claim your @</title>
+<title>sigari.bio · Prendi la tua @</title>
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,14 +74,14 @@
 <body>
 
 <div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
-<div class="loading" id="loading">Loading…</div>
+<div class="loading" id="loading">Caricamento…</div>
 
 <section class="auth hidden" id="auth">
   <div class="wrap">
     <a class="logo" href="index.html">sigari<span>.bio</span></a>
-    <a class="back" href="index.html">&larr; Back to home</a>
-    <h1 id="authTitle">Claim your @.</h1>
-    <p class="sub" id="authSub">Already have an account? <a id="toggleMode">Log in</a></p>
+    <a class="back" href="index.html">&larr; Torna alla home</a>
+    <h1 id="authTitle">Prendi la tua @.</h1>
+    <p class="sub" id="authSub">Hai già un account? <a id="toggleMode">Accedi</a></p>
 
     <div class="social">
       <button class="btn-ghost" id="btnDiscord" type="button">
@@ -94,36 +94,36 @@
       </button>
     </div>
 
-    <div class="divider">OR WITH EMAIL</div>
+    <div class="divider">OPPURE CON EMAIL</div>
 
     <form id="authForm" novalidate>
-      <div class="field" id="usernameWrap"><span class="pre">sigari.bio/<b>@</b></span><input id="username" type="text" placeholder="yourname" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Username"></div>
-      <div class="hint" id="usernameHint">Claimed now. Unlocked when you're let in.</div>
+      <div class="field" id="usernameWrap"><span class="pre">sigari.bio/<b>@</b></span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
+      <div class="hint" id="usernameHint">La prendi adesso. Si sblocca quando entri.</div>
 
       <div class="field">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-        <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
+        <input id="email" type="email" placeholder="tu@email.com" autocomplete="email">
       </div>
 
       <div class="field">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         <input id="password" type="password" placeholder="Password" autocomplete="new-password">
-        <button class="eye" type="button" data-target="password" aria-label="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="eye" type="button" data-target="password" aria-label="Mostra password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
 
       <div class="field" id="confirmWrap">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        <input id="confirm" type="password" placeholder="Confirm password" autocomplete="new-password">
-        <button class="eye" type="button" data-target="confirm" aria-label="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <input id="confirm" type="password" placeholder="Conferma password" autocomplete="new-password">
+        <button class="eye" type="button" data-target="confirm" aria-label="Mostra password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
 
-      <button class="primary" id="submitBtn" type="submit">Sign up &rarr;</button>
+      <button class="primary" id="submitBtn" type="submit">Iscriviti &rarr;</button>
     </form>
 
     <div class="status" id="authStatus"></div>
   </div>
 
-  <footer class="footer">Built by the devs at Sigari &amp; Gin, all rights reserved.</footer>
+  <footer class="footer">Fatto dai dev di Sigari &amp; Gin, tutti i diritti riservati.</footer>
 </section>
 
 <script type="module">
@@ -148,9 +148,9 @@
   const DISCORD_PROVIDER_ID = "oidc.discord";
   const DEFAULT_APPEARANCE = { theme: "pure", effect: "lava", intensity: 80, cursor: "default", buttons: { variant: "solid", palette: "white", shape: "rounded", shadow: "none", hover: "none" } };
   const DEFAULT_LINKS = [
-    { title: "Latest release", url: "#" },
+    { title: "Ultima uscita", url: "#" },
     { title: "Portfolio", url: "#" },
-    { title: "Contact", url: "#" }
+    { title: "Contatti", url: "#" }
   ];
   const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
 
@@ -176,28 +176,28 @@
 
   function friendly(err) {
     const map = {
-      "auth/email-already-in-use": "This email already has an account. Try logging in.",
-      "auth/invalid-credential": "Wrong email or password.",
-      "auth/invalid-email": "That email address looks invalid.",
-      "auth/weak-password": "Password must be at least 8 characters.",
-      "auth/popup-closed-by-user": "Sign-in was cancelled.",
-      "auth/account-exists-with-different-credential": "This email is already linked to another sign-in method.",
-      "auth/network-request-failed": "Network error. Check your connection.",
-      "USERNAME_TAKEN": "That username is already claimed."
+      "auth/email-already-in-use": "Questa email ha già un account. Prova ad accedere.",
+      "auth/invalid-credential": "Email o password sbagliate.",
+      "auth/invalid-email": "Questo indirizzo email non sembra valido.",
+      "auth/weak-password": "La password deve avere almeno 8 caratteri.",
+      "auth/popup-closed-by-user": "Accesso annullato.",
+      "auth/account-exists-with-different-credential": "Questa email è già collegata a un altro metodo di accesso.",
+      "auth/network-request-failed": "Errore di rete. Controlla la connessione.",
+      "USERNAME_TAKEN": "Questa @ è già presa."
     };
-    return map[err.code] || map[err.message] || err.message || "Something went wrong.";
+    return map[err.code] || map[err.message] || err.message || "Qualcosa è andato storto.";
   }
 
   function setMode(m) {
     mode = m;
     const signup = m === "signup";
-    $("authTitle").textContent = signup ? "Claim your @." : "Welcome back.";
-    $("authSub").firstChild.textContent = signup ? "Already have an account? " : "New here? ";
-    $("toggleMode").textContent = signup ? "Log in" : "Sign up";
+    $("authTitle").textContent = signup ? "Prendi la tua @." : "Eccoti di nuovo.";
+    $("authSub").firstChild.textContent = signup ? "Hai già un account? " : "Sei nuovo? ";
+    $("toggleMode").textContent = signup ? "Accedi" : "Iscriviti";
     $("usernameWrap").classList.toggle("hidden", !signup);
     $("usernameHint").classList.toggle("hidden", !signup);
     $("confirmWrap").classList.toggle("hidden", !signup);
-    $("submitBtn").innerHTML = signup ? "Sign up &rarr;" : "Log in &rarr;";
+    $("submitBtn").innerHTML = signup ? "Iscriviti &rarr;" : "Accedi &rarr;";
     $("authStatus").className = "status";
   }
 
@@ -241,12 +241,12 @@
     const pw2 = $("confirm").value;
 
     if (mode === "signup") {
-      if (!HANDLE_RE.test(handle)) return authErr("Username: 3 to 20 letters, numbers or underscores.");
-      if (!email) return authErr("Enter your email.");
-      if (pw.length < 8) return authErr("Password must be at least 8 characters.");
-      if (pw !== pw2) return authErr("Passwords do not match.");
+      if (!HANDLE_RE.test(handle)) return authErr("La @: da 3 a 20 tra lettere, numeri o trattini bassi.");
+      if (!email) return authErr("Scrivi la tua email.");
+      if (pw.length < 8) return authErr("La password deve avere almeno 8 caratteri.");
+      if (pw !== pw2) return authErr("Le password non coincidono.");
     } else if (!email || !pw) {
-      return authErr("Enter your email and password.");
+      return authErr("Scrivi email e password.");
     }
 
     setBusy(true);
@@ -280,7 +280,7 @@
       if (!exists) {
         if (!HANDLE_RE.test(handle)) {
           await signOut(auth);
-          throw new Error("Choose a username first, then continue with this provider.");
+          throw new Error("Prima scegli la tua @, poi continua con questo account.");
         }
         try {
           await claimHandle(cred.user.uid, handle, { email: cred.user.email || null, provider: provider.providerId });
@@ -304,7 +304,7 @@
   });
 
   $("btnDiscord").addEventListener("click", () => {
-    if (!DISCORD_ENABLED) return authErr("Discord login is not configured yet.");
+    if (!DISCORD_ENABLED) return authErr("L'accesso con Discord non è ancora attivo.");
     const provider = new OAuthProvider(DISCORD_PROVIDER_ID);
     provider.addScope("identify");
     provider.addScope("email");
@@ -336,8 +336,8 @@
   const preset = (params.get("handle") || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
   if (preset) {
     $("username").value = preset;
-    $("authTitle").textContent = "Claim @" + preset + ".";
-    $("usernameHint").textContent = "Finish signing up to lock it.";
+    $("authTitle").textContent = "Prendi @" + preset + ".";
+    $("usernameHint").textContent = "Completa l'iscrizione per bloccarla.";
   }
   $("username").addEventListener("input", e => {
     const v = e.target.value.toLowerCase().replace(/^@+/, "").replace(/[^a-z0-9_]/g, "");
