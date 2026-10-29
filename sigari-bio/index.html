@@ -168,6 +168,117 @@
   @media (max-width:900px){ .hl { grid-template-columns:1fr 1fr; } }
   @media (max-width:520px){ .hl { grid-template-columns:1fr; } .hl-c.big { grid-column:auto; grid-row:auto; } .hl-c { min-height:0; } .hl-c.wide { display:block; } .hl-c.wide h3 { margin-top:28px; } .hl-c.wide p { margin-top:8px; } }
 
+  /* Stats */
+  .stx { display:grid; grid-template-columns:1.25fr 1fr; gap:12px; margin-top:44px; }
+  .stx-main, .stx-card, .cl-card, .pt-builder { border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:20px; }
+  .stx-main { display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .stx-h { display:flex; justify-content:space-between; align-items:center; gap:10px; font:400 11px var(--mono); color:#6a6a6a; }
+  .stx-h b { color:#ddd; font-weight:500; }
+  .pulse { display:inline-block; width:6px; height:6px; margin-right:8px; border-radius:50%; background:#fff; box-shadow:0 0 10px #fff; animation:tick 1.2s steps(1) infinite; }
+  .odo { display:flex; margin-top:36px; font:700 clamp(56px, 8.4vw, 128px)/1 var(--sans); letter-spacing:-.06em; font-variant-numeric:tabular-nums; }
+  .odo .d { display:inline-block; height:1em; overflow:hidden; }
+  .odo .d > span { display:flex; flex-direction:column; transition:transform 1.1s var(--ease); }
+  .odo .d i { font-style:normal; height:1em; }
+  .odo .c { display:inline-block; }
+  .stx-l { margin-top:8px; font:400 12px var(--mono); color:#777; }
+  .stx-spark { width:100%; height:110px; margin-top:auto; padding-top:20px; }
+  .stx-spark .ln { fill:none; stroke:#fff; stroke-width:2; stroke-dasharray:1000; stroke-dashoffset:1000; transition:stroke-dashoffset 2.4s var(--ease); }
+  .in .stx-spark .ln { stroke-dashoffset:0; }
+  .stx-chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; font:400 11.5px var(--mono); color:#777; }
+  .stx-chips span { padding:5px 9px; border:1px solid var(--line); border-radius:6px; }
+  .stx-chips b { color:#fff; font-weight:500; }
+  .stx-side { display:grid; gap:12px; }
+  .ix { list-style:none; margin-top:14px; display:grid; gap:9px; }
+  .ix li, .src-row { display:grid; grid-template-columns:130px 1fr 54px; align-items:center; gap:10px; font-size:13px; color:#cfcfcf; }
+  .ix i, .src-row i { position:relative; height:4px; border-radius:2px; background:#1c1c1c; overflow:hidden; }
+  .ix i::after, .src-row i::after { content:""; position:absolute; inset:0; width:var(--w); background:#fff; transform:scaleX(0); transform-origin:left; transition:transform 1.4s var(--ease); }
+  .in .ix i::after, .in.src-row i::after, .in .src-row i::after { transform:scaleX(1); }
+  .ix b, .src-row b { font:500 12.5px var(--mono); text-align:right; }
+  .feed { list-style:none; margin-top:12px; display:grid; gap:6px; min-height:168px; font:400 12.5px var(--mono); }
+  .feed li { display:grid; grid-template-columns:62px 1fr auto; gap:8px; align-items:center; color:#cfcfcf; animation:feedIn .6s var(--ease); }
+  .feed li em { font-style:normal; color:#000; background:#fff; border-radius:4px; padding:1px 6px; font-size:10.5px; text-align:center; }
+  .feed li small { color:#555; }
+  .feed li:nth-child(n+2) { opacity:.7; } .feed li:nth-child(n+4) { opacity:.4; }
+  @keyframes feedIn { from { opacity:0; transform:translateY(-8px); } }
+  .stx-src { grid-column:1 / -1; display:grid; grid-template-columns:repeat(4, 1fr) ; gap:10px 24px; }
+  .stx-src .stx-h { grid-column:1 / -1; }
+  .src-row { grid-template-columns:70px 1fr 40px; }
+  @media (max-width:900px){ .stx { grid-template-columns:1fr; } .stx-src { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px){ .stx-src { grid-template-columns:1fr; } .ix li { grid-template-columns:110px 1fr 48px; } }
+
+  /* Clans + leaderboard */
+  .cl { display:grid; grid-template-columns:1fr 1.1fr; gap:12px; margin-top:44px; }
+  @media (max-width:900px){ .cl { grid-template-columns:1fr; } }
+  .cl-id { display:flex; align-items:center; gap:14px; margin-top:22px; padding:16px; border-radius:12px; background:#050505; border:1px solid var(--line); }
+  .cl-id .av { width:48px; height:48px; font-size:20px; }
+  .cl-name { font:500 18px var(--mono); display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow-wrap:anywhere; }
+  .cl-id small { display:block; margin-top:2px; font:400 11px var(--mono); color:#5e5e5e; }
+  .ctag { display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:5px; font:600 11px var(--mono); letter-spacing:.06em; border:1px solid var(--line2); color:#ddd; }
+  .ctag::before { content:"["; color:#666; margin-right:1px; } .ctag::after { content:"]"; color:#666; margin-left:1px; }
+  .ctag.prim { background:#fff; color:#000; border-color:#fff; box-shadow:0 0 18px rgba(255,255,255,.35); }
+  .ctag.prim::before, .ctag.prim::after { color:#777; }
+  .slots { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; }
+  .slot { position:relative; height:74px; border-radius:10px; border:1px solid var(--line2); background:none; cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:10px 12px; text-align:left; transition:border-color .25s, background .25s; }
+  .slot:hover { border-color:#fff; }
+  .slot b { font:600 16px var(--mono); letter-spacing:.06em; }
+  .slot small { font:400 10.5px var(--mono); color:#6a6a6a; }
+  .slot.prim { background:#fff; color:#000; border-color:#fff; }
+  .slot.prim small { color:#555; }
+  .slot.empty { border-style:dashed; cursor:default; color:#555; justify-content:center; align-items:center; }
+  .slot .x { position:absolute; right:6px; top:4px; border:0; background:none; color:inherit; opacity:.5; cursor:pointer; font:400 14px var(--mono); padding:2px 4px; }
+  .slot .x:hover { opacity:1; }
+  .cl-add { display:flex; align-items:center; gap:6px; margin-top:12px; height:46px; padding:4px 4px 4px 14px; border:1px solid var(--line2); border-radius:10px; }
+  .cl-add input { flex:1; width:0; min-width:0; background:none; border:0; outline:0; font:600 15px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+  .cl-add .btn { height:36px; }
+  .cl-msg { margin-top:8px; min-height:18px; font:400 11.5px var(--mono); color:#6a6a6a; }
+  .cl-msg.ok { color:#fff; } .cl-msg.no { color:#ff8f8f; }
+  .rules { list-style:none; margin-top:16px; padding-top:14px; border-top:1px dashed var(--line); display:grid; gap:6px; font-size:13px; color:#9a9a9a; }
+  .rules b { color:#fff; font-family:var(--mono); font-weight:500; margin-right:4px; }
+  .lb-list { list-style:none; margin-top:14px; counter-reset:r; }
+  .lb-list li { display:grid; grid-template-columns:28px 34px 1fr auto 70px; align-items:center; gap:10px; padding:9px 6px; border-bottom:1px dashed rgba(255,255,255,.06); font-size:13.5px; animation:feedIn .5s var(--ease) both; animation-delay:calc(var(--i) * 40ms); }
+  .lb-list li:nth-child(-n+3) .rk { color:#000; background:#fff; }
+  .lb-list .rk { font:500 11px var(--mono); color:#777; text-align:center; border-radius:4px; padding:2px 0; }
+  .lb-list .av { width:30px; height:30px; font-size:12px; }
+  .lb-list .nm { font-family:var(--mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-list .vw { font:500 12.5px var(--mono); text-align:right; }
+  .lb-list .tagc { justify-self:end; }
+  .lb-foot { display:flex; justify-content:space-between; margin-top:12px; font:400 11px var(--mono); color:#555; }
+  @media (max-width:520px){ .lb-list li { grid-template-columns:24px 1fr auto 56px; } .lb-list .av { display:none; } }
+
+  /* Partners */
+  .pt > *, .stx > *, .cl > *, .stx-side > * { min-width:0; }
+  .pt { display:grid; grid-template-columns:1.15fr 1fr; gap:12px; margin-top:44px; }
+  @media (max-width:900px){ .pt { grid-template-columns:1fr; } }
+  .pt-link { display:flex; align-items:center; gap:10px; margin-top:16px; padding:6px 6px 6px 16px; min-height:64px; border-radius:12px; background:#050505; border:1px solid var(--line2); }
+  .pt-link span { flex:1; min-width:0; font-size:clamp(17px, 2.2vw, 24px); overflow-wrap:anywhere; color:#7a7a7a; }
+  .pt-link span b { color:#fff; font-weight:500; }
+  .pt-row { display:grid; grid-template-columns:70px 1fr; gap:10px; align-items:start; margin-top:14px; }
+  .pt-row .chips { margin-top:0; }
+  .pt-k { font:400 11px var(--mono); color:#6a6a6a; padding-top:9px; }
+  .pt-prev { margin-top:18px; padding:16px; border-radius:12px; background:#0d0d0d; border:1px solid var(--line); }
+  .pt-emb { display:flex; justify-content:space-between; gap:12px; padding:12px 14px; border-radius:6px; border-left:3px solid #fff; background:#151515; transition:all .4s var(--ease); }
+  .pt-emb small { font-size:11.5px; color:#8a8a8a; } .pt-emb b { display:block; margin-top:3px; overflow-wrap:anywhere; } .pt-emb p { margin-top:3px; font-size:13px; color:#b5b5b5; }
+  .pt-emb .av { width:56px; height:56px; border-radius:9px; font-size:22px; }
+  .pt-prev[data-embed="banner"] .pt-emb { flex-direction:column-reverse; border-left:0; padding:0 0 12px; overflow:hidden; }
+  .pt-prev[data-embed="banner"] .pt-emb > div:first-child { padding:0 14px; }
+  .pt-prev[data-embed="banner"] .pt-emb .av { width:100%; height:110px; border-radius:0; font-size:56px; background:linear-gradient(135deg, #3a3a3a, #050505 70%); }
+  .pt-prev[data-embed="mono"] .pt-emb { font-family:var(--mono); background:#000; border:1px solid #fff; border-radius:2px; }
+  .pt-prev[data-embed="mono"] .pt-emb b::before { content:"> "; color:#666; }
+  .pt-prev[data-embed="mono"] .pt-emb .av { border-radius:2px; background:#fff; color:#000; }
+  .pt-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .pc2 { border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:18px; min-height:150px; display:flex; flex-direction:column; transition:border-color .3s; }
+  .pc2:hover { border-color:var(--line2); }
+  .pc2 .lg { width:42px; height:42px; border-radius:10px; display:grid; place-items:center; font:700 15px var(--sans); background:#fff; color:#000; }
+  .pc2 b { margin-top:14px; font-size:15px; }
+  .pc2 small { font:400 11px var(--mono); color:#6a6a6a; }
+  .pc2 .dm { margin-top:auto; padding-top:12px; font:500 12.5px var(--mono); color:#ddd; }
+  .pc2.open { border-style:dashed; color:#666; }
+  .pc2.open .lg { background:none; border:1px dashed #444; color:#555; }
+  .pt-cta { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:12px; padding:16px 16px 16px 18px; border-radius:14px; border:1px solid var(--line2); background:linear-gradient(90deg, #111, #070707); font-size:14px; color:#aaa; transition:border-color .3s; }
+  .pt-cta:hover { border-color:#fff; }
+  .pt-cta b { color:#fff; font-weight:600; }
+  @media (max-width:520px){ .pt-cta { flex-direction:column; align-items:flex-start; } .pt-row { grid-template-columns:1fr; gap:6px; } .pt-k { padding-top:0; } }
+
   /* Build showcase (sticky) */
   .show { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(24px, 5vw, 80px); margin-top:44px; }
   .stage { position:sticky; top:84px; height:calc(100svh - 120px); max-height:760px; min-height:620px; display:grid; place-items:center; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#050505; }
@@ -352,8 +463,9 @@
   <a class="logo" href="#top" aria-label="sigari.bio home"><i></i>sigari<span>.bio</span></a>
   <nav class="links" aria-label="Sections">
     <a href="#index">features</a>
-    <a href="#build">build</a>
-    <a href="#share">share</a>
+    <a href="#stats">stats</a>
+    <a href="#clans">clans</a>
+    <a href="#partners">partners</a>
     <a href="#plans">plans</a>
   </nav>
   <div class="nav-r">
@@ -431,10 +543,101 @@
     </div>
   </section>
 
+  <!-- STATS -->
+  <section class="s" id="stats">
+    <div class="wrap">
+      <div class="sh rv"><span class="no">02 / stats</span><div>
+        <h2 class="h2">Every view counts. <span class="g">Literally.</span></h2>
+        <p class="sub">A public view counter on your page, and behind it every interaction: who opened it, what they clicked, what they played, where they came from.</p>
+      </div></div>
+      <div class="stx">
+        <div class="stx-main rv">
+          <div class="stx-h"><span><i class="pulse"></i>live · <b data-at>@you</b></span><span>example data</span></div>
+          <div class="odo" id="odo" aria-live="off"></div>
+          <div class="stx-l">profile views</div>
+          <svg class="stx-spark" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8 L600,120 L0,120 Z" fill="url(#sg)"/>
+            <path class="ln" d="M0,100 C40,96 70,80 110,84 S170,100 210,86 S270,50 310,58 S370,82 410,60 S480,22 520,28 S580,12 600,8"/>
+          </svg>
+          <div class="stx-chips"><span>today <b>+214</b></span><span>this week <b>+1,902</b></span><span>unique <b>8,311</b></span></div>
+        </div>
+        <div class="stx-side">
+          <div class="stx-card rv" style="--d:.06s">
+            <div class="stx-h"><span>interactions</span><span>7 days</span></div>
+            <ul class="ix">
+              <li><span>link clicks</span><i style="--w:92%"></i><b>3,204</b></li>
+              <li><span>social taps</span><i style="--w:60%"></i><b>1,877</b></li>
+              <li><span>music plays</span><i style="--w:38%"></i><b>1,120</b></li>
+              <li><span>likes</span><i style="--w:31%"></i><b>932</b></li>
+              <li><span>link copies</span><i style="--w:22%"></i><b>642</b></li>
+              <li><span>shares</span><i style="--w:9%"></i><b>211</b></li>
+              <li><span>comments</span><i style="--w:4%"></i><b>87</b></li>
+              <li><span>avg. time on page</span><i style="--w:48%"></i><b>0:41</b></li>
+            </ul>
+          </div>
+          <div class="stx-card rv" style="--d:.12s">
+            <div class="stx-h"><span>feed</span><span>right now</span></div>
+            <ol class="feed" id="feed" aria-hidden="true"></ol>
+          </div>
+        </div>
+        <div class="stx-card stx-src rv">
+          <div class="stx-h"><span>where they come from</span><span>7 days</span></div>
+          <div class="src-row"><span>discord</span><i style="--w:46%"></i><b>46%</b></div>
+          <div class="src-row"><span>tiktok</span><i style="--w:28%"></i><b>28%</b></div>
+          <div class="src-row"><span>instagram</span><i style="--w:17%"></i><b>17%</b></div>
+          <div class="src-row"><span>direct</span><i style="--w:9%"></i><b>9%</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLANS + LEADERBOARD -->
+  <section class="s" id="clans">
+    <div class="wrap">
+      <div class="sh rv"><span class="no">03 / clans</span><div>
+        <h2 class="h2">Pick a side. <span class="g">Wear the tag.</span></h2>
+        <p class="sub">Start a clan and reserve its TAG, so nobody else can ever use it. Join up to 3 clans, then pick 1 as your primary group: that is the tag people see next to your name.</p>
+      </div></div>
+      <div class="cl">
+        <div class="cl-card rv">
+          <div class="stx-h"><span>your tags</span><span id="slotCount">2 / 3 slots</span></div>
+          <div class="cl-id">
+            <div class="av" data-initial>Y</div>
+            <div><div class="cl-name"><span data-at>@you</span> <span class="ctag prim" id="primTag">SGR</span></div><small>primary group shows next to your name</small></div>
+          </div>
+          <div class="slots" id="slots"></div>
+          <form class="cl-add" id="tagForm" novalidate>
+            <label class="sr-only" for="tagIn">Reserve a clan tag</label>
+            <span class="pre">[</span><input id="tagIn" maxlength="4" placeholder="TAG" autocomplete="off" spellcheck="false"><span class="pre">]</span>
+            <button class="btn" type="submit">Reserve</button>
+          </form>
+          <p class="cl-msg" id="tagMsg" aria-live="polite">2 to 4 letters or numbers. Try one.</p>
+          <ul class="rules">
+            <li><b>TAG</b> reserved for one clan only</li>
+            <li><b>3</b> tag slots per profile</li>
+            <li><b>1</b> primary group, the one on your name</li>
+          </ul>
+        </div>
+        <div class="cl-card lb rv" style="--d:.08s">
+          <div class="stx-h">
+            <span>leaderboard</span>
+            <div class="seg" role="group" aria-label="Leaderboard type">
+              <button type="button" data-lb="profiles" aria-pressed="true">profiles</button>
+              <button type="button" data-lb="clans" aria-pressed="false">clans</button>
+            </div>
+          </div>
+          <ol class="lb-list" id="lb"></ol>
+          <div class="lb-foot"><span>example data</span><span>ranked by views this week</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- BUILD -->
   <section class="s" id="build">
     <div class="wrap">
-      <div class="sh rv"><span class="no">02 / build</span><div>
+      <div class="sh rv"><span class="no">04 / build</span><div>
         <h2 class="h2">Same black and white. <span class="g">Never the same page twice.</span></h2>
         <p class="sub">Scroll and the page builds itself. Tap any option to try it. Options tagged soon are on the way.</p>
       </div></div>
@@ -455,7 +658,7 @@
                   <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></span>
                   <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15h15v4H3zM18 15h3v4h-3M7 11c0-2 2-2 2-4s-2-2-2-4M12 11c0-2 2-2 2-4s-2-2-2-4"/></svg></span>
                 </div>
-                <p class="p-bio"><span id="typed">discord.gg/sigari</span><span class="caret" aria-hidden="true"></span></p>
+                <p class="p-bio"><span id="typed">discord.gg/ECF4vzWKz</span><span class="caret" aria-hidden="true"></span></p>
                 <div class="p-soc" aria-hidden="true">
                   <span><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.4a18.3 18.3 0 0 0-6.4 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9-.2 13.5.2 18a19.9 19.9 0 0 0 6 3l1.3-2.1a12.8 12.8 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1L16.8 21a19.8 19.8 0 0 0 6-3c.5-5.2-.9-9.6-2.5-13.6zM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4z"/></svg></span>
                   <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor"/></svg></span>
@@ -516,10 +719,42 @@
     </div>
   </section>
 
+  <!-- PARTNERS -->
+  <section class="s" id="partners">
+    <div class="wrap">
+      <div class="sh rv"><span class="no">05 / partners</span><div>
+        <h2 class="h2">Your server, your link. <span class="g">For every member.</span></h2>
+        <p class="sub">Every partner server can put its own name on the links of its members' profiles. Same page, the name your community already knows. Then pick the format and the preview style from a set of presets.</p>
+      </div></div>
+      <div class="pt">
+        <div class="pt-builder rv">
+          <div class="stx-h"><span>share link</span><span>presets</span></div>
+          <div class="pt-link"><span id="ptLink" class="mono"></span><button class="btn" type="button" id="ptCopy" data-mag>Copy</button></div>
+          <div class="pt-row"><span class="pt-k">domain</span><div class="chips" id="ptDomain"></div></div>
+          <div class="pt-row"><span class="pt-k">format</span><div class="chips" id="ptFormat"></div></div>
+          <div class="pt-row"><span class="pt-k">preview</span><div class="chips" id="ptEmbed"></div></div>
+          <div class="pt-prev" id="ptPrev" data-embed="classic">
+            <div class="pt-emb">
+              <div style="min-width:0"><small id="ptSite">sigari.bio</small><b data-at>@you</b><p>links, socials, music and more</p></div>
+              <div class="av" data-initial>Y</div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-wall">
+          <div id="ptWall" class="pt-grid"></div>
+          <a class="pt-cta rv" href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">
+            <span><b>Run a server?</b> Become a partner and get your own link for every member.</span>
+            <span class="btn">Apply on Discord</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- SHARE -->
   <section class="s" id="share">
     <div class="wrap">
-      <div class="sh rv"><span class="no">03 / share</span><div>
+      <div class="sh rv"><span class="no">06 / share</span><div>
         <h2 class="h2">Drop it anywhere. <span class="g">It reads like your name.</span></h2>
         <p class="sub">Use the same @ you have on every app, so people find you on the first try. This is how your link looks once you claim it.</p>
       </div></div>
@@ -529,7 +764,7 @@
           <div class="dc"><div class="av" data-initial>Y</div><div style="min-width:0">
             <div class="dc-n"><span data-name>you</span><time>Today at 21:04</time></div>
             <div class="dc-m">new page, rate it <u data-url-full>https://sigari.bio/@you</u></div>
-            <div class="embed"><div style="min-width:0"><small>sigari.bio</small><b data-at>@you</b><p>discord.gg/sigari · links, music and more</p></div><div class="av" data-initial>Y</div></div>
+            <div class="embed"><div style="min-width:0"><small>sigari.bio</small><b data-at>@you</b><p>discord.gg/ECF4vzWKz · links, music and more</p></div><div class="av" data-initial>Y</div></div>
           </div></div>
         </div>
         <div class="shot rv" style="--d:.08s">
@@ -552,7 +787,7 @@
   <!-- PLANS + FAQ -->
   <section class="s" id="plans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">04 / plans</span><div>
+      <div class="sh rv"><span class="no">07 / plans</span><div>
         <h2 class="h2">Free now. <span class="g">Questions answered.</span></h2>
       </div></div>
       <div class="pf">
@@ -576,6 +811,8 @@
           <details><summary>What can my @ be?</summary><p>3 to 20 characters: lowercase letters, numbers and underscores. Each @ belongs to one account.</p></details>
           <details><summary>Can I change my @ later?</summary><p>Not for now. A claimed @ is locked to your account, so pick carefully.</p></details>
           <details><summary>How do I sign up?</summary><p>With Google, or with email and password. Discord login is coming.</p></details>
+          <details><summary>How do clans work?</summary><p>A clan reserves a TAG of 2 to 4 letters or numbers that no one else can use. You can wear up to 3 tags, and pick 1 primary group: that tag shows next to your name.</p></details>
+          <details><summary>How does my server become a partner?</summary><p>Ask on our <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener" style="text-decoration:underline">Discord</a>. Partner servers get their own link for every member, like sigari.gin/@name.</p></details>
           <details><summary>What are moods?</summary><p>The same black and white look in three textures: smoke, dither and ASCII. Try them at the top of this page.</p></details>
         </div>
       </div>
@@ -608,7 +845,7 @@
 <footer>
   <div class="foot">
     <span>Built by the devs at Sigari &amp; Gin, all rights reserved.</span>
-    <nav aria-label="Footer"><a href="login.html?mode=login">log in</a><a href="#top" data-focus-claim>claim</a><a href="https://discord.gg/sigari" target="_blank" rel="noopener">discord</a></nav>
+    <nav aria-label="Footer"><a href="login.html?mode=login">log in</a><a href="#top" data-focus-claim>claim</a><a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">discord</a></nav>
   </div>
   <div class="word" aria-hidden="true">sigari.bio</div>
 </footer>
@@ -888,6 +1125,7 @@
     });
     dots.setText("@" + state.handle);
     renderBoard();
+    if (typeof renderLink === "function" && $("#ptLink").textContent) renderLink();
   }
   function setStatus(kind, text) {
     $$("[data-status]").forEach(el => { el.className = "st " + kind; el.textContent = text; });
@@ -1020,6 +1258,134 @@
   }), { threshold: .15 });
   $$(".rv").forEach(el => io.observe(el));
 
+  /* ---------- Stats: odometer + interaction feed (example data) ---------- */
+  const odoEl = $("#odo");
+  let views = 12480, odoLen = 0;
+  function setOdo(n) {
+    const s = n.toLocaleString("en-US");
+    if (s.length !== odoLen) {
+      odoLen = s.length;
+      odoEl.innerHTML = [...s].map(c => /\d/.test(c) ? `<span class="d"><span>${"0123456789".split("").map(d => `<i>${d}</i>`).join("")}</span></span>` : `<span class="c">${c}</span>`).join("");
+    }
+    [...s].forEach((c, i) => { const strip = odoEl.children[i].firstElementChild; if (strip) strip.style.transform = `translateY(-${+c}em)`; });
+  }
+  setOdo(views);
+  const FEED = [["view", "new visitor from tiktok"], ["click", "Latest release"], ["tap", "instagram"], ["play", "smoke signals"], ["like", "+1 on your page"], ["copy", "link copied"], ["view", "new visitor from discord"], ["share", "sent to a friend"], ["tap", "spotify"], ["click", "Portfolio"]];
+  const feed = $("#feed");
+  let fi = 0, statsOn = false, statsTimer = 0;
+  function pushFeed() {
+    const [k, t] = FEED[fi++ % FEED.length];
+    const li = document.createElement("li");
+    li.innerHTML = `<em>${k}</em><span>${t}</span><small>now</small>`;
+    feed.prepend(li);
+    [...feed.children].forEach((el, i) => { if (i) el.querySelector("small").textContent = i * 3 + "s"; if (i > 5) el.remove(); });
+    if (k === "view") { views += 1 + ((Math.random() * 3) | 0); setOdo(views); }
+  }
+  for (let i = 0; i < 5; i++) pushFeed();
+  const statsLoop = () => { if (!statsOn) return; pushFeed(); statsTimer = setTimeout(statsLoop, 1400 + Math.random() * 1600); };
+  new IntersectionObserver(([e]) => {
+    statsOn = e.isIntersecting && !reduce;
+    clearTimeout(statsTimer);
+    if (statsOn) statsTimer = setTimeout(statsLoop, 900);
+  }, { threshold: .2 }).observe($("#stats"));
+
+  /* ---------- Clans: tag slots (demo) + leaderboard (example data) ---------- */
+  const TAKEN = ["SGR", "VOID", "GIN", "NYX", "ASH", "MONO", "HEX", "OG"];
+  const slots = [{ tag: "SGR", name: "Sigari & Gin" }, { tag: "VOID", name: "void" }, null];
+  let primary = 0;
+  function renderSlots() {
+    const box = $("#slots");
+    box.innerHTML = slots.map((s, i) => s
+      ? `<button class="slot${i === primary ? " prim" : ""}" type="button" data-slot="${i}" aria-pressed="${i === primary}" title="Make primary"><b>${s.tag}</b><small>${i === primary ? "primary" : "set primary"}</small><span class="x" data-remove="${i}" role="button" aria-label="Leave ${s.tag}">×</span></button>`
+      : `<div class="slot empty">empty slot</div>`).join("");
+    const used = slots.filter(Boolean).length;
+    $("#slotCount").textContent = `${used} / 3 slots`;
+    const p = slots[primary];
+    $("#primTag").hidden = !p;
+    if (p) $("#primTag").textContent = p.tag;
+  }
+  $("#slots").addEventListener("click", e => {
+    const rm = e.target.closest("[data-remove]");
+    if (rm) {
+      const i = +rm.dataset.remove; slots[i] = null;
+      slots.sort((a, b) => (b ? 1 : 0) - (a ? 1 : 0));
+      primary = Math.max(0, Math.min(primary, slots.filter(Boolean).length - 1));
+      return renderSlots();
+    }
+    const s = e.target.closest("[data-slot]");
+    if (s) { primary = +s.dataset.slot; renderSlots(); }
+  });
+  $("#tagIn").addEventListener("input", e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4); });
+  $("#tagForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const t = $("#tagIn").value, msg = $("#tagMsg");
+    const say = (k, s) => { msg.className = "cl-msg " + k; msg.textContent = s; };
+    if (t.length < 2) return say("no", "2 to 4 letters or numbers.");
+    if (slots.some(s => s && s.tag === t)) return say("no", `You already wear [${t}].`);
+    if (TAKEN.includes(t)) return say("no", `[${t}] is reserved by another clan. Ask them for an invite.`);
+    const free = slots.indexOf(null);
+    if (free < 0) return say("no", "All 3 slots are full. Leave a clan first.");
+    slots[free] = { tag: t, name: t.toLowerCase() };
+    TAKEN.push(t);
+    $("#tagIn").value = "";
+    say("ok", `[${t}] is yours in this demo. Make it primary to show it on your name.`);
+    renderSlots();
+  });
+  renderSlots();
+
+  const LB = {
+    profiles: [["nyx", "SGR", 48210], ["vanta", "VOID", 41987], ["ghost", "SGR", 36502], ["luna", "GIN", 29870], ["kai", "HEX", 24113], ["mono", "MONO", 19640], ["ash", "VOID", 15302]],
+    clans: [["SGR", "Sigari & Gin", 128440, 312], ["VOID", "void", 97210, 188], ["GIN", "gin club", 61300, 96], ["HEX", "hex", 44120, 71], ["MONO", "mono", 30980, 52], ["NYX", "nyx crew", 21400, 40], ["OG", "og", 12050, 18]]
+  };
+  function renderLB(kind) {
+    $("#lb").innerHTML = LB[kind].map((r, i) => kind === "profiles"
+      ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span><span class="ctag tagc">${r[1]}</span><span class="vw">${r[2].toLocaleString("en-US")}</span></li>`
+      : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]} <small style="color:#555">· ${r[3]} members</small></span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("en-US")}</span></li>`).join("");
+  }
+  $$("[data-lb]").forEach(b => b.addEventListener("click", () => {
+    $$("[data-lb]").forEach(o => o.setAttribute("aria-pressed", o === b));
+    renderLB(b.dataset.lb);
+  }));
+  renderLB("profiles");
+
+  /* ---------- Partners: link presets + partner wall ---------- */
+  const INVITE = "https://discord.gg/ECF4vzWKz";
+  const DOMAINS = [["sigari.bio", "default"], ["sigari.gin", "partner"], ["sollary.gin", "partner"], ["sollary.gg", "partner"]];
+  const FORMATS = [["/@", "/@name"], ["/", "/name"], ["sub", "name.domain"]];
+  const EMBEDS = ["classic", "banner", "mono"];
+  const pt = { domain: 0, format: 0, embed: 0 };
+  const chipRow = (el, items, key) => {
+    el.innerHTML = items.map((it, i) => `<button class="chip" type="button" data-i="${i}" aria-pressed="${pt[key] === i}">${it}</button>`).join("");
+    el.addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; pt[key] = +c.dataset.i; [...el.children].forEach(o => o.setAttribute("aria-pressed", o === c)); renderLink(); });
+  };
+  chipRow($("#ptDomain"), DOMAINS.map(([d, k]) => `${d} <small>${k}</small>`), "domain");
+  chipRow($("#ptFormat"), FORMATS.map(f => f[1]), "format");
+  chipRow($("#ptEmbed"), EMBEDS, "embed");
+  const linkText = () => {
+    const h = state.handle || "you", d = DOMAINS[pt.domain][0], f = FORMATS[pt.format][0];
+    return f === "sub" ? [`${h}.`, d, true] : [d + f, h, false];
+  };
+  function renderLink() {
+    const [a, b, sub] = linkText();
+    $("#ptLink").innerHTML = sub ? `<b>${a}</b>${b}` : `${a}<b>${b}</b>`;
+    $("#ptSite").textContent = DOMAINS[pt.domain][0];
+    $("#ptPrev").dataset.embed = EMBEDS[pt.embed];
+  }
+  $("#ptCopy").addEventListener("click", async () => {
+    const [a, b] = linkText(), url = "https://" + a + b, btn = $("#ptCopy");
+    try { await navigator.clipboard.writeText(url); btn.textContent = "Copied"; }
+    catch (_) { btn.textContent = "Select it"; }
+    setTimeout(() => { btn.textContent = "Copy"; }, 1600);
+  });
+  // Partner list: add real partner servers here
+  const PARTNERS = [{ name: "Sigari & Gin", role: "owner", domain: "sigari.gin", mark: "S&G", href: INVITE }];
+  const OPEN_SLOTS = 3;
+  $("#ptWall").innerHTML = PARTNERS.map((p, i) => `<a class="pc2 rv" style="--d:${i * .06}s" href="${p.href}" target="_blank" rel="noopener"><span class="lg">${p.mark}</span><b>${p.name}</b><small>${p.role}</small><span class="dm">${p.domain}/<span data-at>@you</span></span></a>`).join("")
+    + Array.from({ length: OPEN_SLOTS }, (_, i) => `<a class="pc2 open rv" style="--d:${(PARTNERS.length + i) * .06}s" href="${INVITE}" target="_blank" rel="noopener"><span class="lg">+</span><b>Your server</b><small>open partner slot</small><span class="dm">yourserver.gg/<span data-at>@you</span></span></a>`).join("");
+  $$("#ptWall .rv").forEach(el => io.observe(el));
+  $$("#ptWall [data-at]").forEach(el => el.textContent = "@" + (state.handle || "you"));
+  renderLink();
+
   /* ---------- Build showcase ---------- */
   const phone = $("#phone"), steps = $$(".step");
   function applyPreset(p) {
@@ -1046,7 +1412,7 @@
     stage.addEventListener("pointerleave", () => { phone.style.setProperty("--ry", "0deg"); phone.style.setProperty("--rx", "0deg"); });
   }
 
-  const LINES = ["discord.gg/sigari", "black, white and loud", "rate my page", "smoke & gin"];
+  const LINES = ["discord.gg/ECF4vzWKz", "black, white and loud", "rate my page", "smoke & gin"];
   if (!reduce) {
     const el = $("#typed"); let li = 0, ci = LINES[0].length, deleting = true;
     const loop = () => {

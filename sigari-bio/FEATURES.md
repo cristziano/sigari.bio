@@ -18,6 +18,8 @@ La landing mostra solo le 6 feature principali (sezione "features"); la lista co
 | Badge e colori dei badge | IN ARRIVO | guns |
 | Badge "early" / UID basso | IN ARRIVO | haunt |
 | Mercato dei nomi rari | IN ARRIVO | haunt |
+| Domini dei partner (es. sigari.gin/@nome, sollary.gg/nome) | IN ARRIVO | idea sigari.bio |
+| Preset del link da condividere: dominio, formato (/@nome, /nome, nome.dominio), stile anteprima | IN ARRIVO | idea sigari.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Chi ce l'ha |
@@ -85,8 +87,13 @@ La landing mostra solo le 6 feature principali (sezione "features"); la lista co
 | Feature | Stato | Chi ce l'ha |
 |---|---|---|
 | Contatore visite pubblico | IN ARRIVO | guns, lnk.bio |
+| Statistiche interazioni: clic, tap sui social, copie del link, ascolti, like, commenti, condivisioni, tempo sulla pagina | IN ARRIVO | idea sigari.bio |
+| Feed delle interazioni in tempo reale | IN ARRIVO | idea sigari.bio |
+| Clan con TAG riservata (2-4 caratteri) | IN ARRIVO | idea sigari.bio |
+| Fino a 3 slot di tag per profilo, 1 solo gruppo primario | IN ARRIVO | idea sigari.bio |
+| Classifica profili e clan | IN ARRIVO | fakecrime |
 | Commenti / guestbook | IN ARRIVO | feds |
-| Classifica ed esplora profili | IN ARRIVO | fakecrime |
+| Esplora profili | IN ARRIVO | fakecrime |
 | Regala il premium | IN ARRIVO | guns |
 | Codice affiliato | IN ARRIVO | haunt |
 | Ruolo sul server Discord | IN ARRIVO | guns |
@@ -124,3 +131,4 @@ La landing mostra solo le 6 feature principali (sezione "features"); la lista co
 - **Moods**: la stessa estetica bianco e nero in tre texture (fumo, dither, ASCII), scelta dal visitatore. Già sulla landing.
 - **Anteprima del link prima di registrarti**: scrivi la @ e vedi subito come appare su Discord, Instagram e TikTok. Già sulla landing.
 - **Rarità visibile del nome**: già sulla landing; da portare sul profilo come badge.
+- **Partner con dominio proprio** e **clan con TAG riservata**: presentati sulla landing, da costruire.
