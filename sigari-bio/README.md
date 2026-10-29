@@ -6,9 +6,10 @@ Landing page, pagina di login e dashboard, ognuna in un unico file HTML.
 
 ```
 sigari-bio/
-├── index.html        Landing page (hero, claim della @ con controllo live, feature, FAQ)
+├── index.html        Landing page (hero WebGL con 3 mood, @ di particelle, catalogo feature, anteprima profilo, FAQ)
 ├── login.html        Login e registrazione (accetta ?handle=nome e ?mode=login)
 ├── dashboard.html    Dashboard con anteprima live
+├── FEATURES.md       Catalogo di tutte le feature (live / in arrivo) dai concorrenti
 ├── firestore.rules   Regole di sicurezza Firestore
 └── README.md         Questo file
 ```
