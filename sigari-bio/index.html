@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Pirata+One&family=Permanent+Marker&family=VT323&family=Rubik+Mono+One&family=Space+Mono&family=Bodoni+Moda:ital,wght@1,400;1,700&family=Rubik+Glitch&family=Major+Mono+Display&family=Monoton&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Metal+Mania&family=Anton&family=Bebas+Neue&family=Black+Ops+One&family=Rubik+Wet+Paint&family=UnifrakturMaguntia&family=Audiowide&family=Permanent+Marker&family=Pinyon+Script&family=VT323&family=Bodoni+Moda:ital,wght@1,400;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root {
@@ -76,39 +77,52 @@
   #fx { position:absolute; inset:0; width:100%; height:100%; display:block; }
   #fx { z-index:-2; }
   html[data-mood="dither"] #fx, html[data-mood="ascii"] #fx { image-rendering:pixelated; }
-  /* ---------- Hero studio: a live profile you can restyle ---------- */
-  .studio { position:absolute; right:clamp(20px, 5vw, 96px); top:50%; transform:translateY(-52%); width:320px; display:flex; flex-direction:column; gap:10px; z-index:1; }
-  .studio-frame { position:relative; height:min(500px, 58vh); border-radius:30px; overflow:hidden; background:#000; box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 40px 120px -30px rgba(0,0,0,.9); }
-  .studio-frame::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow:inset 0 0 0 6px rgba(0,0,0,.55); }
-  .studio-root { position:absolute; inset:0; }
-  .studio-dock { display:grid; gap:6px; padding:10px; border:1px solid var(--line2); border-radius:14px; background:rgba(0,0,0,.55); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-  .sd-row { display:flex; align-items:center; gap:8px; min-height:28px; }
-  .sd-k { width:50px; flex-shrink:0; font:400 10.5px var(--mono); color:#6f6f6f; }
-  .sd-row b { flex:1; text-align:center; font:500 12px var(--mono); color:#e8e8e8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .sd-arrow { width:28px; height:28px; border-radius:7px; border:1px solid var(--line2); background:none; color:#ccc; cursor:pointer; font:500 15px var(--mono); }
-  .sd-arrow:hover { color:#fff; border-color:#fff; }
-  .sd-seg { display:flex; gap:3px; flex-wrap:wrap; flex:1; }
-  .sd-seg button, .sd-up { border:1px solid transparent; background:none; color:#8f8f8f; cursor:pointer; padding:3px 6px; border-radius:6px; font:500 10.5px var(--mono); }
-  .sd-seg button:hover, .sd-up:hover { color:#fff; }
-  .sd-seg button[aria-pressed="true"] { background:#fff; color:#000; }
-  .sd-up { border-color:var(--line2); color:#ddd; }
-  .sd-sw { display:flex; gap:6px; flex:1; }
-  .sd-sw button { width:20px; height:20px; border-radius:50%; border:1px solid rgba(255,255,255,.25); cursor:pointer; padding:0; }
-  .sd-sw button[aria-pressed="true"] { outline:2px solid #fff; outline-offset:2px; }
-  .sd-font button { font-size:13px; padding:2px 7px; }
+  /* ---------- Identity cards (hero) ---------- */
+  .deck { position:absolute; right:clamp(24px, 6vw, 110px); top:50%; width:clamp(280px, 32vw, 500px); aspect-ratio:1.586; transform:translateY(-62%); perspective:1400px; z-index:0; }
+  .idc { position:absolute; inset:0; border-radius:4.6% / 7.3%; overflow:hidden; isolation:isolate; color:#fff; background:#0b0b0b; font-family:var(--sans);
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 30px 80px -20px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.08);
+    transform-origin:50% 80%; transition:transform .75s var(--ease), opacity .6s var(--ease), filter .6s; will-change:transform; container-type:inline-size; }
+  .idc.p0 { transform:translate3d(0,0,0) rotate(-5deg) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)); z-index:4; }
+  .idc.p1 { transform:translate3d(5%,-9%,0) rotate(2deg) scale(.94); z-index:3; filter:brightness(.55); }
+  .idc.p2 { transform:translate3d(10%,-18%,0) rotate(8deg) scale(.88); z-index:2; filter:brightness(.3); }
+  .idc.p3 { transform:translate3d(12%,-22%,0) rotate(11deg) scale(.84); z-index:1; opacity:0; }
+  .idc.out { transform:translate3d(-38%,46%,0) rotate(-24deg) scale(.96); opacity:0; z-index:5; transition:transform .55s cubic-bezier(.6,0,.8,.4), opacity .5s .05s; }
+  .idc .sheen { position:absolute; inset:0; z-index:9; pointer-events:none; mix-blend-mode:overlay; opacity:.55;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) calc(var(--sx,50%) - 4%), transparent calc(var(--sx,50%) + 12%)); }
+  .idc .grainy { position:absolute; inset:0; z-index:8; pointer-events:none; opacity:.18; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .idc .ph { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.15) brightness(.8); }
+  .idc .el { position:absolute; transition:transform .6s var(--ease), left .6s var(--ease), top .6s var(--ease); }
+  .idc .brand { position:absolute; left:6%; top:8%; font:600 3.4cqw var(--sans); letter-spacing:-.02em; z-index:6; }
+  .idc .brand i { font-style:normal; opacity:.55; }
+  .idc .num { position:absolute; left:6%; bottom:24%; font:500 4.3cqw var(--mono); letter-spacing:.12em; z-index:6; white-space:nowrap; }
+  .idc .who { position:absolute; left:6%; bottom:8%; z-index:6; line-height:1; max-width:70%; overflow-wrap:anywhere; }
+  .idc .meta2 { position:absolute; right:6%; bottom:8%; z-index:6; font:500 2.4cqw var(--mono); text-align:right; opacity:.75; line-height:1.4; }
+  .idc .stk { position:absolute; z-index:7; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
+  .idc .stk svg { display:block; width:100%; height:100%; }
+  .idc .pill { position:absolute; z-index:7; padding:.5cqw 1.6cqw; border-radius:99px; background:#fff; color:#000; font:700 2.6cqw var(--mono); letter-spacing:.06em; box-shadow:0 0 0 .5cqw #000, 0 3px 6px rgba(0,0,0,.4); }
+  .idc .stamp { position:absolute; z-index:7; width:17cqw; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; border:.5cqw solid #fff; font:700 2.5cqw var(--mono); letter-spacing:.1em; text-align:center; line-height:1.15; color:#fff; }
+  .idc .pol { position:absolute; z-index:6; width:34cqw; padding:1.6cqw 1.6cqw 6cqw; background:#f2f2f2; box-shadow:0 6px 16px rgba(0,0,0,.5); }
+  .idc .pol img { display:block; width:100%; aspect-ratio:1; object-fit:cover; filter:grayscale(1) contrast(1.1); background:#222; }
+  .idc .tape { position:absolute; z-index:8; width:14cqw; height:4cqw; background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .idc .big { position:absolute; z-index:5; line-height:.8; pointer-events:none; }
+  .idc .bar { position:absolute; z-index:6; height:9cqw; width:34cqw; background:repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 3px, currentColor 3px 5px, transparent 5px 6px, currentColor 6px 7px, transparent 7px 10px); }
+  .idc .lines { position:absolute; z-index:6; font:400 4.4cqw/1.15 'VT323', var(--mono); white-space:pre; }
+  .idc .scan { position:absolute; inset:0; z-index:7; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
+  .idc .dith { position:absolute; inset:0; z-index:2; background:repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0/3px 3px; opacity:.55; }
+  .idc .shade2 { position:absolute; inset:0; z-index:3; background:linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
+  .idc.light { color:#0b0b0b; }
+  .deck-ui { position:absolute; left:0; right:0; bottom:-44px; display:flex; justify-content:space-between; align-items:center; font:400 11px var(--mono); color:#777; }
+  .deck-ui b { color:#ddd; font-weight:500; }
+  .deck-ui button { border:1px solid var(--line2); background:rgba(0,0,0,.4); color:#ccc; border-radius:7px; padding:5px 9px; font:500 11px var(--mono); cursor:pointer; }
+  .deck-ui button:hover { color:#fff; border-color:#fff; }
+  @media (max-width:860px){
+    .deck { right:auto; left:50%; top:104px; width:min(76vw, 330px); transform:translateX(-46%); }
+    .deck-ui { bottom:-36px; }
+  }
   .hud-r { display:none !important; }
   .hero-c { grid-template-columns:minmax(0, 720px) !important; }
   .hero-c .moods { justify-self:start; justify-items:start; margin-top:4px; }
-  .studio-hint { display:none; font:400 10.5px var(--mono); color:#777; text-align:center; }
-  @media (max-width:1180px) { .studio { width:290px; } .studio-frame { height:min(440px, 52vh); } }
-  @media (max-width:860px) {
-    .studio { right:auto; left:50%; top:78px; transform:translateX(-50%); width:200px; gap:6px; }
-    .studio-frame { height:300px; border-radius:22px; }
-    .studio-root.pk { width:161%; height:161%; transform:scale(.62); transform-origin:0 0; }
-    .studio-dock { display:none; }
-    .studio-hint { display:block; }
-  }
-  @media (max-width:860px) and (max-height:760px) { .studio-frame { height:240px; } .studio { width:170px; } }
 
   /* ---------- Page-wide smoke (light) ---------- */
   .haze { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
@@ -242,19 +256,24 @@
 
   @keyframes feedIn { from { opacity:0; transform:translateY(-8px); } }
   /* Templates gallery */
-  .tg { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-top:44px; }
-  .tg-card { border:1px solid var(--line); border-radius:14px; background:var(--s1); overflow:hidden; display:flex; flex-direction:column; transition:border-color .3s; }
-  .tg-card:hover { border-color:var(--line2); }
-  .tg-pv { position:relative; height:300px; overflow:hidden; pointer-events:none; }
-  .tg-pv > .pk { position:absolute; left:0; top:0; width:166.66%; height:166.66%; transform:scale(.6); transform-origin:0 0; }
-  .tg-body { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; }
-  .tg-body b { display:block; font-size:14px; }
-  .tg-body small { display:block; font:400 10.5px var(--mono); color:#6a6a6a; }
-  .tg-body .btn { height:32px; padding:0 12px; font-size:12.5px; border-radius:8px; }
+  .tg { --k:1; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; margin:52px auto 0; max-width:1120px; padding:10px 0 34px; }
+  .tg-item { flex:none; margin:var(--my, 0) -10px; z-index:var(--z, 1); position:relative; }
+  .tg-item:hover, .tg-item:focus-within { z-index:30; }
+  .tg-card { display:block; width:calc(var(--w) * var(--k)); aspect-ratio:var(--ar, .74); border-radius:16px; overflow:hidden; position:relative; background:#0b0b0b; color:inherit; text-decoration:none;
+    transform:translateY(var(--y, 0)) rotate(var(--r, 0deg)); transition:transform .45s var(--ease), box-shadow .45s;
+    box-shadow:0 0 0 1px rgba(255,255,255,.12), 0 24px 60px -20px rgba(0,0,0,.95); }
+  .tg-card:hover, .tg-card:focus-visible { transform:translateY(calc(var(--y, 0px) - 10px)) rotate(0deg) scale(1.05); box-shadow:0 0 0 1px rgba(255,255,255,.5), 0 34px 80px -20px rgba(0,0,0,.95); outline:none; }
+  .tg-pv { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .tg-pv > .pk { position:absolute; left:0; top:0; width:200%; height:200%; transform:scale(.5); transform-origin:0 0; }
+  .tg-use { position:absolute; right:10px; bottom:10px; z-index:5; padding:5px 9px; border-radius:99px; background:#fff; color:#000; font:600 10.5px var(--mono); opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; }
+  .tg-card:hover .tg-use, .tg-card:focus-visible .tg-use { opacity:1; transform:none; }
+  .tg-note { display:grid; place-items:center; width:calc(170px * var(--k)); aspect-ratio:1; padding:16px; background:#efefef; color:#0b0b0b; text-align:center; transform:rotate(var(--r, 0deg)); box-shadow:0 18px 40px -14px rgba(0,0,0,.9);
+    font:400 calc(21px * var(--k))/1.15 'Permanent Marker', cursive; }
+  .tg-note::before { content:""; position:absolute; left:50%; top:-9px; width:64px; height:18px; transform:translateX(-50%) rotate(-4deg); background:rgba(255,255,255,.55); box-shadow:0 1px 2px rgba(0,0,0,.25); }
   .tg-cta { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:12px; padding:16px 18px; border:1px solid var(--line2); border-radius:14px; background:linear-gradient(90deg, #111, #070707); font-size:14px; color:#aaa; }
   .tg-cta b { color:#fff; }
-  @media (max-width:980px) { .tg { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-  @media (max-width:520px) { .tg-pv { height:240px; } .tg-cta { flex-direction:column; align-items:flex-start; } }
+  @media (max-width:900px) { .tg { --k:.72; } }
+  @media (max-width:520px) { .tg { --k:.56; margin-top:36px; } .tg-item { margin-left:-6px; margin-right:-6px; } .tg-cta { flex-direction:column; align-items:flex-start; } }
 
   /* Topic of the week */
   .tp { display:grid; grid-template-columns:minmax(0, 1.4fr) minmax(0, 1fr); gap:12px; margin-top:44px; }
@@ -492,15 +511,8 @@
     <div class="fx-fallback" aria-hidden="true"></div>
     <canvas id="fx" aria-hidden="true"></canvas>
     <div class="shade" aria-hidden="true"></div>
-    <div class="studio intro" id="studio" style="--d:.5s">
-      <div class="studio-frame" id="studioFrame"><div class="studio-root" id="studioRoot"></div></div>
-      <p class="studio-hint">tocca il profilo per cambiare stile</p>
-      <div class="studio-dock" role="group" aria-label="Prova a personalizzare il profilo">
-        <div class="sd-row"><span class="sd-k">template</span><button type="button" class="sd-arrow" data-tpl="-1" aria-label="Template precedente">‹</button><b id="sdTpl">Nero puro</b><button type="button" class="sd-arrow" data-tpl="1" aria-label="Template successivo">›</button></div>
-        <div class="sd-row"><span class="sd-k">sfondo</span><div class="sd-seg" id="sdBg"><button type="button" data-bg="image">foto</button><button type="button" data-bg="gradient">gradiente</button><button type="button" data-bg="color">colore</button><label class="sd-up">la tua<input type="file" id="sdFile" accept="image/*" hidden></label></div></div>
-        <div class="sd-row"><span class="sd-k">colore</span><div class="sd-sw" id="sdSw"></div></div>
-        <div class="sd-row"><span class="sd-k">font</span><div class="sd-seg sd-font" id="sdFont"></div></div>
-      </div>
+    <div class="deck intro" id="deck" style="--d:.5s" aria-label="Esempi di carte profilo, una ogni due secondi">
+      <div class="deck-ui"><span>carta <b id="deckN">01</b> / 12 · <b id="deckT"></b></span><button id="deckNext" type="button">mischia</button></div>
     </div>
 
     <div class="hud intro" style="--d:.1s" aria-hidden="true">
@@ -519,7 +531,7 @@
       <div>
         <div class="eyebrow-row intro" style="--d:.2s"><span class="live"><i></i>beta</span><span>chi prima arriva, meglio alloggia</span></div>
         <h1 class="h1" id="h1t" aria-label="Prendi la tua @.">Prendi la tua <span class="at">@</span>.</h1>
-        <p class="lede intro" style="--d:1.15s">Un nome, una pagina, tutto quello che fai. Colori, foto, musica, effetti: lo decidi tu. Prova a cambiarlo qui accanto, poi scrivi il tuo nome.</p>
+        <p class="lede intro" style="--d:1.15s">Un nome, una pagina, tutto quello che fai. Colori, foto, musica, effetti: lo decidi tu. Guarda quante facce può avere la stessa @, poi scrivi il tuo nome.</p>
         <form class="claim intro" style="--d:1.3s" data-claim novalidate>
           <label class="sr-only" for="h1in">Scegli la tua @</label>
           <div class="bar">
@@ -557,7 +569,7 @@
       <div class="hl">
         <div class="hl-c big rv"><span class="k">01</span><h3>La tua @, bloccata</h3><p>Prendila, controlla dal vivo se è libera e quanto è rara. Una @ per account: dopo, nessuno può prendertela.</p><div class="hl-at" aria-hidden="true" data-at>@tuonome</div></div>
         <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Colori e gradienti</h3><p>Ogni colore del profilo è tuo. Gradienti a 2, 3 o 4 colori.</p></div>
-        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Foto, video, effetti</h3><p>La tua immagine o un video di sfondo, più 12 effetti: fumo, neve, matrix, cuori…</p></div>
+        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Foto, video, effetti</h3><p>La tua immagine o un video di sfondo, più 11 effetti: fumo, neve, matrix, cuori…</p></div>
         <div class="hl-c rv"><span class="k">04</span><h3>Musica</h3><p>Spotify, SoundCloud, YouTube o il tuo mp3. E Last.fm per quello che ascolti.</p></div>
         <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>20 font, 5 layout</h3><p>Dal gotico al pixel. Effetti sul nome: glitch, arcobaleno, macchina da scrivere.</p></div>
         <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Prova senza account</h3><p>Apri la dashboard e costruisci il profilo. Ti registri solo quando vuoi salvarlo. <a href="dashboard.html" data-guest style="text-decoration:underline">Provala ora</a></p></div>
@@ -642,7 +654,7 @@
     <div class="wrap">
       <div class="sh rv"><span class="no">03 / template</span><div>
         <h2 class="h2">Prendi uno stile. <span class="g">Fallo tuo.</span></h2>
-        <p class="sub">Parti da un template, cambia quello che vuoi, oppure pubblica il tuo: pubblico, non in elenco o privato. Puoi prendere anche solo lo sfondo, i colori o il font.</p>
+        <p class="sub">Prendine uno e cambialo come vuoi: colori, font, sfondo, musica, tutto. Puoi prendere anche solo un pezzo, oppure pubblicare il tuo.</p>
       </div></div>
       <div class="tg" id="tplGrid"></div>
       <div class="tg-cta rv"><span><b>Hai fatto qualcosa di bello?</b> Pubblicalo come template e guarda quante persone lo usano.</span><a class="btn" href="dashboard.html#templates" data-guest>Apri i template</a></div>
@@ -751,7 +763,7 @@
           <div class="plan">
             <div class="t"><span>gratis</span><span>per sempre</span></div>
             <div class="pr">0€ <small>/ a vita</small></div>
-            <ul><li>La tua @ su sigari.bio</li><li>Colori, gradienti, foto e video</li><li>12 effetti, 20 font, 5 layout</li><li>Musica, widget, template e topic</li></ul>
+            <ul><li>La tua @ su sigari.bio</li><li>Colori, gradienti, foto e video</li><li>11 effetti, 20 font, 5 layout</li><li>Musica, widget, template e topic</li></ul>
             <a class="go" href="#top" data-focus-claim>Prendi la tua @</a>
           </div>
           <div class="plan pro">
@@ -1003,7 +1015,7 @@
       el.querySelector("[data-rarity-name]").textContent = name;
       el.querySelectorAll(".pips i").forEach((p, i) => p.classList.toggle("on", i < n));
     });
-    studio.setHandle();
+    deck.setHandle();
     $$("[data-guest]").forEach(a => {
       const base = a.dataset.base || (a.dataset.base = a.getAttribute("href"));
       const [path, hash] = base.split("#");
@@ -1081,7 +1093,7 @@
 
   // Heavy hero rendering runs only while the hero is on screen and the tab is visible
   let heroVisible = true;
-  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); studio.start(); } else { fx.stop(); studio.stop(); } };
+  const runHero = () => { if (heroVisible && !document.hidden) { fx.start(); deck.start(); } else { fx.stop(); deck.stop(); } };
   new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; runHero(); }, { threshold: .02 }).observe($("#top"));
   document.addEventListener("visibilitychange", runHero);
 
@@ -1375,115 +1387,114 @@
   $$("#ptWall [data-at]").forEach(el => el.textContent = "@" + (state.handle || "tuonome"));
   renderLink();
 
-  /* ---------- Hero studio: a live profile visitors can restyle themselves ---------- */
-  const studio = (() => {
-    const rootEl = $("#studioRoot");
-    const PX = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=900`;
-    const PHOTOS = [17432931, 9694694, 34000505, 28540855, 37364254, 31746347].map(PX);
-    const GRADS = [["#ff6ad5", "#c774e8", "#8795e8", "#94d0ff"], ["#ff7e5f", "#feb47b", "#6a2c70"], ["#0f2027", "#203a43", "#2c5364"], ["#f5c542", "#2a1f06"], ["#00ff66", "#001a0a"], ["#ff5fc8", "#2a0420"]];
-    const SOLIDS = ["#0b0b0b", "#1a0414", "#07040c", "#03141c", "#1a150a", "#160606"];
-    const SWATCHES = ["#ffffff", "#ff5fc8", "#ff2a2a", "#f5c542", "#00ff66", "#7fe7ff", "#b48cff"];
-    const FONT_IDS = ["geist", "bebas", "unifraktur", "cherry", "vt323", "pinyon"];
-    const LIST = TEMPLATES;
-    let ti = 0, a = applyTemplate(DEFAULT_APPEARANCE, LIST[0].a, "all");
-    const k = { image: 0, gradient: 0, color: 0 };
-    let auto = !reduce, running = false, loopTimer = 0, resumeTimer = 0;
-    const data = () => {
-      const h = state.handle || "tuonome";
-      return { handle: h, displayName: h, bio: "nero, bianco e senza filtri", location: "Milano", views: 12480, badges: ["beta", "early"],
-        links: [{ title: "Ultima uscita", url: "https://sigari.bio" }, { title: "Portfolio", url: "https://sigari.bio" }],
-        socials: { instagram: "sigari", tiktok: "sigari", discord: "sigari", spotify: "sigari" }, appearance: a };
+  /* ---------- Identity cards: 12 styles, re-arranged every time a card comes up ---------- */
+  const deck = (() => {
+    const el = $("#deck");
+    const PHOTOS = [9694694, 38226823, 34000505, 28641320, 28540855, 17957285, 17527812, 34167246, 31687151, 29833481, 18557766, 31746347, 38705665, 37767696];
+    const photo = (id, w = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+    const R = (a, b) => a + Math.random() * (b - a);
+    const pick = arr => arr[(Math.random() * arr.length) | 0];
+    const SVG = {
+      star: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/></svg>',
+      smile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#000" stroke-width="1.2"/><circle cx="8.5" cy="10" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M7.5 14.2c2.4 2.8 6.6 2.8 9 0" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round"/></svg>',
+      heart: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/></svg>',
+      bolt: '<svg viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round" d="M13.5 1.5L4 14h7l-1.5 8.5L20 9.5h-7z"/></svg>',
+      flower: '<svg viewBox="0 0 24 24"><g fill="#fff" stroke="#000" stroke-width="1"><circle cx="12" cy="6" r="4"/><circle cx="17.7" cy="10.2" r="4"/><circle cx="15.5" cy="17" r="4"/><circle cx="8.5" cy="17" r="4"/><circle cx="6.3" cy="10.2" r="4"/></g><circle cx="12" cy="12" r="2.6"/></svg>',
+      cross: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg>',
+      cig: '<svg viewBox="0 0 40 14"><rect x="1" y="4" width="30" height="6" rx="1" fill="#fff" stroke="#000"/><rect x="25" y="4" width="6" height="6" fill="#bbb" stroke="#000"/><path d="M33 6c2-2 4 0 6-2M33 9c2-2 4 0 6-2" stroke="#fff" fill="none"/></svg>'
     };
-    ensureFonts(FONT_IDS);
-    $("#sdSw").innerHTML = SWATCHES.map(c => `<button type="button" data-c="${c}" style="background:${c}" aria-label="Colore ${c}"></button>`).join("");
-    $("#sdFont").innerHTML = FONT_IDS.map(f => `<button type="button" data-f="${f}" style="font-family:${FONTS.find(x => x[0] === f)[2]}" aria-label="Font ${FONTS.find(x => x[0] === f)[1]}">Aa</button>`).join("");
-    const ctl = mountProfile(rootEl, data(), { preview: true });
-    rootEl.querySelector(".pk-scroll").style.pointerEvents = "none";
+    const AT = () => `@<span class="c-h">${state.handle || "tuonome"}</span>`;
+    const INI = () => `<span class="c-i">${(state.handle || "tuonome")[0].toUpperCase()}</span>`;
+    const stk = (name, x, y, w, r) => `<div class="stk" style="left:${x}%;top:${y}%;width:${w}cqw;aspect-ratio:${name === "cig" ? "40/14" : "1"};transform:rotate(${r}deg)">${SVG[name]}</div>`;
+    const scatter = (names, n, box = [4, 92, 4, 80]) => Array.from({ length: n }, () => stk(pick(names), R(box[0], box[1]), R(box[2], box[3]), R(11, 19), R(-30, 30))).join("");
+    const num = () => `N° ${String(Math.floor(R(1, 9999))).padStart(4, "0")}`;
+    const brand = (light) => `<div class="brand">sigari<i>.bio</i></div>`;
 
-    function sync() {
-      $("#sdTpl").textContent = LIST[ti].name;
-      $("#hudCard").textContent = LIST[ti].name.toLowerCase();
-      $$("#sdBg button").forEach(b => b.setAttribute("aria-pressed", a.bg.type === b.dataset.bg));
-      $$("#sdSw button").forEach(b => b.setAttribute("aria-pressed", a.colors.accent === b.dataset.c));
-      $$("#sdFont button").forEach(b => b.setAttribute("aria-pressed", a.font.name === b.dataset.f));
-    }
-    function refresh(replay) { ctl.update(data()); if (replay) ctl.replay("pixel"); sync(); }
-    function setTpl(i) { ti = (i + LIST.length) % LIST.length; a = applyTemplate(DEFAULT_APPEARANCE, LIST[ti].a, "all"); refresh(true); }
-    function touched() {
-      auto = false;
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => { auto = !reduce; schedule(); }, 15000);
-    }
-    function schedule() {
-      clearTimeout(loopTimer);
-      if (!running || !auto) return;
-      loopTimer = setTimeout(() => { if (running && auto) setTpl(ti + 1); schedule(); }, 3600);
-    }
+    // Each template returns [className, innerHTML]. Positions, photos and stickers are random every time.
+    const T = [
+      ["foto intera", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div>${brand()}<div class="who" style="font:italic 400 9cqw 'Instrument Serif', serif">${AT()}</div><div class="meta2">MEMBRO<br>DAL 2026</div>`]],
+      ["gotico", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">SIGARI<br>&amp; GIN</div>`]],
+      ["sticker", () => ["light", `<div style="position:absolute;inset:0;background:#efefef"></div>${scatter(["star", "smile", "heart", "bolt", "flower", "cig"], 8, [0, 84, 0, 70])}<div class="pill" style="left:${R(50, 70)}%;top:${R(10, 30)}%;transform:rotate(${R(-14, 14)}deg)">OG</div>${brand()}<div class="who" style="font:400 9.5cqw 'Permanent Marker', cursive;background:#efefef;padding:0 1.5cqw;transform:rotate(${R(-4, 4)}deg)">${AT()}</div>`]],
+      ["terminale", () => ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(10, 22)}%">&gt; whoami\n${AT()}\n&gt; classifica --settimana\n#${Math.floor(R(1, 99))} ▮</div><div class="scan"></div><div class="meta2" style="font-family:'VT323',monospace;font-size:4cqw">sigari.bio</div>${stk("cross", R(70, 84), R(12, 30), 12, 0)}`]],
+      ["pixel", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
+      ["polaroid", () => ["light", `<div style="position:absolute;inset:0;background:#d9d9d9"></div><div class="pol" style="left:${R(46, 58)}%;top:${R(6, 14)}%;transform:rotate(${R(-12, 12)}deg)"><img src="${photo(pick(PHOTOS), 500)}" alt="" loading="lazy"></div><div class="tape" style="left:${R(56, 66)}%;top:${R(2, 6)}%;transform:rotate(${R(-20, 20)}deg)"></div>${brand()}<div class="who" style="font:400 9cqw 'Permanent Marker', cursive">${AT()}</div>${stk(pick(["heart", "star", "flower"]), R(8, 30), R(56, 64), 10, R(-20, 20))}`]],
+      ["cromo", () => ["light", `<div style="position:absolute;inset:0;background:conic-gradient(from ${R(0, 360)}deg at ${R(30, 70)}% ${R(30, 70)}%, #f5f5f5, #6f6f6f, #fdfdfd, #3c3c3c, #e0e0e0, #8a8a8a, #f5f5f5)"></div>${brand()}<div class="num">${num()}</div><div class="who" style="font:400 7cqw 'Rubik Mono One', sans-serif;text-shadow:0 1px 0 rgba(255,255,255,.8), 0 -1px 0 rgba(0,0,0,.4)">${AT()}</div><div class="meta2">VALIDA<br>PER SEMPRE</div>`]],
+      ["scontrino", () => ["light", `<div style="position:absolute;inset:0;background:#f4f2ee"></div><div class="lines" style="left:6%;top:9%;font:400 3.6cqw/1.35 'Space Mono', monospace">SIGARI.BIO  ·  SCONTRINO\n------------------------\n1x NOME ........... ${AT()}\n1x GLOW ........... SÌ\n1x FUMO ........... 80%\nTOTALE ............ 0,00€</div><div class="bar" style="left:6%;bottom:9%"></div><div class="meta2" style="font-family:'Space Mono',monospace">GRAZIE<br>E ARRIVEDERCI</div>`]],
+      ["rivista", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div><div class="big" style="left:5%;top:4%;font:italic 700 15cqw 'Bodoni Moda', serif;letter-spacing:-.04em">SIGARI</div><div class="who" style="font:italic 400 7.5cqw 'Bodoni Moda', serif">${AT()}</div><div class="meta2" style="font-family:'Bodoni Moda',serif;font-style:italic">numero ${Math.floor(R(1, 40))}<br>bianco e nero</div>`]],
+      ["glitch", () => ["", `<div style="position:absolute;inset:0;background:#000"></div><img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.35;clip-path:inset(${R(10, 40)}% 0 ${R(20, 40)}% 0);transform:translateX(${R(-6, 6)}%)"><div class="who" style="bottom:auto;top:${R(30, 50)}%;font:400 12cqw 'Rubik Glitch', sans-serif">${AT()}</div>${brand()}<div class="num">${num()}</div>`]],
+      ["minimal", () => ["light", `<div style="position:absolute;inset:0;background:#fafafa"></div><div class="big" style="right:${R(4, 12)}%;top:${R(4, 20)}%;font:400 46cqw 'Major Mono Display', monospace;color:#111">@</div>${brand()}<div class="who" style="font:500 5.4cqw var(--sans);letter-spacing:-.02em">${AT()}</div><div class="meta2">${rarity(state.handle || "tuonome")[0]}</div>`]],
+      ["neon", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.2"><div class="who" style="bottom:auto;top:${R(28, 44)}%;left:6%;font:400 10cqw 'Monoton', cursive;text-shadow:0 0 6px #fff, 0 0 22px rgba(255,255,255,.7)">${AT()}</div>${brand()}${stk("star", R(76, 88), R(8, 20), 9, R(-20, 20))}`]]
+    ];
 
-    $$("[data-tpl]").forEach(b => b.addEventListener("click", () => { touched(); setTpl(ti + Number(b.dataset.tpl)); }));
-    $("#studioFrame").addEventListener("click", () => { touched(); setTpl(ti + 1); });
-    $("#sdBg").addEventListener("click", e => {
-      const b = e.target.closest("button[data-bg]");
-      if (!b) return;
-      touched();
-      const t = b.dataset.bg;
-      if (t === "image") a.bg = { ...a.bg, type: "image", image: PHOTOS[k.image++ % PHOTOS.length], dim: 40, blur: 0 };
-      if (t === "gradient") a.bg = { ...a.bg, type: "gradient", gradient: { kind: "linear", angle: 150, stops: GRADS[k.gradient++ % GRADS.length] } };
-      if (t === "color") a.bg = { ...a.bg, type: "color", color: SOLIDS[k.color++ % SOLIDS.length] };
-      a = normalizeAppearance(a);
-      refresh(true);
+    const N = 4;
+    const cards = Array.from({ length: N }, () => { const c = document.createElement("div"); el.prepend(c); return c; });
+    let next = 0, order = [];
+    function fill(card) {
+      const [name, make] = T[next % T.length];
+      const [cls, html] = make();
+      card.dataset.t = name; card.dataset.n = (next % T.length) + 1;
+      card.className = "idc " + cls;
+      card.innerHTML = html + '<div class="grainy"></div><div class="sheen"></div>';
+      card.querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove(), { once: true }));
+      next++;
+    }
+    function place() {
+      order.forEach((c, i) => { c.classList.remove("p0", "p1", "p2", "p3", "out"); c.classList.add("p" + Math.min(i, 3)); });
+      const top = order[0];
+      $("#deckN").textContent = String(top.dataset.n).padStart(2, "0");
+      $("#deckT").textContent = top.dataset.t;
+    }
+    cards.forEach(c => { fill(c); order.push(c); });
+    place();
+    let busy = false;
+    function shuffle() {
+      if (busy) return; busy = true;
+      const top = order.shift();
+      top.classList.remove("p0"); top.classList.add("out");
+      order.push(top);
+      order.slice(0, 3).forEach((c, i) => { c.classList.remove("p1", "p2", "p3"); c.classList.add("p" + i); });
+      setTimeout(() => { fill(top); place(); busy = false; }, 560);
+      $("#deckN").textContent = String(order[0].dataset.n).padStart(2, "0");
+      $("#deckT").textContent = order[0].dataset.t;
+    }
+    let timer = 0, running = false, hover = false;
+    const loop = () => { if (!running) return; if (!hover) shuffle(); timer = setTimeout(loop, 2000); };
+    el.addEventListener("pointerenter", () => { hover = true; });
+    el.addEventListener("pointerleave", () => { hover = false; order[0].style.removeProperty("--ry"); order[0].style.removeProperty("--rx"); });
+    el.addEventListener("pointermove", e => {
+      if (!fine || reduce) return;
+      const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      const c = order[0];
+      c.style.setProperty("--ry", (x - .5) * 22 + "deg"); c.style.setProperty("--rx", -(y - .5) * 16 + "deg"); c.style.setProperty("--sx", x * 100 + "%");
     });
-    $("#sdFile").addEventListener("change", e => {
-      const f = e.target.files[0];
-      e.target.value = "";
-      if (!f || !/^image\//.test(f.type)) return;
-      touched();
-      // Shrunk into a data URL: it never leaves the visitor's browser
-      const img = new Image();
-      img.onload = () => {
-        const s = Math.min(1, 1100 / Math.max(img.width, img.height));
-        const c = document.createElement("canvas");
-        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
-        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(img.src);
-        a.bg = { ...a.bg, type: "image", image: c.toDataURL("image/jpeg", .85), dim: 30, blur: 0 };
-        a = normalizeAppearance(a);
-        refresh(true);
-      };
-      img.src = URL.createObjectURL(f);
-    });
-    $("#sdSw").addEventListener("click", e => {
-      const b = e.target.closest("button[data-c]");
-      if (!b) return;
-      touched();
-      const c = b.dataset.c;
-      a.colors = { ...a.colors, accent: c, icon: c };
-      a.buttons = { ...a.buttons, palette: "accent" };
-      a.card = { ...a.card, border: "glow" };
-      refresh(false);
-    });
-    $("#sdFont").addEventListener("click", e => {
-      const b = e.target.closest("button[data-f]");
-      if (!b) return;
-      touched();
-      a.font = { ...a.font, name: b.dataset.f };
-      refresh(false);
-    });
-    sync();
+    $("#deckNext").addEventListener("click", shuffle);
     return {
-      start() { if (running) return; running = true; schedule(); },
-      stop() { running = false; clearTimeout(loopTimer); },
-      setHandle() { ctl.update(data()); }
+      start() { if (running || reduce) return; running = true; timer = setTimeout(loop, 2000); },
+      stop() { running = false; clearTimeout(timer); },
+      setHandle() {
+        const h = state.handle || "tuonome";
+        el.querySelectorAll(".c-h").forEach(s => s.textContent = h);
+        el.querySelectorAll(".c-i").forEach(s => s.textContent = h[0].toUpperCase());
+      }
     };
   })();
 
   /* ---------- Template gallery (built from the same renderer as the profile) ---------- */
-  const GALLERY = ["vapor", "egirl", "emo", "rap", "goth", "y2k", "terminale", "angel"].map(id => TEMPLATES.find(t => t.id === id)).filter(Boolean);
+  const GALLERY = ["vapor", "egirl", "emo", "rap", "goth", "y2k", "terminale", "angel", "rapita", "oceano", "tramonto", "fumo"].map(id => TEMPLATES.find(t => t.id === id)).filter(Boolean);
   const CANVAS_FX = ["snow", "rain", "stars", "particles", "hearts", "matrix"];
+  // A messy pile, not a grid: fixed sizes, tilts and offsets so it looks the same on every visit
+  const MESS = [[200, -5, 14, .74], [168, 4, -26, .8], [236, -2, 30, .7], [180, 7, -8, .76], [160, -6, 22, .82], [214, 3, -30, .72],
+    [176, -4, 10, .78], [226, 5, -14, .7], [190, -7, 26, .74], [164, 2, -20, .8], [210, -3, 6, .72], [184, 6, -24, .76]];
+  const NOTE_AT = 5;
   function buildGallery() {
     const grid = $("#tplGrid");
-    grid.innerHTML = GALLERY.map((t, i) => `<div class="tg-card rv" style="--d:${(i % 4) * .06}s"><div class="tg-pv"><div></div></div><div class="tg-body"><div><b>${t.name}</b><small>${t.tags.join(" · ")}</small></div><a class="btn" data-guest data-tpl-id="${t.id}" href="dashboard.html">Usa</a></div></div>`).join("");
-    $$(".tg-card", grid).forEach((card, i) => io.observe(card));
+    const items = GALLERY.map((t, i) => {
+      const [w, r, y, ar] = MESS[i % MESS.length];
+      return `<div class="tg-item rv" style="--d:${(i % 6) * .05}s;--z:${(i * 7) % 5 + 1}"><a class="tg-card" data-guest data-tpl-id="${t.id}" href="dashboard.html" style="--w:${w}px;--r:${r}deg;--y:${y}px;--ar:${ar}" aria-label="Usa questo template"><div class="tg-pv"><div></div></div><span class="tg-use">usalo →</span></a></div>`;
+    });
+    items.splice(NOTE_AT, 0, `<div class="tg-item rv" style="--z:6" aria-hidden="true"><div class="tg-note" style="--r:-6deg">cambia tutto, come vuoi tu ✎</div></div>`);
+    grid.innerHTML = items.join("");
+    $$(".tg-item", grid).forEach(card => io.observe(card));
     let mounted = false;
     new IntersectionObserver(([e], obs) => {
       if (!e.isIntersecting || mounted) return;
