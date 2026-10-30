@@ -75,6 +75,15 @@
 
 <div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 <div class="loading" id="loading">Caricamento…</div>
+<script>
+  // If the login service doesn't answer (slow network, blocker), don't leave people on "Caricamento…" forever
+  setTimeout(function () {
+    if (window.__authReady) return;
+    var l = document.getElementById("loading");
+    l.innerHTML = 'Il servizio di accesso non risponde.<br><a href="" style="color:#fff">Ricarica la pagina</a> o prova <a href="dashboard.html" style="color:#fff">la dashboard senza account</a>.';
+    l.style.textAlign = "center"; l.style.lineHeight = "1.6";
+  }, 8000);
+</script>
 
 <section class="auth hidden" id="auth">
   <div class="wrap">
@@ -332,7 +341,10 @@
 
   // Already signed in with a profile? Skip the form and go straight to the dashboard.
   onAuthStateChanged(auth, async user => {
-    if (user && await redirectIfReady(user)) return;
+    try {
+      if (user && await redirectIfReady(user)) return;
+    } catch (_) { /* profile not readable: show the form anyway */ }
+    window.__authReady = true;
     $("loading").classList.add("hidden");
     $("auth").classList.remove("hidden");
   });

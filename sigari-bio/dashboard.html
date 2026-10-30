@@ -1670,7 +1670,7 @@
   function buildPickers() {
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
     $$("select[data-opts]").forEach(sel => { sel.innerHTML = (OPTS[sel.dataset.opts] || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join(""); });
-    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa nyx</span><small>${l}</small>`);
+    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "sigari").slice(0, 9)}</span><small>${l}</small>`);
     ensureFonts(FONTS.map(f => f[0]));
     $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("") + '<option value="custom">Il tuo font</option>';
     pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS);

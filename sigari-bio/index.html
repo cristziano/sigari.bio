@@ -370,7 +370,8 @@
   .pt-prev[data-embed="mono"] .pt-emb { font-family:var(--mono); background:#000; border:1px solid #fff; border-radius:2px; }
   .pt-prev[data-embed="mono"] .pt-emb b::before { content:"> "; color:#666; }
   .pt-prev[data-embed="mono"] .pt-emb .av { border-radius:2px; background:#fff; color:#000; }
-  .pt-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .pt-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  .pt-grid > a { min-width:0; } .pt-grid .dm { overflow-wrap:anywhere; }
   .pc2 { border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:18px; min-height:150px; display:flex; flex-direction:column; transition:border-color .3s; }
   .pc2:hover { border-color:var(--line2); }
   .pc2 .lg { width:42px; height:42px; border-radius:10px; display:grid; place-items:center; font:700 15px var(--sans); background:#fff; color:#000; }
@@ -386,8 +387,8 @@
 
   /* Share */
   .drops { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:12px; margin-top:44px; }
-  @media (max-width:980px){ .drops { grid-template-columns:1fr; } }
-  .shot { border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:18px; }
+  @media (max-width:980px){ .drops { grid-template-columns:minmax(0,1fr); } }
+  .shot { min-width:0; overflow-wrap:anywhere; border:1px solid var(--line); border-radius:14px; background:var(--s1); padding:18px; }
   .shot-h { display:flex; justify-content:space-between; font:400 11px var(--mono); color:#5e5e5e; margin-bottom:14px; }
   .dc { display:flex; gap:12px; }
   .av { width:38px; height:38px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; font-weight:700; text-transform:uppercase; background:radial-gradient(circle at 30% 25%, #4a4a4a, #0b0b0b 70%); }
@@ -576,7 +577,7 @@
       <div class="hl">
         <div class="hl-c big rv"><span class="k">01</span><h3>La tua @, bloccata</h3><p>Prendila, controlla dal vivo se è libera e quanto è rara. Una @ per account: dopo, nessuno può prendertela.</p><div class="hl-at" aria-hidden="true" data-at>@tuonome</div></div>
         <div class="hl-c rv" style="--d:.06s"><span class="k">02</span><h3>Colori e gradienti</h3><p>Ogni colore del profilo è tuo. Gradienti a 2, 3 o 4 colori.</p></div>
-        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Foto, video, effetti</h3><p>La tua immagine o un video di sfondo, più 11 effetti: fumo, neve, matrix, cuori…</p></div>
+        <div class="hl-c rv" style="--d:.12s"><span class="k">03</span><h3>Foto, video, effetti</h3><p>La tua immagine o un video di sfondo, più 13 effetti: lava, neve, pioggia, matrix, cuori…</p></div>
         <div class="hl-c rv"><span class="k">04</span><h3>Musica</h3><p>Spotify, SoundCloud, YouTube o il tuo mp3. E Last.fm per quello che ascolti.</p></div>
         <div class="hl-c rv" style="--d:.06s"><span class="k">05</span><h3>20 font, 5 layout</h3><p>Dal gotico al pixel. Effetti sul nome: glitch, arcobaleno, macchina da scrivere.</p></div>
         <div class="hl-c wide rv" style="--d:.12s"><span class="k">06</span><h3>Prova senza account</h3><p>Apri la dashboard e costruisci il profilo. Ti registri solo quando vuoi salvarlo. <a href="dashboard.html" data-guest style="text-decoration:underline">Provala ora</a></p></div>
@@ -623,7 +624,7 @@
       </div></div>
       <div class="cl">
         <div class="cl-card rv">
-          <div class="stx-h"><span>le tue tag</span><span id="slotCount">2 / 3 slot</span></div>
+          <div class="stx-h"><span>le tue tag </span><span id="slotCount">2 / 3 slot</span></div>
           <div class="cl-id">
             <div class="av" data-initial>T</div>
             <div><div class="cl-name"><span data-at>@tuonome</span> <span class="ctag prim" id="primTag">SGR</span></div><small>il gruppo primario appare accanto al tuo nome</small></div>
@@ -770,7 +771,7 @@
           <div class="plan">
             <div class="t"><span>gratis</span><span>per sempre</span></div>
             <div class="pr">0€ <small>/ a vita</small></div>
-            <ul><li>La tua @ su sigari.bio</li><li>Colori, gradienti, foto e video</li><li>11 effetti, 20 font, 5 layout</li><li>Musica, widget, template e topic</li></ul>
+            <ul><li>La tua @ su sigari.bio</li><li>Colori, gradienti, foto e video</li><li>13 effetti, 20 font, 5 layout</li><li>Musica, widget, template e topic</li></ul>
             <a class="go" href="#top" data-focus-claim>Prendi la tua @</a>
           </div>
           <div class="plan pro">
@@ -1457,7 +1458,16 @@
       card.className = "idc " + cls;
       card.innerHTML = html + '<div class="grainy"></div><div class="sheen"></div>';
       card.querySelectorAll("img").forEach(img => img.addEventListener("error", () => img.remove(), { once: true }));
+      fitNames(card);
       next++;
+    }
+    // Long names stay on one line: the name shrinks to fit the card instead of breaking in two
+    function fitNames(card) {
+      card.querySelectorAll(".who").forEach(w => {
+        w.style.transform = ""; w.style.whiteSpace = "nowrap"; w.style.maxWidth = "none";
+        const room = card.clientWidth * .86 - w.offsetLeft, need = w.scrollWidth;
+        if (room > 0 && need > room) { w.style.transformOrigin = "0 100%"; w.style.transform = `scale(${(room / need).toFixed(3)})`; }
+      });
     }
     function place() {
       order.forEach((c, i) => { c.classList.remove("p0", "p1", "p2", "p3", "out"); c.classList.add("p" + Math.min(i, 3)); });
@@ -1489,6 +1499,7 @@
       c.style.setProperty("--ry", (x - .5) * 22 + "deg"); c.style.setProperty("--rx", -(y - .5) * 16 + "deg"); c.style.setProperty("--sx", x * 100 + "%");
     });
     $("#deckNext").addEventListener("click", shuffle);
+    document.fonts?.ready.then(() => el.querySelectorAll(".idc").forEach(fitNames));
     return {
       start() { if (running || reduce) return; running = true; timer = setTimeout(loop, 2000); },
       stop() { running = false; clearTimeout(timer); },
@@ -1496,6 +1507,7 @@
         const h = state.handle || "tuonome";
         el.querySelectorAll(".c-h").forEach(s => s.textContent = h);
         el.querySelectorAll(".c-i").forEach(s => s.textContent = h[0].toUpperCase());
+        el.querySelectorAll(".idc").forEach(fitNames);
       }
     };
   })();

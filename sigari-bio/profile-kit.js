@@ -160,7 +160,9 @@ export function safeFontUrl(u) {
   return safeUrl(s);
 }
 export function safeLinkUrl(u) {
-  const s = String(u || "").trim();
+  let s = String(u || "").trim();
+  // People type "instagram.com/me" or "www.site.it": add https:// for them
+  if (s && !/^[a-z][a-z0-9+.-]*:/i.test(s) && /^[^\s/]+\.[a-z]{2,}(\/|$)/i.test(s)) s = "https://" + s;
   try {
     const x = new URL(s);
     return ["http:", "https:", "mailto:", "tel:"].includes(x.protocol) ? x.href : null;
@@ -1381,7 +1383,7 @@ export function mountProfile(root, input, opts = {}) {
     if (cur.length === nodes.length && cur.every((n, i) => n === nodes[i])) return;
     box.replaceChildren(...nodes);
   };
-  const st = { bgKey: "", fxKey: "", fx: null, timers: [], keyed: new Map(), entered: false, first: true, audio: null, enterEl: null, trail: null, visible: true, last: input };
+  const st = { bgKey: "", fxKey: "", fx: null, timers: [], keyed: new Map(), entered: !!opts.preview, first: true, audio: null, enterEl: null, trail: null, visible: true, last: input };
   const later = (fn, ms) => { const t = setTimeout(fn, ms); st.timers.push(t); return t; };
   const every = (fn, ms) => { const t = setInterval(fn, ms); st.timers.push(t); return t; };
 
