@@ -828,7 +828,7 @@
 <div class="dock" id="dock"><a href="#top" data-focus-claim><span data-url>sigari.bio/@tuonome</span><span class="btn">Prendila</span></a></div>
 
 <script type="module">
-  import { mountProfile, TEMPLATES, applyTemplate, DEFAULT_APPEARANCE, normalizeAppearance, currentTopic, ensureFonts, FONTS } from "./profile-kit.js";
+  import { mountProfile, TEMPLATES, applyTemplate, previewAppearance, DEFAULT_APPEARANCE, normalizeAppearance, currentTopic, ensureFonts, FONTS } from "./profile-kit.js";
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   const root = document.documentElement;
@@ -1485,8 +1485,7 @@
   })();
 
   /* ---------- Template gallery (built from the same renderer as the profile) ---------- */
-  const GALLERY = ["vapor", "egirl", "emo", "rap", "goth", "y2k", "terminale", "angel", "rapita", "oceano", "tramonto", "fumo"].map(id => TEMPLATES.find(t => t.id === id)).filter(Boolean);
-  const CANVAS_FX = ["snow", "rain", "stars", "particles", "hearts", "matrix"];
+  const GALLERY = ["neon-streets", "pioggia", "sigari", "drift", "sakura", "vhs", "ice", "night-drive", "lofi-90", "matrix", "fuoco", "dreamcore"].map(id => TEMPLATES.find(t => t.id === id)).filter(Boolean);
   // A messy pile, not a grid: fixed sizes, tilts and offsets so it looks the same on every visit
   const MESS = [[200, -5, 14, .74], [168, 4, -26, .8], [236, -2, 30, .7], [180, 7, -8, .76], [160, -6, 22, .82], [214, 3, -30, .72],
     [176, -4, 10, .78], [226, 5, -14, .7], [190, -7, 26, .74], [164, 2, -20, .8], [210, -3, 6, .72], [184, 6, -24, .76]];
@@ -1503,8 +1502,7 @@
       if (!e.isIntersecting || mounted) return;
       mounted = true; obs.disconnect();
       $$(".tg-pv > div", grid).forEach((box, i) => {
-        const a = applyTemplate(DEFAULT_APPEARANCE, GALLERY[i].a, "all");
-        if (CANVAS_FX.includes(a.effect)) a.effect = "none";
+        const a = previewAppearance(GALLERY[i].a, GALLERY[i].thumb);
         const h = state.handle || "tuonome";
         mountProfile(box, { handle: h, displayName: h, bio: "nero, bianco e senza filtri", views: 3200, badges: ["beta"], links: [{ title: "Ultima uscita", url: "https://sigari.bio" }, { title: "Portfolio", url: "https://sigari.bio" }], appearance: a }, { preview: true, entrance: false });
       });

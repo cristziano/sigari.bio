@@ -532,7 +532,7 @@
         <button type="button" class="manage" data-go="customize#c-assets"><b>Avatar e sfondo</b><span>Carica foto, video, audio, cursore</span></button>
         <button type="button" class="manage" data-go="customize#c-general"><b>Nome e descrizione</b><span>Bio, posizione, effetti</span></button>
         <button type="button" class="manage" data-go="customize#c-colors"><b>Colori</b><span>Accento, testo, sfondo, icone</span></button>
-        <button type="button" class="manage" data-go="templates"><b>Template</b><span>40 stili pronti e della community</span></button>
+        <button type="button" class="manage" data-go="templates"><b>Template</b><span>40 sfondi veri (video e GIF) e quelli della community</span></button>
         <button type="button" class="manage" data-go="badges"><b>Badge</b><span>Ufficiali e il tuo personale</span></button>
         <button type="button" class="manage" data-go="share"><b>Condividi</b><span>Link, QR code, anteprima</span></button>
       </div>
@@ -1101,7 +1101,7 @@
         <p><b>Il menu.</b> guns.lol divide la dashboard in Account (panoramica, statistiche, badge, impostazioni), Customize, Links, Premium, Image Host e Templates, con "Condividi il profilo" in fondo. Qui è uguale: Account, Profilo (Personalizza, Link, Template), Avanzate (il loro Premium), Community e Image Host.</p>
         <p><b>Una sola pagina per personalizzare.</b> La loro pagina Customize ha quattro parti: Assets Uploader, General Customization, Color Customization e Other Customization. La nostra Personalizza ha le stesse quattro: Caricamenti (avatar, sfondo, audio, cursore, banner, font), Generale (descrizione, effetti di sfondo e sul nome dai menu a tendina, opacità e sfocatura del profilo, presenza Discord, posizione, glow), Colori (accento, testo, sfondo, icone, gradiente del profilo) e Altro (icone monocromatiche, titolo animato, controllo volume, avatar e decorazione di Discord).</p>
         <p><b>I link.</b> Come su guns.lol: una griglia di icone, tocchi quella che vuoi e scrivi il nome utente; sotto i link personalizzati. In più qui puoi fare sezioni, link in evidenza, link programmati e con password.</p>
-        <p><b>I template.</b> Come su guns.lol: Esplora con ricerca e tag, Preferiti, Usati di recente, I miei, Crea; visibilità pubblica, non in elenco o privata; puoi prendere solo un pezzo (solo sfondo, solo colori…) e provare un template sul tuo profilo prima di usarlo. I 40 stili pronti riprendono i temi più usati su guns.lol: anime in bianco e nero, neon, gothic, cute, rap, retro, pixel, lusso.</p>
+        <p><b>I template.</b> Come su guns.lol: Esplora con ricerca e tag, Preferiti, Usati di recente, I miei, Crea; visibilità pubblica, non in elenco o privata; puoi prendere solo un pezzo (solo sfondo, solo colori…) e provare un template sul tuo profilo prima di usarlo. I 40 template pronti sono fatti come i profili veri di guns.lol: sfondo video o GIF vero (pioggia, auto di notte, Tokyo, anime lofi, fumo, VHS, neve, fuoco…), schermata "clicca per entrare", effetti, font e colori abbinati. Nelle anteprime gira una GIF piccola; il video vero parte quando lo provi o lo usi.</p>
         <p><b>Avanzate.</b> Su guns.lol è la parte Premium: layout, bordi, font, scrittura animata, effetti del cursore, metadati e SEO. Qui ci sono le stesse cose in Layout e bottoni, Font ed effetti, Musica e audio, Widget, Metadati e privacy, e sono gratis.</p>
         <p><b>Cosa non abbiamo copiato.</b> Pagamenti (premium, regali, badge a pagamento), domini personalizzati per le immagini e l'app per fare screenshot: servono server o accordi che qui non ci sono.</p>
       </div>
@@ -1185,7 +1185,7 @@
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
-    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText
+    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance
   } from "./profile-kit.js";
 
   const $ = id => document.getElementById(id);
@@ -1587,6 +1587,8 @@
     if (t.dataset.k) {
       if (t.dataset.k.startsWith("weekly.")) ensureWeekly();
       setPath(draft, t.dataset.k, readControl(t));
+      // A template's still frame belongs to its own video
+      if (t.dataset.k === "appearance.bg.video") draft.appearance.bg.poster = "";
       if (t.type === "range") t.style.setProperty("--p", ((t.value - t.min) / (t.max - t.min) * 100) + "%");
       if (t.type === "color") $$(`[data-hex="${t.dataset.k}"]`).forEach(h => { h.value = t.value; });
       changed();
@@ -2067,10 +2069,8 @@
   const readList = k => { try { const v = JSON.parse(store.get(k) || "[]"); return Array.isArray(v) ? v.filter(x => x && x.key && x.a) : []; } catch (_) { return []; } };
   const writeList = (k, v) => store.set(k, JSON.stringify(v.slice(0, 30)));
   const tplKey = (t, source) => source && source.id ? source.id : "builtin:" + t.id;
-  function miniPreview(box, appearanceObj) {
-    const a = applyTemplate(DEFAULT_APPEARANCE, appearanceObj, "all");
-    if (["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"].includes(a.effect)) a.effect = "none";
-    a.enter.on = false;
+  function miniPreview(box, appearanceObj, thumb) {
+    const a = previewAppearance(appearanceObj, thumb);
     miniMounts.push(mountProfile(box, { handle, displayName: draft.displayName || handle, bio: "", links: [{ title: "Il mio link", url: "https://sigari.bio" }], appearance: a }, { preview: true, entrance: false }));
   }
   // One card per template: preview (click to try it on your profile), favourite star, part picker, Use
@@ -2086,13 +2086,13 @@
     paintStar();
     star.addEventListener("click", () => {
       const list = readList(FAV_KEY), i = list.findIndex(x => x.key === key);
-      if (i >= 0) list.splice(i, 1); else list.unshift({ key, name: t.name, tags: t.tags || [], a: t.a, meta });
+      if (i >= 0) list.splice(i, 1); else list.unshift({ key, name: t.name, tags: t.tags || [], a: t.a, thumb: t.thumb || "", meta });
       writeList(FAV_KEY, list); paintStar();
       if (tplTab === "fav") renderTemplates();
     });
     d.querySelector(".tpl-pv").addEventListener("click", () => trialTemplate(t, source));
     d.querySelector(".save-btn").addEventListener("click", () => useTemplate(t, d.querySelector("select").value, source));
-    miniPreview(d.querySelector(".tpl-pk"), t.a);
+    miniPreview(d.querySelector(".tpl-pk"), t.a, t.thumb);
     return d;
   }
   function useTemplate(t, part, source) {
@@ -2100,7 +2100,7 @@
     draft.appearance = applyTemplate(draft.appearance, t.a, part);
     afterDraftReplaced();
     const key = tplKey(t, source);
-    writeList(RECENT_KEY, [{ key, name: t.name, tags: t.tags || [], a: t.a, meta: (t.tags || []).join(" · ") }, ...readList(RECENT_KEY).filter(x => x.key !== key)]);
+    writeList(RECENT_KEY, [{ key, name: t.name, tags: t.tags || [], a: t.a, thumb: t.thumb || "", meta: (t.tags || []).join(" · ") }, ...readList(RECENT_KEY).filter(x => x.key !== key)]);
     setStatus(`Template "${t.name}" applicato${part === "all" ? "" : " (" + TPL_PARTS.find(p => p[0] === part)[1].toLowerCase() + ")"}. Salva per tenerlo.`, "ok");
     if (source && source.id && mode === "user") {
       firebase().then(({ F, db }) => F.updateDoc(F.doc(db, "templates", source.id), { uses: F.increment(1) })).catch(() => {});
@@ -2169,7 +2169,7 @@
     if (tplTab === "fav" || tplTab === "recent") {
       const list = readList(tplTab === "fav" ? FAV_KEY : RECENT_KEY);
       const box = $(tplTab === "fav" ? "tplFav" : "tplRecent");
-      box.replaceChildren(...list.map(x => tplCard({ id: x.key.replace(/^builtin:/, ""), name: x.name, tags: x.tags, a: x.a }, x.meta || "", x.key.startsWith("builtin:") ? null : { id: x.key })));
+      box.replaceChildren(...list.map(x => tplCard({ id: x.key.replace(/^builtin:/, ""), name: x.name, tags: x.tags, a: x.a, thumb: x.thumb }, x.meta || "", x.key.startsWith("builtin:") ? null : { id: x.key })));
       $(tplTab === "fav" ? "tplFavNote" : "tplRecentNote").textContent = list.length ? "" : tplTab === "fav" ? "Ancora nessun preferito: tocca la stella su un template." : "Qui trovi i template che hai usato.";
     }
     if (tplTab === "mine") {

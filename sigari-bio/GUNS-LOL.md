@@ -42,7 +42,9 @@ In più, per rendere la dashboard facile da girare:
 
 ## Template
 
-40 stili pronti. I 26 nuovi riprendono i temi più usati su guns.lol: anime in bianco e nero, Neon Tokyo, Luna di sangue, Sakura, Iceman, Galassia, Lo-fi, Cyberpunk, Vaporwave, Chiesa (gothic), Vecchia TV, Vetro, Soldi, Demone, Kawaii, Pixel, Drill, Rose gold, Aurora boreale, Notte JDM, Carbonio, Toxic, Royal, Fantasma, Fiamme, Sigari & Gin.
+Abbiamo studiato i profili veri (per esempio guns.lol/cisek e guns.lol/drake): lo sfondo è quasi sempre un **video o una GIF vera** caricata dall'utente (presa da Pinterest o simili), con sopra una schermata "click to enter" con una frase corta, un riquadro di vetro sfocato, il nome con glow o brillantini ed effetti come la neve.
+
+I 40 template di sigari.bio fanno lo stesso: ognuno ha un video vero in loop (pioggia sulla finestra, auto di notte, Tokyo, drift, fumo in bianco e nero, VHS, anime lofi, sakura, galassia, luna, mare, temporale, neve, fuoco, aurora, nebbia, soldi, diamanti, cattedrale, gatto nero, rose, Matrix, farfalle, cyberpunk, pixel, synthwave…), la frase d'ingresso, effetti, font e colori. I video vengono da GIPHY, che permette di usarli così; non copiamo i file caricati dagli utenti di guns.lol. Chi vuole il suo sfondo da Pinterest lo carica da Personalizza › Sfondo.
 
 ## Cosa non abbiamo copiato
 
