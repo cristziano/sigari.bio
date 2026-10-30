@@ -429,6 +429,7 @@ export function previewAppearance(tplAppearance, thumb = "") {
   }
   if (["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"].includes(a.effect)) a.effect = "none";
   a.enter.on = false;
+  a.card.blur = 0;
   return a;
 }
 
@@ -548,16 +549,16 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-dim{position:absolute;inset:0;z-index:0;background:#000;opacity:var(--pk-dim,0);pointer-events:none}
 .pk-fx{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .pk-fx canvas{position:absolute;inset:0;width:100%;height:100%}
-.pk-lava i{position:absolute;border-radius:50%;background:var(--pk-fxc);filter:blur(70px);opacity:var(--pk-fxa);animation:pk-drift 34s ease-in-out infinite alternate}
+.pk-lava i{position:absolute;border-radius:50%;background:radial-gradient(closest-side,var(--pk-fxc),transparent);opacity:var(--pk-fxa);animation:pk-drift 34s ease-in-out infinite alternate;will-change:transform}
 .pk-lava i:nth-child(1){width:55%;aspect-ratio:1;left:-15%;top:-12%}
 .pk-lava i:nth-child(2){width:65%;aspect-ratio:1;right:-25%;top:28%;animation-duration:42s;animation-delay:-8s}
 .pk-lava i:nth-child(3){width:45%;aspect-ratio:1;left:25%;bottom:-20%;animation-duration:48s;animation-delay:-20s}
 .pk-lava i:nth-child(4){width:38%;aspect-ratio:1;left:55%;top:5%;animation-duration:40s;animation-delay:-14s}
 @keyframes pk-drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(18%,-12%) scale(1.12)}100%{transform:translate(-10%,14%) scale(.9)}}
-.pk-aurora i{position:absolute;width:90%;height:60%;left:5%;top:-10%;border-radius:50%;filter:blur(60px);mix-blend-mode:screen;opacity:var(--pk-fxa);animation:pk-aur 18s ease-in-out infinite alternate}
-.pk-aurora i:nth-child(1){background:var(--pk-fxc)}
-.pk-aurora i:nth-child(2){background:var(--pk-accent);top:20%;left:-20%;animation-duration:24s;animation-delay:-6s}
-.pk-aurora i:nth-child(3){background:var(--pk-fxc);top:45%;left:30%;animation-duration:28s;animation-delay:-12s;opacity:calc(var(--pk-fxa)*.7)}
+.pk-aurora i{position:absolute;width:90%;height:60%;left:5%;top:-10%;border-radius:50%;background:radial-gradient(closest-side,var(--pk-fxc),transparent);mix-blend-mode:screen;opacity:var(--pk-fxa);animation:pk-aur 18s ease-in-out infinite alternate;will-change:transform}
+.pk-aurora i:nth-child(1){background:radial-gradient(closest-side,var(--pk-fxc),transparent)}
+.pk-aurora i:nth-child(2){background:radial-gradient(closest-side,var(--pk-accent),transparent);top:20%;left:-20%;animation-duration:24s;animation-delay:-6s}
+.pk-aurora i:nth-child(3){background:radial-gradient(closest-side,var(--pk-fxc),transparent);top:45%;left:30%;animation-duration:28s;animation-delay:-12s;opacity:calc(var(--pk-fxa)*.7)}
 @keyframes pk-aur{0%{transform:translate(-10%,0) rotate(-8deg) scaleY(.7)}100%{transform:translate(12%,8%) rotate(10deg) scaleY(1.15)}}
 .pk-noise{position:absolute;inset:-50%;opacity:var(--pk-fxa);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:pk-grain .6s steps(3) infinite}
 @keyframes pk-grain{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}}
@@ -568,7 +569,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-scroll{position:absolute;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;padding:52px 16px 40px;scrollbar-width:none}
 .pk-scroll::-webkit-scrollbar{display:none}
 .pk-s:empty{display:none}
-.pk-card{position:relative;width:100%;max-width:var(--pk-w);margin:auto 0;padding:28px 20px 22px;border-radius:var(--pk-radius);background:rgba(var(--pk-card-rgb),var(--pk-card-a));-webkit-backdrop-filter:blur(var(--pk-card-blur));backdrop-filter:blur(var(--pk-card-blur));border:1px solid transparent}
+.pk-card{position:relative;width:100%;max-width:var(--pk-w);margin:auto 0;padding:28px 20px 22px;border-radius:var(--pk-radius);background:rgba(var(--pk-card-rgb),var(--pk-card-a));-webkit-backdrop-filter:var(--pk-card-bf,none);backdrop-filter:var(--pk-card-bf,none);border:1px solid transparent}
 .pk[data-border=solid] .pk-card{border-color:var(--pk-border)}
 .pk[data-border=glow] .pk-card{border-color:color-mix(in srgb,var(--pk-accent) 60%,transparent);box-shadow:0 0 34px color-mix(in srgb,var(--pk-accent) 30%,transparent)}
 .pk[data-border=animated] .pk-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:conic-gradient(from var(--pk-a,0deg),transparent 0 62%,var(--pk-accent) 82%,transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pk-spin-a 4s linear infinite}
@@ -1445,7 +1446,7 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-accent", c.accent); s.setProperty("--pk-text", c.text); s.setProperty("--pk-muted", c.muted);
     s.setProperty("--pk-icon", c.icon); s.setProperty("--pk-surface", c.secondary); s.setProperty("--pk-border", c.border);
     s.setProperty("--pk-card-rgb", hexRgb(c.primary)); s.setProperty("--pk-card-a", (a.card.opacity / 100).toFixed(2));
-    s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px");
+    s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-card-bf", a.card.blur > 0 ? `blur(${Math.min(a.card.blur, 16)}px)` : "none"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px");
     s.setProperty("--pk-name-font", fontStack(a.font.name, a)); s.setProperty("--pk-body-font", fontStack(a.font.body, a));
     s.setProperty("--pk-on-accent", readableOn(c.accent)); s.setProperty("--pk-badge", a.badges.color || c.accent); s.setProperty("--pk-banh", a.banner.height + "px");
     s.setProperty("--pk-name-scale", (a.font.nameSize / 100).toFixed(2)); s.setProperty("--pk-name-ls", (a.font.spacing / 100) + "em");
@@ -1844,10 +1845,10 @@ function applyButtons(s, a) {
   const pal = { white: ["#ffffff", "#000000"], silver: ["#9a9a9a", "#000000"], graphite: ["#2a2a2a", "#ffffff"], accent: [c.accent, readableOn(c.accent)], custom: [b.custom, readableOn(b.custom)] }[b.palette];
   const [col, fg] = pal;
   const v = b.variant;
-  s.setProperty("--btn-bg", v === "solid" ? col : v === "glass" ? "color-mix(in srgb," + col + " 14%, transparent)" : "transparent");
+  s.setProperty("--btn-bg", v === "solid" ? col : v === "glass" ? "color-mix(in srgb," + col + " 22%, rgba(0,0,0,.28))" : "transparent");
   s.setProperty("--btn-fg", v === "solid" ? fg : v === "glass" ? c.text : col);
   s.setProperty("--btn-border", v === "outline" ? `1px solid ${col}` : v === "glass" ? `1px solid color-mix(in srgb, ${col} 35%, transparent)` : v === "ghost" ? "1px solid transparent" : `1px solid ${col}`);
-  s.setProperty("--btn-blur", v === "glass" ? "blur(10px)" : "none");
+  s.setProperty("--btn-blur", "none");
   s.setProperty("--btn-radius", { square: "4px", rounded: "14px", pill: "999px" }[b.shape]);
   s.setProperty("--btn-shadow", { none: "none", soft: "0 8px 24px rgba(0,0,0,.35)", glow: `0 0 24px color-mix(in srgb, ${col} 45%, transparent)`, hard: `4px 4px 0 ${c.border}` }[b.shadow]);
 }
