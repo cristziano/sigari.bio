@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Esplora · sigari.bio</title>
+<meta name="description" content="I profili di sigari.bio: i nuovi, i più visti, e cerca una @.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#000; color:#fff; font-family:"Geist",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; text-decoration:none; }
+  .top { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:16px; padding:14px 24px; background:rgba(0,0,0,.8); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid #1d1d1d; }
+  .logo { font-weight:600; font-size:18px; letter-spacing:-.02em; }
+  .logo span { color:#666; }
+  .top .sp { flex:1; }
+  .btn { height:36px; padding:0 14px; border-radius:999px; background:#fff; color:#000; font-weight:600; font-size:13px; display:inline-flex; align-items:center; }
+  main { max-width:1180px; margin:0 auto; padding:40px 24px 80px; }
+  h1 { font-size:clamp(36px, 6vw, 64px); letter-spacing:-.05em; line-height:1; }
+  h1 em { font-style:normal; color:#5c5c5c; }
+  .bar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:26px; }
+  .search { flex:1; min-width:220px; display:flex; align-items:center; height:46px; border:1px solid #2c2c2c; border-radius:12px; background:#0b0b0b; padding:0 14px; font:400 14px "Geist Mono",monospace; color:#777; }
+  .search input { flex:1; min-width:0; height:100%; background:none; border:0; outline:0; color:#fff; font:inherit; }
+  .seg { display:inline-flex; gap:3px; padding:3px; border:1px solid #2c2c2c; border-radius:12px; background:#0b0b0b; }
+  .seg button { border:0; background:none; color:#8f8f8f; padding:9px 14px; border-radius:9px; cursor:pointer; font:500 13px "Geist",sans-serif; }
+  .seg button.on { background:#fff; color:#000; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; margin-top:26px; }
+  .card { display:flex; flex-direction:column; border:1px solid #1f1f1f; border-radius:16px; overflow:hidden; background:#0a0a0a; transition:transform .3s, border-color .3s; }
+  .card:hover { transform:translateY(-3px); border-color:#555; }
+  .pv { position:relative; height:280px; overflow:hidden; pointer-events:none; background:#000; }
+  .pv > div { position:absolute; left:0; top:0; width:200%; height:200%; transform:scale(.5); transform-origin:0 0; }
+  .meta { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:11px 13px; font-size:13px; }
+  .meta b { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .meta small { font:400 11px "Geist Mono",monospace; color:#777; flex-shrink:0; }
+  .note { margin-top:30px; color:#777; font:400 13px "Geist Mono",monospace; text-align:center; }
+  @media (max-width:520px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; } .pv { height:220px; } main { padding:28px 16px 60px; } .top { padding:12px 16px; } }
+</style>
+</head>
+<body>
+<header class="top"><a class="logo" href="/">sigari<span>.bio</span></a><span class="sp"></span><a href="/clan.html" style="font-size:13px;color:#aaa">clan</a><a class="btn" href="/dashboard.html">La tua pagina</a></header>
+<main>
+  <h1>Esplora. <em>Chi c'è qui.</em></h1>
+  <div class="bar">
+    <label class="search">@<input id="q" type="search" maxlength="20" placeholder="cerca una @" autocomplete="off" aria-label="Cerca una @"></label>
+    <div class="seg" id="tabs"><button type="button" data-t="new" class="on">Nuovi</button><button type="button" data-t="top">Più visti</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="note" id="note">Carico i profili…</p>
+</main>
+<script type="module">
+  import { mountProfile, normalizeProfile } from "./profile-kit.js";
+  const $ = id => document.getElementById(id);
+  const firebaseConfig = { apiKey: "AIzaSyCRVxG-AaLh7nCevtUxqmbkPVk3I4dWAMg", authDomain: "sigari-bio-52324.firebaseapp.com", projectId: "sigari-bio-52324", storageBucket: "sigari-bio-52324.firebasestorage.app", messagingSenderId: "265808515501", appId: "1:265808515501:web:0395a4c9bc3522a1bd1124" };
+  const profileUrl = h => /^(localhost|127\.)/.test(location.hostname) ? `profile.html?u=${h}` : `/@${h}`;
+  const CANVAS_FX = ["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"];
+  let F, db, tab = "new", mounts = [];
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting || e.target.dataset.done) return;
+    e.target.dataset.done = "1";
+    const p = JSON.parse(e.target.dataset.p);
+    if (CANVAS_FX.includes(p.appearance.effect)) p.appearance.effect = "none";
+    p.appearance.enter.on = false;
+    p.appearance.music.type = "none";
+    Object.assign(p.appearance.widgets, { contact: false, newsletter: false, guestbook: false, twitch: "", youtube: "" });
+    mounts.push(mountProfile(e.target, p, { preview: true, entrance: false }));
+  }), { rootMargin: "300px" });
+  function paint(docs) {
+    mounts.splice(0).forEach(m => m.destroy());
+    const rows = docs.map(d => ({ id: d.id, ...d.data() })).filter(p => !p.private && !p.unlisted && p.appearance);
+    $("grid").replaceChildren(...rows.map(r => {
+      const p = normalizeProfile({ ...r, handle: r.id });
+      const a = document.createElement("a"); a.className = "card"; a.href = profileUrl(p.handle);
+      const pv = document.createElement("div"); pv.className = "pv";
+      const box = document.createElement("div"); box.dataset.p = JSON.stringify(p);
+      pv.appendChild(box);
+      const meta = document.createElement("div"); meta.className = "meta";
+      const b = document.createElement("b"); b.textContent = "@" + p.handle;
+      const sm = document.createElement("small"); sm.textContent = p.appearance.privacy.hideViews ? "" : p.views.toLocaleString("it-IT") + " visite";
+      meta.append(b, sm);
+      a.append(pv, meta);
+      io.observe(box);
+      return a;
+    }));
+    $("note").textContent = rows.length ? "" : "Nessun profilo trovato.";
+  }
+  async function load() {
+    $("note").textContent = "Carico i profili…";
+    const q = $("q").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
+    try {
+      let snap;
+      if (q) snap = await F.getDocs(F.query(F.collection(db, "profiles"), F.orderBy(F.documentId()), F.startAt(q), F.endAt(q + ""), F.limit(30)));
+      else snap = await F.getDocs(F.query(F.collection(db, "profiles"), F.orderBy(tab === "top" ? "views" : "updatedAt", "desc"), F.limit(48)));
+      paint(snap.docs);
+    } catch (_) { $("note").textContent = "Non riesco a caricare i profili adesso. Riprova tra poco."; }
+  }
+  let timer = 0;
+  $("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 300); });
+  $("tabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; tab = b.dataset.t; [...$("tabs").children].forEach(x => x.classList.toggle("on", x === b)); $("q").value = ""; load(); });
+  (async () => {
+    try {
+      const base = "https://www.gstatic.com/firebasejs/10.12.5/";
+      const [{ initializeApp }, lite] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-firestore-lite.js")]);
+      F = lite; db = F.getFirestore(initializeApp(firebaseConfig));
+      load();
+    } catch (_) { $("note").textContent = "Controlla la connessione e ricarica la pagina."; }
+  })();
+</script>
+</body>
+</html>

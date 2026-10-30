@@ -2,17 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // @handle reservations: anyone can check if a name is free, only the owner can claim it
+    function signedIn() { return request.auth != null; }
+    function ownsHandle(h) { return signedIn() && get(/databases/$(database)/documents/usernames/$(h)).data.uid == request.auth.uid; }
+
+    // @handle reservations. Extra names (aliases) live here too, with aliasOf pointing to the main handle.
     match /usernames/{handle} {
       allow read: if true;
-      allow create: if request.auth != null
-                    && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if false;
+      allow create: if signedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && (!('aliasOf' in request.resource.data) || ownsHandle(request.resource.data.aliasOf));
+      allow update: if false;
+      // Only extra names can be given back; the main handle stays
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid && ('aliasOf' in resource.data);
     }
 
     // Private account document: only its owner
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, write: if signedIn() && request.auth.uid == uid;
     }
 
     // Public profile, rendered at sigari.bio/@handle
@@ -21,12 +27,10 @@ service cloud.firestore {
 
       // The owner of the handle writes everything except the view counter
       // and the badges, which only staff assign from the Firebase console
-      allow create: if request.auth != null
-                    && get(/databases/$(database)/documents/usernames/$(handle)).data.uid == request.auth.uid
+      allow create: if ownsHandle(handle)
                     && !('views' in request.resource.data)
                     && request.resource.data.get('badges', []).hasOnly(['beta']);
-      allow update: if request.auth != null
-                    && get(/databases/$(database)/documents/usernames/$(handle)).data.uid == request.auth.uid
+      allow update: if ownsHandle(handle)
                     && request.resource.data.get('views', 0) == resource.data.get('views', 0)
                     && request.resource.data.get('badges', []) == resource.data.get('badges', []);
 
@@ -37,23 +41,136 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Daily statistics written by the public page. Each write adds exactly 1 to up to
+    // four counters, listed in ks. Only the owner reads them.
+    function statKey(k) {
+      return k is string && k.matches('^(v|p|c_[a-z0-9]{4,10}|s_[a-z]{1,16}|r_[a-z0-9]{1,16}|d_[a-z]{1,8}|z_[A-Za-z_]{1,24}|t_[0-9])$');
+    }
+    function newCount(k) { return statKey(k) && request.resource.data[k] == 1; }
+    function plusOne(k) { return statKey(k) && request.resource.data[k] == resource.data.get(k, 0) + 1; }
+    match /stats/{handle}/days/{day} {
+      allow read: if ownsHandle(handle);
+      allow create: if day.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+                    && request.resource.data.ks is list
+                    && request.resource.data.ks.size() >= 1 && request.resource.data.ks.size() <= 4
+                    && request.resource.data.keys().hasOnly(request.resource.data.ks.concat(['ks']))
+                    && newCount(request.resource.data.ks[0])
+                    && (request.resource.data.ks.size() < 2 || newCount(request.resource.data.ks[1]))
+                    && (request.resource.data.ks.size() < 3 || newCount(request.resource.data.ks[2]))
+                    && (request.resource.data.ks.size() < 4 || newCount(request.resource.data.ks[3]));
+      allow update: if request.resource.data.ks is list
+                    && request.resource.data.ks.size() >= 1 && request.resource.data.ks.size() <= 4
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(request.resource.data.ks.concat(['ks']))
+                    && plusOne(request.resource.data.ks[0])
+                    && (request.resource.data.ks.size() < 2 || plusOne(request.resource.data.ks[1]))
+                    && (request.resource.data.ks.size() < 3 || plusOne(request.resource.data.ks[2]))
+                    && (request.resource.data.ks.size() < 4 || plusOne(request.resource.data.ks[3]));
+    }
+
+    // Contact form and newsletter: anyone can write, only when the owner switched them on; only the owner reads
+    function widgetOn(h, w) { return get(/databases/$(database)/documents/profiles/$(h)).data.appearance.widgets.get(w, false) == true; }
+    match /inbox/{handle}/messages/{id} {
+      allow read, delete: if ownsHandle(handle);
+      allow create: if widgetOn(handle, 'contact')
+                    && request.resource.data.keys().hasOnly(['name', 'contact', 'text', 'createdAt'])
+                    && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000
+                    && request.resource.data.name is string && request.resource.data.name.size() <= 60
+                    && request.resource.data.contact is string && request.resource.data.contact.size() <= 120
+                    && request.resource.data.createdAt == request.time;
+    }
+    match /inbox/{handle}/subscribers/{email} {
+      allow read, delete: if ownsHandle(handle);
+      allow create: if widgetOn(handle, 'newsletter')
+                    && request.resource.data.keys().hasOnly(['email', 'createdAt'])
+                    && request.resource.data.email == email
+                    && email.matches('^[^@\\s]{1,64}@[^@\\s]{1,120}[.][a-zA-Z]{2,}$')
+                    && request.resource.data.createdAt == request.time;
+    }
+
+    // Guestbook: signed-in users sign with their own @; the owner and the author can delete
+    match /guestbook/{handle}/entries/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+                    && widgetOn(handle, 'guestbook')
+                    && request.resource.data.keys().hasOnly(['uid', 'author', 'text', 'createdAt'])
+                    && request.resource.data.uid == request.auth.uid
+                    && ownsHandle(request.resource.data.author)
+                    && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 200
+                    && request.resource.data.createdAt == request.time;
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || ownsHandle(handle));
+    }
+
+    // Clans: the TAG is the document id. members is kept in step with the members
+    // subcollection: every join or leave changes it by one and names the member in "last".
+    match /clans/{tag} {
+      function memberPath(h) { return /databases/$(database)/documents/clans/$(tag)/members/$(h); }
+      allow read: if true;
+      allow create: if signedIn()
+                    && tag.matches('^[A-Z0-9]{2,4}$')
+                    && request.resource.data.tag == tag
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && ownsHandle(request.resource.data.owner)
+                    && request.resource.data.members == 1
+                    && request.resource.data.last == request.resource.data.owner
+                    && request.resource.data.name is string && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 30
+                    && request.resource.data.desc is string && request.resource.data.desc.size() <= 140
+                    && request.resource.data.color.matches('^#[0-9a-fA-F]{6}$')
+                    && existsAfter(memberPath(request.resource.data.owner));
+      allow update: if signedIn() && (
+                      (resource.data.ownerUid == request.auth.uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'desc', 'color']))
+                      || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'last'])
+                        && ((request.resource.data.members == resource.data.members + 1
+                              && !exists(memberPath(request.resource.data.last)) && existsAfter(memberPath(request.resource.data.last)))
+                          || (request.resource.data.members == resource.data.members - 1
+                              && exists(memberPath(request.resource.data.last)) && !existsAfter(memberPath(request.resource.data.last))))));
+      allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid && resource.data.members <= 1;
+
+      match /members/{member} {
+        allow read: if true;
+        allow create: if ownsHandle(member)
+                      && request.resource.data.keys().hasOnly(['uid', 'joinedAt'])
+                      && request.resource.data.uid == request.auth.uid
+                      && getAfter(/databases/$(database)/documents/clans/$(tag)).data.last == member
+                      && (!exists(/databases/$(database)/documents/clans/$(tag))
+                          || getAfter(/databases/$(database)/documents/clans/$(tag)).data.members == get(/databases/$(database)/documents/clans/$(tag)).data.members + 1);
+        allow delete: if signedIn()
+                      && (resource.data.uid == request.auth.uid || get(/databases/$(database)/documents/clans/$(tag)).data.ownerUid == request.auth.uid)
+                      && (!existsAfter(/databases/$(database)/documents/clans/$(tag))
+                          || getAfter(/databases/$(database)/documents/clans/$(tag)).data.members == get(/databases/$(database)/documents/clans/$(tag)).data.members - 1);
+      }
+    }
+
+    // Text pastes: public by link, written and deleted by their author
+    match /pastes/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+                    && request.resource.data.keys().hasOnly(['uid', 'author', 'title', 'text', 'createdAt'])
+                    && request.resource.data.uid == request.auth.uid
+                    && ownsHandle(request.resource.data.author)
+                    && request.resource.data.title is string && request.resource.data.title.size() <= 80
+                    && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 20000
+                    && request.resource.data.createdAt == request.time;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
     // Community templates
     match /templates/{id} {
       allow read: if resource.data.visibility in ['public', 'unlisted']
-                  || (request.auth != null && resource.data.authorUid == request.auth.uid);
-      allow create: if request.auth != null
+                  || (signedIn() && resource.data.authorUid == request.auth.uid);
+      allow create: if signedIn()
                     && request.resource.data.authorUid == request.auth.uid
                     && request.resource.data.uses == 0
                     && request.resource.data.visibility in ['public', 'unlisted', 'private']
                     && request.resource.data.name is string
                     && request.resource.data.name.size() <= 40;
-      allow update: if (request.auth != null
+      allow update: if (signedIn()
                         && resource.data.authorUid == request.auth.uid
                         && request.resource.data.authorUid == resource.data.authorUid
                         && request.resource.data.uses == resource.data.uses)
                     || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uses'])
                         && request.resource.data.uses == resource.data.uses + 1);
-      allow delete: if request.auth != null && resource.data.authorUid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.authorUid == request.auth.uid;
     }
   }
 }

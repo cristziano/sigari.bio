@@ -73,8 +73,9 @@
     try {
       const base = "https://www.gstatic.com/firebasejs/10.12.5/";
       const [{ initializeApp }, F] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-firestore-lite.js")]);
-      const db = F.getFirestore(initializeApp(firebaseConfig));
-      lite = { F, db };
+      const app = initializeApp(firebaseConfig);
+      const db = F.getFirestore(app);
+      lite = { F, db, app };
     } catch (_) {
       return show("Non riesco a caricare", "Controlla la connessione e ricarica la pagina.");
     }
@@ -85,9 +86,14 @@
     catch (_) { return show("Non riesco a caricare", "Il profilo non è raggiungibile adesso. Riprova tra poco."); }
 
     if (!snap.exists()) {
-      // Not published yet: tell people whether the name is still free
+      // Not published yet, or an extra name that points to another profile
       let taken = false;
-      try { taken = (await F.getDoc(F.doc(db, "usernames", handle))).exists(); } catch (_) { /* unknown */ }
+      try {
+        const u = await F.getDoc(F.doc(db, "usernames", handle));
+        taken = u.exists();
+        const alias = taken && u.data().aliasOf;
+        if (alias && /^[a-z0-9_]{3,20}$/.test(alias)) return location.replace(fromPath ? "/@" + alias + location.search : "?u=" + alias);
+      } catch (_) { /* unknown */ }
       return taken
         ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a sigari.bio", "/"])
         : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
@@ -107,17 +113,79 @@
     if (p.avatarUrl && !p.avatarUrl.startsWith("data:")) {
       const icon = document.createElement("link"); icon.rel = "icon"; icon.href = p.avatarUrl; document.head.appendChild(icon);
     }
-    mountProfile(document.getElementById("root"), p, { preview: false });
+    // Daily counters for the owner's statistics: one write can add 1 to up to four keys
+    const KEY = /^(v|p|c_[a-z0-9]{4,10}|s_[a-z]{1,16}|r_[a-z0-9]{1,16}|d_[a-z]{1,8}|z_[A-Za-z_]{1,24}|t_[0-9])$/;
+    const statRef = F.doc(db, "stats", handle, "days", new Date().toISOString().slice(0, 10));
+    const bump = keys => {
+      const ks = [...new Set(keys)].filter(k => KEY.test(k)).slice(0, 4);
+      if (!ks.length) return;
+      const data = { ks };
+      ks.forEach(k => { data[k] = F.increment(1); });
+      F.setDoc(statRef, data, { merge: true }).catch(() => { /* rules not deployed yet */ });
+    };
+    const played = new Set();
+    const onEvent = (kind, key) => {
+      if (kind === "c") bump(["c_" + key]);
+      if (kind === "s") bump(["s_" + key]);
+      if (kind === "p" && !played.size) { played.add(1); bump(["p"]); }
+    };
+
+    // Contact form, newsletter and guestbook write to the owner's inbox
+    let authP = null;
+    const currentUser = () => authP || (authP = import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js").then(A => new Promise(res => {
+      const auth = A.getAuth(lite.app);
+      const off = A.onAuthStateChanged(auth, u => { off(); res(u); });
+    })));
+    const actions = {
+      contact: d => F.addDoc(F.collection(db, "inbox", handle, "messages"), { name: d.name.slice(0, 60), contact: d.contact.slice(0, 120), text: d.text.slice(0, 1000), createdAt: F.serverTimestamp() }),
+      subscribe: email => F.setDoc(F.doc(db, "inbox", handle, "subscribers", email), { email, createdAt: F.serverTimestamp() }),
+      guestbook: {
+        async list() {
+          const snap = await F.getDocs(F.query(F.collection(db, "guestbook", handle, "entries"), F.orderBy("createdAt", "desc"), F.limit(30)));
+          return snap.docs.map(d => { const g = d.data(); return { author: g.author, text: g.text, date: g.createdAt ? g.createdAt.toDate().toLocaleDateString("it-IT", { day: "numeric", month: "short" }) : "" }; });
+        },
+        async sign(text) {
+          const u = await currentUser();
+          if (!u) throw { login: true };
+          const me = await F.getDoc(F.doc(db, "users", u.uid));
+          if (!me.exists()) throw { login: true };
+          await F.addDoc(F.collection(db, "guestbook", handle, "entries"), { uid: u.uid, author: me.data().handle, text: text.slice(0, 200), createdAt: F.serverTimestamp() });
+        }
+      }
+    };
+    mountProfile(document.getElementById("root"), p, { preview: false, onEvent, actions });
 
     // One view per browser session; the rules only allow +1 on this field
     const key = "sigari-view-" + handle;
     let counted = false;
     try { counted = sessionStorage.getItem(key) === "1"; } catch (_) { /* storage blocked */ }
     if (!counted) {
-      try {
-        await F.updateDoc(ref, { views: F.increment(1) });
-        try { sessionStorage.setItem(key, "1"); } catch (_) { /* storage blocked */ }
-      } catch (_) { /* rules not deployed yet */ }
+      try { sessionStorage.setItem(key, "1"); } catch (_) { /* storage blocked */ }
+      const qs = new URLSearchParams(location.search);
+      const REFS = [[/(^|\.)instagram\.com$/, "instagram"], [/(^|\.)tiktok\.com$/, "tiktok"], [/(^|\.)(discord\.com|discordapp\.com|discord\.gg)$/, "discord"], [/(^|\.)(t\.co|twitter\.com|x\.com)$/, "x"], [/(^|\.)(youtube\.com|youtu\.be)$/, "youtube"], [/(^|\.)google\./, "google"], [/whatsapp/, "whatsapp"], [/(^|\.)(t\.me|telegram\.org)$/, "telegram"], [/reddit\.com$/, "reddit"], [/twitch\.tv$/, "twitch"], [/snapchat\.com$/, "snapchat"], [/(facebook\.com|fb\.com|fb\.me)$/, "facebook"], [/spotify\.com$/, "spotify"]];
+      let src = (qs.get("utm_source") || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 16);
+      if (!src) {
+        let host = "";
+        try { host = document.referrer ? new URL(document.referrer).hostname : ""; } catch (_) { host = ""; }
+        src = !host ? "diretto" : host === location.hostname ? "sigari" : (REFS.find(([re]) => re.test(host)) || [0, "altro"])[1];
+      }
+      const coarse = matchMedia("(pointer: coarse)").matches;
+      const device = coarse ? (Math.min(screen.width, screen.height) >= 600 ? "tablet" : "mobile") : "desktop";
+      let zone = "";
+      try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/\//g, "__").replace(/[^A-Za-z_]/g, "").slice(0, 24); } catch (_) { zone = ""; }
+      bump(["v", "d_" + device, "r_" + src, zone ? "z_" + zone : ""]);
+      // Time on the page, in five buckets, sent once when the visitor leaves or switches tab
+      const t0 = performance.now();
+      let sent = false;
+      const leave = () => {
+        if (sent) return;
+        sent = true;
+        const sec = (performance.now() - t0) / 1000;
+        bump(["t_" + (sec < 10 ? 0 : sec < 30 ? 1 : sec < 60 ? 2 : sec < 180 ? 3 : 4)]);
+      };
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") leave(); });
+      addEventListener("pagehide", leave);
+      try { await F.updateDoc(ref, { views: F.increment(1) }); } catch (_) { /* rules not deployed yet */ }
     }
   })();
 </script>

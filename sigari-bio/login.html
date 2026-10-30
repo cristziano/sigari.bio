@@ -208,7 +208,7 @@
       const d = JSON.parse(localStorage.getItem("sigari-draft") || "null");
       if (!d || typeof d !== "object") return null;
       const out = {};
-      ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance"].forEach(k => { if (d[k] !== undefined) out[k] = d[k]; });
+      ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery"].forEach(k => { if (d[k] !== undefined) out[k] = d[k]; });
       return out;
     } catch (_) { return null; }
   }

@@ -256,6 +256,97 @@
   .caret { display:inline-block; width:.07em; height:.9em; margin-left:.06em; background:#fff; vertical-align:-.06em; animation:blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity:0; } }
 
+  /* Bio toolbar */
+  .fmt { display:flex; flex-wrap:wrap; gap:4px; }
+  .fmt button, .fmt-color { height:30px; min-width:34px; padding:0 9px; border:1px solid var(--b); border-radius:8px; background:var(--s1); color:var(--m); cursor:pointer; font-size:12.5px; display:inline-grid; place-items:center; }
+  .fmt button:hover { color:var(--fg); border-color:var(--m); }
+  .fmt-color input { width:18px; height:18px; border:0; padding:0; }
+  /* Links: extra options */
+  .link-more { grid-column:1 / -1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding-top:6px; }
+  .link-more .toggle-row, .link-more .hint { grid-column:1 / -1; }
+  .link-item.header { grid-template-columns:auto minmax(0,1fr) auto; }
+  .sec-tag { font:500 10.5px "Geist Mono",monospace; color:var(--d); border:1px dashed var(--b); border-radius:6px; padding:3px 7px; }
+  .link-flags { grid-column:1 / -1; display:flex; gap:6px; flex-wrap:wrap; }
+  .link-flags span { font:500 10.5px "Geist Mono",monospace; color:var(--m); border:1px solid var(--b); border-radius:6px; padding:2px 7px; }
+  .link-flags span:empty { display:none; }
+  /* Icon picker */
+  .iconpick { display:grid; grid-template-columns:repeat(auto-fill,minmax(44px,1fr)); gap:6px; }
+  .iconpick .pick { display:grid; place-items:center; min-height:44px; padding:0; }
+  .decogrid .pick { text-align:center; }
+  /* Playlist */
+  .tracks { display:flex; flex-direction:column; gap:8px; }
+  .track { border:1px solid var(--b); border-radius:12px; background:var(--s1); padding:10px; display:flex; flex-direction:column; gap:10px; }
+  .track-row { display:grid; grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto; gap:8px; align-items:center; }
+  .track-n { font:500 11px "Geist Mono",monospace; color:var(--d); width:18px; text-align:center; }
+  .track .tools { display:flex; gap:4px; }
+  .track-more { display:flex; flex-direction:column; gap:10px; }
+  .track-more textarea { min-height:110px; font-size:12px; }
+  /* Share */
+  .share-link { display:flex; align-items:center; gap:10px; padding:12px 14px; border:1px solid var(--b); border-radius:12px; background:var(--input); }
+  .share-link span { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+  .dpv { display:flex; gap:12px; padding:12px 14px 14px; border-radius:8px; background:#2b2d31; color:#dbdee1; border-left:4px solid var(--acc,#fff); max-width:440px; font-family:system-ui,sans-serif; }
+  .dpv small { display:block; font-size:12px; color:#b5bac1; }
+  .dpv b { display:block; color:#00a8fc; font-size:15px; margin:4px 0; }
+  .dpv p { font-size:13.5px; line-height:1.35; color:#dbdee1; }
+  .dpv img { width:72px; height:72px; border-radius:6px; object-fit:cover; flex-shrink:0; background:#1e1f22; }
+  .utm-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .utm { display:flex; align-items:center; gap:10px; padding:9px 10px 9px 12px; border:1px solid var(--b); border-radius:11px; background:var(--s1); min-width:0; }
+  .utm .mask-ico { width:18px; height:18px; flex-shrink:0; color:var(--m); }
+  .utm span { flex:1; min-width:0; font:400 12px "Geist Mono",monospace; color:var(--m); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .qr-wrap { display:grid; grid-template-columns:220px minmax(0,1fr); gap:20px; align-items:start; }
+  .qr-wrap canvas { width:220px; height:220px; border-radius:14px; border:1px solid var(--b); }
+  .alias-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--b); border-radius:10px; background:var(--s1); font:500 13px "Geist Mono",monospace; }
+  .alias-row span { flex:1; }
+  /* Gallery */
+  .gal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; max-width:820px; margin-top:12px; }
+  .gal-item { border:1px solid var(--b); border-radius:12px; background:var(--s2); padding:8px; display:flex; flex-direction:column; gap:8px; }
+  .gal-item img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; display:block; background:var(--s3); }
+  .gal-item .text { padding:7px 9px; font-size:12.5px; }
+  /* Clans + lists */
+  .clan-list { display:flex; flex-direction:column; gap:8px; max-width:820px; }
+  .clan { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--b); border-radius:12px; background:var(--s2); flex-wrap:wrap; }
+  .clan .tagpill { font:600 12px "Geist Mono",monospace; letter-spacing:.08em; padding:5px 8px; border-radius:7px; background:var(--inv-bg); color:var(--inv-fg); }
+  .clan .cmeta { flex:1; min-width:140px; }
+  .clan .cmeta b { display:block; font-size:14px; }
+  .clan .cmeta small { color:var(--m); font-size:12px; }
+  .clan-members { flex-basis:100%; display:flex; flex-wrap:wrap; gap:6px; }
+  .clan-members span { display:inline-flex; align-items:center; gap:6px; padding:4px 6px 4px 10px; border:1px solid var(--b); border-radius:99px; font-size:12px; }
+  .clan-members button { border:0; background:none; color:var(--d); cursor:pointer; font-size:14px; }
+  .lb-list { display:flex; flex-direction:column; max-width:820px; border:1px solid var(--b); border-radius:14px; overflow:hidden; }
+  .lb-row { display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:10px; align-items:center; padding:11px 14px; border-bottom:1px solid var(--b); font-size:13.5px; background:var(--s2); text-decoration:none; }
+  .lb-row:last-child { border-bottom:0; }
+  .lb-row .n { font:500 12px "Geist Mono",monospace; color:var(--d); }
+  .lb-row small { color:var(--m); font-family:"Geist Mono",monospace; }
+  .msg-item { padding:12px 14px; border:1px solid var(--b); border-radius:12px; background:var(--s2); display:flex; flex-direction:column; gap:6px; }
+  .msg-item .mh { display:flex; gap:10px; align-items:center; font-size:12px; color:var(--m); }
+  .msg-item .mh b { color:var(--fg); font-size:13px; }
+  .msg-item .mh .icon-btn { margin-left:auto; width:28px; height:28px; }
+  .msg-item p { font-size:13.5px; white-space:pre-wrap; overflow-wrap:anywhere; }
+  /* Analytics */
+  .an-head { display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap; max-width:820px; }
+  .kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; max-width:820px; margin-top:20px; }
+  .kpi { border:1px solid var(--b); border-radius:12px; background:var(--s2); padding:12px; }
+  .kpi small { display:block; font-size:11.5px; color:var(--m); }
+  .kpi b { display:block; margin-top:6px; font-size:24px; letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+  .kpi i { font-style:normal; font:500 10.5px "Geist Mono",monospace; color:var(--d); }
+  .an-chart { margin-top:12px; }
+  .an-chart canvas { width:100%; height:180px; display:block; }
+  .an-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; max-width:820px; margin-top:12px; }
+  .an-grid .card { margin:0 !important; gap:12px; }
+  .bars { display:flex; flex-direction:column; gap:7px; }
+  .bar-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 10px; font-size:12.5px; }
+  .bar-row span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar-row b { font:500 12px "Geist Mono",monospace; }
+  .bar-row i { grid-column:1 / -1; height:4px; border-radius:4px; background:var(--s3); overflow:hidden; }
+  .bar-row i::after { content:""; display:block; height:100%; width:var(--w); background:var(--fg); border-radius:inherit; }
+  .feed { display:flex; flex-direction:column; gap:6px; max-height:260px; overflow-y:auto; font-size:13px; }
+  .feed div { display:flex; gap:10px; align-items:baseline; animation:feedIn .4s ease both; }
+  .feed time { font:500 11px "Geist Mono",monospace; color:var(--d); flex-shrink:0; }
+  @keyframes feedIn { from { opacity:0; transform:translateY(-6px); } }
+  .live-dot { width:7px; height:7px; border-radius:50%; background:#3ba55d; box-shadow:0 0 0 0 rgba(59,165,93,.6); animation:livepulse 1.8s infinite; display:inline-block; }
+  @keyframes livepulse { 70% { box-shadow:0 0 0 8px rgba(59,165,93,0); } 100% { box-shadow:0 0 0 0 rgba(59,165,93,0); } }
+  .demo-tag { font:500 10.5px "Geist Mono",monospace; color:var(--d); border:1px dashed var(--b); border-radius:6px; padding:2px 7px; }
+
   /* Mobile */
   .mtop { display:none; }
   @media (max-width:1100px) { .dash { grid-template-columns:220px minmax(0,1fr) 360px; } .main { padding:26px 26px 120px; } }
@@ -271,7 +362,11 @@
     .frame { max-height:none; }
     .field-grid, .field-grid.three, .toggle-grid { grid-template-columns:1fr; }
     .layouts { grid-template-columns:repeat(3,minmax(0,1fr)); }
-    .link-item { grid-template-columns:1fr; }
+    .link-item, .link-item.header { grid-template-columns:1fr; }
+    .link-more, .utm-list, .an-grid, .qr-wrap { grid-template-columns:1fr; }
+    .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .track-row { grid-template-columns:auto minmax(0,1fr) auto; }
+    .track-row input:nth-of-type(2) { grid-column:2 / 4; grid-row:2; }
     .savebar { left:12px; right:12px; transform:none; justify-content:space-between; white-space:normal; }
   }
   @media (prefers-reduced-motion: reduce) { .view.pix { animation:none; } .blob { animation:none; } }
@@ -334,14 +429,23 @@
 
     <!-- ANALYTICS -->
     <section class="view hidden" id="view-analytics">
-      <h2>Statistiche</h2>
-      <p class="desc">Le visite arrivano dalla tua pagina pubblica. Clic, social e ascolti si aggiungeranno qui quando la raccolta sarà attiva.</p>
-      <div class="label section-label">visite</div>
-      <div class="stat-grid">
-        <div class="stat-card"><span class="stat-label">Totale</span><span class="stat-value" id="anViews">—</span><span class="stat-note">Da quando la pagina è online.</span></div>
-        <div class="stat-card"><span class="stat-label">Contatore pubblico</span><span class="stat-value" id="anShown">sì</span><span class="stat-note">Si cambia da Pagina e privacy.</span></div>
+      <div class="an-head">
+        <div><h2>Statistiche</h2><p class="desc" id="anDesc">Visite, clic, ascolti e da dove arriva la gente.</p></div>
+        <div class="seg" id="anRange"><button type="button" data-d="7">7 giorni</button><button type="button" data-d="30" class="on">30 giorni</button></div>
       </div>
-      <p class="hint" style="margin-top:12px">Ogni browser conta una visita per sessione. I clic sui link, i tap sui social e gli ascolti arriveranno con le statistiche complete.</p>
+      <div class="kpis" id="anKpis"></div>
+      <div class="card an-chart">
+        <div class="row" style="justify-content:space-between"><div class="seg" id="anMetric"><button type="button" data-m="v" class="on">visite</button><button type="button" data-m="c">clic</button><button type="button" data-m="p">ascolti</button></div><span class="hint mono" id="anTip"></span></div>
+        <canvas id="anCv" height="180"></canvas>
+      </div>
+      <div class="an-grid">
+        <div class="card"><span class="card-title">Link più cliccati</span><div class="bars" id="anLinks"></div></div>
+        <div class="card"><span class="card-title">Social</span><div class="bars" id="anSocials"></div></div>
+        <div class="card"><span class="card-title">Da dove arrivano</span><div class="bars" id="anRefs"></div></div>
+        <div class="card"><span class="card-title">Dispositivi e zone</span><div class="bars" id="anDevices"></div><div class="bars" id="anZones"></div></div>
+      </div>
+      <div class="label section-label"><span>in diretta, oggi</span><span class="live-dot"></span></div>
+      <div class="card"><div class="feed" id="anFeed"></div></div>
     </section>
 
     <!-- PROFILE -->
@@ -352,7 +456,10 @@
         <div class="field-grid">
           <div class="field"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
           <div class="field"><div class="label">posizione</div><input class="text" data-k="location" maxlength="60" placeholder="Città, paese"></div>
-          <div class="field span-2"><div class="label">bio <span class="val" data-count="bio" data-max="160"></span></div><textarea class="text" data-k="bio" maxlength="160" placeholder="Una riga su di te"></textarea></div>
+          <div class="field span-2"><div class="label">bio <span class="val" data-count="bio" data-max="300"></span></div>
+            <div class="fmt" id="bioFmt"></div>
+            <textarea class="text" data-k="bio" id="bioInput" maxlength="300" placeholder="Una riga su di te"></textarea>
+            <p class="hint">Seleziona del testo e usa i bottoni. Si scrive anche a mano: **grassetto** *corsivo* __sottolineato__ ~~barrato~~ ||spoiler|| [glow]testo[/glow] [rainbow]testo[/rainbow] [#ff5fc8]colore[/] [testo](https://link)</p></div>
           <div class="field span-2"><div class="label">tag</div><input class="text" data-k="tags" data-type="tags" placeholder="dark, musica, gaming (massimo 5)"></div>
         </div>
       </div>
@@ -361,9 +468,9 @@
     <!-- LINKS -->
     <section class="view hidden" id="view-links">
       <h2>Link</h2>
-      <p class="desc">I bottoni del tuo profilo. Puoi nasconderli senza cancellarli e cambiarne l'ordine.</p>
+      <p class="desc">I bottoni del tuo profilo. Con i tre puntini: in evidenza, visibile solo in certe date, protetto da password.</p>
       <div class="links-list" id="linksList" style="margin-top:22px"></div>
-      <button class="add-btn" id="addLink" type="button">+ Aggiungi un link</button>
+      <div class="row" style="max-width:820px"><button class="add-btn" id="addLink" type="button" style="flex:2">+ Aggiungi un link</button><button class="add-btn" id="addSection" type="button" style="flex:1">+ Aggiungi una sezione</button></div>
     </section>
 
     <!-- SOCIAL -->
@@ -409,12 +516,28 @@
         <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.avatar.ring" data-o="avRing"></div></div>
         <div class="field"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
       </div>
+      <div class="label section-label">decorazione</div>
+      <div class="card"><div class="chipgrid decogrid" id="decoPick"></div><p class="hint">Si colora con il colore accento.</p></div>
       <div class="card">
         <div class="card-head"><span class="card-title">Badge</span></div>
-        <p class="hint">I badge li assegniamo noi: beta, della prima ora, partner, vincitore del topic. Qui scegli solo se mostrarli.</p>
+        <p class="hint">I badge ufficiali li assegniamo noi: beta, della prima ora, partner, vincitore del topic. Tu scegli come appaiono.</p>
         <div class="toggle-grid">
           <div class="toggle-row"><span>Mostra i badge</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.show"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Glow dei badge</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.glow.badges"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
+        <div class="field-grid">
+          <label class="color-field"><span class="cname">Colore dei badge</span><span class="hex-row"><input type="color" data-k="appearance.badges.color"><input class="hex-input" data-hex="appearance.badges.color" maxlength="7" placeholder="accento"></span></label>
+          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.badges.style" data-o="badgeStyle"></div></div>
+        </div>
+        <div class="row"><button class="ghost-btn sm" id="badgeColorReset" type="button">Usa il colore accento</button></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Il tuo badge</span></div>
+        <div class="toggle-row"><span>Mostra un badge tutto mio<small>Icona, nome e colore li scegli tu.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.on"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field-grid" data-when="appearance.badges.custom.on=true">
+          <div class="field"><div class="label">nome</div><input class="text" data-k="appearance.badges.custom.label" maxlength="24" placeholder="es. fondatore"></div>
+          <label class="color-field"><span class="cname">Colore</span><span class="hex-row"><input type="color" data-k="appearance.badges.custom.color"><input class="hex-input" data-hex="appearance.badges.custom.color" maxlength="7" placeholder="come gli altri"></span></label>
+          <div class="field span-2"><div class="label">icona</div><div class="iconpick" id="badgeIconPick"></div></div>
         </div>
       </div>
     </section>
@@ -469,6 +592,17 @@
           <div class="field span-2"><div class="label">bordo</div><div class="seg" data-seg="appearance.card.border" data-o="border"></div></div>
         </div>
         <div class="toggle-row"><span>Scheda sfumata con il colore accento</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
+      </div>
+      <div class="label section-label">banner</div>
+      <div class="card">
+        <div class="field"><div class="label">immagine in cima alla scheda</div><div class="seg" data-seg="appearance.banner.type" data-o="bannerType"></div></div>
+        <div class="field" data-when="appearance.banner.type=image|video">
+          <div class="row" data-when="appearance.banner.type=image"><button class="save-btn sm" id="bannerPick" type="button">Carica immagine o GIF</button><span class="hint">fino a 5 MB</span><input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden></div>
+          <input class="text" type="url" data-k="appearance.banner.url" placeholder="link di un'immagine, una GIF o un video .mp4">
+          <div class="label">altezza <span class="val" data-show="appearance.banner.height" data-unit="px"></span></div>
+          <input type="range" min="70" max="240" data-k="appearance.banner.height">
+        </div>
+        <p class="hint">Con il layout "Banner" e nessuna immagine, il banner usa lo sfondo.</p>
       </div>
       <div class="label section-label">animazione di entrata</div>
       <div class="card"><div class="seg" data-seg="appearance.entrance" data-o="entrance"></div></div>
@@ -540,6 +674,11 @@
       <div class="label section-label">font del nome</div>
       <div class="fontgrid" id="fontPick"></div>
       <div class="card" style="margin-top:12px">
+        <div class="card-head"><span class="card-title">Il tuo font</span><span class="hint">TTF, OTF, WOFF o WOFF2</span></div>
+        <div class="row"><button class="save-btn sm" id="fontUpload" type="button">Carica un font</button><input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" hidden><input class="text" type="url" data-k="appearance.font.custom" placeholder="oppure il link di un file di font" style="flex:1;min-width:180px"></div>
+        <div class="row"><button class="ghost-btn sm" id="useFontName" type="button">Usalo per il nome</button><button class="ghost-btn sm" id="useFontBody" type="button">Usalo per il testo</button></div>
+      </div>
+      <div class="card" style="margin-top:12px">
         <div class="field-grid">
           <div class="field"><div class="label">font del testo</div><select class="text" data-k="appearance.font.body" id="bodyFont"></select></div>
           <div class="field"><div class="label">grandezza del nome <span class="val" data-show="appearance.font.nameSize" data-unit="%"></span></div><input type="range" min="60" max="200" step="5" data-k="appearance.font.nameSize"></div>
@@ -562,7 +701,7 @@
       <div class="label section-label">bio animata</div>
       <div class="card">
         <div class="seg" data-seg="appearance.bioFx" data-o="bioFx"></div>
-        <div class="field" data-when="appearance.bioFx=typewriter">
+        <div class="field" data-when="appearance.bioFx=typewriter|cycle">
           <div class="label">frasi, una per riga (massimo 6)</div>
           <textarea class="text" data-k="appearance.bioLines" data-type="lines" placeholder="nero, bianco e senza filtri&#10;vota la mia pagina"></textarea>
           <p class="hint">Se lasci vuoto, scrive la tua bio.</p>
@@ -596,8 +735,8 @@
 
     <!-- CURSOR + ENTER -->
     <section class="view hidden" id="view-cursor">
-      <h2>Cursore e ingresso</h2>
-      <p class="desc">Il cursore dei visitatori e la schermata prima di entrare nel profilo.</p>
+      <h2>Cursore, suoni e ingresso</h2>
+      <p class="desc">Il cursore dei visitatori, i suoni sui bottoni e la schermata prima di entrare nel profilo.</p>
       <div class="label section-label">cursore</div>
       <div class="card">
         <div class="seg" data-seg="appearance.cursor.type" data-o="cursor"></div>
@@ -607,6 +746,13 @@
           <input type="file" id="cursorInput" accept="image/png,image/gif,image/webp" hidden>
         </div>
         <div class="field"><div class="label">scia</div><div class="seg" data-seg="appearance.cursor.trail" data-o="trail"></div></div>
+      </div>
+      <div class="label section-label">suoni</div>
+      <div class="card">
+        <p class="hint">Un piccolo suono quando passano sopra o cliccano link, social e foto. Tocca un suono per sentirlo.</p>
+        <div class="field"><div class="label">passaggio del mouse</div><div class="seg" data-seg="appearance.sfx.hover" data-o="sfx"></div></div>
+        <div class="field"><div class="label">clic</div><div class="seg" data-seg="appearance.sfx.click" data-o="sfx"></div></div>
+        <div class="field"><div class="label">volume <span class="val" data-show="appearance.sfx.volume" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.sfx.volume"></div>
       </div>
       <div class="label section-label">schermata di ingresso</div>
       <div class="card">
@@ -625,16 +771,25 @@
       <p class="desc">Spotify, un tuo file audio, SoundCloud o YouTube. Più Last.fm per mostrare cosa stai ascoltando.</p>
       <div class="card" style="margin-top:22px">
         <div class="field"><div class="label">sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
-        <div class="field" data-when="appearance.music.type!=none">
+        <div class="field" data-when="appearance.music.type=spotify|soundcloud|youtube">
           <input class="text" type="url" data-k="appearance.music.url" id="musicUrl" placeholder="link">
           <p class="hint" id="musicHint"></p>
-          <div class="row" data-when="appearance.music.type=audio"><button class="save-btn sm" id="audioPick" type="button">Carica un file audio</button><span class="hint">MP3 fino a 8 MB, solo con account</span><input type="file" id="audioInput" accept="audio/mpeg,audio/mp3,audio/ogg,audio/wav" hidden></div>
+        </div>
+        <div class="field" data-when="appearance.music.type=audio">
+          <div class="label">playlist <span class="val" id="trackCount"></span></div>
+          <div class="tracks" id="trackList"></div>
+          <div class="row"><button class="save-btn sm" id="audioPick" type="button">Carica un file audio</button><button class="ghost-btn sm" id="addTrack" type="button">+ Aggiungi con un link</button><span class="hint">MP3 fino a 8 MB, il caricamento serve un account</span><input type="file" id="audioInput" accept="audio/mpeg,audio/mp3,audio/ogg,audio/wav" hidden></div>
+          <p class="hint">Nei tre puntini di ogni brano: copertina e testo sincronizzato (formato LRC). "Cerca il testo" lo prende da LRCLIB, se c'è.</p>
         </div>
         <div class="field-grid" data-when="appearance.music.type=audio">
-          <div class="field"><div class="label">titolo</div><input class="text" data-k="appearance.music.title" maxlength="60" placeholder="smoke signals"></div>
           <div class="field"><div class="label">volume <span class="val" data-show="appearance.music.volume" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.music.volume"></div>
+          <div class="field"><div class="label">ripeti</div><div class="seg" data-seg="appearance.music.loop" data-o="loop"></div></div>
+          <div class="field"><div class="label">visualizzatore</div><div class="seg" data-seg="appearance.music.visualizer" data-o="viz"></div></div>
+          <div class="toggle-row"><span>Ordine casuale</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.shuffle"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Parte quando entrano<small>Richiede "clicca per entrare".</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Mostra il player</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Copertina sfocata dietro il player</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.blurCover"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Testo sincronizzato</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.lyrics"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
       <div class="label section-label">last.fm</div>
@@ -655,6 +810,14 @@
       <div class="card">
         <div class="field"><div class="label">id utente discord</div><input class="text" data-k="appearance.widgets.discordId" inputmode="numeric" maxlength="20" placeholder="es. 123456789012345678"></div>
         <p class="hint">Mostra il tuo stato, il gioco e la canzone di Spotify che stai ascoltando. Come si fa: 1) entra nel server di Lanyard, <a href="https://discord.gg/lanyard" target="_blank" rel="noopener">discord.gg/lanyard</a>; 2) su Discord attiva Impostazioni, Avanzate, Modalità sviluppatore; 3) tasto destro sul tuo nome, "Copia ID utente", e incollalo qui.</p>
+      </div>
+      <div class="label section-label">video e live</div>
+      <div class="card">
+        <div class="field-grid">
+          <div class="field"><div class="label">twitch</div><input class="text" data-k="appearance.widgets.twitch" maxlength="40" placeholder="nome del canale"></div>
+          <div class="field"><div class="label">youtube</div><input class="text" data-k="appearance.widgets.youtube" maxlength="200" placeholder="link di un video o ID del canale (UC…)"></div>
+        </div>
+        <p class="hint">Twitch mostra il player del canale: quando sei in live si vede la live. Con l'ID del canale YouTube appaiono i tuoi ultimi video (lo trovi in YouTube, Impostazioni, Impostazioni avanzate).</p>
       </div>
       <div class="label section-label">altri widget</div>
       <div class="card">
@@ -713,6 +876,122 @@
           <div class="toggle-row"><span>Profilo privato<small>Solo tu lo vedi, dalla dashboard.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.private"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
+    </section>
+
+    <!-- SHARE -->
+    <section class="view hidden" id="view-share">
+      <h2>Condividi</h2>
+      <p class="desc">Il tuo link, come appare su Discord, un link diverso per ogni social (così nelle statistiche vedi da dove arriva la gente), il QR code e i nomi extra.</p>
+      <div class="card" style="margin-top:22px">
+        <div class="share-link"><span class="mono" id="shareUrl"></span><button class="save-btn sm" id="shareCopy" type="button">Copia</button><a class="ghost-btn sm" id="shareOpen" href="#" target="_blank" rel="noopener">Apri</a></div>
+        <div class="label">anteprima su discord e whatsapp</div>
+        <div class="dpv" id="discordPv"><div style="flex:1;min-width:0"><small>sigari.bio</small><b id="dpvTitle"></b><p id="dpvDesc"></p></div><img id="dpvImg" alt=""></div>
+        <p class="hint">Titolo, descrizione e immagine si cambiano da Pagina e privacy. Il colore della barra è il tuo accento.</p>
+      </div>
+      <div class="label section-label">un link per ogni social</div>
+      <div class="card">
+        <div class="utm-list" id="utmList"></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">altro (volantino, story, sticker…)</div><input class="text" id="utmCustom" maxlength="16" placeholder="volantino"></div>
+          <div class="field"><div class="label">link</div><div class="row"><input class="text mono" id="utmCustomOut" readonly style="flex:1;min-width:0;font-size:12px"><button class="ghost-btn sm" id="utmCustomCopy" type="button">Copia</button></div></div>
+        </div>
+      </div>
+      <div class="label section-label">qr code</div>
+      <div class="card">
+        <div class="qr-wrap">
+          <canvas id="qrCanvas" width="660" height="660" aria-label="QR code del tuo profilo"></canvas>
+          <div class="field">
+            <div class="label">stile</div><div class="seg" id="qrStyle"><button type="button" data-v="square">Quadrati</button><button type="button" data-v="dots">Punti</button><button type="button" data-v="rounded">Arrotondato</button></div>
+            <div class="color-grid">
+              <label class="color-field"><span class="cname">Colore</span><span class="hex-row"><input type="color" id="qrFg" value="#000000"></span></label>
+              <label class="color-field"><span class="cname">Sfondo</span><span class="hex-row"><input type="color" id="qrBg" value="#ffffff"></span></label>
+            </div>
+            <div class="toggle-row"><span>@ al centro</span><label class="ios"><input class="sr-only" type="checkbox" id="qrLogo" checked><span class="track"><span class="knob"></span></span></label></div>
+            <div class="row"><button class="save-btn sm" id="qrDownload" type="button">Scarica PNG</button><button class="ghost-btn sm" id="qrAccent" type="button">Usa i miei colori</button></div>
+            <p class="hint">Chi lo scansiona arriva sul profilo e nelle statistiche risulta "qr".</p>
+          </div>
+        </div>
+      </div>
+      <div class="label section-label">nomi extra</div>
+      <div class="card">
+        <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre sigari.bio/@altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
+        <div class="active-list" id="aliasList"></div>
+        <div class="prefix-field"><span class="prefix">sigari.bio/@</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
+        <div class="row"><button class="save-btn sm" id="aliasAdd" type="button">Aggiungi</button><span class="hint" id="aliasHint"></span></div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="view hidden" id="view-gallery">
+      <h2>Galleria</h2>
+      <p class="desc">Carica foto e GIF: ogni immagine ha subito il suo link diretto da condividere, e se vuoi le mostri sul profilo.</p>
+      <div class="card" style="margin-top:22px">
+        <div class="row"><button class="save-btn sm" id="galPick" type="button">Carica immagini</button><input type="file" id="galInput" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden><span class="hint" id="galHint">fino a 5 MB l'una, massimo 12</span></div>
+        <div class="row"><input class="text" id="galUrl" type="url" placeholder="oppure incolla il link di un'immagine" style="flex:1;min-width:180px"><button class="ghost-btn sm" id="galAddUrl" type="button">Aggiungi</button></div>
+      </div>
+      <div class="gal-grid" id="galGrid"></div>
+      <div class="label section-label">sul profilo</div>
+      <div class="card">
+        <div class="toggle-row"><span>Mostra la galleria sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.gallery"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.widgets.galleryStyle" data-o="galStyle"></div></div>
+      </div>
+    </section>
+
+    <!-- CLANS -->
+    <section class="view hidden" id="view-clans">
+      <h2>Clan</h2>
+      <p class="desc">Un gruppo con la sua TAG riservata, da 2 a 4 caratteri. Puoi stare in 3 clan: il principale appare per primo, pieno, sotto il tuo nome.</p>
+      <div class="card hidden" id="clanGuest" style="margin-top:22px"><p>I clan servono un account.</p><div class="row"><a class="save-btn" href="login.html?from=ospite" style="display:inline-flex;align-items:center;text-decoration:none">Registrati</a></div></div>
+      <div id="clanUser">
+        <div class="label section-label">i tuoi clan <span class="val" id="clanCount">0/3</span></div>
+        <div class="clan-list" id="clanMine"></div>
+        <div class="field-grid" style="max-width:820px;margin-top:12px;align-items:start">
+          <div class="card">
+            <span class="card-title">Entra in un clan</span>
+            <div class="prefix-field"><span class="prefix">TAG</span><input id="joinTag" maxlength="4" autocomplete="off" placeholder="SGR" style="text-transform:uppercase"></div>
+            <div class="row"><button class="save-btn sm" id="joinBtn" type="button">Entra</button><span class="hint" id="joinHint"></span></div>
+          </div>
+          <div class="card">
+            <span class="card-title">Crea un clan</span>
+            <div class="prefix-field"><span class="prefix">TAG</span><input id="newTag" maxlength="4" autocomplete="off" placeholder="2-4 lettere o numeri" style="text-transform:uppercase"></div>
+            <input class="text" id="newClanName" maxlength="30" placeholder="Nome del clan">
+            <input class="text" id="newClanDesc" maxlength="140" placeholder="Descrizione (opzionale)">
+            <div class="row"><label class="hint" style="display:flex;align-items:center;gap:8px">colore <input type="color" id="newClanColor" value="#ffffff"></label><button class="save-btn sm" id="createClan" type="button">Crea</button></div>
+            <span class="hint" id="createHint"></span>
+          </div>
+        </div>
+      </div>
+      <div class="label section-label">classifica dei clan</div>
+      <div class="lb-list" id="clanLb"></div>
+    </section>
+
+    <!-- INBOX -->
+    <section class="view hidden" id="view-inbox">
+      <h2>Messaggi</h2>
+      <p class="desc">Il modulo contatti, la newsletter e il guestbook del tuo profilo. Attivali qui, poi salva.</p>
+      <div class="card" style="margin-top:22px">
+        <div class="toggle-grid">
+          <div class="toggle-row"><span>Modulo contatti<small>Ti scrivono dal profilo.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.contact"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Newsletter<small>Raccogli le email dei fan.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.newsletter"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Guestbook<small>Chi ha un account lascia una firma.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.guestbook"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
+        <div class="field" data-when="appearance.widgets.newsletter=true"><div class="label">testo della newsletter</div><input class="text" data-k="appearance.widgets.newsletterText" maxlength="80" placeholder="Lascia la tua email: ti scrivo quando esce qualcosa di nuovo."></div>
+      </div>
+      <div class="tabs" role="tablist"><button type="button" class="on" data-itab="messages">Messaggi</button><button type="button" data-itab="subscribers">Iscritti</button><button type="button" data-itab="guestbook">Guestbook</button></div>
+      <div class="active-list" id="inboxPane" style="margin-top:14px"></div>
+    </section>
+
+    <!-- PASTES -->
+    <section class="view hidden" id="view-pastes">
+      <h2>Paste</h2>
+      <p class="desc">Testi da condividere con un link: codice, testi di canzoni, liste, regolamenti. Chi ha il link li legge.</p>
+      <div class="card" style="margin-top:22px">
+        <input class="text" id="pasteTitle" maxlength="80" placeholder="Titolo">
+        <textarea class="text mono" id="pasteText" maxlength="20000" style="min-height:180px;font-size:13px" placeholder="Incolla qui il testo"></textarea>
+        <div class="row"><button class="save-btn sm" id="pasteCreate" type="button">Crea il link</button><span class="hint" id="pasteHint"></span></div>
+      </div>
+      <div class="label section-label">i tuoi paste</div>
+      <div class="active-list" id="pasteList"></div>
     </section>
 
     <!-- SETTINGS -->
@@ -785,7 +1064,8 @@
 <script type="module">
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
-    TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn
+    TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
+    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, lockLinks, playSfx, plainText
   } from "./profile-kit.js";
 
   const $ = id => document.getElementById(id);
@@ -832,7 +1112,7 @@
   let savedJSON = "";         // last saved snapshot, for the unsaved-changes bar
   let preview = null;
 
-  const EDITABLE = ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance"];
+  const EDITABLE = ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery", "clans", "primaryClan"];
   function snapshot(d) {
     const n = normalizeProfile({ ...d, handle });
     const out = {};
@@ -857,10 +1137,11 @@
      ========================================================= */
   const I = p => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const NAV = [
-    ["account", [["overview", "Panoramica", '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'], ["analytics", "Statistiche", '<path d="M3 17l6-6 4 4 8-8"/>'], ["settings", "Impostazioni", '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>']]],
+    ["account", [["overview", "Panoramica", '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'], ["analytics", "Statistiche", '<path d="M3 17l6-6 4 4 8-8"/>', "nuovo"], ["share", "Condividi", '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>', "nuovo"], ["settings", "Impostazioni", '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>']]],
     ["profilo", [["profile", "Profilo", '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'], ["links", "Link", '<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'], ["social", "Social", '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>'], ["avatar", "Avatar e badge", '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="3"/><path d="M6 19a6 6 0 0 1 12 0"/>']]],
-    ["stile", [["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "nuovo"], ["layout", "Layout e scheda", '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'], ["background", "Sfondo ed effetti", '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>'], ["colors", "Colori", '<circle cx="13.5" cy="6.5" r="1.4"/><circle cx="17.5" cy="10.5" r="1.4"/><circle cx="8.5" cy="7.5" r="1.4"/><circle cx="6.5" cy="12.5" r="1.4"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/>'], ["text", "Testo e font", '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>'], ["buttons", "Bottoni", '<rect x="3" y="7" width="18" height="10" rx="5"/>'], ["cursor", "Cursore e ingresso", '<path d="M4 4l7 17 2.5-7.5L21 11z"/>']]],
-    ["contenuti", [["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'], ["widgets", "Widget", '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'], ["topic", "Topic della settimana", '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>', "nuovo"]]],
+    ["stile", [["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "nuovo"], ["layout", "Layout e scheda", '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'], ["background", "Sfondo ed effetti", '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>'], ["colors", "Colori", '<circle cx="13.5" cy="6.5" r="1.4"/><circle cx="17.5" cy="10.5" r="1.4"/><circle cx="8.5" cy="7.5" r="1.4"/><circle cx="6.5" cy="12.5" r="1.4"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/>'], ["text", "Testo e font", '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>'], ["buttons", "Bottoni", '<rect x="3" y="7" width="18" height="10" rx="5"/>'], ["cursor", "Cursore e suoni", '<path d="M4 4l7 17 2.5-7.5L21 11z"/>']]],
+    ["contenuti", [["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'], ["widgets", "Widget", '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'], ["gallery", "Galleria", '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>', "nuovo"], ["topic", "Topic della settimana", '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>', "nuovo"]]],
+    ["community", [["clans", "Clan", '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>', "nuovo"], ["inbox", "Messaggi", '<path d="M4 4h16v12H8l-4 4z"/>', "nuovo"], ["pastes", "Paste", '<path d="M8 4h8M9 2h6v4H9zM6 4H5a1 1 0 0 0-1 1v15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-1M8 11h8M8 15h5"/>', "nuovo"], ["explore", "Esplora profili", '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>']]],
     ["pagina", [["page", "Pagina e privacy", '<rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>']]]
   ];
   function buildNav() {
@@ -870,7 +1151,9 @@
     $("mnav").addEventListener("change", e => showView(e.target.value));
   }
   function showView(name) {
+    if (name === "explore") { window.open("explore.html", "_blank", "noopener"); return; }
     if (!$("view-" + name)) name = "overview";
+    stopFeed();
     $$("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === name));
     $("mnav").value = name;
     $$(".view").forEach(v => v.classList.add("hidden"));
@@ -884,6 +1167,11 @@
     if (name === "templates") renderTemplates();
     if (name === "topic") renderTopic();
     if (name === "settings") renderSettings();
+    if (name === "share") renderShare();
+    if (name === "gallery") renderGallery();
+    if (name === "clans") renderClans();
+    if (name === "inbox") renderInbox();
+    if (name === "pastes") renderPastes();
     history.replaceState(null, "", "#" + name);
   }
   document.addEventListener("click", e => {
@@ -918,7 +1206,12 @@
     avShape: [["circle", "Cerchio"], ["rounded", "Arrotondato"], ["square", "Quadrato"], ["hex", "Esagono"]],
     avRing: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["spin", "Rotante"]],
     nameFx: NAME_FX, entrance: ENTRANCES,
-    bioFx: [["none", "Statica"], ["typewriter", "Macchina da scrivere"]],
+    bioFx: BIO_FX, sfx: SFX,
+    badgeStyle: [["box", "Quadrato"], ["round", "Tondo"], ["plain", "Solo icona"]],
+    bannerType: [["none", "Nessuno"], ["image", "Immagine o GIF"], ["video", "Video"]],
+    loop: [["all", "Playlist"], ["one", "Un brano"], ["none", "No"]],
+    viz: [["bars", "Barre"], ["wave", "Onda"], ["none", "Nessuno"]],
+    galStyle: [["grid", "Griglia"], ["row", "Scorrevole"], ["stack", "Polaroid"]],
     variant: [["solid", "Pieno"], ["outline", "Contorno"], ["ghost", "Solo testo"], ["glass", "Vetro"]],
     shape: [["square", "Quadrato"], ["rounded", "Arrotondato"], ["pill", "Pillola"]],
     shadow: [["none", "Nessuna"], ["soft", "Morbida"], ["glow", "Glow"], ["hard", "Netta"]],
@@ -979,6 +1272,7 @@
       if (!b) return;
       const cur = getPath(draft, box.dataset.seg);
       setPath(draft, box.dataset.seg, typeof cur === "number" ? Number(b.dataset.v) : b.dataset.v);
+      if (box.dataset.o === "sfx") playSfx(b.dataset.v, draft.appearance.sfx.volume);
       changed();
     });
   }
@@ -1068,9 +1362,11 @@
   function buildPickers() {
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
     pickGrid($("effectPick"), "appearance.effect", EFFECTS);
-    pickGrid($("fontPick"), "appearance.font.name", FONTS.map(f => [f[0], f[1]]), (v, l) => `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa nyx</span><small>${l}</small>`);
+    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa nyx</span><small>${l}</small>`);
     ensureFonts(FONTS.map(f => f[0]));
-    $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("");
+    $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("") + '<option value="custom">Il tuo font</option>';
+    pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS);
+    pickGrid($("badgeIconPick"), "appearance.badges.custom.icon", Object.keys(BADGE_ICONS).map(k => [k, k]), v => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${BADGE_ICONS[v]}</svg>`);
     pickGrid($("btnPalette"), "appearance.buttons.palette", [["white", "Bianco"], ["silver", "Argento"], ["graphite", "Grafite"], ["accent", "Accento"], ["custom", "Personalizzato"]], (v, l) => `<span class="sw" data-sw="${v}"></span>${l}`);
 
     $("gradPresets").innerHTML = GRADIENTS.map(([stops, l]) => `<button type="button" class="pick" data-g="${stops}"><span class="sw" style="background:linear-gradient(135deg,${stops})"></span>${l}</button>`).join("");
@@ -1130,14 +1426,38 @@
     eye: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>', off: '<path d="M3 3l18 18M10.6 5.1A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.2 4M6.1 6.1A18.5 18.5 0 0 0 1 12s4 7 11 7a10.6 10.6 0 0 0 5.4-1.4"/>',
     trash: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>'
   };
+  ICO.more = '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>';
+  ICO.lyrics = '<path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/>';
   const iconBtn = (act, i, title, on) => `<button type="button" class="icon-btn${on ? " on" : ""}" data-act="${act}" data-i="${i}" title="${title}" aria-label="${title}">${I(ICO[act === "hide" ? (on ? "off" : "eye") : act])}</button>`;
+  const newId = () => Math.random().toString(36).slice(2, 9);
+  const openLinks = new Set();
+  const toggleRow = (k, label, sub) => `<div class="toggle-row"><span>${label}${sub ? `<small>${sub}</small>` : ""}</span><label class="ios"><input class="sr-only" type="checkbox" data-k="${k}"><span class="track"><span class="knob"></span></span></label></div>`;
+  function linkFlags(l) {
+    const f = [];
+    if (l.featured) f.push("in evidenza");
+    if (l.start || l.end) f.push("programmato");
+    if (l.password) f.push("con password");
+    return f.map(x => `<span>${x}</span>`).join("");
+  }
   function renderLinks() {
     const links = draft.links || [];
     if (!links.length) { $("linksList").innerHTML = '<div class="empty-state">Ancora nessun link. Aggiungine uno qui sotto.</div>'; return; }
-    $("linksList").innerHTML = links.map((l, i) => `<div class="link-item">
+    $("linksList").innerHTML = links.map((l, i) => l.type === "header" ? `<div class="link-item header">
+      <span class="sec-tag">sezione</span>
+      <input type="text" maxlength="60" placeholder="Titolo della sezione" data-k="links.${i}.title">
+      <div class="tools">${iconBtn("up", i, "Sposta su")}${iconBtn("down", i, "Sposta giù")}${iconBtn("hide", i, l.hidden ? "Mostra" : "Nascondi", l.hidden)}${iconBtn("trash", i, "Elimina")}</div>
+    </div>` : `<div class="link-item">
       <input type="text" maxlength="60" placeholder="Titolo" data-k="links.${i}.title">
       <input type="url" placeholder="https://" data-k="links.${i}.url">
-      <div class="tools">${iconBtn("up", i, "Sposta su")}${iconBtn("down", i, "Sposta giù")}${iconBtn("hide", i, l.hidden ? "Mostra" : "Nascondi", l.hidden)}${iconBtn("trash", i, "Elimina")}</div>
+      <div class="tools">${iconBtn("up", i, "Sposta su")}${iconBtn("down", i, "Sposta giù")}${iconBtn("hide", i, l.hidden ? "Mostra" : "Nascondi", l.hidden)}${iconBtn("more", i, "Opzioni", openLinks.has(l.id))}${iconBtn("trash", i, "Elimina")}</div>
+      <div class="link-flags">${linkFlags(l)}</div>
+      <div class="link-more${openLinks.has(l.id) ? "" : " hidden"}">
+        ${toggleRow(`links.${i}.featured`, "In evidenza", "Ogni tanto si muove e brilla per farsi notare.")}
+        <div class="field"><div class="label">visibile dal</div><input class="text" type="datetime-local" data-k="links.${i}.start"></div>
+        <div class="field"><div class="label">fino al</div><input class="text" type="datetime-local" data-k="links.${i}.end"></div>
+        <div class="field"><div class="label">password</div><input class="text" type="text" maxlength="64" autocomplete="off" placeholder="nessuna" data-k="links.${i}.password"></div>
+        <p class="hint">Con la password il link vero viene cifrato: sul profilo pubblico non si legge finché non scrivono la password giusta. Le date usano l'ora del visitatore.</p>
+      </div>
     </div>`).join("");
     $$("[data-k]", $("linksList")).forEach(t => writeControl(t, getPath(draft, t.dataset.k)));
   }
@@ -1148,17 +1468,37 @@
     if (b.dataset.act === "up" && i > 0) [L[i - 1], L[i]] = [L[i], L[i - 1]];
     if (b.dataset.act === "down" && i < L.length - 1) [L[i + 1], L[i]] = [L[i], L[i + 1]];
     if (b.dataset.act === "hide") L[i].hidden = !L[i].hidden;
+    if (b.dataset.act === "more") { openLinks.has(L[i].id) ? openLinks.delete(L[i].id) : openLinks.add(L[i].id); renderLinks(); return; }
     if (b.dataset.act === "trash") L.splice(i, 1);
     renderLinks(); changed();
   });
-  $("addLink").addEventListener("click", () => {
+  $("linksList").addEventListener("change", e => { if (e.target.dataset.k && /^links\.\d+\.(featured|start|end|password)$/.test(e.target.dataset.k)) { const i = +e.target.dataset.k.split(".")[1]; e.target.closest(".link-item").querySelector(".link-flags").innerHTML = linkFlags(draft.links[i]); } });
+  function addLinkItem(item) {
     draft.links = draft.links || [];
-    if (draft.links.length >= 30) return setStatus("Massimo 30 link.", "warn");
-    draft.links.push({ title: "Nuovo link", url: "https://", hidden: false });
+    if (draft.links.length >= 30) return setStatus("Massimo 30 tra link e sezioni.", "warn");
+    draft.links.push(item);
     renderLinks(); changed();
     const inputs = $$("input[type=text]", $("linksList"));
-    inputs[inputs.length - 1]?.select();
-  });
+    inputs[inputs.length - (item.type === "header" ? 1 : 2)]?.select();
+  }
+  $("addLink").addEventListener("click", () => addLinkItem({ id: newId(), type: "link", title: "Nuovo link", url: "https://", hidden: false }));
+  $("addSection").addEventListener("click", () => addLinkItem({ id: newId(), type: "header", title: "Nuova sezione", url: "", hidden: false }));
+
+  /* =========================================================
+     Bio formatting toolbar
+     ========================================================= */
+  const FMT = [["**", "**", "<b>B</b>", "Grassetto"], ["*", "*", "<i>I</i>", "Corsivo"], ["__", "__", "<u>U</u>", "Sottolineato"], ["~~", "~~", "<s>S</s>", "Barrato"], ["||", "||", "▒▒", "Spoiler"], ["[glow]", "[/glow]", "glow", "Glow"], ["[rainbow]", "[/rainbow]", "arcobaleno", "Arcobaleno"], ["`", "`", "&lt;/&gt;", "Codice"], ["[", "](https://)", "link", "Link"]];
+  $("bioFmt").innerHTML = FMT.map((f, i) => `<button type="button" data-f="${i}" title="${f[3]}" aria-label="${f[3]}">${f[2]}</button>`).join("") + '<label class="fmt-color" title="Colore"><input type="color" id="bioColor" value="#ff5fc8" aria-label="Colore del testo"></label>';
+  function wrapSel(ta, a, b) {
+    const st = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+    const inner = v.slice(st, en) || "testo";
+    ta.value = (v.slice(0, st) + a + inner + b + v.slice(en)).slice(0, 300);
+    ta.focus();
+    ta.setSelectionRange(st + a.length, st + a.length + inner.length);
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  $("bioFmt").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) { const f = FMT[+b.dataset.f]; wrapSel($("bioInput"), f[0], f[1]); } });
+  $("bioColor").addEventListener("change", e => wrapSel($("bioInput"), `[${e.target.value}]`, "[/]"));
 
   /* =========================================================
      Socials
@@ -1264,6 +1604,41 @@
   uploadFlow("avatarPick", "avatarInput", "avatar", 512, url => { draft.avatarUrl = url; renderAvatarBox(); });
   uploadFlow("bgPick", "bgInput", "bg", 1920, url => { draft.appearance.bg.image = url; draft.appearance.bg.type = "image"; });
   uploadFlow("cursorPick", "cursorInput", "cursor", 48, url => { draft.appearance.cursor.url = url; draft.appearance.cursor.type = "custom"; });
+  uploadFlow("bannerPick", "bannerInput", "banner", 1500, url => { draft.appearance.banner.url = url; draft.appearance.banner.type = "image"; });
+  $("badgeColorReset").addEventListener("click", () => { draft.appearance.badges.color = ""; syncControls(); changed(); });
+
+  async function uploadFile(file, path, type) {
+    const { S, storage } = await firebase();
+    const r = S.ref(storage, path);
+    await S.uploadBytes(r, file, { contentType: type || file.type, cacheControl: "public, max-age=31536000" });
+    return S.getDownloadURL(r);
+  }
+  const FONT_TYPES = { ttf: "font/ttf", otf: "font/otf", woff: "font/woff", woff2: "font/woff2" };
+  $("fontUpload").addEventListener("click", () => $("fontInput").click());
+  $("fontInput").addEventListener("change", async e => {
+    const f = e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    const ext = (f.name.split(".").pop() || "").toLowerCase(), type = FONT_TYPES[ext];
+    if (!type) return setStatus("Usa un file .ttf, .otf, .woff o .woff2.", "err");
+    try {
+      let url;
+      if (mode === "guest") {
+        if (f.size > 450 * 1024) throw new Error("Senza account il font può pesare al massimo 450 KB. Registrati per caricarne di più grandi.");
+        url = await blobToDataUrl(new Blob([await f.arrayBuffer()], { type }));
+      } else {
+        if (f.size > 4 * 1024 * 1024) throw new Error("Il font deve pesare al massimo 4 MB.");
+        setStatus("Carico il font…");
+        url = await uploadFile(f, `media/${uid}/font-${Date.now()}.${ext}`, type);
+      }
+      draft.appearance.font.custom = url;
+      draft.appearance.font.name = "custom";
+      syncControls(); changed();
+      setStatus("Font caricato e usato per il nome. Ricordati di salvare.", "ok");
+    } catch (err) { setStatus(friendly(err), "err"); }
+  });
+  $("useFontName").addEventListener("click", () => { if (!draft.appearance.font.custom) return setStatus("Prima carica un font o incolla il link.", "warn"); draft.appearance.font.name = "custom"; syncControls(); changed(); });
+  $("useFontBody").addEventListener("click", () => { if (!draft.appearance.font.custom) return setStatus("Prima carica un font o incolla il link.", "warn"); draft.appearance.font.body = "custom"; syncControls(); changed(); });
   $("avatarRemove").addEventListener("click", () => { draft.avatarUrl = ""; renderAvatarBox(); $("avatarUrl").value = ""; changed(); });
   $("avatarUrl").addEventListener("change", e => {
     const v = e.target.value.trim();
@@ -1291,10 +1666,11 @@
       const { S, storage } = await firebase();
       const r = S.ref(storage, `media/${uid}/audio-${Date.now()}`);
       await S.uploadBytes(r, f, { contentType: f.type, cacheControl: "public, max-age=31536000" });
-      draft.appearance.music.url = await S.getDownloadURL(r);
-      draft.appearance.music.type = "audio";
-      if (!draft.appearance.music.title) draft.appearance.music.title = f.name.replace(/\.[^.]+$/, "").slice(0, 60);
-      syncControls(); changed();
+      const m = draft.appearance.music;
+      if (m.tracks.length >= 20) throw new Error("Massimo 20 brani.");
+      m.tracks.push({ url: await S.getDownloadURL(r), title: f.name.replace(/\.[^.]+$/, "").slice(0, 60), artist: "", cover: "", lrc: "" });
+      m.type = "audio"; m.url = "";
+      renderTracks(); syncControls(); changed();
       setStatus("Audio caricato. Ricordati di salvare.", "ok");
     } catch (err) { setStatus(friendly(err), "err"); }
   });
@@ -1311,6 +1687,7 @@
       "auth/invalid-email": "Questo indirizzo email non sembra valido.",
       "auth/weak-password": "La nuova password deve avere almeno 8 caratteri."
     };
+    if (/dynamically imported module|Failed to fetch|NetworkError|network-request-failed|unavailable/i.test(err?.message || err?.code || "")) return "Non riesco a collegarmi. Controlla la connessione e riprova.";
     return map[err?.code] || err?.message || "Qualcosa è andato storto.";
   }
 
@@ -1338,11 +1715,12 @@
   async function publishMirror(data) {
     const { F, db } = await firebase();
     const ref = F.doc(db, "profiles", handle);
+    const locked = await lockLinks(data.links);
     await F.runTransaction(db, async tx => {
       const snap = await tx.get(ref);
       const out = data.appearance.privacy.private
         ? { handle, private: true, updatedAt: F.serverTimestamp() }
-        : { ...publicFields({ ...data, handle, badges }), private: false, unlisted: data.appearance.privacy.unlisted, updatedAt: F.serverTimestamp() };
+        : { ...publicFields({ ...data, links: locked, handle, badges }), private: false, unlisted: data.appearance.privacy.unlisted, updatedAt: F.serverTimestamp() };
       // Views and badges live on the public document: keep them exactly as they are
       if (snap.exists()) { out.views = snap.data().views || 0; liveViews = out.views; out.badges = snap.data().badges || []; badges = out.badges; }
       else out.badges = badges.filter(b => b === "beta");
@@ -1370,7 +1748,7 @@
   });
   function afterDraftReplaced() {
     draft.appearance = normalizeAppearance(draft.appearance);
-    syncControls(); renderLinks(); renderSocials(); renderStops(); renderAvatarBox(); renderPreview(); updateSaveBar();
+    syncControls(); renderLinks(); renderSocials(); renderStops(); renderAvatarBox(); renderTracks(); renderPreview(); updateSaveBar();
   }
 
   /* =========================================================
@@ -1532,10 +1910,6 @@
     $("ovViewsNote").textContent = mode === "guest" ? "Arrivano quando il profilo è online." : "Contate sulla pagina pubblica.";
     $("ovTopic").textContent = draft.weekly && draft.weekly.show && draft.weekly.week === currentTopic().id ? "sì" : "no";
   }
-  function renderAnalytics() {
-    $("anViews").textContent = mode === "guest" ? "—" : liveViews.toLocaleString("it-IT");
-    $("anShown").textContent = draft.appearance.widgets.showViews && !draft.appearance.privacy.hideViews ? "visibile" : "nascosto";
-  }
   function renderSettings() {
     const guest = mode === "guest";
     $("settingsGuest").classList.toggle("hidden", !guest);
@@ -1583,6 +1957,626 @@
     try { const { A, auth } = await firebase(); await A.signOut(auth); } catch (_) { /* already out */ }
     location.replace("index.html");
   });
+
+  /* =========================================================
+     Music playlist
+     ========================================================= */
+  const openTracks = new Set();
+  function renderTracks() {
+    if (!draft) return;
+    const T = draft.appearance.music.tracks;
+    $("trackCount").textContent = T.length + "/20";
+    $("trackList").innerHTML = T.length ? T.map((t, i) => `<div class="track">
+      <div class="track-row"><span class="track-n">${i + 1}</span>
+        <input class="text" maxlength="60" placeholder="Titolo" data-k="appearance.music.tracks.${i}.title">
+        <input class="text" maxlength="60" placeholder="Artista" data-k="appearance.music.tracks.${i}.artist">
+        <div class="tools">${iconBtn("up", i, "Sposta su")}${iconBtn("down", i, "Sposta giù")}${iconBtn("more", i, "Copertina e testo", openTracks.has(i))}${iconBtn("trash", i, "Elimina")}</div>
+      </div>
+      <div class="track-more${openTracks.has(i) ? "" : " hidden"}">
+        <div class="field"><div class="label">file audio</div><input class="text" type="url" placeholder="https://…/brano.mp3" data-k="appearance.music.tracks.${i}.url"></div>
+        <div class="field"><div class="label">copertina</div><input class="text" type="url" placeholder="link di un'immagine" data-k="appearance.music.tracks.${i}.cover"></div>
+        <div class="field"><div class="label">testo sincronizzato (lrc) <button type="button" class="ghost-btn sm" data-lrcfind="${i}">Cerca il testo</button></div><textarea class="text mono" data-k="appearance.music.tracks.${i}.lrc" placeholder="[00:12.50] prima riga&#10;[00:16.80] seconda riga"></textarea></div>
+      </div>
+    </div>`).join("") : '<div class="empty-state">Nessun brano. Carica un file o aggiungi un link.</div>';
+    $$("[data-k]", $("trackList")).forEach(t => writeControl(t, getPath(draft, t.dataset.k)));
+  }
+  $("trackList").addEventListener("click", async e => {
+    const m = draft.appearance.music, T = m.tracks;
+    const find = e.target.closest("[data-lrcfind]");
+    if (find) {
+      const t = T[+find.dataset.lrcfind];
+      const q = `${t.title || ""} ${t.artist || ""}`.trim();
+      if (!t.title || t.title === "Nuovo brano") return setStatus("Scrivi titolo e artista del brano, poi cerca.", "warn");
+      setStatus("Cerco il testo…");
+      try {
+        const r = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(q)}`);
+        if (!r.ok) throw new Error("LRCLIB non risponde adesso.");
+        const hit = (await r.json()).find(x => x.syncedLyrics);
+        if (!hit) throw new Error("Non ho trovato un testo sincronizzato per questo brano. Puoi incollarlo a mano.");
+        t.lrc = hit.syncedLyrics.slice(0, 12000);
+        renderTracks(); changed();
+        setStatus(`Testo trovato: ${hit.trackName} · ${hit.artistName}.`, "ok");
+      } catch (err) { setStatus(friendly(err), "err"); }
+      return;
+    }
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const i = +b.dataset.i;
+    if (b.dataset.act === "up" && i > 0) [T[i - 1], T[i]] = [T[i], T[i - 1]];
+    if (b.dataset.act === "down" && i < T.length - 1) [T[i + 1], T[i]] = [T[i], T[i + 1]];
+    if (b.dataset.act === "more") { openTracks.has(i) ? openTracks.delete(i) : openTracks.add(i); renderTracks(); return; }
+    if (b.dataset.act === "trash") T.splice(i, 1);
+    m.url = "";
+    openTracks.clear();
+    renderTracks(); changed();
+  });
+  $("addTrack").addEventListener("click", () => {
+    const m = draft.appearance.music;
+    if (m.tracks.length >= 20) return setStatus("Massimo 20 brani.", "warn");
+    m.tracks.push({ url: "https://", title: "Nuovo brano", artist: "", cover: "", lrc: "" });
+    m.type = "audio"; m.url = "";
+    openTracks.add(m.tracks.length - 1);
+    renderTracks(); changed();
+  });
+
+  /* =========================================================
+     Share: link, Discord preview, per-platform links, QR, extra names
+     ========================================================= */
+  const SITE = location.origin;
+  const pubUrl = src => `${SITE}/@${handle}${src ? "?utm_source=" + encodeURIComponent(src) : ""}`;
+  const UTM = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["discord", "Discord"], ["x", "X"], ["youtube", "YouTube"], ["twitch", "Twitch"], ["telegram", "Telegram"], ["whatsapp", "WhatsApp"]];
+  async function copyText(text, msg) {
+    try { await navigator.clipboard.writeText(text); setStatus(msg || "Copiato.", "ok"); }
+    catch (_) { setStatus(text); }
+  }
+  const qr = (() => { try { return { style: "square", fg: "#000000", bg: "#ffffff", logo: true, ...JSON.parse(store.get("sigari-qr") || "{}") }; } catch (_) { return { style: "square", fg: "#000000", bg: "#ffffff", logo: true }; } })();
+  let qrLib = null;
+  async function drawQR() {
+    if (!qrLib) qrLib = (await import("./vendor/qrcode.mjs")).default;
+    const q = qrLib(0, qr.logo ? "H" : "M");
+    q.addData(pubUrl("qr"));
+    q.make();
+    const n = q.getModuleCount(), cv = $("qrCanvas"), c = cv.getContext("2d"), size = cv.width, pad = 3, cell = size / (n + pad * 2);
+    c.fillStyle = qr.bg; c.fillRect(0, 0, size, size);
+    c.fillStyle = qr.fg;
+    const finder = (r, k) => (r < 7 && k < 7) || (r < 7 && k >= n - 7) || (r >= n - 7 && k < 7);
+    const hole = qr.logo ? Math.ceil(n * .22) | 1 : 0, h0 = (n - hole) / 2;
+    const inHole = (r, k) => hole && r >= h0 - .5 && r < h0 + hole - .5 && k >= h0 - .5 && k < h0 + hole - .5;
+    const X = k => (k + pad) * cell;
+    const rr = (x, y, w, h, rad) => { c.beginPath(); c.roundRect ? c.roundRect(x, y, w, h, rad) : c.rect(x, y, w, h); c.fill(); };
+    for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) {
+      if (!q.isDark(r, k) || finder(r, k) || inHole(r, k)) continue;
+      if (qr.style === "dots") { c.beginPath(); c.arc(X(k) + cell / 2, X(r) + cell / 2, cell * .42, 0, Math.PI * 2); c.fill(); }
+      else if (qr.style === "rounded") rr(X(k) + cell * .06, X(r) + cell * .06, cell * .88, cell * .88, cell * .3);
+      else c.fillRect(X(k), X(r), Math.ceil(cell), Math.ceil(cell));
+    }
+    [[0, 0], [0, n - 7], [n - 7, 0]].forEach(([r, k]) => {
+      const rad = qr.style === "square" ? 0 : cell * 1.6;
+      c.fillStyle = qr.fg; rr(X(k), X(r), cell * 7, cell * 7, rad);
+      c.fillStyle = qr.bg; rr(X(k) + cell, X(r) + cell, cell * 5, cell * 5, rad * .6);
+      c.fillStyle = qr.fg; rr(X(k) + cell * 2, X(r) + cell * 2, cell * 3, cell * 3, rad * .45);
+    });
+    if (hole) {
+      c.fillStyle = qr.fg;
+      c.font = `700 ${Math.round(cell * hole * .8)}px Geist, system-ui, sans-serif`;
+      c.textAlign = "center"; c.textBaseline = "middle";
+      c.fillText("@", size / 2, size / 2 + cell * .3);
+    }
+  }
+  function saveQr() { store.set("sigari-qr", JSON.stringify(qr)); drawQR(); }
+  $("qrStyle").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; qr.style = b.dataset.v; $$("#qrStyle button").forEach(x => x.classList.toggle("on", x === b)); saveQr(); });
+  $("qrFg").addEventListener("input", e => { qr.fg = e.target.value; saveQr(); });
+  $("qrBg").addEventListener("input", e => { qr.bg = e.target.value; saveQr(); });
+  $("qrLogo").addEventListener("change", e => { qr.logo = e.target.checked; saveQr(); });
+  $("qrAccent").addEventListener("click", () => { const c = draft.appearance.colors; qr.fg = c.accent; qr.bg = c.primary; $("qrFg").value = qr.fg; $("qrBg").value = qr.bg; saveQr(); });
+  $("qrDownload").addEventListener("click", () => $("qrCanvas").toBlob(b => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `sigari-${handle}-qr.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }));
+  $("shareCopy").addEventListener("click", () => copyText(pubUrl(""), "Link copiato."));
+  $("utmList").addEventListener("click", e => { const b = e.target.closest("[data-utm]"); if (b) copyText(pubUrl(b.dataset.utm), `Link per ${b.dataset.label} copiato.`); });
+  const utmCustom = () => { const v = $("utmCustom").value.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 16); $("utmCustomOut").value = v ? pubUrl(v) : ""; };
+  $("utmCustom").addEventListener("input", utmCustom);
+  $("utmCustomCopy").addEventListener("click", () => { utmCustom(); if ($("utmCustomOut").value) copyText($("utmCustomOut").value, "Link copiato."); });
+
+  function renderShare() {
+    const a = draft.appearance;
+    $("shareUrl").textContent = pubUrl("").replace(/^https?:\/\//, "");
+    $("shareOpen").href = mode === "guest" ? "#" : pubUrl("");
+    $("discordPv").style.setProperty("--acc", a.colors.accent);
+    $("dpvTitle").textContent = a.title.text || `${draft.displayName || handle} · sigari.bio`;
+    $("dpvDesc").textContent = a.seo.description || plainText(draft.bio || "") || "Un profilo su sigari.bio";
+    const img = a.seo.image || draft.avatarUrl;
+    $("dpvImg").style.display = img ? "" : "none";
+    if (img) $("dpvImg").src = img;
+    $("utmList").innerHTML = UTM.map(([k, l]) => { const sd = SOCIALS.find(x => x.key === k); return `<div class="utm"><i class="mask-ico" style="${sd ? maskStyle(sd) : ""}"></i><span>${pubUrl(k).replace(/^https?:\/\//, "")}</span><button type="button" class="ghost-btn sm" data-utm="${k}" data-label="${l}">Copia</button></div>`; }).join("");
+    $$("#qrStyle button").forEach(x => x.classList.toggle("on", x.dataset.v === qr.style));
+    $("qrFg").value = qr.fg; $("qrBg").value = qr.bg; $("qrLogo").checked = qr.logo;
+    drawQR().catch(() => {});
+    loadAliases();
+  }
+
+  async function loadAliases() {
+    const box = $("aliasList");
+    const guest = mode === "guest";
+    $("aliasAdd").disabled = guest; $("aliasInput").disabled = guest;
+    if (guest) { box.innerHTML = '<div class="empty-state">I nomi extra servono un account.</div>'; return; }
+    box.innerHTML = '<div class="empty-state">Carico…</div>';
+    try {
+      const { F, db } = await firebase();
+      const snap = await F.getDocs(F.query(F.collection(db, "usernames"), F.where("aliasOf", "==", handle)));
+      const list = snap.docs.filter(d => d.data().uid === uid).map(d => d.id);
+      box.replaceChildren(...list.map(name => {
+        const row = document.createElement("div"); row.className = "alias-row";
+        const t = document.createElement("span"); t.textContent = "sigari.bio/@" + name;
+        const del = document.createElement("button"); del.type = "button"; del.className = "ghost-btn sm"; del.textContent = "Libera";
+        del.addEventListener("click", async () => {
+          if (!confirm(`Liberare @${name}? Chiunque potrà prenderlo.`)) return;
+          try { await F.deleteDoc(F.doc(db, "usernames", name)); loadAliases(); setStatus(`@${name} è di nuovo libero.`, "ok"); } catch (err) { setStatus(friendly(err), "err"); }
+        });
+        row.append(t, del);
+        return row;
+      }));
+      if (!list.length) box.innerHTML = '<div class="empty-state">Nessun nome extra.</div>';
+      $("aliasHint").textContent = `${list.length}/3`;
+      $("aliasAdd").disabled = list.length >= 3;
+    } catch (err) { box.innerHTML = ""; $("aliasHint").textContent = friendly(err); }
+  }
+  $("aliasAdd").addEventListener("click", async () => {
+    const name = $("aliasInput").value.trim().toLowerCase().replace(/^@/, "");
+    if (!/^[a-z0-9_]{3,20}$/.test(name)) return setStatus("Da 3 a 20 caratteri: lettere, numeri o _.", "err");
+    try {
+      const { F, db } = await firebase();
+      const ref = F.doc(db, "usernames", name);
+      await F.runTransaction(db, async tx => {
+        if ((await tx.get(ref)).exists()) throw new Error(`@${name} è già presa.`);
+        tx.set(ref, { uid, aliasOf: handle, createdAt: F.serverTimestamp() });
+      });
+      $("aliasInput").value = "";
+      setStatus(`@${name} ora porta al tuo profilo.`, "ok");
+      loadAliases();
+    } catch (err) { setStatus(friendly(err), "err"); }
+  });
+
+  /* =========================================================
+     Gallery (image host)
+     ========================================================= */
+  function renderGallery() {
+    const G = draft.gallery || (draft.gallery = []);
+    const grid = $("galGrid");
+    grid.replaceChildren();
+    if (!G.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">Ancora nessuna immagine.</div>'; }
+    G.forEach((g, i) => {
+      const it = document.createElement("div"); it.className = "gal-item";
+      const img = document.createElement("img"); img.src = g.url; img.alt = ""; img.loading = "lazy";
+      const cap = document.createElement("input"); cap.className = "text"; cap.maxLength = 80; cap.placeholder = "Didascalia"; cap.dataset.k = `gallery.${i}.caption`; cap.value = g.caption || "";
+      const row = document.createElement("div"); row.className = "row";
+      row.innerHTML = `<button type="button" class="ghost-btn sm" data-gcopy="${i}">Copia link</button><button type="button" class="icon-btn" data-gdel="${i}" aria-label="Elimina">${I(ICO.trash)}</button>`;
+      it.append(img, cap, row);
+      grid.appendChild(it);
+    });
+    $("galHint").textContent = mode === "guest" ? `senza account: massimo 4, restano su questo dispositivo (${G.length}/4)` : `fino a 5 MB l'una (${G.length}/12)`;
+  }
+  const galMax = () => mode === "guest" ? 4 : 12;
+  $("galPick").addEventListener("click", () => $("galInput").click());
+  $("galInput").addEventListener("change", async e => {
+    const files = [...e.target.files];
+    e.target.value = "";
+    const G = draft.gallery;
+    if (G.length + files.length > galMax()) return setStatus(`Puoi avere al massimo ${galMax()} immagini.`, "warn");
+    setStatus(`Carico ${files.length === 1 ? "l'immagine" : files.length + " immagini"}…`);
+    try {
+      for (const f of files) G.push({ url: await storeImage(f, "gallery", 1600), caption: "" });
+      renderGallery(); changed();
+      setStatus(mode === "guest" ? "Immagini pronte su questo dispositivo." : "Caricate. Il link diretto è già attivo; salva per mostrarle sul profilo.", "ok");
+    } catch (err) { renderGallery(); setStatus(friendly(err), "err"); }
+  });
+  $("galAddUrl").addEventListener("click", () => {
+    const v = $("galUrl").value.trim();
+    try { const u = new URL(v); if (!/^https?:$/.test(u.protocol)) throw 0; if (draft.gallery.length >= galMax()) return setStatus(`Puoi avere al massimo ${galMax()} immagini.`, "warn"); draft.gallery.push({ url: u.href, caption: "" }); $("galUrl").value = ""; renderGallery(); changed(); }
+    catch (_) { setStatus("Il link dell'immagine non è valido.", "err"); }
+  });
+  $("galGrid").addEventListener("click", async e => {
+    const c = e.target.closest("[data-gcopy]"), d = e.target.closest("[data-gdel]");
+    if (c) { const u = draft.gallery[+c.dataset.gcopy].url; if (u.startsWith("data:")) return setStatus("Registrati per avere un link pubblico delle immagini.", "warn"); copyText(u, "Link diretto copiato."); }
+    if (d) {
+      const [g] = draft.gallery.splice(+d.dataset.gdel, 1);
+      renderGallery(); changed();
+      if (mode === "user" && /firebasestorage/.test(g.url)) firebase().then(({ S, storage }) => S.deleteObject(S.ref(storage, g.url))).catch(() => {});
+    }
+  });
+
+  /* =========================================================
+     Clans: TAG reserved, up to 3 per profile, one primary
+     ========================================================= */
+  async function saveClanFields() {
+    const { F, db } = await firebase();
+    const fields = { clans: draft.clans, primaryClan: draft.primaryClan || draft.clans[0] || "" };
+    draft.primaryClan = fields.primaryClan;
+    await F.updateDoc(F.doc(db, "users", uid), fields);
+    try { await F.updateDoc(F.doc(db, "profiles", handle), fields); } catch (_) { /* public page not created yet */ }
+    const saved = JSON.parse(savedJSON || "{}"); Object.assign(saved, fields); savedJSON = JSON.stringify(saved);
+    renderPreview(); updateSaveBar();
+  }
+  async function renderClans() {
+    const guest = mode === "guest";
+    $("clanGuest").classList.toggle("hidden", !guest);
+    $("clanUser").classList.toggle("hidden", guest);
+    $("clanLb").innerHTML = '<div class="lb-row"><span class="n">…</span><span>Carico la classifica</span><small></small></div>';
+    try {
+      const { F, db } = await firebase();
+      if (!guest) {
+        $("clanCount").textContent = `${draft.clans.length}/3`;
+        const docs = await Promise.all(draft.clans.map(t => F.getDoc(F.doc(db, "clans", t)).catch(() => null)));
+        const box = $("clanMine");
+        box.replaceChildren();
+        if (!draft.clans.length) box.innerHTML = '<div class="empty-state">Non sei in nessun clan. Entra con una TAG o creane uno.</div>';
+        for (let i = 0; i < draft.clans.length; i++) {
+          const tag = draft.clans[i], d = docs[i] && docs[i].exists() ? docs[i].data() : null;
+          const row = document.createElement("div"); row.className = "clan";
+          const pill = document.createElement("span"); pill.className = "tagpill"; pill.textContent = tag;
+          if (d && d.color) { pill.style.background = d.color; pill.style.color = readableOn(d.color); }
+          const meta = document.createElement("div"); meta.className = "cmeta";
+          const b = document.createElement("b"); b.textContent = d ? d.name : "Clan non trovato";
+          const sm = document.createElement("small"); sm.textContent = d ? `${d.members || 0} membri · capo @${d.owner}${draft.primaryClan === tag ? " · principale" : ""}` : "Forse è stato eliminato";
+          meta.append(b, sm);
+          const owner = d && d.ownerUid === uid;
+          const tools = document.createElement("div"); tools.className = "row";
+          tools.innerHTML = `${draft.primaryClan === tag ? "" : `<button type="button" class="ghost-btn sm" data-primary="${tag}">Rendi principale</button>`}<a class="ghost-btn sm" href="clan.html?tag=${tag}" target="_blank" rel="noopener">Pagina</a>${owner ? `<button type="button" class="ghost-btn sm" data-manage="${tag}">Membri</button>` : ""}<button type="button" class="ghost-btn sm" data-leave="${tag}">${owner && (d.members || 0) <= 1 ? "Elimina" : "Esci"}</button>`;
+          row.append(pill, meta, tools);
+          box.appendChild(row);
+        }
+      }
+      const top = await F.getDocs(F.query(F.collection(db, "clans"), F.orderBy("members", "desc"), F.limit(20)));
+      const rows = top.docs.map(d => d.data());
+      $("clanLb").replaceChildren(...rows.map((c, i) => {
+        const a = document.createElement("a"); a.className = "lb-row"; a.href = "clan.html?tag=" + c.tag; a.target = "_blank"; a.rel = "noopener";
+        const n = document.createElement("span"); n.className = "n"; n.textContent = String(i + 1).padStart(2, "0");
+        const t = document.createElement("span"); t.textContent = `[${c.tag}] ${c.name}`;
+        const m = document.createElement("small"); m.textContent = `${c.members || 0} membri`;
+        a.append(n, t, m); return a;
+      }));
+      if (!rows.length) $("clanLb").innerHTML = '<div class="empty-state" style="border:0">Ancora nessun clan. Il primo può essere il tuo.</div>';
+    } catch (err) { $("clanLb").innerHTML = `<div class="empty-state" style="border:0">${friendly(err)}</div>`; }
+  }
+  const tagOf = v => String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+  $("joinBtn").addEventListener("click", async () => {
+    const tag = tagOf($("joinTag").value);
+    if (tag.length < 2) return ($("joinHint").textContent = "La TAG ha da 2 a 4 caratteri.");
+    if (draft.clans.includes(tag)) return ($("joinHint").textContent = "Sei già in questo clan.");
+    if (draft.clans.length >= 3) return ($("joinHint").textContent = "Sei già in 3 clan: esci da uno per entrare qui.");
+    $("joinHint").textContent = "…";
+    try {
+      const { F, db } = await firebase();
+      const cref = F.doc(db, "clans", tag), mref = F.doc(db, "clans", tag, "members", handle);
+      await F.runTransaction(db, async tx => {
+        const c = await tx.get(cref);
+        if (!c.exists()) throw new Error("Nessun clan con questa TAG.");
+        if ((await tx.get(mref)).exists()) throw new Error("Sei già in questo clan.");
+        tx.set(mref, { uid, joinedAt: F.serverTimestamp() });
+        tx.update(cref, { members: (c.data().members || 0) + 1, last: handle });
+      });
+      draft.clans.push(tag);
+      await saveClanFields();
+      $("joinTag").value = ""; $("joinHint").textContent = "";
+      setStatus(`Sei entrato in [${tag}].`, "ok");
+      renderClans();
+    } catch (err) { $("joinHint").textContent = friendly(err); }
+  });
+  $("createClan").addEventListener("click", async () => {
+    const tag = tagOf($("newTag").value), name = $("newClanName").value.trim();
+    if (tag.length < 2) return ($("createHint").textContent = "La TAG ha da 2 a 4 caratteri, lettere o numeri.");
+    if (name.length < 2) return ($("createHint").textContent = "Dai un nome al clan.");
+    if (draft.clans.length >= 3) return ($("createHint").textContent = "Sei già in 3 clan.");
+    $("createHint").textContent = "…";
+    try {
+      const { F, db } = await firebase();
+      const cref = F.doc(db, "clans", tag), mref = F.doc(db, "clans", tag, "members", handle);
+      await F.runTransaction(db, async tx => {
+        if ((await tx.get(cref)).exists()) throw new Error(`La TAG ${tag} è già presa.`);
+        tx.set(cref, { tag, name: name.slice(0, 30), desc: $("newClanDesc").value.trim().slice(0, 140), color: $("newClanColor").value, owner: handle, ownerUid: uid, members: 1, last: handle, createdAt: F.serverTimestamp() });
+        tx.set(mref, { uid, joinedAt: F.serverTimestamp() });
+      });
+      draft.clans.push(tag);
+      if (!draft.primaryClan) draft.primaryClan = tag;
+      await saveClanFields();
+      ["newTag", "newClanName", "newClanDesc"].forEach(id => { $(id).value = ""; });
+      $("createHint").textContent = "";
+      setStatus(`Clan [${tag}] creato. La TAG è tua.`, "ok");
+      renderClans();
+    } catch (err) { $("createHint").textContent = friendly(err); }
+  });
+  async function removeMember(tag, who) {
+    const { F, db } = await firebase();
+    const cref = F.doc(db, "clans", tag), mref = F.doc(db, "clans", tag, "members", who);
+    await F.runTransaction(db, async tx => {
+      const c = await tx.get(cref);
+      if (!c.exists()) { tx.delete(mref); return; }
+      const d = c.data();
+      if (d.ownerUid === uid && who === handle) {
+        if ((d.members || 0) > 1) throw new Error("Sei il capo: prima togli gli altri membri, poi puoi eliminare il clan.");
+        tx.delete(mref); tx.delete(cref); return;
+      }
+      tx.delete(mref);
+      tx.update(cref, { members: Math.max(0, (d.members || 1) - 1), last: who });
+    });
+  }
+  $("clanMine").addEventListener("click", async e => {
+    const pr = e.target.closest("[data-primary]"), lv = e.target.closest("[data-leave]"), mg = e.target.closest("[data-manage]"), kick = e.target.closest("[data-kick]");
+    try {
+      if (pr) { draft.primaryClan = pr.dataset.primary; await saveClanFields(); renderClans(); }
+      if (lv) {
+        const tag = lv.dataset.leave;
+        if (!confirm(`Uscire da [${tag}]?`)) return;
+        await removeMember(tag, handle);
+        draft.clans = draft.clans.filter(t => t !== tag);
+        if (draft.primaryClan === tag) draft.primaryClan = draft.clans[0] || "";
+        await saveClanFields();
+        renderClans();
+      }
+      if (mg) {
+        const tag = mg.dataset.manage, row = mg.closest(".clan");
+        const old = row.querySelector(".clan-members");
+        if (old) { old.remove(); return; }
+        const { F, db } = await firebase();
+        const snap = await F.getDocs(F.collection(db, "clans", tag, "members"));
+        const box = document.createElement("div"); box.className = "clan-members";
+        snap.docs.forEach(d => {
+          const sp = document.createElement("span"); sp.textContent = "@" + d.id;
+          if (d.id !== handle) { const x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.title = "Togli dal clan"; x.dataset.kick = tag + "/" + d.id; sp.appendChild(x); }
+          box.appendChild(sp);
+        });
+        row.appendChild(box);
+      }
+      if (kick) {
+        const [tag, who] = kick.dataset.kick.split("/");
+        if (!confirm(`Togliere @${who} da [${tag}]?`)) return;
+        await removeMember(tag, who);
+        setStatus(`@${who} non è più in [${tag}].`, "ok");
+        renderClans();
+      }
+    } catch (err) { setStatus(friendly(err), "err"); }
+  });
+
+  /* =========================================================
+     Inbox: contact messages, newsletter subscribers, guestbook
+     ========================================================= */
+  let itab = "messages";
+  const fmtDate = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""; };
+  function msgItem(head, text, onDelete) {
+    const it = document.createElement("div"); it.className = "msg-item";
+    const h = document.createElement("div"); h.className = "mh";
+    head.forEach(([tag, txt]) => { const n = document.createElement(tag); n.textContent = txt; h.appendChild(n); });
+    if (onDelete) { const del = document.createElement("button"); del.type = "button"; del.className = "icon-btn"; del.setAttribute("aria-label", "Elimina"); del.innerHTML = I(ICO.trash); del.addEventListener("click", onDelete); h.appendChild(del); }
+    it.appendChild(h);
+    if (text) { const p = document.createElement("p"); p.textContent = text; it.appendChild(p); }
+    return it;
+  }
+  async function renderInbox() {
+    $$("[data-itab]").forEach(b => b.classList.toggle("on", b.dataset.itab === itab));
+    const pane = $("inboxPane");
+    if (mode === "guest") { pane.innerHTML = '<div class="empty-state">Messaggi, iscritti e firme arrivano quando il profilo è online. Registrati per metterlo online.</div>'; return; }
+    pane.innerHTML = '<div class="empty-state">Carico…</div>';
+    try {
+      const { F, db } = await firebase();
+      if (itab === "messages") {
+        const snap = await F.getDocs(F.query(F.collection(db, "inbox", handle, "messages"), F.orderBy("createdAt", "desc"), F.limit(60)));
+        pane.replaceChildren(...snap.docs.map(d => { const m = d.data(); return msgItem([["b", m.name || "Anonimo"], ["span", m.contact || ""], ["span", fmtDate(m.createdAt)]], m.text, async () => { await F.deleteDoc(d.ref); renderInbox(); }); }));
+        if (!snap.size) pane.innerHTML = `<div class="empty-state">Nessun messaggio.${draft.appearance.widgets.contact ? "" : " Attiva il modulo contatti qui sopra e salva."}</div>`;
+      }
+      if (itab === "subscribers") {
+        const snap = await F.getDocs(F.collection(db, "inbox", handle, "subscribers"));
+        const emails = snap.docs.map(d => d.id);
+        const head = document.createElement("div"); head.className = "row";
+        head.innerHTML = `<span class="hint">${emails.length} iscritti</span>`;
+        if (emails.length) {
+          const cp = document.createElement("button"); cp.type = "button"; cp.className = "ghost-btn sm"; cp.textContent = "Copia tutte le email";
+          cp.addEventListener("click", () => copyText(emails.join(", "), "Email copiate."));
+          const csv = document.createElement("button"); csv.type = "button"; csv.className = "ghost-btn sm"; csv.textContent = "Scarica CSV";
+          csv.addEventListener("click", () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["email\n" + emails.join("\n")], { type: "text/csv" })); a.download = `iscritti-${handle}.csv`; a.click(); });
+          head.append(cp, csv);
+        }
+        pane.replaceChildren(head, ...snap.docs.map(d => msgItem([["b", d.id], ["span", fmtDate(d.data().createdAt)]], "", async () => { await F.deleteDoc(d.ref); renderInbox(); })));
+        if (!emails.length) pane.appendChild(Object.assign(document.createElement("div"), { className: "empty-state", textContent: draft.appearance.widgets.newsletter ? "Ancora nessun iscritto." : "Attiva la newsletter qui sopra e salva." }));
+      }
+      if (itab === "guestbook") {
+        const snap = await F.getDocs(F.query(F.collection(db, "guestbook", handle, "entries"), F.orderBy("createdAt", "desc"), F.limit(100)));
+        pane.replaceChildren(...snap.docs.map(d => { const g = d.data(); return msgItem([["b", "@" + g.author], ["span", fmtDate(g.createdAt)]], g.text, async () => { await F.deleteDoc(d.ref); renderInbox(); }); }));
+        if (!snap.size) pane.innerHTML = `<div class="empty-state">Nessuna firma.${draft.appearance.widgets.guestbook ? "" : " Attiva il guestbook qui sopra e salva."}</div>`;
+      }
+    } catch (err) { pane.innerHTML = ""; pane.appendChild(Object.assign(document.createElement("div"), { className: "empty-state", textContent: friendly(err) })); }
+  }
+  $$("[data-itab]").forEach(b => b.addEventListener("click", () => { itab = b.dataset.itab; renderInbox(); }));
+
+  /* =========================================================
+     Pastes
+     ========================================================= */
+  async function renderPastes() {
+    const guest = mode === "guest";
+    $("pasteCreate").disabled = guest;
+    $("pasteHint").textContent = guest ? "Serve un account." : "";
+    const box = $("pasteList");
+    if (guest) { box.innerHTML = '<div class="empty-state">I paste servono un account.</div>'; return; }
+    box.innerHTML = '<div class="empty-state">Carico…</div>';
+    try {
+      const { F, db } = await firebase();
+      const snap = await F.getDocs(F.query(F.collection(db, "pastes"), F.where("uid", "==", uid), F.limit(50)));
+      const docs = snap.docs.sort((a, b) => (b.data().createdAt?.seconds || 0) - (a.data().createdAt?.seconds || 0));
+      box.replaceChildren(...docs.map(d => {
+        const p = d.data(), url = `${SITE}/paste.html?id=${d.id}`;
+        const card = document.createElement("div"); card.className = "active-card";
+        const meta = document.createElement("div"); meta.className = "active-meta";
+        const st = document.createElement("strong"); st.textContent = p.title || "Senza titolo";
+        const sp = document.createElement("span"); sp.textContent = `${fmtDate(p.createdAt)} · ${(p.text || "").length} caratteri`;
+        meta.append(st, sp);
+        const cp = document.createElement("button"); cp.type = "button"; cp.className = "ghost-btn sm"; cp.textContent = "Copia link"; cp.addEventListener("click", () => copyText(url, "Link del paste copiato."));
+        const op = document.createElement("a"); op.className = "ghost-btn sm"; op.textContent = "Apri"; op.href = url; op.target = "_blank"; op.rel = "noopener";
+        const del = document.createElement("button"); del.type = "button"; del.className = "icon-btn"; del.setAttribute("aria-label", "Elimina"); del.innerHTML = I(ICO.trash);
+        del.addEventListener("click", async () => { if (!confirm("Eliminare questo paste? Il link smette di funzionare.")) return; try { await F.deleteDoc(d.ref); renderPastes(); } catch (err) { setStatus(friendly(err), "err"); } });
+        card.append(meta, cp, op, del);
+        return card;
+      }));
+      if (!docs.length) box.innerHTML = '<div class="empty-state">Ancora nessun paste.</div>';
+    } catch (err) { box.innerHTML = ""; box.appendChild(Object.assign(document.createElement("div"), { className: "empty-state", textContent: friendly(err) })); }
+  }
+  $("pasteCreate").addEventListener("click", async () => {
+    const text = $("pasteText").value;
+    if (!text.trim()) return ($("pasteHint").textContent = "Scrivi o incolla qualcosa.");
+    $("pasteHint").textContent = "…";
+    try {
+      const { F, db } = await firebase();
+      const ref = await F.addDoc(F.collection(db, "pastes"), { uid, author: handle, title: $("pasteTitle").value.trim().slice(0, 80), text: text.slice(0, 20000), createdAt: F.serverTimestamp() });
+      const url = `${SITE}/paste.html?id=${ref.id}`;
+      $("pasteTitle").value = ""; $("pasteText").value = "";
+      $("pasteHint").textContent = "";
+      copyText(url, "Paste creato, link copiato.");
+      renderPastes();
+    } catch (err) { $("pasteHint").textContent = friendly(err); }
+  });
+
+  /* =========================================================
+     Analytics: daily counters written by the public page
+     ========================================================= */
+  const DAY = 864e5;
+  const isoDay = t => new Date(t).toISOString().slice(0, 10);
+  let anRange = 30, anMetric = "v", anDays = [], feedUnsub = null, feedLast = null;
+  const REF_LABEL = { diretto: "Link diretto", instagram: "Instagram", tiktok: "TikTok", discord: "Discord", x: "X", youtube: "YouTube", google: "Google", whatsapp: "WhatsApp", telegram: "Telegram", reddit: "Reddit", twitch: "Twitch", snapchat: "Snapchat", facebook: "Facebook", spotify: "Spotify", qr: "QR code", sigari: "sigari.bio", altro: "Altri siti" };
+  const DEV_LABEL = { mobile: "Telefono", desktop: "Computer", tablet: "Tablet" };
+  const T_MID = [5, 20, 45, 120, 240];
+  function demoDays(n) {
+    let seed = 7;
+    const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const L = (draft.links || []).filter(l => l.type !== "header");
+    return Array.from({ length: n }, (_, i) => {
+      const v = Math.round(40 + 30 * Math.sin(i / 3) + rnd() * 50 + i * 2);
+      const d = { day: isoDay(Date.now() - (n - 1 - i) * DAY), v, p: Math.round(v * .2), d_mobile: Math.round(v * .7), d_desktop: Math.round(v * .3), r_instagram: Math.round(v * .4), r_tiktok: Math.round(v * .25), r_discord: Math.round(v * .15), r_diretto: Math.round(v * .2), z_Europe__Rome: Math.round(v * .8), z_Europe__Milan: 0, t_1: Math.round(v * .4), t_2: Math.round(v * .4), t_3: Math.round(v * .2), s_instagram: Math.round(v * .12) };
+      L.slice(0, 4).forEach((l, k) => { d["c_" + l.id] = Math.round(v * (.3 - k * .06)); });
+      return d;
+    });
+  }
+  async function loadDays(n) {
+    if (mode === "guest") return demoDays(n);
+    const { F, db } = await firebase();
+    const from = isoDay(Date.now() - (n - 1) * DAY);
+    const snap = await F.getDocs(F.query(F.collection(db, "stats", handle, "days"), F.where(F.documentId(), ">=", from)));
+    const map = Object.fromEntries(snap.docs.map(d => [d.id, d.data()]));
+    return Array.from({ length: n }, (_, i) => { const day = isoDay(Date.now() - (n - 1 - i) * DAY); return { day, ...(map[day] || {}) }; });
+  }
+  const sumKeys = (d, pre) => Object.keys(d).filter(k => k.startsWith(pre)).reduce((s, k) => s + (+d[k] || 0), 0);
+  const metricOf = (d, m) => m === "c" ? sumKeys(d, "c_") : +d[m] || 0;
+  function totals(days, pre) {
+    const t = {};
+    days.forEach(d => Object.keys(d).forEach(k => { if (k.startsWith(pre)) t[k.slice(pre.length)] = (t[k.slice(pre.length)] || 0) + (+d[k] || 0); }));
+    return Object.entries(t).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  }
+  function bars(box, rows, label) {
+    const max = Math.max(1, ...rows.map(r => r[1]));
+    box.replaceChildren(...rows.slice(0, 7).map(([k, v]) => {
+      const r = document.createElement("div"); r.className = "bar-row";
+      const s = document.createElement("span"); s.textContent = label(k);
+      const b = document.createElement("b"); b.textContent = v.toLocaleString("it-IT");
+      const i = document.createElement("i"); i.style.setProperty("--w", (v / max * 100) + "%");
+      r.append(s, b, i); return r;
+    }));
+    if (!rows.length) box.innerHTML = '<span class="hint">Ancora niente.</span>';
+  }
+  function drawChart() {
+    const cv = $("anCv"), w = cv.clientWidth || 700, h = 180;
+    cv.width = w * devicePixelRatio; cv.height = h * devicePixelRatio;
+    const c = cv.getContext("2d"); c.scale(devicePixelRatio, devicePixelRatio);
+    const fg = getComputedStyle(document.documentElement).getPropertyValue("--fg").trim() || "#fff";
+    const vals = anDays.map(d => metricOf(d, anMetric)), max = Math.max(1, ...vals);
+    const cols = vals.length, rows = 14, gap = w / cols, dot = Math.max(3, Math.min(9, gap * .55)), rowGap = (h - 10) / rows;
+    c.clearRect(0, 0, w, h);
+    vals.forEach((v, i) => {
+      const lit = Math.round(v / max * rows);
+      for (let r = 0; r < rows; r++) {
+        c.globalAlpha = r < lit ? (i === cols - 1 ? 1 : .85) : .12;
+        c.fillStyle = fg;
+        c.fillRect(i * gap + (gap - dot) / 2, h - 5 - (r + 1) * rowGap + (rowGap - dot) / 2, dot, dot);
+      }
+    });
+    c.globalAlpha = 1;
+    cv.onmousemove = e => {
+      const i = Math.min(cols - 1, Math.max(0, Math.floor((e.offsetX) / gap)));
+      const d = anDays[i];
+      if (!d) return;
+      $("anTip").textContent = `${new Date(d.day).toLocaleDateString("it-IT", { day: "numeric", month: "short" })} · ${vals[i]} ${{ v: "visite", c: "clic", p: "ascolti" }[anMetric]}`;
+    };
+  }
+  async function renderAnalytics() {
+    const guest = mode === "guest";
+    $("anDesc").innerHTML = guest ? 'Visite, clic, ascolti e da dove arriva la gente. <span class="demo-tag">dati di esempio</span> arrivano quando il profilo è online.' : "Visite, clic, ascolti e da dove arriva la gente. Si aggiorna da solo.";
+    $$("#anRange button").forEach(b => b.classList.toggle("on", +b.dataset.d === anRange));
+    $$("#anMetric button").forEach(b => b.classList.toggle("on", b.dataset.m === anMetric));
+    try { anDays = await loadDays(anRange); }
+    catch (err) { anDays = []; $("anDesc").textContent = friendly(err); }
+    const v = anDays.reduce((s, d) => s + (+d.v || 0), 0), cl = anDays.reduce((s, d) => s + sumKeys(d, "c_"), 0), pl = anDays.reduce((s, d) => s + (+d.p || 0), 0);
+    const tb = [0, 1, 2, 3, 4].map(i => anDays.reduce((s, d) => s + (+d["t_" + i] || 0), 0)), tn = tb.reduce((a, b) => a + b, 0);
+    const avg = tn ? Math.round(tb.reduce((s, n, i) => s + n * T_MID[i], 0) / tn) : 0;
+    const K = [["Visite", v.toLocaleString("it-IT"), `ultimi ${anRange} giorni`], ["Clic sui link", cl.toLocaleString("it-IT"), "totali"], ["Clic per visita", v ? Math.round(cl / v * 100) + "%" : "—", "quanti cliccano"], ["Ascolti", pl.toLocaleString("it-IT"), "musica avviata"], ["Tempo medio", avg ? (avg >= 60 ? Math.floor(avg / 60) + "m " + (avg % 60) + "s" : avg + "s") : "—", "sulla pagina"]];
+    $("anKpis").innerHTML = K.map(([l, n, s]) => `<div class="kpi"><small>${l}</small><b>${n}</b><i>${s}</i></div>`).join("");
+    drawChart();
+    const titles = Object.fromEntries((draft.links || []).map(l => [l.id, l.title]));
+    bars($("anLinks"), totals(anDays, "c_"), k => titles[k] || "link eliminato");
+    bars($("anSocials"), totals(anDays, "s_"), k => SOCIALS.find(s => s.key === k)?.label || k);
+    bars($("anRefs"), totals(anDays, "r_"), k => REF_LABEL[k] || k);
+    bars($("anDevices"), totals(anDays, "d_"), k => DEV_LABEL[k] || k);
+    bars($("anZones"), totals(anDays, "z_"), k => k.split("__").pop().replace(/_/g, " "));
+    startFeed();
+  }
+  $("anRange").addEventListener("click", e => { const b = e.target.closest("[data-d]"); if (b) { anRange = +b.dataset.d; renderAnalytics(); } });
+  $("anMetric").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (b) { anMetric = b.dataset.m; $$("#anMetric button").forEach(x => x.classList.toggle("on", x === b)); drawChart(); } });
+  window.addEventListener("resize", () => { if (!$("view-analytics").classList.contains("hidden")) drawChart(); });
+
+  function feedLine(text) {
+    const box = $("anFeed");
+    if (box.querySelector(".hint")) box.replaceChildren();
+    const d = document.createElement("div");
+    const t = document.createElement("time"); t.textContent = new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const s = document.createElement("span"); s.textContent = text;
+    d.append(t, s);
+    box.prepend(d);
+    while (box.childElementCount > 40) box.lastChild.remove();
+  }
+  function describe(diff) {
+    const titles = Object.fromEntries((draft.links || []).map(l => [l.id, l.title]));
+    const out = [];
+    if (diff.v) {
+      const dev = Object.keys(diff).find(k => k.startsWith("d_")), ref = Object.keys(diff).find(k => k.startsWith("r_")), z = Object.keys(diff).find(k => k.startsWith("z_"));
+      out.push(`Nuova visita${ref ? " da " + (REF_LABEL[ref.slice(2)] || ref.slice(2)) : ""}${dev ? ", " + (DEV_LABEL[dev.slice(2)] || dev.slice(2)).toLowerCase() : ""}${z ? " · " + z.slice(2).split("__").pop().replace(/_/g, " ") : ""}`);
+    }
+    Object.keys(diff).forEach(k => {
+      if (k.startsWith("c_")) out.push(`Clic su «${titles[k.slice(2)] || "un link"}»`);
+      if (k.startsWith("s_")) out.push(`Clic sul tuo ${SOCIALS.find(s => s.key === k.slice(2))?.label || k.slice(2)}`);
+      if (k === "p") out.push("Qualcuno ha fatto partire la tua musica");
+    });
+    return out;
+  }
+  function startFeed() {
+    stopFeed();
+    const box = $("anFeed");
+    box.innerHTML = '<span class="hint">In attesa di visite… lascia aperta questa pagina.</span>';
+    if (mode === "guest") {
+      const demo = ["Nuova visita da Instagram, telefono · Rome", "Clic su «Ultima uscita»", "Nuova visita da TikTok, telefono · Milan", "Clic sul tuo Instagram", "Qualcuno ha fatto partire la tua musica"];
+      let i = 0;
+      const tick = () => { feedLine(demo[i++ % demo.length] + " (esempio)"); };
+      tick();
+      const t = setInterval(tick, 3500);
+      feedUnsub = () => clearInterval(t);
+      return;
+    }
+    firebase().then(({ F, db }) => {
+      feedLast = null;
+      feedUnsub = F.onSnapshot(F.doc(db, "stats", handle, "days", isoDay(Date.now())), snap => {
+        const d = snap.exists() ? snap.data() : {};
+        if (feedLast) {
+          const diff = {};
+          Object.keys(d).forEach(k => { if (k !== "ks" && (+d[k] || 0) > (+feedLast[k] || 0)) diff[k] = d[k] - (feedLast[k] || 0); });
+          describe(diff).forEach(feedLine);
+        }
+        feedLast = d;
+      }, () => {});
+    }).catch(() => {});
+  }
+  function stopFeed() { if (feedUnsub) { try { feedUnsub(); } catch (_) { /* already closed */ } feedUnsub = null; } }
 
   /* =========================================================
      Theme toggle for the dashboard chrome
@@ -1644,8 +2638,10 @@
       const savedObj = JSON.parse(savedJSON || "{}");
       if (savedObj.weekly && savedObj.weekly.week !== currentTopic().id) { savedObj.weekly = null; savedJSON = JSON.stringify(savedObj); }
     }
-    syncControls(); renderLinks(); renderSocials(); renderStops(); renderAvatarBox(); renderPreview();
+    draft.gallery = draft.gallery || []; draft.clans = draft.clans || [];
+    syncControls(); renderLinks(); renderSocials(); renderStops(); renderAvatarBox(); renderTracks(); renderPreview();
     updateSaveBar();
+    if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     const first = (location.hash || "").slice(1) || "overview";
     showView(first);
     openTemplateParam();
@@ -1684,7 +2680,7 @@
   }
 
   async function migrateInlineImages() {
-    const targets = [["avatarUrl", "avatar", 512], ["appearance.bg.image", "bg", 1920]];
+    const targets = [["avatarUrl", "avatar", 512], ["appearance.bg.image", "bg", 1920], ["appearance.banner.url", "banner", 1500], ...(draft.gallery || []).map((_, i) => [`gallery.${i}.url`, "gallery", 1600])];
     let moved = false;
     for (const [path, kind, max] of targets) {
       const v = getPath(draft, path);
@@ -1694,6 +2690,13 @@
         setPath(draft, path, url);
         moved = true;
       }
+    }
+    const font = draft.appearance.font.custom;
+    if (font && font.startsWith("data:")) {
+      const blob = await (await fetch(font)).blob();
+      const ext = { "font/ttf": "ttf", "font/otf": "otf", "font/woff": "woff", "font/woff2": "woff2" }[blob.type] || "woff2";
+      draft.appearance.font.custom = await uploadFile(blob, `media/${uid}/font-${Date.now()}.${ext}`, blob.type || "font/woff2");
+      moved = true;
     }
     if (moved) { await save(); afterDraftReplaced(); }
   }

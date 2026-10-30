@@ -1346,7 +1346,7 @@
   function renderLB(kind) {
     $("#lb").innerHTML = LB[kind].map((r, i) => kind === "profiles"
       ? `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0].toUpperCase()}</span><span class="nm">@${r[0]}</span>${r[1] ? `<span class="ctag tagc">${r[1]}</span>` : "<span></span>"}<span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`
-      : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]} <small style="color:#555">· ${r[3]} membri</small></span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`).join("");
+      : `<li style="--i:${i}"><span class="rk">${String(i + 1).padStart(2, "0")}</span><span class="av">${r[0][0]}</span><span class="nm">${r[1]}${r[2] !== r[3] ? ` <small style="color:#555">· ${r[3]} membri</small>` : ""}</span><span class="ctag tagc">${r[0]}</span><span class="vw">${r[2].toLocaleString("it-IT")}</span></li>`).join("");
   }
   $$("[data-lb]").forEach(b => b.addEventListener("click", () => {
     $$("[data-lb]").forEach(o => o.setAttribute("aria-pressed", o === b));
@@ -1553,8 +1553,12 @@
       const { db, fs } = await firebase();
       const pub = d => d && !d.private && !d.unlisted && d.handle;
       const top = await fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.orderBy("views", "desc"), fs.limit(25)));
-      const rows = top.docs.map(d => d.data()).filter(pub).slice(0, 7).map(d => [d.handle, "", d.views || 0]);
+      const rows = top.docs.map(d => d.data()).filter(pub).slice(0, 7).map(d => [d.handle, d.primaryClan || "", d.views || 0]);
       if (rows.length >= 3) { LB.profiles = rows; renderLB("profiles"); $(".lb-foot span").textContent = "dal vivo"; }
+      // Real clans, ranked by members, once there are a few
+      const clans = await fs.getDocs(fs.query(fs.collection(db, "clans"), fs.orderBy("members", "desc"), fs.limit(7)));
+      const crow = clans.docs.map(d => d.data()).map(c => [c.tag, c.name, c.members || 0, c.members || 0]);
+      if (crow.length >= 3) LB.clans = crow;
       const entries = await fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.where("weekly.week", "==", topic.id), fs.limit(24)));
       renderEntries(entries.docs.map(d => d.data()).filter(d => pub(d) && d.weekly && d.weekly.show).slice(0, 12));
     } catch (_) { /* rules not deployed yet: example data stays */ }

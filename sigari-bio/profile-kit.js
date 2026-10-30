@@ -83,9 +83,30 @@ export const SOCIALS = [
 export const socialIcon = s => s.icon || `${ICON_CDN}${s.key}.svg`;
 
 export const LAYOUTS = [["classic", "Classico"], ["left", "A sinistra"], ["banner", "Banner"], ["minimal", "Minimal"], ["terminal", "Terminale"]];
-export const EFFECTS = [["none", "Nessuno"], ["lava", "Lava"], ["aurora", "Aurora"], ["snow", "Neve"], ["rain", "Pioggia"], ["stars", "Stelle"], ["particles", "Costellazione"], ["hearts", "Cuori"], ["matrix", "Matrix"], ["noise", "Grana"], ["scanlines", "Scanline"], ["dither", "Dither"]];
-export const NAME_FX = [["none", "Nessuno"], ["glow", "Glow"], ["gradient", "Gradiente"], ["rainbow", "Arcobaleno"], ["glitch", "Glitch"], ["sparkle", "Scintille"], ["typewriter", "Macchina da scrivere"], ["shuffle", "Shuffle"], ["outline", "Contorno"]];
+export const EFFECTS = [["none", "Nessuno"], ["lava", "Lava"], ["aurora", "Aurora"], ["snow", "Neve"], ["rain", "Pioggia"], ["stars", "Stelle"], ["particles", "Costellazione"], ["hearts", "Cuori"], ["matrix", "Matrix"], ["ascii", "ASCII"], ["noise", "Grana"], ["scanlines", "Scanline"], ["dither", "Dither"]];
+export const NAME_FX = [["none", "Nessuno"], ["glow", "Glow"], ["gradient", "Gradiente"], ["rainbow", "Arcobaleno"], ["glitch", "Glitch"], ["sparkle", "Scintille"], ["typewriter", "Macchina da scrivere"], ["shuffle", "Shuffle"], ["outline", "Contorno"],
+  ["wave", "Onda"], ["bounce", "Rimbalzo"], ["neon", "Neon"], ["float", "Fluttua"], ["shake", "Trema"], ["chrome", "Cromo"], ["fire", "Fuoco"], ["ice", "Diamante"], ["3d", "3D"], ["blur", "Sfocato"]];
+export const BIO_FX = [["none", "Statica"], ["typewriter", "Macchina da scrivere"], ["cycle", "Frasi che cambiano"], ["glitch", "Glitch"], ["rainbow", "Arcobaleno"], ["wave", "Onda"]];
 export const ENTRANCES = [["none", "Nessuna"], ["pixel", "Pixel"], ["fade", "Dissolvenza"], ["glitch", "Glitch"], ["pop", "Pop"]];
+export const AVATAR_DECOS = [["none", "Nessuna"], ["halo", "Aureola"], ["horns", "Corna"], ["cat", "Orecchie"], ["crown", "Corona"], ["sparkles", "Scintille"], ["orbit", "Orbita"], ["flames", "Fiamme"], ["hearts", "Cuori"], ["headphones", "Cuffie"], ["glitch", "Glitch"]];
+export const SFX = [["none", "Nessuno"], ["tick", "Tick"], ["pop", "Pop"], ["blip", "Blip"], ["8bit", "8-bit"], ["glass", "Vetro"], ["bass", "Basso"]];
+// Icons a user can pick for their own badge (24px stroke paths)
+export const BADGE_ICONS = {
+  star: '<path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/>',
+  heart: '<path d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z"/>',
+  skull: '<path d="M12 3a8 8 0 0 0-5 14.2V21h10v-3.8A8 8 0 0 0 12 3z"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><path d="M10 21v-2M14 21v-2"/>',
+  crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+  flame: '<path d="M12 22c4 0 7-2.7 7-6.6 0-4.4-4-6.9-4.6-11.4-2.6 1.6-4 4.2-3.6 7-1.4-.6-2.3-2-2.5-3.4C6.4 9.4 5 12 5 15.4 5 19.3 8 22 12 22z"/>',
+  bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  moon: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+  diamond: '<path d="M6 3h12l4 6-10 12L2 9zM2 9h20M9 3l3 18M15 3l-3 18"/>',
+  music: '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  game: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r="1"/><circle cx="18" cy="14" r="1"/>',
+  code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
+  camera: '<rect x="2" y="6" width="20" height="14" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M8 6l2-3h4l2 3"/>',
+  cig: '<path d="M2 15h15v4H2zM17 15h2v4h-2M21 15v4M18 11c0-2 2-2 2-4M14 11c0-2 2-2 2-4"/>',
+  ghost: '<path d="M5 21V10a7 7 0 0 1 14 0v11l-2.5-2-2.3 2-2.2-2-2.2 2-2.3-2z"/><circle cx="9.5" cy="10" r="1"/><circle cx="14.5" cy="10" r="1"/>'
+};
 
 /* ---------- Defaults and normalisation ---------- */
 
@@ -96,18 +117,20 @@ export const DEFAULT_APPEARANCE = {
   effect: "lava", effectColor: "#ffffff", intensity: 80,
   card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, gradient: false },
   colors: { accent: "#ffffff", text: "#ffffff", muted: "#9a9a9a", icon: "#ffffff", primary: "#0d0d0d", secondary: "#141414", border: "#2a2a2a" },
-  font: { name: "geist", body: "geist", nameSize: 100, upper: false, spacing: 0 },
+  font: { name: "geist", body: "geist", nameSize: 100, upper: false, spacing: 0, custom: "" },
   nameFx: "none", nameGradient: ["#ffffff", "#8a8a8a"],
   bioFx: "none", bioLines: [], typeSpeed: 70,
-  avatar: { show: true, shape: "circle", size: 92, ring: "none" },
-  badges: { show: true },
+  banner: { type: "none", url: "", height: 120 },
+  avatar: { show: true, shape: "circle", size: 92, ring: "none", deco: "none" },
+  badges: { show: true, color: "", style: "box", custom: { on: false, icon: "star", label: "", color: "" } },
   socialsStyle: { style: "plain", size: 40, position: "top", align: "center" },
   buttons: { variant: "solid", palette: "white", custom: "#ffffff", shape: "rounded", shadow: "none", hover: "lift", align: "center", icons: true },
   cursor: { type: "default", url: "", trail: "none" },
+  sfx: { hover: "none", click: "none", volume: 50 },
   enter: { on: false, text: "clicca per entrare", style: "blur" },
-  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "" },
+  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true },
   lastfm: { user: "", show: false },
-  widgets: { discordId: "", github: "", clock: "", showViews: true },
+  widgets: { discordId: "", github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false },
   title: { text: "", animated: false },
   seo: { description: "", image: "" },
   privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false },
@@ -129,6 +152,12 @@ export function safeUrl(u, allowData = false) {
     const x = new URL(s);
     return x.protocol === "https:" || x.protocol === "http:" ? x.href : null;
   } catch (_) { return null; }
+}
+// Uploaded fonts: a normal https link, or (for guests) a small font kept inline
+export function safeFontUrl(u) {
+  const s = String(u || "").trim();
+  if (/^data:(font\/(ttf|otf|woff2?)|application\/(font-woff2?|x-font-ttf|x-font-otf|octet-stream));base64,[a-z0-9+/=]+$/i.test(s) && s.length < 700000) return s;
+  return safeUrl(s);
 }
 export function safeLinkUrl(u) {
   const s = String(u || "").trim();
@@ -183,20 +212,33 @@ export function normalizeAppearance(raw) {
   a.card.border = ["none", "solid", "glow", "animated"].includes(a.card.border) ? a.card.border : "solid";
   a.card.gradient = !!a.card.gradient;
   for (const k of Object.keys(d.colors)) a.colors[k] = safeColor(a.colors[k], d.colors[k]);
-  a.font.name = FONT[a.font.name] ? a.font.name : "geist";
-  a.font.body = FONT[a.font.body] ? a.font.body : "geist";
+  a.font.custom = safeFontUrl(a.font.custom) || "";
+  a.font.name = FONT[a.font.name] || (a.font.name === "custom" && a.font.custom) ? a.font.name : "geist";
+  a.font.body = FONT[a.font.body] || (a.font.body === "custom" && a.font.custom) ? a.font.body : "geist";
   a.font.nameSize = clamp(a.font.nameSize, 60, 200, 100);
   a.font.spacing = clamp(a.font.spacing, -8, 30, 0);
   a.font.upper = !!a.font.upper;
   a.nameFx = pickOne(a.nameFx, NAME_FX, "none");
   a.nameGradient = [safeColor(a.nameGradient?.[0], "#ffffff"), safeColor(a.nameGradient?.[1], "#8a8a8a")];
-  a.bioFx = a.bioFx === "typewriter" ? "typewriter" : "none";
+  a.bioFx = pickOne(a.bioFx, BIO_FX, "none");
   a.bioLines = (Array.isArray(a.bioLines) ? a.bioLines : []).map(s => String(s || "").slice(0, 80)).filter(Boolean).slice(0, 6);
   a.typeSpeed = clamp(a.typeSpeed, 20, 200, 70);
   a.avatar.shape = ["circle", "rounded", "square", "hex"].includes(a.avatar.shape) ? a.avatar.shape : "circle";
   a.avatar.size = clamp(a.avatar.size, 56, 150, 92);
   a.avatar.ring = ["none", "solid", "glow", "spin"].includes(a.avatar.ring) ? a.avatar.ring : "none";
   a.avatar.show = a.avatar.show !== false;
+  a.avatar.deco = pickOne(a.avatar.deco, AVATAR_DECOS, "none");
+  a.banner.type = ["none", "image", "video"].includes(a.banner.type) ? a.banner.type : "none";
+  a.banner.url = (a.banner.type === "video" ? safeUrl(a.banner.url) : safeUrl(a.banner.url, true)) || "";
+  a.banner.height = clamp(a.banner.height, 70, 240, 120);
+  a.badges.show = a.badges.show !== false;
+  a.badges.color = safeColor(a.badges.color, "");
+  a.badges.style = ["box", "round", "plain"].includes(a.badges.style) ? a.badges.style : "box";
+  const cb = isObj(a.badges.custom) ? a.badges.custom : {};
+  a.badges.custom = { on: !!cb.on, icon: BADGE_ICONS[cb.icon] ? cb.icon : "star", label: String(cb.label || "").slice(0, 24), color: safeColor(cb.color, "") };
+  a.sfx.hover = pickOne(a.sfx.hover, SFX, "none");
+  a.sfx.click = pickOne(a.sfx.click, SFX, "none");
+  a.sfx.volume = clamp(a.sfx.volume, 0, 100, 50);
   a.socialsStyle.style = ["plain", "brand", "glow", "outline", "filled"].includes(a.socialsStyle.style) ? a.socialsStyle.style : "plain";
   a.socialsStyle.size = clamp(a.socialsStyle.size, 28, 60, 40);
   a.socialsStyle.position = a.socialsStyle.position === "bottom" ? "bottom" : "top";
@@ -222,12 +264,32 @@ export function normalizeAppearance(raw) {
   a.music.volume = clamp(a.music.volume, 0, 100, 60);
   a.music.autoplay = a.music.autoplay !== false;
   a.music.showPlayer = a.music.showPlayer !== false;
+  // Playlist: the old single url/title becomes the first track
+  const tracks = (Array.isArray(a.music.tracks) ? a.music.tracks : []).filter(isObj).slice(0, 20).map(t => ({
+    url: String(t.url || "").slice(0, 600), title: String(t.title || "").slice(0, 60), artist: String(t.artist || "").slice(0, 60),
+    cover: safeUrl(t.cover, true) || "", lrc: String(t.lrc || "").slice(0, 12000)
+  })).filter(t => t.url);
+  if (!tracks.length && a.music.url && a.music.type === "audio") tracks.push({ url: a.music.url, title: a.music.title, artist: "", cover: "", lrc: "" });
+  a.music.tracks = tracks;
+  a.music.shuffle = !!a.music.shuffle;
+  a.music.loop = ["all", "one", "none"].includes(a.music.loop) ? a.music.loop : "all";
+  a.music.blurCover = a.music.blurCover !== false;
+  a.music.visualizer = ["none", "bars", "wave"].includes(a.music.visualizer) ? a.music.visualizer : "bars";
+  a.music.lyrics = a.music.lyrics !== false;
   a.lastfm.user = String(a.lastfm.user || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
   a.lastfm.show = !!a.lastfm.show && !!a.lastfm.user;
   a.widgets.discordId = String(a.widgets.discordId || "").replace(/\D/g, "").slice(0, 20);
   a.widgets.github = String(a.widgets.github || "").replace(/[^a-z0-9-]/gi, "").slice(0, 39);
   a.widgets.clock = String(a.widgets.clock || "").slice(0, 40);
   a.widgets.showViews = a.widgets.showViews !== false;
+  a.widgets.twitch = String(a.widgets.twitch || "").replace(/^https?:\/\/(www\.)?twitch\.tv\//i, "").replace(/[^a-z0-9_]/gi, "").slice(0, 25);
+  a.widgets.youtube = String(a.widgets.youtube || "").trim().slice(0, 200);
+  a.widgets.gallery = !!a.widgets.gallery;
+  a.widgets.galleryStyle = ["grid", "row", "stack"].includes(a.widgets.galleryStyle) ? a.widgets.galleryStyle : "grid";
+  a.widgets.contact = !!a.widgets.contact;
+  a.widgets.newsletter = !!a.widgets.newsletter;
+  a.widgets.newsletterText = String(a.widgets.newsletterText || "").slice(0, 80);
+  a.widgets.guestbook = !!a.widgets.guestbook;
   a.title.text = String(a.title.text || "").slice(0, 60);
   a.title.animated = !!a.title.animated;
   a.seo.description = String(a.seo.description || "").slice(0, 160);
@@ -240,17 +302,41 @@ export function normalizeAppearance(raw) {
   return a;
 }
 
+// Short stable id for a link that was saved before links had ids
+export function linkId(l) {
+  if (/^[a-z0-9]{4,10}$/.test(l?.id || "")) return l.id;
+  let h = 5381;
+  for (const ch of String(l?.url || "") + "|" + String(l?.title || "")) h = ((h * 33) ^ ch.charCodeAt(0)) >>> 0;
+  return h.toString(36).slice(0, 8).padStart(4, "0");
+}
+const DT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+const B64 = /^[a-z0-9+/=]{8,2400}$/i;
+function normLink(l) {
+  const lock = isObj(l?.lock) && B64.test(l.lock.s || "") && B64.test(l.lock.iv || "") && B64.test(l.lock.ct || "") ? { s: l.lock.s, iv: l.lock.iv, ct: l.lock.ct } : null;
+  return {
+    id: linkId(l), type: l?.type === "header" ? "header" : "link",
+    title: String(l?.title || "").slice(0, 60), url: lock ? "" : String(l?.url || "").slice(0, 600), hidden: !!l?.hidden,
+    featured: !!l?.featured, start: DT.test(l?.start || "") ? l.start : "", end: DT.test(l?.end || "") ? l.end : "",
+    password: String(l?.password || "").slice(0, 64), lock
+  };
+}
+// Is a scheduled link visible right now?
+export const linkLive = (l, now = new Date()) => (!l.start || new Date(l.start) <= now) && (!l.end || new Date(l.end) > now);
+
 export function normalizeProfile(raw) {
   const p = isObj(raw) ? raw : {};
   const handle = String(p.handle || "tuonome").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20) || "tuonome";
+  const clans = (Array.isArray(p.clans) ? p.clans : []).map(t => String(t).toUpperCase()).filter(t => /^[A-Z0-9]{2,4}$/.test(t)).filter((t, i, a) => a.indexOf(t) === i).slice(0, 3);
   return {
     handle,
     displayName: String(p.displayName || handle).slice(0, 40),
-    bio: String(p.bio ?? "").slice(0, 160),
+    bio: String(p.bio ?? "").slice(0, 300),
     tags: (Array.isArray(p.tags) ? p.tags : []).map(t => String(t).slice(0, 20)).filter(Boolean).slice(0, 5),
     location: String(p.location || "").slice(0, 60),
     avatarUrl: safeUrl(p.avatarUrl, true) || "",
-    links: (Array.isArray(p.links) ? p.links : []).slice(0, 30).map(l => ({ title: String(l?.title || "").slice(0, 60), url: String(l?.url || "").slice(0, 600), hidden: !!l?.hidden })),
+    links: (Array.isArray(p.links) ? p.links : []).slice(0, 30).map(normLink),
+    clans, primaryClan: clans.includes(String(p.primaryClan || "").toUpperCase()) ? String(p.primaryClan).toUpperCase() : (clans[0] || ""),
+    gallery: (Array.isArray(p.gallery) ? p.gallery : []).filter(isObj).map(g => ({ url: safeUrl(g.url, true) || "", caption: String(g.caption || "").slice(0, 80), path: String(g.path || "").slice(0, 200) })).filter(g => g.url).slice(0, 12),
     socials: isObj(p.socials) ? Object.fromEntries(Object.entries(p.socials).filter(([k, v]) => SOCIALS.some(s => s.key === k) && v).map(([k, v]) => [k, String(v).slice(0, 200)])) : {},
     badges: (Array.isArray(p.badges) ? p.badges : []).filter(b => BADGES[b]).slice(0, 8),
     weekly: isObj(p.weekly) ? { week: String(p.weekly.week || ""), text: String(p.weekly.text || "").slice(0, 200), link: String(p.weekly.link || "").slice(0, 600), image: String(p.weekly.image || "").slice(0, 600), show: !!p.weekly.show } : null,
@@ -539,6 +625,121 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-trail{position:absolute;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
 .pk-trail.sparkle{border-radius:0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .pk-trail.ghost{width:22px;height:22px;margin:-11px 0 0 -11px;background:none;border:1px solid var(--pk-accent)}
+.pk-ban{position:relative;height:var(--pk-banh,120px);margin:-28px -20px 0;border-radius:var(--pk-radius) var(--pk-radius) 0 0;overflow:hidden;background:var(--pk-surface)}
+.pk-ban img,.pk-ban video{width:100%;height:100%;object-fit:cover;display:block}
+.pk-s-banner:not(:empty)+.pk-s-head .pk-head{margin-top:calc(var(--pk-av)*-.5)}
+.pk[data-layout=left] .pk-s-banner:not(:empty)+.pk-s-head .pk-head{margin-top:calc(var(--pk-av)*-.35)}
+.pk-s-banner:not(:empty)+.pk-s-head .pk-av{box-shadow:0 0 0 4px rgba(var(--pk-card-rgb),1)}
+.pk[data-layout=terminal] .pk-s-banner:not(:empty)+.pk-s-head .pk-head,.pk[data-layout=minimal] .pk-s-banner:not(:empty)+.pk-s-head .pk-head{margin-top:16px}
+.pk[data-layout=minimal] .pk-ban{margin:0 0 4px;border-radius:14px}
+.pk-av-deco{position:absolute;inset:-34%;width:168%;height:168%;pointer-events:none;overflow:visible;color:var(--pk-accent);z-index:2}
+.pk-av-deco .spin{transform-origin:50% 50%;animation:pk-spin 9s linear infinite}
+.pk-av-deco .flick{transform-origin:50% 100%;animation:pk-flick .5s ease-in-out infinite alternate}
+@keyframes pk-flick{from{transform:scaleY(.86) skewX(-3deg)}to{transform:scaleY(1.08) skewX(3deg)}}
+.pk-av-deco .tw{animation:pk-sp 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.pk-av-deco .bob{animation:pk-bob 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pk-bob{50%{transform:translateY(-4%)}}
+.pk-av.deco-glitch img,.pk-av.deco-glitch{animation:pk-avgl 3s steps(1) infinite}
+@keyframes pk-avgl{0%,90%{filter:none;transform:none}92%{filter:drop-shadow(-3px 0 0 #f0f) drop-shadow(3px 0 0 #0ff);transform:translateX(2px)}95%{filter:drop-shadow(3px 0 0 #f0f) drop-shadow(-3px 0 0 #0ff);transform:translateX(-2px)}}
+.pk-clans{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:7px}
+.pk[data-layout=left] .pk-clans,.pk[data-layout=terminal] .pk-clans{justify-content:flex-start}
+.pk-clans a{font:600 10.5px/1 ui-monospace,monospace;letter-spacing:.08em;padding:4px 7px;border-radius:6px;border:1px solid var(--pk-border);color:var(--pk-muted);text-decoration:none}
+.pk-clans a.primary{background:var(--pk-accent);border-color:var(--pk-accent);color:var(--pk-on-accent,#000)}
+.pk[data-bstyle=round] .pk-badge{border-radius:50%}
+.pk[data-bstyle=plain] .pk-badge{background:none;border-color:transparent}
+.pk-badge.custom{width:auto;padding:0 8px 0 6px;gap:4px;display:inline-flex;align-items:center;font-size:11px;font-weight:600;color:var(--pk-cb,var(--pk-badge,var(--pk-accent)))}
+.pk-badge{color:var(--pk-badge,var(--pk-accent))}
+.pk-rt b{font-weight:700}.pk-rt i{font-style:italic}.pk-rt u{text-decoration:underline}.pk-rt s{text-decoration:line-through}
+.pk-rt code{font-family:ui-monospace,monospace;font-size:.92em;padding:1px 5px;border-radius:5px;background:var(--pk-surface);border:1px solid var(--pk-border)}
+.pk-rt .sp{background:var(--pk-text);color:transparent;border-radius:3px;cursor:pointer;transition:background .2s,color .2s}
+.pk-rt .sp.on{background:transparent;color:inherit}
+.pk-rt .gl{text-shadow:0 0 10px color-mix(in srgb,var(--pk-accent) 85%,transparent)}
+.pk-rt .rb,.pk-bio.fx-rainbow{background:linear-gradient(90deg,#ff5f6d,#ffc371,#47e891,#3bb3ff,#b56bff,#ff5f6d);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:pk-rb 4s linear infinite}
+.pk-rt a{text-decoration:underline;text-underline-offset:2px}
+.pk-bio.fx-glitch{animation:pk-biogl 4s steps(1) infinite}
+@keyframes pk-biogl{0%,88%{transform:none;text-shadow:none}90%{transform:translateX(-2px);text-shadow:2px 0 var(--pk-accent),-2px 0 var(--pk-muted)}93%{transform:translateX(2px);text-shadow:-2px 0 var(--pk-accent),2px 0 var(--pk-muted)}96%{transform:none}}
+.pk-ch{display:inline-block;white-space:pre}
+.pk-name.fx-wave .pk-ch,.pk-bio.fx-wave .pk-ch{animation:pk-wave 1.6s ease-in-out infinite;animation-delay:calc(var(--i)*.07s)}
+@keyframes pk-wave{0%,100%{transform:translateY(0)}50%{transform:translateY(-.18em)}}
+.pk-name.fx-bounce .pk-ch{animation:pk-bounce 2.2s cubic-bezier(.3,1.6,.5,1) infinite;animation-delay:calc(var(--i)*.06s)}
+@keyframes pk-bounce{0%,60%,100%{transform:translateY(0)}20%{transform:translateY(-.32em)}40%{transform:translateY(.04em)}}
+.pk-name.fx-neon{color:#fff;text-shadow:0 0 4px #fff,0 0 12px var(--pk-accent),0 0 28px var(--pk-accent),0 0 52px var(--pk-accent);animation:pk-neon 4s steps(1) infinite}
+@keyframes pk-neon{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.35}}
+.pk-name.fx-float{animation:pk-float 3.4s ease-in-out infinite}
+@keyframes pk-float{50%{transform:translateY(-6px) rotate(-1deg)}}
+.pk-name.fx-shake .pk-ch{animation:pk-shake .35s steps(2) infinite;animation-delay:calc(var(--i)*-.05s)}
+@keyframes pk-shake{0%{transform:translate(0,0)}50%{transform:translate(1px,-1px) rotate(2deg)}100%{transform:translate(-1px,1px) rotate(-2deg)}}
+.pk-name.fx-chrome{background:linear-gradient(180deg,#fff 0%,#c9c9c9 38%,#5b5b5b 50%,#e9e9e9 62%,#8a8a8a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(0,0,0,.6))}
+.pk-name.fx-fire{color:#fff6d0;text-shadow:0 -2px 4px #fff3a0,0 -4px 10px #ffb300,0 -10px 18px #ff5a00,0 -16px 28px #c4000099;animation:pk-fire .18s steps(2) infinite alternate}
+@keyframes pk-fire{to{text-shadow:0 -3px 5px #fff3a0,0 -6px 12px #ffb300,0 -12px 20px #ff3c00,0 -20px 30px #c4000099}}
+.pk-name.fx-ice{background:radial-gradient(circle,#fff 0 .6px,transparent 1.3px) 0 0/3px 3px,linear-gradient(115deg,#8ea3b6,#fff 20%,#bfe7ff 36%,#fff 50%,#7b92a7 64%,#e9f7ff 80%,#9db2c5) 0 0/220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px rgba(170,225,255,.6));animation:pk-ice 3.2s linear infinite}
+@keyframes pk-ice{to{background-position:0 0,-220% 0}}
+.pk-name.fx-3d{text-shadow:1px 1px 0 var(--pk-accent),2px 2px 0 var(--pk-accent),3px 3px 0 color-mix(in srgb,var(--pk-accent) 70%,#000),4px 4px 0 color-mix(in srgb,var(--pk-accent) 50%,#000),6px 7px 10px rgba(0,0,0,.6)}
+.pk-name.fx-blur{animation:pk-blurin 3.6s ease-in-out infinite}
+@keyframes pk-blurin{0%,100%{filter:blur(0);letter-spacing:var(--pk-name-ls)}50%{filter:blur(3px);letter-spacing:calc(var(--pk-name-ls) + .08em)}}
+.pk-sec{margin:8px 0 -2px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--pk-muted);display:flex;align-items:center;gap:10px}
+.pk-sec::before,.pk-sec::after{content:"";flex:1;height:1px;background:var(--pk-border)}
+.pk[data-layout=left] .pk-sec::before,.pk[data-layout=terminal] .pk-sec::before{display:none}
+.pk-link.featured{animation:pk-feat 2.6s ease-in-out infinite}
+@keyframes pk-feat{0%,70%,100%{transform:none}74%{transform:rotate(-1.2deg) scale(1.02)}78%{transform:rotate(1.2deg) scale(1.02)}82%{transform:rotate(-.6deg)}86%{transform:none}}
+.pk-link.featured::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 1px var(--pk-accent),0 0 18px color-mix(in srgb,var(--pk-accent) 55%,transparent);opacity:.9}
+.pk-link .lk{margin-left:auto;opacity:.75;display:inline-flex}
+.pk-link.soon{opacity:.45;border-style:dashed}
+.pk-link small{font-size:10.5px;opacity:.7;font-weight:500;margin-left:6px}
+.pk-unlock{display:flex;gap:6px;margin-top:-4px}
+.pk-unlock input{flex:1;min-width:0;height:38px;padding:0 12px;border-radius:10px;border:1px solid var(--pk-border);background:var(--pk-surface);color:var(--pk-text);font:inherit;font-size:13px;outline:0}
+.pk-unlock button,.pk-form button{height:38px;padding:0 14px;border:0;border-radius:10px;background:var(--pk-accent);color:var(--pk-on-accent,#000);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.pk-unlock.bad input{border-color:#ff4d4d;animation:pk-no .3s}
+@keyframes pk-no{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pk-gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
+.pk-gal button{position:relative;aspect-ratio:1;border:0;padding:0;border-radius:10px;overflow:hidden;cursor:zoom-in;background:var(--pk-surface)}
+.pk-gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.pk-gal button:hover img{transform:scale(1.06)}
+.pk-gal[data-style=row]{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.pk-gal[data-style=row] button{flex:0 0 46%;scroll-snap-align:start}
+.pk-gal[data-style=stack]{display:block;height:170px;position:relative}
+.pk-gal[data-style=stack] button{position:absolute;width:44%;left:28%;top:6px;box-shadow:0 10px 24px rgba(0,0,0,.5);transition:transform .35s}
+.pk-lb{position:absolute;inset:0;z-index:8;display:grid;place-items:center;background:rgba(0,0,0,.86);padding:20px;cursor:zoom-out}
+.pk-lb img{max-width:100%;max-height:82%;border-radius:12px;display:block}
+.pk-lb p{margin-top:10px;font-size:13px;color:#ddd}
+.pk-mp{position:relative;overflow:hidden;margin-top:12px;border-radius:16px;border:1px solid var(--pk-border);background:var(--pk-surface);text-align:left}
+.pk-mp .mp-bg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.4);opacity:.55;transform:scale(1.1)}
+.pk-mp .mp-in{position:relative;padding:12px;display:grid;gap:10px}
+.pk-mp .mp-top{display:flex;gap:12px;align-items:center}
+.pk-mp .mp-cov{width:54px;height:54px;border-radius:10px;flex-shrink:0;background:#111 center/cover;display:grid;place-items:center;color:var(--pk-accent);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.pk-mp .mp-t{flex:1;min-width:0}
+.pk-mp .mp-t b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-mp .mp-t small{display:block;font-size:12px;color:var(--pk-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-mp .mp-viz{display:block;width:100%;height:26px}
+.pk-mp .mp-bar{position:relative;height:4px;border-radius:4px;background:color-mix(in srgb,var(--pk-text) 18%,transparent);cursor:pointer}
+.pk-mp .mp-bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:inherit;background:var(--pk-accent)}
+.pk-mp .mp-time{display:flex;justify-content:space-between;font:500 10.5px ui-monospace,monospace;color:var(--pk-muted);margin-top:-4px}
+.pk-mp .mp-ctl{display:flex;align-items:center;justify-content:center;gap:6px}
+.pk-mp .mp-ctl button{width:32px;height:32px;border:0;border-radius:50%;background:none;color:var(--pk-text);display:grid;place-items:center;cursor:pointer;opacity:.8}
+.pk-mp .mp-ctl button:hover{opacity:1}
+.pk-mp .mp-ctl button.on{color:var(--pk-accent);opacity:1}
+.pk-mp .mp-ctl .mp-play{width:40px;height:40px;background:var(--pk-accent);color:var(--pk-on-accent,#000);opacity:1}
+.pk-mp .mp-ctl input{width:70px;accent-color:var(--pk-accent);margin-left:6px}
+.pk-mp .mp-lrc{min-height:40px;text-align:center;font-size:14px;font-weight:600;line-height:1.35}
+.pk-mp .mp-lrc small{display:block;font-size:12px;font-weight:400;color:var(--pk-muted)}
+.pk-mp .mp-lrc .now{animation:pk-lrc .4s ease both}
+@keyframes pk-lrc{from{opacity:0;transform:translateY(6px)}}
+.pk-mp .mp-list{display:flex;flex-direction:column;gap:2px;max-height:120px;overflow-y:auto;scrollbar-width:thin}
+.pk-mp .mp-list button{display:flex;gap:8px;align-items:center;border:0;background:none;color:var(--pk-muted);font:inherit;font-size:12px;padding:5px 6px;border-radius:7px;cursor:pointer;text-align:left}
+.pk-mp .mp-list button.on{color:var(--pk-text);background:color-mix(in srgb,var(--pk-text) 8%,transparent)}
+.pk-mp .mp-list span{font-family:ui-monospace,monospace;font-size:10.5px;opacity:.6;width:16px}
+.pk-form{display:grid;gap:7px;margin-top:12px;padding:12px;border-radius:14px;background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left}
+.pk-form .tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--pk-accent)}
+.pk-form input,.pk-form textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:inherit;font-size:13px;outline:0;resize:vertical}
+.pk-form textarea{min-height:64px}
+.pk-form .row{display:flex;gap:7px}
+.pk-form .row input{flex:1;min-width:0}
+.pk-form .msg{font-size:12px;color:var(--pk-muted)}
+.pk-form button:disabled{opacity:.5;cursor:not-allowed}
+.pk-gb{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.pk-gb div{padding:8px 10px;border-radius:10px;background:rgba(var(--pk-card-rgb),.5);font-size:13px;overflow-wrap:anywhere}
+.pk-gb a{font-weight:600;text-decoration:none;color:var(--pk-accent)}
+.pk-gb small{display:block;color:var(--pk-muted);font-size:10.5px;margin-top:2px}
 @media (prefers-reduced-motion:reduce){.pk *,.pk *::before,.pk *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 `;
 function injectStyle() {
@@ -582,7 +783,29 @@ function canvasEffect(host, kind, color, intensity) {
     if (kind === "particles") items = Array.from({ length: Math.min(80, Math.round(45 * mul)) }, () => ({ x: R(0, W), y: R(0, H), vx: R(-.3, .3), vy: R(-.3, .3) }));
     if (kind === "matrix") cols = Array.from({ length: Math.ceil(W / 14) }, () => ({ y: R(-H, 0), v: R(2, 5), len: Math.round(R(8, 22)), ch: [] }));
   }
+  const RAMP = " .,:;-=+*#%@";
+  function ascii(now) {
+    // Characters picked from a slow moving wave field, redrawn about 12 times a second
+    if (now - last < 80) return;
+    last = now;
+    c.clearRect(0, 0, W, H);
+    c.font = "12px ui-monospace, monospace";
+    c.fillStyle = color;
+    const t = now / 1000, cw = 9, chh = 14;
+    for (let y = 0; y < H / chh; y++) {
+      for (let x = 0; x < W / cw; x++) {
+        const v = (Math.sin(x * .16 + t * .7) + Math.sin(y * .21 - t * .5) + Math.sin((x + y) * .09 + t * .35) + Math.sin(Math.hypot(x - W / cw / 2, y - H / chh / 2) * .25 - t)) / 4;
+        const k = Math.floor((v * .5 + .5) * mul * .9 * RAMP.length);
+        const ch = RAMP[Math.max(0, Math.min(RAMP.length - 1, k))];
+        if (ch === " ") continue;
+        c.globalAlpha = .25 + (k / RAMP.length) * .6;
+        c.fillText(ch, x * cw, y * chh + 11);
+      }
+    }
+    c.globalAlpha = 1;
+  }
   function frame(now) {
+    if (kind === "ascii") { ascii(now); if (on) raf = requestAnimationFrame(frame); return; }
     c.clearRect(0, 0, W, H);
     c.fillStyle = c.strokeStyle = color;
     c.lineWidth = 1;
@@ -717,27 +940,6 @@ function lastfmWidget(user) {
   return w;
 }
 
-function audioPlayer(src, title, volume, onReady) {
-  const { w, pic, txt } = widgetShell(null);
-  w.classList.add("pk-player");
-  pic.innerHTML = svg('<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>', 20);
-  pic.style.display = "grid"; pic.style.placeItems = "center"; pic.style.color = "var(--pk-accent)";
-  setLines(txt, "musica", title || "La mia canzone", "");
-  const bar = el("div", "bar"); bar.appendChild(el("i")); txt.appendChild(bar);
-  const audio = new Audio(); audio.src = src; audio.loop = true; audio.preload = "none"; audio.volume = volume / 100;
-  const play = el("button", "play"); play.type = "button"; play.setAttribute("aria-label", "Riproduci");
-  const icon = () => { play.innerHTML = audio.paused ? svg('<path d="M7 4v16l13-8z"/>', 12, true) : svg('<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>', 12, true); play.setAttribute("aria-label", audio.paused ? "Riproduci" : "Pausa"); };
-  play.addEventListener("click", () => { audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
-  audio.addEventListener("play", icon); audio.addEventListener("pause", icon);
-  audio.addEventListener("timeupdate", () => { if (audio.duration) bar.firstChild.style.width = (audio.currentTime / audio.duration * 100) + "%"; });
-  const vol = el("input"); vol.type = "range"; vol.min = 0; vol.max = 100; vol.value = volume; vol.setAttribute("aria-label", "Volume");
-  vol.addEventListener("input", () => { audio.volume = vol.value / 100; });
-  icon();
-  w.append(vol, play);
-  onReady && onReady(audio);
-  return { node: w, audio };
-}
-
 function embed(info, title) {
   const box = el("div", "pk-embed");
   const f = el("iframe");
@@ -746,6 +948,356 @@ function embed(info, title) {
   f.referrerPolicy = "strict-origin-when-cross-origin";
   box.appendChild(f);
   return box;
+}
+
+/* ---------- Rich text bio: **bold** *italic* __under__ ~~strike~~ ||spoiler|| `code` [glow]…[/glow] [rainbow]…[/rainbow] [#ff00aa]…[/] [text](https://…) ---------- */
+
+const RT = [
+  [/\*\*(.+?)\*\*/s, "b"], [/__(.+?)__/s, "u"], [/~~(.+?)~~/s, "s"], [/\|\|(.+?)\|\|/s, "sp"], [/`([^`\n]+?)`/, "code"], [/\*([^*\n]+?)\*/, "i"],
+  [/\[glow\](.+?)\[\/glow\]/is, "gl"], [/\[rainbow\](.+?)\[\/rainbow\]/is, "rb"], [/\[(#[0-9a-f]{6})\](.+?)\[\/\]/is, "color"],
+  [/\[([^\]\n]{1,60})\]\((https?:\/\/[^\s)]{1,300})\)/i, "a"]
+];
+function richText(parent, text, depth = 0) {
+  let best = null;
+  if (depth < 6) for (const [re, kind] of RT) { const m = re.exec(text); if (m && (!best || m.index < best.m.index)) best = { m, kind }; }
+  if (!best) { parent.append(text); return; }
+  const { m, kind } = best;
+  if (m.index) parent.append(text.slice(0, m.index));
+  let node;
+  if (kind === "a") {
+    const u = safeLinkUrl(m[2]);
+    node = el(u ? "a" : "span");
+    if (u) { node.href = u; node.target = "_blank"; node.rel = "noopener noreferrer"; }
+    richText(node, m[1], depth + 1);
+  } else if (kind === "color") { node = el("span"); node.style.color = m[1]; richText(node, m[2], depth + 1); }
+  else if (kind === "sp") { node = el("span", "sp"); node.title = "spoiler"; node.addEventListener("click", () => node.classList.toggle("on")); richText(node, m[1], depth + 1); }
+  else if (kind === "gl" || kind === "rb") { node = el("span", kind); richText(node, m[1], depth + 1); }
+  else if (kind === "code") node = el("code", null, m[1]);
+  else { node = el(kind); richText(node, m[1], depth + 1); }
+  parent.appendChild(node);
+  richText(parent, text.slice(m.index + m[0].length), depth);
+}
+export function plainText(text) {
+  let s = String(text || ""), prev;
+  do {
+    prev = s;
+    for (const [re, kind] of RT) s = s.replace(re, (...g) => kind === "color" ? g[2] : g[1]);
+  } while (s !== prev);
+  return s;
+}
+// One span per character, for the per-letter animations
+function splitChars(node, text) {
+  node.replaceChildren(...[...text].map((ch, i) => { const s = el("span", "pk-ch", ch); s.style.setProperty("--i", i); return s; }));
+}
+
+/* ---------- Avatar decorations (drawn around the avatar, 100x100 box, avatar in the middle) ---------- */
+
+const DECO = {
+  halo: '<g class="bob"><ellipse cx="50" cy="13" rx="19" ry="5.5" fill="none" stroke="currentColor" stroke-width="3" style="filter:drop-shadow(0 0 3px currentColor)"/></g>',
+  horns: '<path d="M33 26C25 20 21 12 23 3c5 8 11 13 18 17z" fill="currentColor"/><path d="M67 26c8-6 12-14 10-23-5 8-11 13-18 17z" fill="currentColor"/>',
+  cat: '<path d="M27 31L24 5l20 17z" fill="currentColor"/><path d="M73 31l3-26-20 17z" fill="currentColor"/><path d="M30 25l-1.5-12 10 9z" fill="rgba(255,255,255,.35)"/><path d="M70 25l1.5-12-10 9z" fill="rgba(255,255,255,.35)"/>',
+  crown: '<g class="bob"><path d="M32 23l3-15 8 8 7-12 7 12 8-8 3 15z" fill="currentColor" stroke="rgba(0,0,0,.35)" stroke-width=".8"/><circle cx="50" cy="15" r="1.8" fill="#fff"/><circle cx="40" cy="18" r="1.3" fill="#fff"/><circle cx="60" cy="18" r="1.3" fill="#fff"/></g>',
+  sparkles: [[16, 22, 0], [84, 30, .5], [12, 74, 1], [86, 80, 1.4], [50, 6, .8]].map(([x, y, d]) => `<path class="tw" style="animation-delay:${d}s" d="M${x} ${y - 5}l1.3 3.7 3.7 1.3-3.7 1.3-1.3 3.7-1.3-3.7-3.7-1.3 3.7-1.3z" fill="currentColor"/>`).join(""),
+  orbit: '<g class="spin"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/><circle cx="50" cy="10" r="3" fill="currentColor"/><circle cx="90" cy="50" r="1.8" fill="currentColor"/></g>',
+  flames: '<defs><linearGradient id="pkfl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset=".6" stop-color="#ffae00"/><stop offset="1" stop-color="#fff3a0"/></linearGradient></defs>' +
+    [[24, 84, 1, 0], [36, 92, 1.3, .15], [50, 95, 1.5, .05], [64, 92, 1.3, .25], [76, 84, 1, .1]].map(([x, y, s, d]) => `<path class="flick" style="animation-delay:${d}s;transform-box:fill-box" d="M${x} ${y}c-${5 * s} 0-${7 * s}-${5 * s}-${5 * s}-${10 * s} ${1 * s} ${3 * s} ${3 * s} ${3 * s} ${3 * s} 0 0-${5 * s} ${2 * s}-${8 * s} ${5 * s}-${10 * s} 0 ${5 * s} ${5 * s} ${7 * s} ${5 * s} ${12 * s} 0 ${5 * s}-${3 * s} ${8 * s}-${8 * s} ${8 * s}z" fill="url(#pkfl)" opacity=".95"/>`).join(""),
+  hearts: '<g class="spin" style="animation-duration:14s">' + [0, 120, 240].map(r => `<path transform="rotate(${r} 50 50)" d="M50 16c-2-3-7-2-7 2 0 4 7 8 7 8s7-4 7-8c0-4-5-5-7-2z" fill="currentColor"/>`).join("") + "</g>",
+  headphones: '<path d="M21 54a29 29 0 0 1 58 0" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><rect x="14" y="48" width="11" height="20" rx="5" fill="currentColor"/><rect x="75" y="48" width="11" height="20" rx="5" fill="currentColor"/>'
+};
+function decoNode(kind) {
+  if (!DECO[kind]) return null;
+  const n = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  n.setAttribute("viewBox", "0 0 100 100");
+  n.setAttribute("class", "pk-av-deco");
+  n.setAttribute("aria-hidden", "true");
+  n.innerHTML = DECO[kind];
+  return n;
+}
+
+/* ---------- Sound effects, synthesised (no files to load) ---------- */
+
+let actx = null;
+export function playSfx(kind, volume) {
+  if (!kind || kind === "none" || typeof window === "undefined") return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    const t = actx.currentTime, g = actx.createGain(), o = actx.createOscillator();
+    o.connect(g); g.connect(actx.destination);
+    const v = Math.max(.0002, volume / 100 * .22);
+    const env = (a, d) => { g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + a + d); };
+    const f = o.frequency;
+    if (kind === "tick") { o.type = "square"; f.setValueAtTime(2400, t); env(.002, .03); }
+    if (kind === "pop") { o.type = "sine"; f.setValueAtTime(620, t); f.exponentialRampToValueAtTime(170, t + .09); env(.004, .1); }
+    if (kind === "blip") { o.type = "triangle"; f.setValueAtTime(880, t); f.setValueAtTime(1320, t + .045); env(.004, .1); }
+    if (kind === "8bit") { o.type = "square"; f.setValueAtTime(523, t); f.setValueAtTime(784, t + .05); f.setValueAtTime(1046, t + .1); env(.003, .16); }
+    if (kind === "glass") { o.type = "sine"; f.setValueAtTime(2093, t); env(.002, .4); }
+    if (kind === "bass") { o.type = "sine"; f.setValueAtTime(120, t); f.exponentialRampToValueAtTime(48, t + .22); env(.006, .26); }
+    o.start(t); o.stop(t + .6);
+  } catch (_) { /* no audio */ }
+}
+
+/* ---------- Uploaded font ---------- */
+
+const fontFaces = new Map();
+function loadCustomFont(url) {
+  if (!url || fontFaces.has(url) || typeof FontFace !== "function") return;
+  const fam = "sigari-custom-" + (fontFaces.size + 1);
+  fontFaces.set(url, fam);
+  try { new FontFace(fam, `url("${url.replace(/"/g, "%22")}")`).load().then(f => document.fonts.add(f)).catch(() => {}); } catch (_) { /* bad font */ }
+}
+const fontStack = (id, a) => id === "custom" ? `'${fontFaces.get(a.font.custom) || "sigari-custom"}', system-ui, sans-serif` : FONT[id][2];
+
+/* ---------- Music player: playlist, shuffle, loop, synced lyrics, blurred cover, visualiser ---------- */
+
+export function parseLrc(s) {
+  const out = [];
+  String(s || "").split(/\r?\n/).forEach(line => {
+    const tags = [...line.matchAll(/\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
+    const text = line.replace(/\[[^\]]*\]/g, "").trim();
+    tags.forEach(t => out.push({ t: +t[1] * 60 + +t[2] + (t[3] ? +("0." + t[3]) : 0), text }));
+  });
+  return out.sort((a, b) => a.t - b.t);
+}
+const fmtTime = s => Number.isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
+const ICO = {
+  play: '<path d="M7 4v16l13-8z"/>', pause: '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>',
+  prev: '<path d="M6 5v14M19 5L9 12l10 7z"/>', next: '<path d="M18 5v14M5 5l10 7-10 7z"/>',
+  shuffle: '<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>', loop: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  note: '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'
+};
+function playlistPlayer(onEvent) {
+  const node = el("div", "pk-mp");
+  node.innerHTML = '<div class="mp-bg"></div><div class="mp-in"><div class="mp-top"><div class="mp-cov"></div><div class="mp-t"><b></b><small></small></div></div><canvas class="mp-viz" height="26"></canvas><div class="mp-bar"><i></i></div><div class="mp-time"><span>0:00</span><span>0:00</span></div><div class="mp-lrc"></div><div class="mp-ctl"></div><div class="mp-list"></div></div>';
+  const q = s => node.querySelector(s);
+  const audio = new Audio();
+  audio.preload = "none";
+  let m = null, order = [], pos = 0, lrc = [], lrcIdx = -1, played = new Set(), raf = 0;
+  const ctl = q(".mp-ctl");
+  const btn = (name, label) => { const b = el("button"); b.type = "button"; b.dataset.k = name; b.setAttribute("aria-label", label); b.innerHTML = svg(ICO[name] || "", name === "play" ? 14 : 15, name === "play" || name === "prev" || name === "next"); ctl.appendChild(b); return b; };
+  const bShuffle = btn("shuffle", "Ordine casuale"), bPrev = btn("prev", "Precedente"), bPlay = btn("play", "Riproduci"), bNext = btn("next", "Successiva"), bLoop = btn("loop", "Ripeti");
+  bPlay.classList.add("mp-play");
+  const vol = el("input"); vol.type = "range"; vol.min = 0; vol.max = 100; vol.setAttribute("aria-label", "Volume"); ctl.appendChild(vol);
+  const cur = () => m.tracks[order[pos]] || m.tracks[0];
+  function makeOrder(keep) {
+    const idx = m.tracks.map((_, i) => i);
+    if (m.shuffle) for (let i = idx.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [idx[i], idx[j]] = [idx[j], idx[i]]; }
+    if (keep != null) { idx.splice(idx.indexOf(keep), 1); idx.unshift(keep); pos = 0; }
+    order = idx;
+  }
+  function load(i, autoplay) {
+    pos = i;
+    const t = cur();
+    if (!t) return;
+    const src = safeUrl(t.url, true) || "";
+    if (audio.getAttribute("src") !== src) audio.src = src;
+    lrc = m.lyrics ? parseLrc(t.lrc) : []; lrcIdx = -1;
+    paint();
+    if (autoplay) audio.play().catch(() => {});
+  }
+  function paint() {
+    const t = cur();
+    if (!t) return;
+    q(".mp-t b").textContent = t.title || "Senza titolo";
+    q(".mp-t small").textContent = t.artist || (m.tracks.length > 1 ? `${order[pos] + 1} di ${m.tracks.length}` : "");
+    const cov = q(".mp-cov");
+    cov.style.backgroundImage = t.cover ? `url("${t.cover.replace(/"/g, "%22")}")` : "";
+    cov.innerHTML = t.cover ? "" : svg(ICO.note, 20);
+    q(".mp-bg").style.backgroundImage = t.cover && m.blurCover ? `url("${t.cover.replace(/"/g, "%22")}")` : "";
+    q(".mp-lrc").style.display = lrc.length ? "" : "none";
+    if (lrc.length && lrcIdx < 0) q(".mp-lrc").innerHTML = "<small>♪</small>";
+    bShuffle.classList.toggle("on", m.shuffle); bLoop.classList.toggle("on", m.loop !== "none");
+    bLoop.title = { all: "Ripeti la playlist", one: "Ripeti il brano", none: "Non ripetere" }[m.loop];
+    bLoop.style.position = "relative";
+    bLoop.dataset.one = m.loop === "one" ? "1" : "";
+    [bPrev, bNext, bShuffle].forEach(b => { b.style.display = m.tracks.length > 1 ? "" : "none"; });
+    const list = q(".mp-list");
+    list.style.display = m.tracks.length > 1 ? "" : "none";
+    list.replaceChildren(...m.tracks.map((tr, i) => { const b = el("button"); b.type = "button"; b.className = i === order[pos] ? "on" : ""; b.append(el("span", null, String(i + 1)), tr.title || "Senza titolo"); b.addEventListener("click", () => { makeOrder(i); load(0, true); }); return b; }));
+    q(".mp-viz").style.display = m.visualizer === "none" ? "none" : "";
+    playIcon();
+  }
+  const playIcon = () => { bPlay.innerHTML = svg(audio.paused ? ICO.play : ICO.pause, 14, true); bPlay.setAttribute("aria-label", audio.paused ? "Riproduci" : "Pausa"); };
+  bPlay.addEventListener("click", () => { if (!audio.getAttribute("src")) load(pos, false); audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
+  bNext.addEventListener("click", () => next(true));
+  bPrev.addEventListener("click", () => { if (audio.currentTime > 3) audio.currentTime = 0; else load((pos - 1 + order.length) % order.length, !audio.paused); });
+  bShuffle.addEventListener("click", () => { m.shuffle = !m.shuffle; makeOrder(order[pos]); paint(); });
+  bLoop.addEventListener("click", () => { m.loop = { all: "one", one: "none", none: "all" }[m.loop]; paint(); });
+  vol.addEventListener("input", () => { audio.volume = vol.value / 100; });
+  q(".mp-bar").addEventListener("click", e => { const r = e.currentTarget.getBoundingClientRect(); if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; });
+  function next(manual) {
+    if (!manual && m.loop === "one") { audio.currentTime = 0; audio.play().catch(() => {}); return; }
+    if (pos + 1 >= order.length) {
+      if (m.loop === "none" && !manual) return;
+      if (m.shuffle) makeOrder(null);
+      load(0, true);
+    } else load(pos + 1, true);
+  }
+  audio.addEventListener("ended", () => next(false));
+  audio.addEventListener("play", () => { playIcon(); const k = order[pos]; if (!played.has(k)) { played.add(k); onEvent && onEvent("p", ""); } loop(); });
+  audio.addEventListener("pause", playIcon);
+  audio.addEventListener("timeupdate", () => {
+    const d = audio.duration;
+    q(".mp-bar i").style.width = d ? (audio.currentTime / d * 100) + "%" : "0";
+    const sp = q(".mp-time").children; sp[0].textContent = fmtTime(audio.currentTime); sp[1].textContent = fmtTime(d);
+    if (lrc.length) {
+      let i = -1;
+      for (let k = 0; k < lrc.length && lrc[k].t <= audio.currentTime + .15; k++) i = k;
+      if (i !== lrcIdx) {
+        lrcIdx = i;
+        const box = q(".mp-lrc"); box.replaceChildren();
+        const now = el("div", "now", i >= 0 ? (lrc[i].text || "♪") : "♪");
+        box.append(now);
+        if (lrc[i + 1]) box.append(el("small", null, lrc[i + 1].text));
+      }
+    }
+  });
+  // Bars that follow the playback; the real spectrum is not readable from files on other domains
+  const cv = q(".mp-viz"), c2 = cv.getContext("2d"), bars = new Float32Array(36);
+  function loop() {
+    cancelAnimationFrame(raf);
+    const w = cv.clientWidth || 300;
+    if (cv.width !== w) cv.width = w;
+    const color = getComputedStyle(node).getPropertyValue("--pk-accent").trim() || "#fff";
+    c2.clearRect(0, 0, cv.width, 26);
+    c2.fillStyle = c2.strokeStyle = color;
+    const t = performance.now() / 1000, playing = !audio.paused;
+    if (m.visualizer === "wave") {
+      c2.beginPath(); c2.lineWidth = 1.5;
+      for (let x = 0; x <= cv.width; x += 3) { const a = playing ? (Math.sin(x * .05 + t * 6) * .5 + Math.sin(x * .013 - t * 3.3) * .5) * 9 : 0; x ? c2.lineTo(x, 13 + a) : c2.moveTo(x, 13 + a); }
+      c2.stroke();
+    } else {
+      const n = bars.length, bw = cv.width / n;
+      for (let i = 0; i < n; i++) {
+        const target = playing ? .25 + .75 * Math.abs(Math.sin(t * (2 + i % 5) + i * 1.7) * Math.sin(t * 1.3 + i * .4)) : .06;
+        bars[i] += (target - bars[i]) * .25;
+        const h = Math.max(2, bars[i] * 24);
+        c2.globalAlpha = .55 + bars[i] * .45;
+        c2.fillRect(i * bw + 1, 26 - h, bw - 2, h);
+      }
+      c2.globalAlpha = 1;
+    }
+    if (playing || bars.some(b => b > .07)) raf = requestAnimationFrame(loop);
+  }
+  return {
+    node, audio,
+    update(nm) {
+      const sameList = m && JSON.stringify(m.tracks.map(t => t.url)) === JSON.stringify(nm.tracks.map(t => t.url));
+      const keep = m ? order[pos] : 0;
+      m = structuredClone(nm);
+      audio.volume = m.volume / 100;
+      vol.value = m.volume;
+      if (!sameList) { makeOrder(null); pos = 0; load(0, false); }
+      else { makeOrder(keep); lrc = m.lyrics ? parseLrc(cur().lrc) : []; lrcIdx = -1; paint(); }
+      requestAnimationFrame(loop);
+    },
+    stop() { cancelAnimationFrame(raf); audio.pause(); }
+  };
+}
+
+/* ---------- Video widgets ---------- */
+
+function twitchEmbed(channel) {
+  const host = typeof location !== "undefined" ? location.hostname : "sigari.bio";
+  return { src: `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}&muted=true&autoplay=false`, height: 210 };
+}
+export function youtubeWidget(v) {
+  const yt = youtubeEmbed(v);
+  if (yt) return yt;
+  const ch = String(v || "").match(/(UC[\w-]{22})/);
+  return ch ? { src: `https://www.youtube-nocookie.com/embed/videoseries?list=UU${ch[1].slice(2)}`, height: 210 } : null;
+}
+
+/* ---------- Gallery ---------- */
+
+function galleryNode(items, style, root) {
+  const g = el("div", "pk-gal");
+  g.dataset.style = style;
+  items.forEach((it, i) => {
+    const b = el("button"); b.type = "button"; b.setAttribute("aria-label", it.caption || "Apri immagine " + (i + 1));
+    const img = el("img"); img.src = it.url; img.alt = it.caption || ""; img.loading = "lazy";
+    b.appendChild(img);
+    if (style === "stack") { b.style.transform = `translateX(${(i - (Math.min(items.length, 3) - 1) / 2) * 38}%) rotate(${(i - 1) * 7}deg)`; b.style.zIndex = 10 - i; if (i > 2) b.style.display = "none"; }
+    b.addEventListener("click", () => {
+      const lb = el("div", "pk-lb");
+      const box = el("div");
+      const big = el("img"); big.src = it.url; big.alt = it.caption || "";
+      box.appendChild(big);
+      if (it.caption) box.appendChild(el("p", null, it.caption));
+      lb.appendChild(box);
+      lb.addEventListener("click", () => lb.remove());
+      root.appendChild(lb);
+    });
+    g.appendChild(b);
+  });
+  return g;
+}
+
+/* ---------- Forms: contact, newsletter, guestbook. The page passes the actions; the preview only shows them. ---------- */
+
+function formShell(tag) { const f = el("form", "pk-form"); f.noValidate = true; f.appendChild(el("span", "tag", tag)); return f; }
+function contactForm(actions) {
+  const f = formShell("scrivimi");
+  f.innerHTML += '<div class="row"><input name="name" maxlength="60" placeholder="Il tuo nome"><input name="contact" maxlength="120" placeholder="Email o social (per risponderti)"></div><textarea name="text" maxlength="1000" placeholder="Il tuo messaggio"></textarea><div class="row"><span class="msg"></span><button type="submit">Invia</button></div>';
+  const msg = f.querySelector(".msg"), bt = f.querySelector("button");
+  if (!actions?.contact) { bt.disabled = true; msg.textContent = "Anteprima: i messaggi arrivano nella dashboard."; }
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!actions?.contact) return;
+    const text = f.text.value.trim();
+    if (!text) { msg.textContent = "Scrivi un messaggio."; return; }
+    bt.disabled = true; msg.textContent = "Invio…";
+    try { await actions.contact({ name: f.name.value.trim(), contact: f.contact.value.trim(), text }); f.reset(); msg.textContent = "Inviato. Grazie!"; }
+    catch (_) { msg.textContent = "Non inviato. Riprova tra poco."; }
+    bt.disabled = false;
+  });
+  return f;
+}
+function newsletterForm(actions, text) {
+  const f = formShell("newsletter");
+  f.appendChild(el("div", "msg", text || "Lascia la tua email: ti scrivo quando esce qualcosa di nuovo."));
+  f.innerHTML += '<div class="row"><input name="email" type="email" maxlength="120" placeholder="la-tua@email.it" autocomplete="email"><button type="submit">Iscriviti</button></div><span class="msg out"></span>';
+  const out = f.querySelector(".out"), bt = f.querySelector("button");
+  if (!actions?.subscribe) { bt.disabled = true; out.textContent = "Anteprima: gli iscritti li vedi nella dashboard."; }
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!actions?.subscribe) return;
+    const email = f.email.value.trim().toLowerCase();
+    if (!/^[^@\s]{1,64}@[^@\s]{1,120}\.[a-z]{2,}$/i.test(email)) { out.textContent = "Questa email non sembra valida."; return; }
+    bt.disabled = true; out.textContent = "…";
+    try { await actions.subscribe(email); f.reset(); out.textContent = "Fatto, sei iscritto."; }
+    catch (_) { out.textContent = "Sei già iscritto, oppure qualcosa non va. Riprova."; }
+    bt.disabled = false;
+  });
+  return f;
+}
+function guestbookNode(actions) {
+  const f = formShell("guestbook");
+  const list = el("div", "pk-gb"); list.appendChild(el("div", null, "Carico le firme…"));
+  f.appendChild(list);
+  f.innerHTML += '<div class="row"><input name="text" maxlength="200" placeholder="Lascia una firma"><button type="submit">Firma</button></div><span class="msg out"></span>';
+  const out = f.querySelector(".out"), bt = f.querySelector("button"), gb = f.querySelector(".pk-gb");
+  const paint = rows => {
+    gb.replaceChildren(...(rows.length ? rows.map(r => {
+      const d = el("div");
+      const a = el("a", null, "@" + r.author); a.href = "/@" + r.author;
+      d.append(a, " " + r.text);
+      if (r.date) d.appendChild(el("small", null, r.date));
+      return d;
+    }) : [el("div", null, "Ancora nessuna firma. La prima può essere la tua.")]));
+  };
+  if (!actions?.guestbook) { paint([{ author: "un_fan", text: "che pagina assurda", date: "esempio" }]); bt.disabled = true; out.textContent = "Anteprima: le firme arrivano dai visitatori con un account."; return f; }
+  actions.guestbook.list().then(paint).catch(() => paint([]));
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    const text = f.text.value.trim();
+    if (!text) return;
+    bt.disabled = true; out.textContent = "…";
+    try { await actions.guestbook.sign(text); f.reset(); out.textContent = "Firmato."; paint(await actions.guestbook.list()); }
+    catch (err) { out.innerHTML = ""; if (err && err.login) { out.append("Per firmare serve un account. "); const a = el("a", null, "Accedi"); a.href = "/login.html?mode=login"; out.appendChild(a); } else out.textContent = "Non firmato. Riprova."; }
+    bt.disabled = false;
+  });
+  return f;
 }
 
 /* ---------- Mount ---------- */
@@ -760,7 +1312,7 @@ export function mountProfile(root, input, opts = {}) {
   root.classList.add("pk");
   root.innerHTML = '<div class="pk-bg"></div><div class="pk-dim"></div><div class="pk-fx"></div><div class="pk-scroll"><article class="pk-card"></article></div>';
   const bgEl = root.querySelector(".pk-bg"), fxEl = root.querySelector(".pk-fx"), card = root.querySelector(".pk-card");
-  const SLOTS = ["banner", "head", "badges", "bio", "meta", "soctop", "widgets", "music", "topic", "links", "socbot", "tags"];
+  const SLOTS = ["banner", "head", "badges", "bio", "meta", "soctop", "widgets", "music", "embeds", "topic", "links", "gallery", "socbot", "forms", "tags"];
   const slot = Object.fromEntries(SLOTS.map(n => { const d = el("div", "pk-s pk-s-" + n); card.appendChild(d); return [n, d]; }));
   // Replaces a slot's children only when they actually differ, so live iframes stay put.
   const fill = (name, nodes) => {
@@ -778,6 +1330,37 @@ export function mountProfile(root, input, opts = {}) {
   document.addEventListener("visibilitychange", onVis);
   function syncFx() { if (!st.fx) return; st.visible && !document.hidden ? st.fx.play() : st.fx.pause(); }
 
+  const track = (kind, key) => { try { o.onEvent && o.onEvent(kind, key); } catch (_) { /* stats are best effort */ } };
+
+  // Sound effects on links, socials and pictures
+  const SFX_SEL = ".pk-link, .pk-soc a, .pk-gal button, .pk-mp button, .pk-clans a";
+  root.addEventListener("pointerover", e => {
+    const t = e.target.closest(SFX_SEL);
+    if (t && !t.contains(e.relatedTarget) && st.sfx) playSfx(st.sfx.hover, st.sfx.volume);
+  });
+  root.addEventListener("click", e => { if (e.target.closest(SFX_SEL) && st.sfx) playSfx(st.sfx.click, st.sfx.volume); });
+
+  // Password links: a small field opens under the button
+  function toggleUnlock(btn, l) {
+    const open = btn.nextElementSibling;
+    if (open && open.classList.contains("pk-unlock")) { open.remove(); return; }
+    const f = el("form", "pk-unlock");
+    f.innerHTML = '<input type="password" placeholder="Password" autocomplete="off"><button type="submit">Apri</button>';
+    f.addEventListener("submit", async e => {
+      e.preventDefault();
+      const pw = f.querySelector("input").value;
+      let url = null;
+      try { url = l.lock ? await unlockUrl(l.lock, pw) : pw === l.password ? l.url : null; } catch (_) { url = null; }
+      url = safeLinkUrl(url);
+      if (!url) { f.classList.remove("bad"); void f.offsetWidth; f.classList.add("bad"); return; }
+      track("c", l.id);
+      window.open(url, "_blank", "noopener");
+      f.remove();
+    });
+    btn.after(f);
+    f.querySelector("input").focus();
+  }
+
   function keyedNode(key, make) {
     const hit = st.keyed.get(key);
     if (hit) { hit.used = true; return hit.node; }
@@ -793,7 +1376,9 @@ export function mountProfile(root, input, opts = {}) {
     st.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
     st.timers = [];
     st.keyed.forEach(v => { v.used = false; });
-    ensureFonts([a.font.name, a.font.body]);
+    ensureFonts([a.font.name, a.font.body].filter(f => FONT[f]));
+    loadCustomFont(a.font.custom);
+    st.sfx = a.sfx;
 
     // Tokens
     const c = a.colors, s = root.style;
@@ -801,7 +1386,8 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-icon", c.icon); s.setProperty("--pk-surface", c.secondary); s.setProperty("--pk-border", c.border);
     s.setProperty("--pk-card-rgb", hexRgb(c.primary)); s.setProperty("--pk-card-a", (a.card.opacity / 100).toFixed(2));
     s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px");
-    s.setProperty("--pk-name-font", FONT[a.font.name][2]); s.setProperty("--pk-body-font", FONT[a.font.body][2]);
+    s.setProperty("--pk-name-font", fontStack(a.font.name, a)); s.setProperty("--pk-body-font", fontStack(a.font.body, a));
+    s.setProperty("--pk-on-accent", readableOn(c.accent)); s.setProperty("--pk-badge", a.badges.color || c.accent); s.setProperty("--pk-banh", a.banner.height + "px");
     s.setProperty("--pk-name-scale", (a.font.nameSize / 100).toFixed(2)); s.setProperty("--pk-name-ls", (a.font.spacing / 100) + "em");
     s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-soc", a.socialsStyle.size + "px");
     s.setProperty("--pk-soc-align", { left: "flex-start", center: "center", right: "flex-end" }[a.socialsStyle.align]);
@@ -810,7 +1396,7 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-dim", (a.bg.dim / 100).toFixed(2)); s.setProperty("--pk-bgblur", a.bg.blur + "px");
     const ds = root.dataset;
     ds.layout = a.layout; ds.border = a.card.border; ds.cardgrad = a.card.gradient ? "1" : "0"; ds.avshape = a.avatar.shape; ds.avring = a.avatar.ring;
-    ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover;
+    ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover; ds.bstyle = a.badges.style;
     ds.gname = a.glow.username ? "1" : "0"; ds.gsoc = a.glow.socials ? "1" : "0"; ds.gbadges = a.glow.badges ? "1" : "0"; ds.glinks = a.glow.links ? "1" : "0";
     applyButtons(s, a);
     root.style.cursor = a.cursor.type === "crosshair" ? "crosshair" : a.cursor.type === "custom" && a.cursor.url ? `url("${a.cursor.url.replace(/"/g, "%22")}") 4 4, auto` : "";
@@ -847,12 +1433,24 @@ export function mountProfile(root, input, opts = {}) {
     }
 
     // Card content, slot by slot
-    fill("banner", a.layout === "banner" ? [el("div", "pk-banner")] : []);
+    const ban = a.banner;
+    if ((ban.type === "image" || ban.type === "video") && ban.url) {
+      fill("banner", [keyedNode("ban:" + ban.type + ban.url, () => {
+        const b = el("div", "pk-ban");
+        const m = el(ban.type === "video" ? "video" : "img");
+        m.src = ban.url;
+        if (ban.type === "video") { m.muted = true; m.loop = true; m.autoplay = true; m.playsInline = true; m.setAttribute("playsinline", ""); m.play?.().catch(() => {}); } else m.alt = "";
+        b.appendChild(m);
+        return b;
+      })]);
+    } else fill("banner", a.layout === "banner" ? [el("div", "pk-banner")] : []);
     const head = el("div", "pk-head");
     if (a.avatar.show) {
-      const av = el("div", "pk-av");
+      const av = el("div", "pk-av" + (a.avatar.deco === "glitch" ? " deco-glitch" : ""));
       if (p.avatarUrl) { const img = el("img"); img.src = p.avatarUrl; img.alt = ""; av.appendChild(img); }
       else av.textContent = p.handle[0].toUpperCase();
+      const deco = decoNode(a.avatar.deco);
+      if (deco) av.appendChild(deco);
       head.appendChild(av);
     }
     const nameBox = el("div", "pk-name-wrap");
@@ -861,23 +1459,43 @@ export function mountProfile(root, input, opts = {}) {
     nameEl.dataset.text = name;
     nameBox.appendChild(nameEl);
     nameBox.appendChild(el("div", "pk-handle", "@" + p.handle));
+    if (p.clans.length) {
+      const cl = el("div", "pk-clans");
+      [p.primaryClan, ...p.clans.filter(t => t !== p.primaryClan)].forEach(t => {
+        const x = el("a", t === p.primaryClan ? "primary" : "", "[" + t + "]");
+        x.href = "/clan.html?tag=" + t; x.title = t === p.primaryClan ? "Clan principale" : "Clan";
+        cl.appendChild(x);
+      });
+      nameBox.appendChild(cl);
+    }
     head.appendChild(nameBox);
     fill("head", [head]);
     nameText(nameEl, name, a);
 
     const badges = [];
-    if (a.badges.show && !a.privacy.hideBadges && p.badges.length) {
+    const cb = a.badges.custom;
+    if (a.badges.show && !a.privacy.hideBadges && (p.badges.length || (cb.on && cb.label))) {
       const bx = el("div", "pk-badges");
       p.badges.forEach(b => { const [tip, path] = BADGES[b]; const n = el("span", "pk-badge"); n.dataset.tip = tip; n.innerHTML = svg(path, 13); bx.appendChild(n); });
+      if (cb.on && cb.label) {
+        const n = el("span", "pk-badge custom");
+        n.innerHTML = svg(BADGE_ICONS[cb.icon], 12);
+        n.append(cb.label);
+        if (cb.color) n.style.setProperty("--pk-cb", cb.color);
+        bx.appendChild(n);
+      }
       badges.push(bx);
     }
     fill("badges", badges);
 
-    const lines = a.bioLines.length ? a.bioLines : p.bio ? [p.bio] : [];
+    const lines = a.bioLines.length ? a.bioLines : p.bio ? p.bio.split("\n").filter(Boolean) : [];
     if (lines.length || p.bio) {
-      const bio = el("p", "pk-bio");
-      if (a.bioFx === "typewriter" && lines.length && !reduceMotion()) typewriter(bio, lines, a.typeSpeed);
-      else bio.textContent = p.bio || lines[0] || "";
+      const bio = el("p", "pk-bio pk-rt");
+      const plainLines = lines.map(plainText);
+      if (a.bioFx === "typewriter" && plainLines.length && !reduceMotion()) typewriter(bio, plainLines, a.typeSpeed);
+      else if (a.bioFx === "cycle" && plainLines.length > 1 && !reduceMotion()) cycleLines(bio, plainLines);
+      else if (a.bioFx === "wave" && !reduceMotion()) { bio.classList.add("fx-wave"); splitChars(bio, plainText(p.bio || lines[0])); }
+      else { richText(bio, p.bio || lines.join("\n")); if (a.bioFx === "glitch" || a.bioFx === "rainbow") bio.classList.add("fx-" + a.bioFx); }
       fill("bio", [bio]);
     } else fill("bio", []);
 
@@ -900,7 +1518,7 @@ export function mountProfile(root, input, opts = {}) {
       const raw = String(v).trim();
       const url = /^(https?:|mailto:)/i.test(raw) ? safeLinkUrl(raw) : sd.base ? safeLinkUrl(sd.base + raw.replace(/^@/, "")) : null;
       const n = el(url ? "a" : "span");
-      if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; }
+      if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; n.addEventListener("click", () => track("s", sd.key)); }
       n.title = url ? sd.label : `${sd.label}: ${raw}`;
       n.setAttribute("aria-label", sd.label);
       const i = el("i"); i.style.setProperty("--ico", `url("${socialIcon(sd)}")`); i.style.setProperty("--brand", sd.color);
@@ -921,14 +1539,21 @@ export function mountProfile(root, input, opts = {}) {
     if (m.type === "spotify" && spotifyEmbed(m.url)) music.push(keyedNode("sp:" + m.url, () => embed(spotifyEmbed(m.url), "Spotify")));
     if (m.type === "soundcloud" && soundcloudEmbed(m.url)) music.push(keyedNode("sc:" + m.url, () => embed(soundcloudEmbed(m.url), "SoundCloud")));
     if (m.type === "youtube" && youtubeEmbed(m.url)) music.push(keyedNode("yt:" + m.url, () => embed(youtubeEmbed(m.url), "YouTube")));
-    if (m.type === "audio" && safeUrl(m.url, true)) {
-      const node = keyedNode("au:" + m.url, () => { const pl = audioPlayer(safeUrl(m.url, true), m.title, m.volume); st.audio = pl.audio; return pl.node; });
+    if (m.type === "audio" && m.tracks.length) {
+      const node = keyedNode("mp", () => { const x = playlistPlayer(track); x.node.player = x; return x.node; });
+      const pl = node.player;
+      pl.update(m);
+      st.audio = pl.audio;
       node.style.display = m.showPlayer ? "" : "none";
-      node.querySelector(".txt b").textContent = m.title || "La mia canzone";
-      if (st.audio) st.audio.volume = m.volume / 100;
       music.push(node);
     } else st.audio = null;
     fill("music", music);
+
+    const embeds = [];
+    if (a.widgets.twitch) embeds.push(keyedNode("tw:" + a.widgets.twitch, () => embed(twitchEmbed(a.widgets.twitch), "Twitch")));
+    const ytw = youtubeWidget(a.widgets.youtube);
+    if (ytw) embeds.push(keyedNode("ytw:" + ytw.src, () => embed(ytw, "YouTube")));
+    fill("embeds", embeds);
 
     const topic = currentTopic(), topicNodes = [];
     if (p.weekly && p.weekly.show && p.weekly.week === topic.id && (p.weekly.text || p.weekly.link || p.weekly.image)) {
@@ -944,24 +1569,42 @@ export function mountProfile(root, input, opts = {}) {
     }
     fill("topic", topicNodes);
 
-    const links = p.links.filter(l => !l.hidden && l.title && safeLinkUrl(l.url));
+    const now = new Date();
+    const links = p.links.filter(l => !l.hidden && l.title && (l.type === "header" || l.lock || (l.password && safeLinkUrl(l.url)) || safeLinkUrl(l.url)) && (o.preview || linkLive(l, now)));
     if (links.length) {
       const box = el("div", "pk-links");
       links.forEach(l => {
-        const url = safeLinkUrl(l.url);
-        const n = el("a", "pk-link");
-        n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer";
-        if (a.buttons.icons && /^https?:/.test(url)) {
+        if (l.type === "header") { box.appendChild(el("div", "pk-sec", l.title)); return; }
+        const locked = !!(l.lock || l.password);
+        const url = locked ? null : safeLinkUrl(l.url);
+        const n = el("a", "pk-link" + (l.featured ? " featured" : "") + (linkLive(l, now) ? "" : " soon"));
+        if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; }
+        else n.href = "#";
+        const iconUrl = url || (l.password && safeLinkUrl(l.url));
+        if (a.buttons.icons && iconUrl && /^https?:/.test(iconUrl) && !l.lock) {
           const ic = el("img"); ic.alt = ""; ic.loading = "lazy";
-          ic.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(url).hostname)}&sz=64`;
+          ic.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(iconUrl).hostname)}&sz=64`;
           ic.addEventListener("error", () => ic.remove(), { once: true });
           n.appendChild(ic);
         }
         n.append(l.title);
+        if (!linkLive(l, now)) n.appendChild(el("small", null, l.start && new Date(l.start) > now ? "dal " + new Date(l.start).toLocaleDateString("it-IT", { day: "numeric", month: "short" }) : "scaduto"));
+        if (locked) {
+          const lk = el("span", "lk"); lk.innerHTML = svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', 14); n.appendChild(lk);
+          n.addEventListener("click", e => { e.preventDefault(); toggleUnlock(n, l); });
+        } else n.addEventListener("click", () => track("c", l.id));
         box.appendChild(n);
       });
       fill("links", [box]);
     } else fill("links", []);
+
+    fill("gallery", a.widgets.gallery && p.gallery.length ? [keyedNode("gal:" + a.widgets.galleryStyle + JSON.stringify(p.gallery), () => galleryNode(p.gallery, a.widgets.galleryStyle, root))] : []);
+
+    const forms = [];
+    if (a.widgets.guestbook) forms.push(keyedNode("gb", () => guestbookNode(o.actions)));
+    if (a.widgets.contact) forms.push(keyedNode("ct", () => contactForm(o.actions)));
+    if (a.widgets.newsletter) forms.push(keyedNode("nl:" + a.widgets.newsletterText, () => newsletterForm(o.actions, a.widgets.newsletterText)));
+    fill("forms", forms);
 
     if (p.tags.length) {
       const tg = el("div", "pk-tags");
@@ -969,7 +1612,7 @@ export function mountProfile(root, input, opts = {}) {
       fill("tags", [tg]);
     } else fill("tags", []);
 
-    st.keyed.forEach((v, k) => { if (!v.used) { v.node.querySelectorAll("audio,video").forEach(x => x.pause()); st.keyed.delete(k); } });
+    st.keyed.forEach((v, k) => { if (!v.used) { v.node.querySelectorAll("audio,video").forEach(x => x.pause()); v.node.player?.stop(); st.keyed.delete(k); } });
 
     // Entrance (first render only) and enter splash
     if (st.first && o.entrance && a.entrance !== "none" && !reduceMotion()) {
@@ -996,6 +1639,7 @@ export function mountProfile(root, input, opts = {}) {
       return;
     }
     nameEl.textContent = name;
+    if (["wave", "bounce", "shake"].includes(a.nameFx) && !reduceMotion()) splitChars(nameEl, name);
     if (a.nameFx === "shuffle" && !reduceMotion()) {
       const G = "abcdefghijklmnopqrstuvwxyz0123456789#$%&";
       const run = () => {
@@ -1036,6 +1680,23 @@ export function mountProfile(root, input, opts = {}) {
       later(loop, speed / 2);
     };
     later(loop, 400);
+  }
+
+  function cycleLines(node, lines) {
+    const G = "abcdefghijklmnopqrstuvwxyz#$%&@";
+    let li = 0;
+    node.textContent = lines[0];
+    const swap = () => {
+      li = (li + 1) % lines.length;
+      const target = [...lines[li]], start = performance.now();
+      const tick = () => {
+        const p = Math.min(1, (performance.now() - start) / 600);
+        node.textContent = target.map((ch, i) => (i / target.length < p || ch === " ") ? ch : G[(Math.random() * G.length) | 0]).join("");
+        if (p < 1) later(tick, 35); else later(swap, 2800);
+      };
+      tick();
+    };
+    later(swap, 2800);
   }
 
   function showEnter(a) {
@@ -1100,7 +1761,7 @@ export function mountProfile(root, input, opts = {}) {
       st.trail && st.trail.stop();
       io && io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
-      st.keyed.forEach(v => v.node.querySelectorAll("audio,video").forEach(x => x.pause()));
+      st.keyed.forEach(v => { v.node.querySelectorAll("audio,video").forEach(x => x.pause()); v.node.player?.stop(); });
       if (st.audio) st.audio.pause();
       root.replaceChildren();
     }
@@ -1127,12 +1788,40 @@ export function readableOn(hex) {
 }
 
 /* ---------- Public profile fields (what the public mirror stores) ---------- */
+// Links with a password must be locked with lockLinks() before they get here: the password never goes public.
 export function publicFields(p) {
   const n = normalizeProfile(p);
   return {
     handle: n.handle, displayName: n.displayName, bio: n.bio, tags: n.tags, location: n.location,
     avatarUrl: n.avatarUrl.startsWith("data:") ? "" : n.avatarUrl,
-    links: n.links.filter(l => !l.hidden), socials: n.socials, badges: n.badges,
+    links: n.links.filter(l => !l.hidden && (!l.password || l.lock)).map(({ password, ...l }) => l),
+    socials: n.socials, badges: n.badges, clans: n.clans, primaryClan: n.primaryClan,
+    gallery: n.gallery.filter(g => !g.url.startsWith("data:")).map(({ url, caption }) => ({ url, caption })),
     weekly: n.weekly, appearance: n.appearance
   };
+}
+
+/* ---------- Password links: the url is encrypted with the password, AES-GCM ---------- */
+const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function linkKey(pw, salt) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 120000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+}
+export async function lockUrl(url, pw) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await linkKey(pw, salt), new TextEncoder().encode(url));
+  return { s: b64(salt), iv: b64(iv), ct: b64(ct) };
+}
+export async function unlockUrl(lock, pw) {
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(lock.iv) }, await linkKey(pw, unb64(lock.s)), unb64(lock.ct));
+  return new TextDecoder().decode(pt);
+}
+// Returns a copy of the links with every password link encrypted (and its url removed)
+export async function lockLinks(links) {
+  return Promise.all((links || []).map(async l => {
+    const n = normLink(l);
+    if (!n.password || !n.url) return { ...n, lock: null };
+    return { ...n, url: "", lock: await lockUrl(n.url, n.password) };
+  }));
 }

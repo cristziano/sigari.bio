@@ -1,8 +1,22 @@
 {
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/", "destination": "/sigari-bio/index.html" },
-    { "source": "/:handle(@[a-zA-Z0-9_]{3,20})", "destination": "/sigari-bio/profile.html" },
-    { "source": "/:path((?!sigari-bio/).*)", "destination": "/sigari-bio/:path" }
-  ]
+    {
+      "source": "/",
+      "destination": "/sigari-bio/index.html"
+    },
+    {
+      "source": "/:handle(@[a-zA-Z0-9_]{3,20})",
+      "destination": "/api/profile?h=:handle"
+    },
+    {
+      "source": "/:path((?!sigari-bio/|api/).*)",
+      "destination": "/sigari-bio/:path"
+    }
+  ],
+  "functions": {
+    "api/profile.js": {
+      "includeFiles": "sigari-bio/profile.html"
+    }
+  }
 }

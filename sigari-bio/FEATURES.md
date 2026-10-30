@@ -1,11 +1,11 @@
 # sigari.bio — catalogo completo delle feature
 
 Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.bio, lnk.bio, Linktree, Beacons, bio.link e Carrd.
-Stato controllato il 2026-10-30 sul codice e con i test nel browser:
+Stato aggiornato il 2026-10-30, dopo il secondo giro di feature, controllato sul codice, nel browser e con Firebase simulato (regole e login veri):
 
-- **FUNZIONA** (35): c'è ed è stata provata.
-- **DA ATTIVARE** (15): c'è, ma serve un passaggio (scritto nella nota) oppure qui non si poteva provare.
-- **MANCA** (47): da costruire.
+- **FUNZIONA** (57): c'è ed è stata provata.
+- **DA ATTIVARE** (31): c'è, ma serve un passaggio (scritto nella nota) oppure qui non si poteva provare.
+- **MANCA** (11): da costruire.
 
 La landing mostra solo le feature principali; la lista completa sta qui.
 
@@ -17,13 +17,14 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Rarità del nome (3 / 4 / 5 / 6+ lettere) | FUNZIONA | solo sulla landing | haunt |
 | Una @ per account, bloccata | FUNZIONA |  | — |
 | Badge dello staff (beta, prima ora, verificato, partner, vincitore) | DA ATTIVARE | regole Firebase; si assegnano dalla console | guns |
-| Alias (altri nomi che portano a te) | MANCA |  | guns |
+| Nomi extra: fino a 3 @ che portano a te | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
 | Dominio personale | MANCA |  | haunt, lnk.bio, Carrd |
-| Badge personalizzato (icona + nome) | MANCA |  | guns |
-| Colori dei badge | MANCA |  | guns |
+| Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
+| Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
 | Domini dei partner (sigari.gin/@nome, tuoserver.gg/nome) | MANCA | c'è solo la presentazione sulla landing | idea sigari.bio |
-| Preset del link da condividere (dominio, formato, anteprima) | MANCA | c'è solo la demo sulla landing | idea sigari.bio |
+| Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea sigari.bio |
+| Preset del link con il dominio dei partner | MANCA | serve configurare i domini | idea sigari.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -36,13 +37,14 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Avatar caricato | DA ATTIVARE | per gli account serve Storage attivo | tutti |
 | Sfondo immagine o video | FUNZIONA | il caricamento dei file per gli account serve Storage; il link funziona sempre | guns, feds |
 | Video e musica incorporati (Spotify, YouTube, SoundCloud) | DA ATTIVARE | non provabile qui: i player sono bloccati | lnk.bio |
-| Banner immagine / GIF / video | MANCA |  | fakecrime |
-| Bio con testo formattato (grassetto, glow) | MANCA |  | feds, fakecrime |
-| Gruppi e sezioni di link | MANCA |  | lnk.bio, Linktree |
-| Link programmati | MANCA |  | lnk.bio |
-| Link con password | MANCA |  | lnk.bio |
-| Modulo contatti | MANCA |  | lnk.bio, Carrd |
-| Newsletter | MANCA |  | Beacons, bio.link |
+| Banner immagine / GIF / video | FUNZIONA | il caricamento per gli account serve Storage | fakecrime |
+| Bio formattata: grassetto, corsivo, spoiler, glow, arcobaleno, colori, link | FUNZIONA |  | feds, fakecrime |
+| Sezioni di link (titoli) | FUNZIONA |  | lnk.bio, Linktree |
+| Link in evidenza (si muove e brilla) | FUNZIONA |  | Linktree |
+| Link programmati (visibile dal / fino al) | FUNZIONA |  | lnk.bio |
+| Link con password (il link vero è cifrato) | FUNZIONA |  | lnk.bio |
+| Modulo contatti, messaggi nella dashboard | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | lnk.bio, Carrd |
+| Newsletter: iscritti, copia email, CSV | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | Beacons, bio.link |
 | Più profili per account | MANCA |  | haunt |
 
 ## 3. Aspetto
@@ -63,21 +65,21 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Schermata "clicca per entrare" | FUNZIONA |  | guns |
 | Template già pronti (14) | FUNZIONA |  | feds |
 | Template della community | DA ATTIVARE | regole Firebase | feds |
-| Effetto ASCII sul profilo | MANCA | c'è solo sulla landing | feds |
-| Caricare un font proprio | MANCA |  | guns, feds |
-| Animazioni del testo (feds ne ha 25) | MANCA |  | feds |
-| Overlay e decorazioni avatar | MANCA |  | feds |
-| Effetti sonori | MANCA |  | haunt |
+| Effetto ASCII sul profilo | FUNZIONA |  | feds |
+| Caricare un font proprio (TTF, OTF, WOFF) | FUNZIONA | per gli account serve Storage | guns, feds |
+| Animazioni del testo: 19 sul nome, 6 sulla bio | FUNZIONA |  | feds |
+| Decorazioni avatar (aureola, corna, orecchie, corona, fiamme…) | FUNZIONA |  | feds |
+| Effetti sonori su link e social (6 suoni) | FUNZIONA |  | haunt |
 
 ## 4. Musica
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Musica: Spotify, SoundCloud, YouTube o mp3, con volume | DA ATTIVARE | l'mp3 caricato serve Storage; i player non provabili qui | feds, haunt, fakecrime |
 | Parte dopo "clicca per entrare" | FUNZIONA |  | guns |
-| Playlist, shuffle, loop | MANCA |  | haunt |
-| Testi sincronizzati | MANCA |  | haunt |
-| Copertina sfocata come sfondo del player | MANCA |  | haunt |
-| Visualizzatore audio | MANCA |  | feds |
+| Playlist fino a 20 brani, ordine casuale, ripeti | FUNZIONA |  | haunt |
+| Testi sincronizzati (LRC), con ricerca su LRCLIB | FUNZIONA | la ricerca non è provabile qui | haunt |
+| Copertina sfocata come sfondo del player | FUNZIONA |  | haunt |
+| Visualizzatore audio (barre o onda) | FUNZIONA | segue la riproduzione, non legge lo spettro vero | feds |
 
 ## 5. Widget dal vivo
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -88,8 +90,8 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Statistiche GitHub | DA ATTIVARE | non provabile qui | haunt |
 | Orologio con fuso orario | FUNZIONA |  | guns |
 | Rank Valorant | MANCA |  | haunt |
-| Canale YouTube, live Twitch | MANCA |  | guns |
-| Telegram, Roblox, Steam | MANCA |  | guns |
+| Live Twitch e ultimi video di YouTube | DA ATTIVARE | non provabile qui: i player sono bloccati | guns |
+| Telegram, Roblox, Steam come icone social | FUNZIONA |  | guns |
 
 ## 6. Community
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -98,13 +100,13 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Pubblicare template: pubblici, non in elenco, privati; usarne solo una parte | DA ATTIVARE | regole Firebase | guns |
 | Classifica profili per visite | DA ATTIVARE | regole Firebase; finché non ci sono 3 profili mostra un esempio | guns |
 | Contatore visite pubblico | DA ATTIVARE | regole Firebase | guns, lnk.bio |
-| Statistiche di clic, social, ascolti, tempo sulla pagina | MANCA | sulla landing sono dati di esempio | idea sigari.bio |
-| Feed delle interazioni in tempo reale | MANCA |  | idea sigari.bio |
-| Clan con TAG riservata | MANCA | c'è solo la presentazione sulla landing | idea sigari.bio |
-| Fino a 3 tag per profilo, 1 gruppo primario | MANCA |  | idea sigari.bio |
-| Classifica dei clan | MANCA | sulla landing è un esempio | fakecrime |
-| Commenti / guestbook | MANCA |  | feds |
-| Esplora profili | MANCA |  | fakecrime |
+| Statistiche: visite, clic, social, ascolti, tempo, grafico 7/30 giorni | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
+| Feed delle interazioni in diretta | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
+| Clan con TAG riservata e pagina del clan | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
+| Fino a 3 clan per profilo, 1 principale | DA ATTIVARE | regole Firebase | idea sigari.bio |
+| Classifica dei clan | DA ATTIVARE | regole Firebase | fakecrime |
+| Guestbook (firme di chi ha un account) | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | feds |
+| Esplora profili: nuovi, più visti, cerca una @ | DA ATTIVARE | regole Firebase | fakecrime |
 | Regala il premium | MANCA |  | guns |
 | Codice affiliato | MANCA |  | haunt |
 | Ruolo sul server Discord | MANCA |  | guns |
@@ -118,19 +120,19 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Profilo privato o fuori dalla classifica | FUNZIONA |  | guns |
 | Nascondi visite e badge | FUNZIONA |  | guns |
 | Titolo della scheda (anche animato) e favicon | FUNZIONA |  | guns, lnk.bio |
-| Anteprima del link su Discord / WhatsApp con la tua foto | MANCA | ora mostra quella generica del sito: serve una pagina generata dal server | guns |
-| Clic sui link | MANCA |  | tutti |
-| Provenienza, paesi, dispositivi | MANCA |  | Linktree, lnk.bio |
-| QR code | MANCA |  | Linktree, bio.link |
-| UTM | MANCA |  | lnk.bio |
+| Anteprima del link su Discord / WhatsApp con titolo, foto e colore | DA ATTIVARE | regole Firebase; la fa una funzione su Vercel | guns |
+| Clic sui link e sui social | DA ATTIVARE | regole Firebase | tutti |
+| Provenienza, dispositivi, zone (dal fuso orario) | DA ATTIVARE | regole Firebase | Linktree, lnk.bio |
+| QR code (quadrati, punti, arrotondato, colori, @ al centro) | FUNZIONA |  | Linktree, bio.link |
+| Link tracciati per ogni social (UTM) | FUNZIONA |  | lnk.bio |
 
 ## 8. Hosting file
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Image host | MANCA |  | guns, fakecrime |
+| Image host: carichi e hai subito il link diretto | DA ATTIVARE | serve Storage attivo | guns, fakecrime |
 | Dominio personale per gli upload | MANCA |  | guns |
-| Galleria | MANCA |  | guns |
-| Text paste | MANCA |  | guns |
+| Galleria sul profilo (griglia, scorrevole, polaroid) | FUNZIONA |  | guns |
+| Text paste con link | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
 
 ## 9. Account
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -146,6 +148,7 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 - **Moods**: la stessa estetica bianco e nero in tre texture (fumo, dither, ASCII), scelta dal visitatore. Sulla landing.
 - **Anteprima del link prima di registrarti**: scrivi la @ e vedi come appare su Discord, Instagram e TikTok. Sulla landing.
 - **Rarità visibile del nome**: sulla landing; da portare sul profilo come badge.
-- **Partner con dominio proprio** e **clan con TAG riservata**: presentati sulla landing, da costruire.
+- **Link con password cifrato**: gli altri siti nascondono il link solo nella pagina; qui nel database c'è solo la versione cifrata.
+- **Clan con TAG riservata**: fatti. **Partner con dominio proprio**: da costruire (serve configurare i domini).
 - **Prova senza account**: la dashboard funziona da ospite e il profilo passa nell'account alla registrazione.
 - **Topic della settimana** con badge per chi vince.
