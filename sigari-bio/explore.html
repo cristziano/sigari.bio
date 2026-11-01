@@ -54,7 +54,7 @@
   import { mountProfile, normalizeProfile } from "./profile-kit.js";
   const $ = id => document.getElementById(id);
   const firebaseConfig = { apiKey: "AIzaSyCRVxG-AaLh7nCevtUxqmbkPVk3I4dWAMg", authDomain: "sigari-bio-52324.firebaseapp.com", projectId: "sigari-bio-52324", storageBucket: "sigari-bio-52324.firebasestorage.app", messagingSenderId: "265808515501", appId: "1:265808515501:web:0395a4c9bc3522a1bd1124" };
-  const profileUrl = h => /^(localhost|127\.)/.test(location.hostname) ? `profile.html?u=${h}` : `/@${h}`;
+  const profileUrl = h => /^(localhost|127\.)/.test(location.hostname) ? `profile.html?u=${h}` : `/${h}`;
   const CANVAS_FX = ["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"];
   let F, db, tab = "new", mounts = [];
   const io = new IntersectionObserver(es => es.forEach(e => {

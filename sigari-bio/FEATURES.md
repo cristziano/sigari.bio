@@ -12,7 +12,7 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 1. Identità e @
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Prendi la tua @ (404.bio/@nome) | FUNZIONA |  | tutti |
+| Prendi la tua @ (404.bio/nome) | FUNZIONA |  | tutti |
 | Controllo dal vivo se il nome è libero | FUNZIONA |  | guns, feds |
 | Rarità del nome (3 / 4 / 5 / 6+ lettere) | FUNZIONA | solo sulla landing | haunt |
 | Una @ per account, bloccata | FUNZIONA |  | — |
@@ -115,7 +115,15 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Anteprima dal vivo mentre modifichi (desktop e telefono) | FUNZIONA |  | feds |
-| Pagina pubblica 404.bio/@nome | DA ATTIVARE | regole Firebase | tutti |
+| Pagina pubblica 404.bio/nome | DA ATTIVARE | regole Firebase | tutti |
+| Carta d'identità personale (editor a schermo pieno: opzioni a sinistra, solo la carta al centro) | FUNZIONA |  | idea 404.bio |
+| Carta: 10 stili pronti, gradienti a 2-5 colori, foto di sfondo con zoom/posizione/sfocatura/b&n | FUNZIONA |  | idea 404.bio |
+| Carta: raggi di luce (colore, numero, posizione, rotazione), riflesso olografico, punto di luce, bagliore | FUNZIONA |  | idea 404.bio |
+| Carta: texture (grana, puntini, griglia, righe, scanline, dither, stelle, scacchi), 5 bordi, angoli | FUNZIONA |  | idea 404.bio |
+| Carta: foto trasformata in sticker (sfondo tolto da solo, ritaglio, bordo bianco), simboli e testi, trascina/ruota/ingrandisci | FUNZIONA |  | idea 404.bio |
+| Bottone "la mia carta" sul profilo, carta a schermo intero che si inclina col mouse | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
+| Schermo intero e link 404.bio/nome cliccabile nell'anteprima | FUNZIONA |  | idea 404.bio |
+| Indirizzo corto 404.bio/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
 | Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea 404.bio |
 | Profilo privato o fuori dalla classifica | FUNZIONA |  | guns |
 | Nascondi visite e badge | FUNZIONA |  | guns |

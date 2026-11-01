@@ -29,6 +29,50 @@
   @keyframes drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(120px,-80px) scale(1.1)} 100%{transform:translate(-60px,100px) scale(.92)} }
   .loading { position:fixed; inset:0; display:grid; place-items:center; color:var(--d); font-size:14px; z-index:2; }
 
+
+  /* ---------- Carta ---------- */
+  .card-empty { margin-top:24px; display:grid; gap:18px; justify-items:start; }
+  .card-ghost { width:min(460px,100%); aspect-ratio:1.586; border-radius:18px; border:1px dashed var(--b); display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--d); background:repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,.02) 10px 20px); }
+  .card-ghost span { font-weight:600; } .card-ghost i { font-style:normal; opacity:.5; } .card-ghost b { font-size:30px; letter-spacing:-.02em; }
+  .card-hero { display:block; width:min(560px,100%); margin-top:22px; padding:0; border:0; background:none; cursor:pointer; position:relative; text-align:left; }
+  .card-hint { position:absolute; left:50%; bottom:-28px; transform:translateX(-50%); font:500 11px "Geist Mono",monospace; color:var(--d); }
+  .card-box { max-width:560px; border:1px solid var(--b); border-radius:14px; padding:14px 16px; background:var(--glass); }
+  .pub-link { font-family:"Geist Mono",monospace; }
+  .studio { position:fixed; inset:0; z-index:70; display:grid; grid-template-columns:380px minmax(0,1fr); background:var(--bg); }
+  .cs-panel { overflow-y:auto; border-right:1px solid var(--b); padding:18px 16px 90px; background:var(--glass); }
+  .cs-panel h3 { font-size:18px; letter-spacing:-.01em; margin-bottom:4px; }
+  .cs-sec { border-top:1px solid var(--b); padding:12px 0; }
+  .cs-sec > summary { list-style:none; cursor:pointer; font:500 12px "Geist Mono",monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--m); display:flex; justify-content:space-between; }
+  .cs-sec > summary::after { content:"+"; } .cs-sec[open] > summary::after { content:"–"; }
+  .cs-sec > summary::-webkit-details-marker { display:none; }
+  .cs-body { display:grid; gap:12px; padding-top:12px; }
+  .cs-presets { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .cs-presets button { aspect-ratio:1.586; border-radius:7px; border:1px solid var(--b); cursor:pointer; font:600 9px "Geist Mono",monospace; color:#fff; text-shadow:0 1px 2px #000; display:flex; align-items:flex-end; padding:4px; }
+  .cs-presets button.on { outline:2px solid var(--fg); outline-offset:1px; }
+  .cs-stops { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .cs-stops input[type=color] { width:38px; height:38px; border-radius:10px; border:1px solid var(--b); padding:0; background:none; cursor:pointer; }
+  .cs-stage { position:relative; display:grid; grid-template-rows:auto 1fr auto; padding:18px 28px 22px; background:radial-gradient(80% 70% at 50% 45%, rgba(255,255,255,.06), transparent 70%), var(--bg); min-width:0; }
+  .cs-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .cs-sp { flex:1; }
+  .cs-card { align-self:center; justify-self:center; width:min(780px, 100%, calc((100vh - 170px) * 1.586)); }
+  .cs-tip { text-align:center; font:400 12px "Geist Mono",monospace; color:var(--d); }
+  .cs-emoji { display:flex; flex-wrap:wrap; gap:6px; }
+  .cs-emoji button { min-width:38px; height:34px; padding:0 8px; border-radius:9px; border:1px solid var(--b); background:none; cursor:pointer; font-weight:700; }
+  .cs-emoji button:hover { border-color:var(--fg); }
+  .stk-list { display:flex; flex-wrap:wrap; gap:6px; }
+  .stk-list button { width:46px; height:46px; border-radius:9px; border:1px solid var(--b); background:repeating-conic-gradient(#222 0 25%, #2c2c2c 0 50%) 0 0/10px 10px; cursor:pointer; display:grid; place-items:center; overflow:hidden; font-weight:800; color:#fff; }
+  .stk-list button.on { outline:2px solid var(--fg); }
+  .stk-list img { max-width:90%; max-height:90%; }
+  .stk-edit { border:1px solid var(--b); border-radius:12px; padding:12px; display:grid; gap:10px; }
+  .fake-full { position:fixed !important; inset:0 !important; z-index:2147483000 !important; width:100vw !important; height:100vh !important; max-width:none !important; margin:0 !important; background:#000; display:grid !important; place-items:center; padding:20px; }
+  :fullscreen.frame, .frame.fake-full { background:#000; }
+  #csStage:fullscreen .cs-bar, #csStage:fullscreen .cs-tip { opacity:.25; } #csStage:fullscreen .cs-bar:hover { opacity:1; }
+  @media (max-width:900px){
+    .studio { grid-template-columns:1fr; grid-template-rows:auto minmax(0,1fr); }
+    .cs-stage { order:-1; padding:12px; grid-template-rows:auto auto auto; }
+    .cs-card { width:100%; margin:12px 0; }
+    .cs-panel { border-right:0; border-top:1px solid var(--b); }
+  }
   /* Layout */
   .dash { position:relative; z-index:1; height:100%; display:grid; grid-template-columns:240px minmax(0,1fr) 420px; }
   .side { border-right:1px solid var(--b); background:var(--glass); padding:20px 12px; display:flex; flex-direction:column; gap:4px; overflow-y:auto; }
@@ -496,7 +540,7 @@
     <nav class="nav" id="nav"></nav>
     <div class="userbox">
       <div class="name" id="sideHandle">@tuonome</div>
-      <a class="url" id="sideUrl" href="#" target="_blank" rel="noopener">404.bio/@tuonome</a>
+      <a class="url" id="sideUrl" href="#" target="_blank" rel="noopener">404.bio/tuonome</a>
       <button class="linkbtn" id="logoutBtn" type="button">Esci</button>
     </div>
   </aside>
@@ -727,6 +771,28 @@
     </section>
 
     <!-- LINKS (guns.lol: Links) -->
+    <section class="view hidden" id="view-card">
+      <h2>Carta</h2>
+      <p class="desc">La tua carta d'identità di 404.bio. Gradienti, raggi di luce, riflesso olografico, la tua foto come sfondo e le tue foto trasformate in sticker. Toccala per aprire l'editor: a sinistra tutte le opzioni, al centro solo la carta.</p>
+      <div class="card-empty" id="cardEmpty">
+        <div class="card-ghost"><span>404<i>.bio</i></span><b>@tuonome</b></div>
+        <button class="save-btn" id="cardCreate" type="button">Crea la tua carta</button>
+      </div>
+      <div class="hidden" id="cardHome">
+        <button class="card-hero" id="cardHero" type="button" aria-label="Apri l'editor della carta"><div id="cardThumb"></div><span class="card-hint">tocca per modificare</span></button>
+        <div class="row" style="margin-top:18px;flex-wrap:wrap">
+          <button class="save-btn" id="cardOpen" type="button">Apri l'editor</button>
+          <button class="ghost-btn" id="cardFull" type="button">Schermo intero</button>
+          <a class="ghost-btn pub-link" data-publink href="#" target="_blank" rel="noopener">404.bio/tuonome ↗</a>
+        </div>
+        <div class="card-box" style="margin-top:18px">
+          <div class="toggle-row"><span>Mostra "la mia carta" sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="card.on"><span class="track"><span class="knob"></span></span></label></div>
+          <p class="hint">Sul profilo compare un bottone: chi lo tocca vede la carta a schermo intero e la può inclinare col mouse.</p>
+          <button class="ghost-btn sm" id="cardDelete" type="button" style="margin-top:10px">Elimina la carta</button>
+        </div>
+      </div>
+    </section>
+
     <section class="view hidden" id="view-links">
       <h2>Link</h2>
       <p class="desc">Tocca un social, scrivi il nome utente, fatto. Sotto aggiungi i tuoi link personalizzati.</p>
@@ -980,7 +1046,7 @@
           <div class="field"><div class="label">immagine (opzionale)</div><input class="text" type="url" data-k="weekly.image" placeholder="link di un'immagine"></div>
         </div>
         <div class="toggle-row"><span>Partecipo e lo mostro sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="weekly.show"><span class="track"><span class="knob"></span></span></label></div>
-        <p class="hint">I vincitori li scegliamo ogni lunedì e li annunciamo sul <a href="https://discord.gg/ECF4vzWKz" target="_blank" rel="noopener">Discord</a>. Per vincere serve un account.</p>
+        <p class="hint">I vincitori li scegliamo ogni lunedì e li annunciamo sul <a href="https://discord.gg/404studios" target="_blank" rel="noopener">Discord</a>. Per vincere serve un account.</p>
       </div>
     </section>
 
@@ -1126,9 +1192,9 @@
         </div>
           <div class="label section-label" id="set-alias">nomi extra</div>
           <div class="card">
-            <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre 404.bio/@altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
+            <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre 404.bio/altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
             <div class="active-list" id="aliasList"></div>
-            <div class="prefix-field"><span class="prefix">404.bio/@</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
+            <div class="prefix-field"><span class="prefix">404.bio/</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
             <div class="row"><button class="save-btn sm" id="aliasAdd" type="button">Aggiungi</button><span class="hint" id="aliasHint"></span></div>
           </div>
         <div class="label section-label">accesso</div>
@@ -1164,13 +1230,29 @@
   <aside class="preview" id="preview">
     <div class="pv-bar">
       <div class="toggle"><button id="btnDesktop" type="button">Desktop</button><button id="btnMobile" class="on" type="button">Mobile</button></div>
-      <a class="ghost-btn sm" id="openPublic" href="#" target="_blank" rel="noopener">Apri profilo</a>
+      <a class="ghost-btn sm pub-link" id="openPublic" data-publink href="#" target="_blank" rel="noopener">404.bio/tuonome ↗</a>
+      <button class="ghost-btn sm" id="pvFull" type="button" title="Schermo intero">⛶</button>
       <button class="ghost-btn sm pv-close" id="closePreview" type="button">Chiudi</button>
     </div>
     <div class="trialbar hidden" id="trialBar"><span>Stai provando <b id="trialName"></b></span><button class="ghost-btn sm" id="trialCancel" type="button">Annulla</button><button class="save-btn sm" id="trialUse" type="button">Usa</button></div>
     <div class="frame" id="frame"><div class="pv-root" id="pvRoot"></div></div>
   </aside>
 </section>
+
+<div class="studio hidden" id="cardStudio" role="dialog" aria-modal="true" aria-label="Editor della carta">
+  <div class="cs-panel" id="csPanel"></div>
+  <div class="cs-stage" id="csStage">
+    <div class="cs-bar">
+      <button class="ghost-btn sm" id="csExit" type="button">&larr; Esci</button>
+      <a class="ghost-btn sm pub-link" data-publink href="#" target="_blank" rel="noopener">404.bio/tuonome ↗</a>
+      <span class="cs-sp"></span>
+      <button class="ghost-btn sm" id="csFull" type="button">Schermo intero</button>
+      <button class="save-btn sm" id="csSave" type="button">Salva</button>
+    </div>
+    <div class="cs-card" id="csCard"></div>
+    <p class="cs-tip">Trascina gli sticker sulla carta. Tocca uno sticker per cambiarne grandezza e rotazione.</p>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="socialModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
@@ -1187,6 +1269,7 @@
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
     BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance
   } from "./profile-kit.js";
+  import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
   const $ = id => document.getElementById(id);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -1232,7 +1315,7 @@
   let savedJSON = "";         // last saved snapshot, for the unsaved-changes bar
   let preview = null;
 
-  const EDITABLE = ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery", "clans", "primaryClan"];
+  const EDITABLE = ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery", "clans", "primaryClan", "card"];
   function snapshot(d) {
     const n = normalizeProfile({ ...d, handle });
     const out = {};
@@ -1265,6 +1348,7 @@
       ["settings", "Impostazioni", '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>']]],
     ["profilo", [
       ["customize", "Personalizza", '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "inizia qui"],
+      ["card", "Carta", '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/>', "nuovo"],
       ["links", "Link", '<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'],
       ["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "40"]]],
     ["avanzate", [
@@ -1320,6 +1404,7 @@
     if (name === "analytics") renderAnalytics();
     if (name === "badges") renderBadges();
     if (name === "templates") renderTemplates();
+    if (name === "card") renderCards();
     if (name === "topic") renderTopic();
     if (name === "settings") renderSettings();
     if (name === "share") renderShare();
@@ -1526,6 +1611,8 @@
     if (t.type === "checkbox") t.checked = !!v;
     else if (t.dataset.type === "tags") { if (document.activeElement !== t) t.value = (v || []).join(", "); }
     else if (t.dataset.type === "lines") { if (document.activeElement !== t) t.value = (v || []).join("\n"); }
+    // a photo uploaded from this device is stored inline: don't show its code in the link field
+    else if (t.type === "url" && typeof v === "string" && v.startsWith("data:")) { if (document.activeElement !== t) { t.value = ""; t.placeholder = "foto caricata dal tuo dispositivo"; } }
     else if (document.activeElement !== t || t.type === "range" || t.type === "color") t.value = v ?? "";
     if (t.type === "range") t.style.setProperty("--p", ((t.value - t.min) / (t.max - t.min) * 100) + "%");
   }
@@ -1627,12 +1714,209 @@
     $("ovLinks").textContent = (draft.links || []).filter(l => !l.hidden && l.title).length;
     $("ovSocials").textContent = Object.keys(draft.socials || {}).length;
     $("linkBadge").textContent = (draft.links || []).length;
+    renderCards();
   }
   $("btnDesktop").addEventListener("click", () => { $("frame").classList.add("desktop"); $("btnDesktop").classList.add("on"); $("btnMobile").classList.remove("on"); });
   $("btnMobile").addEventListener("click", () => { $("frame").classList.remove("desktop"); $("btnMobile").classList.add("on"); $("btnDesktop").classList.remove("on"); });
   $("openPreview").addEventListener("click", () => $("preview").classList.add("open"));
   $("closePreview").addEventListener("click", () => $("preview").classList.remove("open"));
   $("replayEnter").addEventListener("click", () => { preview && preview.reopenEnter(); $("preview").classList.add("open"); });
+
+  /* =========================================================
+     Carta: the identity card editor (studio) and the public link
+     ========================================================= */
+  const RESERVED_NAMES = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios"];
+  const cardInfo = () => ({ handle, avatarUrl: draft.avatarUrl, displayName: draft.displayName });
+  let cardThumb = null, cardStage = null, selSticker = "";
+  const C = {
+    sec: (title, body, open) => `<details class="cs-sec"${open ? " open" : ""}><summary>${title}</summary><div class="cs-body">${body}</div></details>`,
+    sw: (label, k) => `<div class="toggle-row"><span>${label}</span><label class="ios"><input class="sr-only" type="checkbox" data-k="${k}"><span class="track"><span class="knob"></span></span></label></div>`,
+    rng: (label, k, min, max, unit = "") => `<div class="field"><div class="label">${label} <span class="val" data-show="${k}" data-unit="${unit}"></span></div><input type="range" min="${min}" max="${max}" data-k="${k}"></div>`,
+    col: (label, k) => `<label class="color-field"><span class="cname">${label}</span><span class="hex-row"><input type="color" data-k="${k}"><input class="hex-input" data-hex="${k}" maxlength="7"></span></label>`,
+    seg: (k, o) => `<div class="seg" data-seg="${k}" data-o="${o}"></div>`,
+    sel: (label, k, o) => `<div class="field"><div class="label">${label}</div><select class="text" data-k="${k}" data-opts="${o}"></select></div>`,
+    txt: (label, k, ph, max) => `<div class="field"><div class="label">${label}</div><input class="text" data-k="${k}" maxlength="${max}" placeholder="${ph}"></div>`
+  };
+  Object.assign(OPTS, {
+    cardBg: [["color", "Colore"], ["gradient", "Gradiente"], ["image", "Foto"]],
+    cardPattern: CARD_PATTERNS, cardBorder: CARD_BORDERS, cardPos: CARD_NAME_POS, stkStyle: STICKER_STYLES,
+    cardFont: FONTS.map(f => [f[0], f[1]])
+  });
+  $("csPanel").innerHTML = `<h3>La tua carta</h3><p class="hint" style="margin-bottom:10px">Ogni modifica si vede subito al centro. Ricordati di salvare.</p>`
+    + C.sec("Stili pronti", `<div class="cs-presets" id="csPresets"></div><p class="hint">Cambiano colori e luci; sticker e testi restano.</p>`, true)
+    + C.sec("Sfondo", C.seg("card.bg.type", "cardBg")
+      + `<div data-when="card.bg.type=color">${C.col("Colore", "card.bg.color")}</div>`
+      + `<div data-when="card.bg.type=gradient" class="cs-body" style="padding:0">${C.seg("card.bg.kind", "gradKind")}<div class="label">colori del gradiente</div><div class="cs-stops" id="csStops"></div>${C.rng("angolo", "card.bg.angle", 0, 360, "°")}</div>`
+      + `<div data-when="card.bg.type=image" class="cs-body" style="padding:0"><div class="row"><button class="save-btn sm" id="cardBgPick" type="button">Carica una foto</button><span class="hint">anche GIF</span></div><input type="file" id="cardBgInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input class="text" type="url" data-k="card.bg.image" placeholder="oppure il link di un'immagine (anche Pinterest)">${C.rng("zoom", "card.bg.zoom", 100, 300, "%")}${C.rng("posizione orizzontale", "card.bg.x", 0, 100, "%")}${C.rng("posizione verticale", "card.bg.y", 0, 100, "%")}${C.rng("scurisci", "card.bg.dim", 0, 90, "%")}${C.rng("sfoca", "card.bg.blur", 0, 20)}${C.sw("Bianco e nero", "card.bg.gray")}</div>`, true)
+    + C.sec("Luce", C.sw("Raggi di luce", "card.rays.on")
+      + `<div data-when="card.rays.on=true" class="cs-body" style="padding:0">${C.col("Colore dei raggi", "card.rays.color")}${C.rng("quanti raggi", "card.rays.count", 4, 40)}${C.rng("intensità", "card.rays.strength", 0, 100, "%")}${C.rng("da dove partono: orizzontale", "card.rays.x", -20, 120, "%")}${C.rng("da dove partono: verticale", "card.rays.y", -20, 120, "%")}${C.sw("Girano piano", "card.rays.spin")}</div>`
+      + C.sw("Riflesso olografico (segue il mouse)", "card.holo.on")
+      + `<div data-when="card.holo.on=true">${C.rng("forza del riflesso", "card.holo.strength", 0, 100, "%")}</div>`
+      + C.sw("Lucido (punto di luce sul mouse)", "card.shine.on")
+      + C.sw("Bagliore intorno alla carta", "card.glow.on")
+      + `<div data-when="card.glow.on=true" class="cs-body" style="padding:0">${C.col("Colore del bagliore", "card.glow.color")}${C.rng("grandezza", "card.glow.size", 0, 80, "px")}</div>`)
+    + C.sec("Texture e bordo", C.sel("Texture", "card.pattern", "cardPattern")
+      + `<div data-when="card.pattern!=none">${C.rng("quanta texture", "card.patternAmt", 0, 100, "%")}</div>`
+      + C.sel("Bordo", "card.border", "cardBorder") + `<div data-when="card.border!=none|chrome">${C.col("Colore del bordo", "card.borderColor")}</div>`
+      + C.rng("angoli arrotondati", "card.radius", 0, 40, "px"))
+    + C.sec("Testo", C.sel("Font del nome", "card.font", "cardFont") + C.rng("grandezza del nome", "card.nameSize", 50, 200, "%")
+      + C.rng("spaziatura", "card.spacing", -2, 10) + C.sw("Tutto maiuscolo", "card.upper")
+      + C.col("Colore del testo", "card.textColor") + C.col("Colore della @ e dei dettagli", "card.accent")
+      + `<div class="label">posizione del nome</div>` + C.seg("card.namePos", "cardPos")
+      + C.sw("Scritta 404.bio", "card.showBrand") + C.sw("Foto profilo", "card.showAvatar") + C.sw("Numero", "card.showNumber")
+      + `<div data-when="card.showNumber=true">${C.txt("Numero (vuoto = automatico)", "card.number", "N° 0404", 24)}</div>`
+      + C.txt("Riga in più", "card.line", "es. fondatore, rapper, 2026", 60) + C.sw("Indirizzo 404.bio/nome", "card.showDate"))
+    + C.sec("Sticker", `<div class="row" style="flex-wrap:wrap"><button class="save-btn sm" id="stkPick" type="button">Foto → sticker</button><label class="hint" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="stkCut" checked> togli lo sfondo</label></div><input type="file" id="stkInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+      <p class="hint">Carica una foto: il sistema toglie lo sfondo intorno, la ritaglia e le mette il bordo bianco da sticker. Funziona meglio con sfondi tinta unita.</p>
+      <div class="label">oppure un simbolo</div><div class="cs-emoji" id="stkEmoji"></div>
+      <div class="row"><input class="text" id="stkText" maxlength="6" placeholder="testo breve" style="flex:1"><button class="ghost-btn sm" id="stkTextAdd" type="button">Aggiungi</button></div>
+      <div class="label">i tuoi sticker</div><div class="stk-list" id="stkList"></div><div id="stkEdit"></div>`, true);
+
+  function renderCardStops() {
+    if (!draft || !draft.card) return;
+    const stops = draft.card.bg.stops;
+    $("csStops").innerHTML = stops.map((c, i) => `<input type="color" data-k="card.bg.stops.${i}" value="${c}" aria-label="colore ${i + 1}">`).join("")
+      + (stops.length < 5 ? `<button class="ghost-btn sm" type="button" data-stop="add">+</button>` : "")
+      + (stops.length > 2 ? `<button class="ghost-btn sm" type="button" data-stop="del">−</button>` : "");
+  }
+  $("csStops").addEventListener("click", e => {
+    const b = e.target.closest("[data-stop]"); if (!b) return;
+    const st = draft.card.bg.stops;
+    if (b.dataset.stop === "add") st.push(st[st.length - 1]); else st.pop();
+    renderCardStops(); changed();
+  });
+  function renderPresets() {
+    const prev = id => { const p = CARD_PRESETS.find(x => x.id === id); const c = normalizeCard(p.c); return c.bg.type === "color" ? c.bg.color : `linear-gradient(135deg, ${c.bg.stops.join(",")})`; };
+    $("csPresets").innerHTML = CARD_PRESETS.map(p => `<button type="button" data-preset="${p.id}" style="background:${prev(p.id)}">${p.name}</button>`).join("");
+  }
+  renderPresets();
+  $("csPresets").addEventListener("click", e => {
+    const b = e.target.closest("[data-preset]"); if (!b) return;
+    draft.card = applyCardPreset(draft.card, b.dataset.preset);
+    renderCardStops(); syncControls(); changed();
+  });
+  $("stkEmoji").innerHTML = STICKER_EMOJI.map(t => `<button type="button" data-emo="${t}">${t}</button>`).join("");
+  function addSticker(sk) {
+    const list = draft.card.stickers;
+    if (list.length >= 12) return setStatus("Massimo 12 sticker per carta.", "err");
+    const top = list.reduce((m, x) => Math.max(m, x.z || 1), 0);
+    list.push({ id: newId(), x: 50 + (Math.random() * 30 - 15), y: 45 + (Math.random() * 20 - 10), s: 26, r: Math.round(Math.random() * 24 - 12), style: "diecut", z: top + 1, ...sk });
+    selSticker = list[list.length - 1].id;
+    renderStickerUI(); changed();
+  }
+  $("stkEmoji").addEventListener("click", e => { const b = e.target.closest("[data-emo]"); if (b) addSticker({ kind: "text", text: b.dataset.emo, color: "#ffffff", s: 16 }); });
+  $("stkTextAdd").addEventListener("click", () => { const t = $("stkText").value.trim(); if (!t) return; addSticker({ kind: "text", text: t.slice(0, 6), color: "#ffffff", s: 18 }); $("stkText").value = ""; });
+  $("stkPick").addEventListener("click", () => $("stkInput").click());
+  $("stkInput").addEventListener("change", async e => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    setStatus("Trasformo la foto in sticker…");
+    try {
+      const st = await makeSticker(f, { removeBg: $("stkCut").checked });
+      const url = await storeImage(st, "sticker", 560);
+      addSticker({ kind: "img", src: url });
+      setStatus(mode === "guest" ? "Sticker pronto. Si salva su questo dispositivo." : "Sticker pronto. Ricordati di salvare.", "ok");
+    } catch (err) { setStatus("Sticker non riuscito: " + friendly(err), "err"); }
+  });
+  function renderStickerUI() {
+    if (!draft || !draft.card) return;
+    const list = draft.card.stickers;
+    $("stkList").innerHTML = list.length ? list.map(sk => `<button type="button" data-sk="${sk.id}" class="${sk.id === selSticker ? "on" : ""}">${sk.kind === "img" ? `<img src="${sk.src}" alt="">` : String(sk.text).replace(/[<>&"]/g, "")}</button>`).join("") : '<span class="hint">Ancora nessuno sticker.</span>';
+    const i = list.findIndex(x => x.id === selSticker);
+    if (i < 0) { $("stkEdit").innerHTML = ""; cardStage && cardStage.select(""); return; }
+    const k = `card.stickers.${i}`;
+    $("stkEdit").innerHTML = `<div class="stk-edit"><b style="font-size:13px">Sticker selezionato</b>${C.rng("grandezza", k + ".s", 5, 120)}${C.rng("rotazione", k + ".r", -180, 180, "°")}${C.sel("Stile", k + ".style", "stkStyle")}${list[i].kind === "text" ? C.col("Colore", k + ".color") : ""}${C.sw("Specchia", k + ".flip")}
+      <div class="row" style="flex-wrap:wrap"><button class="ghost-btn sm" type="button" data-skact="front">Porta davanti</button><button class="ghost-btn sm" type="button" data-skact="back">Manda dietro</button><button class="ghost-btn sm" type="button" data-skact="dup">Duplica</button><button class="ghost-btn sm" type="button" data-skact="del">Elimina</button></div></div>`;
+    $$("select[data-opts]", $("stkEdit")).forEach(sel => { sel.innerHTML = (OPTS[sel.dataset.opts] || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join(""); });
+    $$("[data-k]", $("stkEdit")).forEach(t => writeControl(t, getPath(draft, t.dataset.k)));
+    $$("[data-hex]", $("stkEdit")).forEach(t => { t.value = getPath(draft, t.dataset.hex) || ""; });
+    syncDerived();
+    cardStage && cardStage.select(selSticker);
+  }
+  $("stkList").addEventListener("click", e => { const b = e.target.closest("[data-sk]"); if (!b) return; selSticker = b.dataset.sk; renderStickerUI(); });
+  $("stkEdit").addEventListener("click", e => {
+    const b = e.target.closest("[data-skact]"); if (!b) return;
+    const list = draft.card.stickers, i = list.findIndex(x => x.id === selSticker); if (i < 0) return;
+    const zs = list.map(x => x.z || 1);
+    if (b.dataset.skact === "front") list[i].z = Math.max(...zs) + 1;
+    if (b.dataset.skact === "back") list[i].z = Math.max(0, Math.min(...zs) - 1);
+    if (b.dataset.skact === "dup") { if (list.length >= 12) return; list.push({ ...list[i], id: newId(), x: list[i].x + 6, y: list[i].y + 6, z: Math.max(...zs) + 1 }); selSticker = list[list.length - 1].id; }
+    if (b.dataset.skact === "del") { list.splice(i, 1); selSticker = ""; }
+    renderStickerUI(); changed();
+  });
+
+  function renderCards() {
+    const has = !!(draft && draft.card);
+    $("cardEmpty").classList.toggle("hidden", has);
+    $("cardHome").classList.toggle("hidden", !has);
+    if (!has) return;
+    if (!$("view-card").classList.contains("hidden")) {
+      if (!cardThumb) cardThumb = mountCard($("cardThumb"), draft.card, cardInfo(), {});
+      else cardThumb.update(draft.card, cardInfo());
+    }
+    if (!$("cardStudio").classList.contains("hidden")) {
+      if (!cardStage) cardStage = mountCard($("csCard"), draft.card, cardInfo(), {
+        editable: true,
+        onSelect(id) { selSticker = id; renderStickerUI(); },
+        onSticker(id, patch) { const sk = draft.card.stickers.find(x => x.id === id); if (sk) { Object.assign(sk, patch); changed(); } }
+      });
+      else cardStage.update(draft.card, cardInfo());
+    }
+  }
+  function openStudio() {
+    if (!draft.card) { draft.card = normalizeCard({}); changed(); }
+    draft.card = normalizeCard(draft.card);
+    $("cardStudio").classList.remove("hidden");
+    renderCardStops(); syncControls(); renderStickerUI(); renderCards();
+    $("csExit").focus();
+  }
+  function closeStudio() {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    $("cardStudio").classList.add("hidden");
+    cardStage && cardStage.destroy(); cardStage = null; selSticker = "";
+    renderCards();
+  }
+  $("cardCreate").addEventListener("click", openStudio);
+  $("cardOpen").addEventListener("click", openStudio);
+  $("cardHero").addEventListener("click", openStudio);
+  $("csExit").addEventListener("click", closeStudio);
+  $("csSave").addEventListener("click", () => $("saveBarSave").click());
+  $("cardDelete").addEventListener("click", () => {
+    if (!confirm("Eliminare la carta? Puoi sempre crearne una nuova.")) return;
+    draft.card = null; cardThumb && cardThumb.destroy(); cardThumb = null; changed();
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape" && !$("cardStudio").classList.contains("hidden") && !document.fullscreenElement && !e.target.closest("input,select,textarea")) closeStudio(); });
+  uploadFlow("cardBgPick", "cardBgInput", "cardbg", 1600, url => { draft.card.bg.image = url; draft.card.bg.type = "image"; });
+
+  // Full screen for the card and for the profile preview (fallback: a fixed layer, for iPhone)
+  function toggleFull(node) {
+    if (document.fullscreenElement) return document.exitFullscreen().catch(() => {});
+    if (node.classList.contains("fake-full")) return node.classList.remove("fake-full");
+    const req = node.requestFullscreen || node.webkitRequestFullscreen;
+    if (req) req.call(node).catch(() => node.classList.add("fake-full"));
+    else node.classList.add("fake-full");
+  }
+  $("csFull").addEventListener("click", () => toggleFull($("csStage")));
+  $("pvFull").addEventListener("click", () => toggleFull($("frame")));
+  $("cardFull").addEventListener("click", () => {
+    if (!draft.card) return;
+    import("./card-kit.js").then(m => m.openCardViewer(draft.card, cardInfo()));
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") $$(".fake-full").forEach(n => n.classList.remove("fake-full")); });
+
+  // The public address: 404.bio/<name>. Guests don't have a public page yet.
+  function renderPubLinks() {
+    const url = `${location.origin}/${handle}`;
+    $$("[data-publink]").forEach(a => {
+      a.textContent = `404.bio/${handle} ↗`;
+      a.href = mode === "guest" ? "#" : url;
+      a.title = mode === "guest" ? "Registrati per mettere online il profilo" : "Apri il profilo pubblico";
+    });
+  }
+  document.addEventListener("click", e => {
+    const a = e.target.closest("[data-publink]");
+    if (a && mode === "guest") { e.preventDefault(); setStatus(`404.bio/${handle} va online quando ti registri. Intanto usa Schermo intero per vederlo grande.`, "warn"); }
+  });
 
   /* =========================================================
      Pickers built from catalogs
@@ -2403,7 +2687,7 @@
      Share: link, Discord preview, per-platform links, QR, extra names
      ========================================================= */
   const SITE = location.origin;
-  const pubUrl = src => `${SITE}/@${handle}${src ? "?utm_source=" + encodeURIComponent(src) : ""}`;
+  const pubUrl = src => `${SITE}/${handle}${src ? "?utm_source=" + encodeURIComponent(src) : ""}`;
   const UTM = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["discord", "Discord"], ["x", "X"], ["youtube", "YouTube"], ["twitch", "Twitch"], ["telegram", "Telegram"], ["whatsapp", "WhatsApp"]];
   async function copyText(text, msg) {
     try { await navigator.clipboard.writeText(text); setStatus(msg || "Copiato.", "ok"); }
@@ -2484,7 +2768,7 @@
       const list = snap.docs.filter(d => d.data().uid === uid).map(d => d.id);
       box.replaceChildren(...list.map(name => {
         const row = document.createElement("div"); row.className = "alias-row";
-        const t = document.createElement("span"); t.textContent = "404.bio/@" + name;
+        const t = document.createElement("span"); t.textContent = "404.bio/" + name;
         const del = document.createElement("button"); del.type = "button"; del.className = "ghost-btn sm"; del.textContent = "Libera";
         del.addEventListener("click", async () => {
           if (!confirm(`Liberare @${name}? Chiunque potrà prenderlo.`)) return;
@@ -2501,6 +2785,7 @@
   $("aliasAdd").addEventListener("click", async () => {
     const name = $("aliasInput").value.trim().toLowerCase().replace(/^@/, "");
     if (!/^[a-z0-9_]{3,20}$/.test(name)) return setStatus("Da 3 a 20 caratteri: lettere, numeri o _.", "err");
+    if (RESERVED_NAMES.includes(name)) return setStatus("Questo nome è riservato al sito.", "err");
     try {
       const { F, db } = await firebase();
       const ref = F.doc(db, "usernames", name);
@@ -2997,12 +3282,11 @@
     buildNav();
     buildPickers();
     $$("[data-seg]").forEach(renderSeg);
-    const pub = `${location.origin}/@${handle}`;
+    const pub = `${location.origin}/${handle}`;
     $("sideHandle").textContent = "@" + handle;
-    $("sideUrl").textContent = `404.bio/@${handle}`;
+    $("sideUrl").textContent = `404.bio/${handle}`;
     $("sideUrl").href = mode === "guest" ? "#" : pub;
-    $("openPublic").href = mode === "guest" ? "#" : pub;
-    $("openPublic").classList.toggle("hidden", mode === "guest");
+    renderPubLinks();
     $("logoutBtn").textContent = mode === "guest" ? "Accedi" : "Esci";
     if (mode === "guest") {
       $("guestbar").classList.remove("hidden");

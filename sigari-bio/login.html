@@ -106,7 +106,7 @@
     <div class="divider">OPPURE CON EMAIL</div>
 
     <form id="authForm" novalidate>
-      <div class="field" id="usernameWrap"><span class="pre">404.bio/<b>@</b></span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
+      <div class="field" id="usernameWrap"><span class="pre">404.bio/</span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
       <div class="hint" id="usernameHint">La prendi adesso. Si sblocca quando entri.</div>
 
       <div class="field">
@@ -162,6 +162,8 @@
     { title: "Contatti", url: "#" }
   ];
   const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
+  // 404.bio/<name> is the profile address, so the names of the site's own pages are reserved
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios"];
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -270,6 +272,7 @@
 
     if (mode === "signup") {
       if (!HANDLE_RE.test(handle)) return authErr("La @: da 3 a 20 tra lettere, numeri o trattini bassi.");
+      if (RESERVED.includes(handle)) return authErr("Questo nome è riservato al sito. Scegline un altro.");
       if (!email) return authErr("Scrivi la tua email.");
       if (pw.length < 8) return authErr("La password deve avere almeno 8 caratteri.");
       if (pw !== pw2) return authErr("Le password non coincidono.");
@@ -306,7 +309,7 @@
       const cred = await signInWithPopup(auth, provider);
       const exists = (await getDoc(doc(db, "users", cred.user.uid))).exists();
       if (!exists) {
-        if (!HANDLE_RE.test(handle)) {
+        if (!HANDLE_RE.test(handle) || RESERVED.includes(handle)) {
           await signOut(auth);
           throw new Error("Prima scegli la tua @, poi continua con questo account.");
         }

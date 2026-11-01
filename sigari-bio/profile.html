@@ -44,7 +44,7 @@
   };
 
   // /@nyx on Vercel, or profile.html?u=nyx anywhere else
-  const fromPath = decodeURIComponent(location.pathname).match(/\/@([a-z0-9_]{3,20})\/?$/i);
+  const fromPath = decodeURIComponent(location.pathname).match(/\/@?([a-z0-9_]{3,20})\/?$/i);
   const handle = ((fromPath && fromPath[1]) || new URLSearchParams(location.search).get("u") || "").toLowerCase().replace(/[^a-z0-9_]/g, "");
 
   const firebaseConfig = {
@@ -92,7 +92,7 @@
         const u = await F.getDoc(F.doc(db, "usernames", handle));
         taken = u.exists();
         const alias = taken && u.data().aliasOf;
-        if (alias && /^[a-z0-9_]{3,20}$/.test(alias)) return location.replace(fromPath ? "/@" + alias + location.search : "?u=" + alias);
+        if (alias && /^[a-z0-9_]{3,20}$/.test(alias)) return location.replace(fromPath ? "/" + alias + location.search : "?u=" + alias);
       } catch (_) { /* unknown */ }
       return taken
         ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 404.bio", "/"])

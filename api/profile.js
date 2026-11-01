@@ -1,4 +1,4 @@
-// 404.bio/@handle: serves profile.html with the link preview filled in
+// 404.bio/handle (and the old /@handle): serves profile.html with the link preview filled in
 // (title, description, picture, accent colour), so Discord, WhatsApp and
 // Telegram show the profile instead of a generic card. Everything else still
 // happens in the browser; if anything here fails, the plain page is served.
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
         const main = u && str(u.aliasOf);
         if (main && /^[a-z0-9_]{3,20}$/.test(main)) {
           res.statusCode = 302;
-          res.setHeader("Location", "/@" + main + (url.searchParams.get("utm_source") ? "?utm_source=" + encodeURIComponent(url.searchParams.get("utm_source")) : ""));
+          res.setHeader("Location", "/" + main + (url.searchParams.get("utm_source") ? "?utm_source=" + encodeURIComponent(url.searchParams.get("utm_source")) : ""));
           return res.end();
         }
       } else if (!(f.private && f.private.booleanValue)) {
@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
           `<meta property="og:site_name" content="404.bio">`,
           `<meta property="og:title" content="${esc(t)}">`,
           `<meta property="og:description" content="${esc(d)}">`,
-          `<meta property="og:url" content="${esc(origin + "/@" + handle)}">`,
+          `<meta property="og:url" content="${esc(origin + "/" + handle)}">`,
           img ? `<meta property="og:image" content="${esc(img)}">` : "",
           `<meta name="twitter:card" content="${img ? "summary_large_image" : "summary"}">`,
           `<meta name="twitter:title" content="${esc(t)}">`,

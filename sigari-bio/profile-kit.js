@@ -346,8 +346,23 @@ export function normalizeProfile(raw) {
     badges: (Array.isArray(p.badges) ? p.badges : []).filter(b => BADGES[b]).slice(0, 8),
     weekly: isObj(p.weekly) ? { week: String(p.weekly.week || ""), text: String(p.weekly.text || "").slice(0, 200), link: String(p.weekly.link || "").slice(0, 600), image: String(p.weekly.image || "").slice(0, 600), show: !!p.weekly.show } : null,
     views: Math.max(0, Math.floor(+p.views || 0)),
+    card: cardData(p.card),
     appearance: normalizeAppearance(p.appearance)
   };
+}
+
+// The identity card (card-kit.js checks every field when it draws it); here only shape and size
+function cardData(c) {
+  if (!isObj(c)) return null;
+  try { return JSON.stringify(c).length < 400000 ? JSON.parse(JSON.stringify(c)) : null; } catch (_) { return null; }
+}
+// Images saved only on this device (data: URLs) never go to the public page
+function cardPublic(c) {
+  if (!c) return null;
+  const out = JSON.parse(JSON.stringify(c));
+  if (out.bg && typeof out.bg.image === "string" && out.bg.image.startsWith("data:")) out.bg.image = "";
+  if (Array.isArray(out.stickers)) out.stickers = out.stickers.filter(s => !(s && typeof s.src === "string" && s.src.startsWith("data:")));
+  return out;
 }
 
 export const BADGES = {
@@ -650,6 +665,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-embed iframe{display:block;width:100%;border:0}
 .pk-topic img{width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;display:block}
 .pk-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.pk-cardbtn{display:flex;align-items:center;gap:8px;margin:16px auto 0;padding:9px 16px;border-radius:999px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:500 13px/1 inherit;cursor:pointer;transition:transform .2s,border-color .2s}
+.pk-cardbtn:hover{transform:translateY(-2px);border-color:var(--pk-accent)}
 .pk-tags span{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--pk-border);color:var(--pk-muted)}
 .pk-banner{height:110px;margin:-28px -20px 0;border-radius:var(--pk-radius) var(--pk-radius) 0 0;background:var(--pk-banner);background-size:cover;background-position:center}
 .pk[data-layout=banner] .pk-head{margin-top:calc(var(--pk-av)*-.5)}
@@ -1343,7 +1360,7 @@ function guestbookNode(actions) {
   const paint = rows => {
     gb.replaceChildren(...(rows.length ? rows.map(r => {
       const d = el("div");
-      const a = el("a", null, "@" + r.author); a.href = "/@" + r.author;
+      const a = el("a", null, "@" + r.author); a.href = "/" + r.author;
       d.append(a, " " + r.text);
       if (r.date) d.appendChild(el("small", null, r.date));
       return d;
@@ -1680,11 +1697,26 @@ export function mountProfile(root, input, opts = {}) {
     if (a.widgets.newsletter) forms.push(keyedNode("nl:" + a.widgets.newsletterText, () => newsletterForm(o.actions, a.widgets.newsletterText)));
     fill("forms", forms);
 
+    const tagNodes = [];
     if (p.tags.length) {
       const tg = el("div", "pk-tags");
       p.tags.forEach(t => tg.appendChild(el("span", null, t)));
-      fill("tags", [tg]);
-    } else fill("tags", []);
+      tagNodes.push(tg);
+    }
+    // The identity card made in the dashboard: a button that shows it full screen
+    if (p.card && p.card.on !== false) {
+      tagNodes.push(keyedNode("cardbtn", () => {
+        const b = el("button", "pk-cardbtn");
+        b.type = "button";
+        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>la mia carta</span>';
+        b.addEventListener("click", () => {
+          const cur = st.last;
+          import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }));
+        });
+        return b;
+      }));
+    }
+    fill("tags", tagNodes);
 
     st.keyed.forEach((v, k) => { if (!v.used) { v.node.querySelectorAll("audio,video").forEach(x => x.pause()); v.node.player?.stop(); st.keyed.delete(k); } });
 
@@ -1871,7 +1903,7 @@ export function publicFields(p) {
     links: n.links.filter(l => !l.hidden && (!l.password || l.lock)).map(({ password, ...l }) => l),
     socials: n.socials, badges: n.badges, clans: n.clans, primaryClan: n.primaryClan,
     gallery: n.gallery.filter(g => !g.url.startsWith("data:")).map(({ url, caption }) => ({ url, caption })),
-    weekly: n.weekly, appearance: n.appearance
+    weekly: n.weekly, card: cardPublic(n.card), appearance: n.appearance
   };
 }
 

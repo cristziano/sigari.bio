@@ -36,7 +36,7 @@
 <script type="module">
   const $ = id => document.getElementById(id);
   const firebaseConfig = { apiKey: "AIzaSyCRVxG-AaLh7nCevtUxqmbkPVk3I4dWAMg", authDomain: "sigari-bio-52324.firebaseapp.com", projectId: "sigari-bio-52324", storageBucket: "sigari-bio-52324.firebasestorage.app", messagingSenderId: "265808515501", appId: "1:265808515501:web:0395a4c9bc3522a1bd1124" };
-  const profileUrl = h => /^(localhost|127\.)/.test(location.hostname) ? `profile.html?u=${h}` : `/@${h}`;
+  const profileUrl = h => /^(localhost|127\.)/.test(location.hostname) ? `profile.html?u=${h}` : `/${h}`;
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   const id = (new URLSearchParams(location.search).get("id") || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 40);
   (async () => {
