@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>sigari.bio</title>
-<meta name="description" content="Un profilo su sigari.bio">
+<title>404.bio</title>
+<meta name="description" content="Un profilo su 404.bio">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
 <body>
 <div id="root"></div>
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
-<a class="brand" href="/" id="brand">sigari.bio</a>
+<a class="brand" href="/" id="brand">404.bio</a>
 
 <script type="module">
   import { mountProfile, normalizeProfile } from "./profile-kit.js";
@@ -68,7 +68,7 @@
   }
 
   (async () => {
-    if (handle.length < 3) return show("Profilo non trovato", "Questo link non porta a nessun profilo.", ["Vai a sigari.bio", "/"]);
+    if (handle.length < 3) return show("Profilo non trovato", "Questo link non porta a nessun profilo.", ["Vai a 404.bio", "/"]);
     let lite;
     try {
       const base = "https://www.gstatic.com/firebasejs/10.12.5/";
@@ -95,16 +95,16 @@
         if (alias && /^[a-z0-9_]{3,20}$/.test(alias)) return location.replace(fromPath ? "/@" + alias + location.search : "?u=" + alias);
       } catch (_) { /* unknown */ }
       return taken
-        ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a sigari.bio", "/"])
+        ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 404.bio", "/"])
         : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
     }
     const data = snap.data();
-    if (data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a sigari.bio", "/"]);
+    if (data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 404.bio", "/"]);
 
     msg.hidden = true;
     const p = normalizeProfile({ ...data, handle });
     const a = p.appearance;
-    const title = a.title.text || `${p.displayName} · sigari.bio`;
+    const title = a.title.text || `${p.displayName} · 404.bio`;
     document.title = title;
     if (a.title.animated && !matchMedia("(prefers-reduced-motion: reduce)").matches) animateTitle(title);
     const desc = a.seo.description || p.bio;

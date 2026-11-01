@@ -1,5 +1,5 @@
 /*
-  sigari.bio profile kit.
+  404.bio profile kit.
   One renderer for every place a profile is drawn: the public page (profile.html),
   the dashboard preview and the landing demo. Data in, DOM out; nothing here talks to Firebase.
 */
@@ -388,7 +388,7 @@ export const TEMPLATES = [
   clip("tokyo-drive", "Tokyo drive", ["giappone", "notte", "viola"], "KfOdjTchcDEku203WE", { effect: "scanlines", intensity: 25, colors: pal("#c89bff", "#f6edff", "#b9a3d6", "#12051f"), font: { name: "audiowide" }, nameFx: "chrome", card: GLASS, buttons: { variant: "glass", palette: "accent", shape: "pill", hover: "shine" }, enter: enter("東京") }),
   clip("neon-streets", "Neon streets", ["anime", "città", "neon"], "J3BlD4W2r1mcK1vMWW", { effect: "none", colors: pal("#ff3df2", "#fde9ff", "#c7a3d6"), font: { name: "syne" }, nameFx: "neon", glow: { username: true, socials: true, badges: true }, card: GLASS, buttons: { variant: "glass", palette: "accent", shape: "pill", hover: "glow" }, socialsStyle: { style: "glow" }, enter: enter("click to enter") }),
   clip("drift", "Drift", ["auto", "jdm", "fumo"], "69iv77x8e5NMA", { effect: "noise", intensity: 30, bg: { dim: 45 }, colors: pal("#ff2a2a", "#ffffff", "#b0b0b0"), font: { name: "blackops", upper: true }, nameFx: "3d", card: { opacity: 40, blur: 8, radius: 4, border: "solid" }, buttons: { variant: "solid", palette: "accent", shape: "square", shadow: "hard", hover: "lift" }, enter: enter("full send") }),
-  clip("sigari", "Sigari & Gin", ["fumo", "b&w", "sigari"], "3o6gE4tv9znhlbqy1W", { effect: "none", bg: { dim: 30 }, font: { name: "unifraktur", body: "geist", nameSize: 140 }, nameFx: "glow", badges: { custom: { on: true, icon: "cig", label: "sigari", color: "" } }, card: { opacity: 18, blur: 14, radius: 14, border: "solid" }, buttons: { variant: "glass", shape: "rounded", hover: "shine" }, enter: enter("accendi") }),
+  clip("sigari", "404 smoke", ["fumo", "b&w", "404"], "3o6gE4tv9znhlbqy1W", { effect: "none", bg: { dim: 30 }, font: { name: "unifraktur", body: "geist", nameSize: 140 }, nameFx: "glow", badges: { custom: { on: true, icon: "cig", label: "404", color: "" } }, card: { opacity: 18, blur: 14, radius: 14, border: "solid" }, buttons: { variant: "glass", shape: "rounded", hover: "shine" }, enter: enter("accendi") }),
   clip("fumo-nero", "Fumo nero", ["fumo", "dark", "b&w"], "G6VPpxqLN6pYB1lxGC", { effect: "none", bg: { dim: 20 }, font: { name: "instrument", nameSize: 150 }, nameFx: "float", card: { opacity: 10, blur: 6, radius: 0, border: "none" }, buttons: { variant: "ghost", shape: "square", hover: "lift" }, enter: enter("...") }),
   clip("vhs", "VHS", ["glitch", "retro", "b&w"], "jVXFZ0BwDKutTDiVWf", { effect: "scanlines", intensity: 45, bg: { dim: 40 }, font: { name: "vt323", body: "vt323", nameSize: 170 }, nameFx: "shuffle", entrance: "glitch", card: { opacity: 50, blur: 0, radius: 0, border: "solid" }, buttons: { variant: "outline", shape: "square", hover: "none" }, enter: enter("▶ PLAY") }),
   clip("glitch-rosso", "Glitch rosso", ["glitch", "rosso", "dark"], "l1J3GNSlIloTZCAhi", { effect: "noise", intensity: 40, colors: pal("#ff2a2a", "#ffe5e5", "#b36b6b", "#0a0000"), font: { name: "glitch" }, nameFx: "glitch", card: { opacity: 45, blur: 6, radius: 2, border: "glow" }, buttons: { variant: "outline", palette: "accent", shape: "square", hover: "glow" }, enter: enter("ERROR 404") }),
@@ -1261,7 +1261,7 @@ function playlistPlayer(onEvent) {
 /* ---------- Video widgets ---------- */
 
 function twitchEmbed(channel) {
-  const host = typeof location !== "undefined" ? location.hostname : "sigari.bio";
+  const host = typeof location !== "undefined" ? location.hostname : "404.bio";
   return { src: `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}&muted=true&autoplay=false`, height: 210 };
 }
 export function youtubeWidget(v) {

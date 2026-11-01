@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Paste · sigari.bio</title>
+<title>Paste · 404.bio</title>
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
 </style>
 </head>
 <body>
-<header class="top"><a class="logo" href="/">sigari<span>.bio</span></a></header>
+<header class="top"><a class="logo" href="/">404<span>.bio</span></a></header>
 <main id="main"><p class="note">Carico…</p></main>
 <script type="module">
   const $ = id => document.getElementById(id);
@@ -49,7 +49,7 @@
       const snap = await F.getDoc(F.doc(db, "pastes", id));
       if (!snap.exists()) return main.replaceChildren(el("h1", null, "Paste non trovato"), el("p", "meta", "Forse è stato eliminato da chi l'ha scritto."));
       const p = snap.data(), title = p.title || "Senza titolo";
-      document.title = `${title} · sigari.bio`;
+      document.title = `${title} · 404.bio`;
       const meta = el("p", "meta");
       const who = el("a", null, "@" + p.author); who.href = profileUrl(p.author);
       const date = p.createdAt ? p.createdAt.toDate().toLocaleString("it-IT", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "";

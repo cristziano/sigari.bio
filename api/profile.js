@@ -1,4 +1,4 @@
-// sigari.bio/@handle: serves profile.html with the link preview filled in
+// 404.bio/@handle: serves profile.html with the link preview filled in
 // (title, description, picture, accent colour), so Discord, WhatsApp and
 // Telegram show the profile instead of a generic card. Everything else still
 // happens in the browser; if anything here fails, the plain page is served.
@@ -30,9 +30,9 @@ async function readPage(origin) {
 }
 
 module.exports = async (req, res) => {
-  const url = new URL(req.url, "https://sigari.bio");
+  const url = new URL(req.url, "https://404.bio");
   const handle = String(url.searchParams.get("h") || "").replace(/^@/, "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
-  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "sigari.bio");
+  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "404.bio");
   let html;
   try { html = await readPage(origin); }
   catch (_) {
@@ -55,8 +55,8 @@ module.exports = async (req, res) => {
       } else if (!(f.private && f.private.booleanValue)) {
         const a = fields(f.appearance), seo = fields(a.seo), colors = fields(a.colors), title = fields(a.title);
         const name = str(f.displayName) || handle;
-        const t = str(title.text) || `${name} · sigari.bio`;
-        const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su sigari.bio`;
+        const t = str(title.text) || `${name} · 404.bio`;
+        const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 404.bio`;
         const img = httpsUrl(str(seo.image)) || httpsUrl(str(f.avatarUrl));
         const color = /^#[0-9a-f]{6}$/i.test(str(colors.accent)) ? str(colors.accent) : "#ffffff";
         const tags = [
@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
           `<meta name="description" content="${esc(d)}">`,
           `<meta name="theme-color" content="${color}">`,
           `<meta property="og:type" content="profile">`,
-          `<meta property="og:site_name" content="sigari.bio">`,
+          `<meta property="og:site_name" content="404.bio">`,
           `<meta property="og:title" content="${esc(t)}">`,
           `<meta property="og:description" content="${esc(d)}">`,
           `<meta property="og:url" content="${esc(origin + "/@" + handle)}">`,

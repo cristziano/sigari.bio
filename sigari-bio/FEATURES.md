@@ -1,4 +1,4 @@
-# sigari.bio — catalogo completo delle feature
+# 404.bio — catalogo completo delle feature
 
 Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.bio, lnk.bio, Linktree, Beacons, bio.link e Carrd.
 Stato aggiornato il 2026-10-30, dopo il secondo giro di feature, controllato sul codice, nel browser e con Firebase simulato (regole e login veri):
@@ -12,7 +12,7 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 1. Identità e @
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Prendi la tua @ (sigari.bio/@nome) | FUNZIONA |  | tutti |
+| Prendi la tua @ (404.bio/@nome) | FUNZIONA |  | tutti |
 | Controllo dal vivo se il nome è libero | FUNZIONA |  | guns, feds |
 | Rarità del nome (3 / 4 / 5 / 6+ lettere) | FUNZIONA | solo sulla landing | haunt |
 | Una @ per account, bloccata | FUNZIONA |  | — |
@@ -22,9 +22,9 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
 | Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
-| Domini dei partner (sigari.gin/@nome, tuoserver.gg/nome) | MANCA | c'è solo la presentazione sulla landing | idea sigari.bio |
-| Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea sigari.bio |
-| Preset del link con il dominio dei partner | MANCA | serve configurare i domini | idea sigari.bio |
+| Domini dei partner (404.gin/@nome, tuoserver.gg/nome) | MANCA | c'è solo la presentazione sulla landing | idea 404.bio |
+| Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea 404.bio |
+| Preset del link con il dominio dei partner | MANCA | serve configurare i domini | idea 404.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -96,14 +96,14 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 6. Community
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Topic della settimana | DA ATTIVARE | regole Firebase (per vedere le risposte sulla landing) | idea sigari.bio |
+| Topic della settimana | DA ATTIVARE | regole Firebase (per vedere le risposte sulla landing) | idea 404.bio |
 | Pubblicare template: pubblici, non in elenco, privati; usarne solo una parte | DA ATTIVARE | regole Firebase | guns |
 | Classifica profili per visite | DA ATTIVARE | regole Firebase; finché non ci sono 3 profili mostra un esempio | guns |
 | Contatore visite pubblico | DA ATTIVARE | regole Firebase | guns, lnk.bio |
-| Statistiche: visite, clic, social, ascolti, tempo, grafico 7/30 giorni | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
-| Feed delle interazioni in diretta | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
-| Clan con TAG riservata e pagina del clan | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea sigari.bio |
-| Fino a 3 clan per profilo, 1 principale | DA ATTIVARE | regole Firebase | idea sigari.bio |
+| Statistiche: visite, clic, social, ascolti, tempo, grafico 7/30 giorni | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
+| Feed delle interazioni in diretta | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
+| Clan con TAG riservata e pagina del clan | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
+| Fino a 3 clan per profilo, 1 principale | DA ATTIVARE | regole Firebase | idea 404.bio |
 | Classifica dei clan | DA ATTIVARE | regole Firebase | fakecrime |
 | Guestbook (firme di chi ha un account) | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | feds |
 | Esplora profili: nuovi, più visti, cerca una @ | DA ATTIVARE | regole Firebase | fakecrime |
@@ -115,8 +115,8 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Anteprima dal vivo mentre modifichi (desktop e telefono) | FUNZIONA |  | feds |
-| Pagina pubblica sigari.bio/@nome | DA ATTIVARE | regole Firebase | tutti |
-| Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea sigari.bio |
+| Pagina pubblica 404.bio/@nome | DA ATTIVARE | regole Firebase | tutti |
+| Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea 404.bio |
 | Profilo privato o fuori dalla classifica | FUNZIONA |  | guns |
 | Nascondi visite e badge | FUNZIONA |  | guns |
 | Titolo della scheda (anche animato) e favicon | FUNZIONA |  | guns, lnk.bio |
@@ -139,12 +139,12 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 |---|---|---|---|
 | Accesso con Google | FUNZIONA | serve il dominio .vercel.app tra i domini autorizzati | — |
 | Email e password | FUNZIONA |  | — |
-| Dashboard senza account, profilo portato nell'account alla registrazione | FUNZIONA |  | idea sigari.bio |
+| Dashboard senza account, profilo portato nell'account alla registrazione | FUNZIONA |  | idea 404.bio |
 | Dashboard chiara / scura | FUNZIONA |  | — |
 | Accesso con Discord | DA ATTIVARE | il codice c'è ma è spento: va configurato in Firebase | guns, feds |
 | Premium a vita, paghi una volta | MANCA |  | guns, feds, haunt |
 
-## Idee che i concorrenti NON hanno (vantaggio di sigari.bio)
+## Idee che i concorrenti NON hanno (vantaggio di 404.bio)
 - **Moods**: la stessa estetica bianco e nero in tre texture (fumo, dither, ASCII), scelta dal visitatore. Sulla landing.
 - **Anteprima del link prima di registrarti**: scrivi la @ e vedi come appare su Discord, Instagram e TikTok. Sulla landing.
 - **Rarità visibile del nome**: sulla landing; da portare sul profilo come badge.

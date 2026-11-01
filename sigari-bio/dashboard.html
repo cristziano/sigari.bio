@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>sigari.bio · Dashboard</title>
+<title>404.bio · Dashboard</title>
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -486,7 +486,7 @@
 
 <section class="dash hidden" id="dash">
   <aside class="side">
-    <a class="logo" href="index.html">sigari<span>.bio</span></a>
+    <a class="logo" href="index.html">404<span>.bio</span></a>
     <div class="side-search">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="setSearch" type="search" placeholder="Cerca…" autocomplete="off" aria-label="Cerca un'impostazione">
@@ -496,7 +496,7 @@
     <nav class="nav" id="nav"></nav>
     <div class="userbox">
       <div class="name" id="sideHandle">@tuonome</div>
-      <a class="url" id="sideUrl" href="#" target="_blank" rel="noopener">sigari.bio/@tuonome</a>
+      <a class="url" id="sideUrl" href="#" target="_blank" rel="noopener">404.bio/@tuonome</a>
       <button class="linkbtn" id="logoutBtn" type="button">Esci</button>
     </div>
   </aside>
@@ -994,7 +994,7 @@
         <div class="field-grid" style="max-width:820px;margin-top:12px;align-items:start">
           <div class="card">
             <span class="card-title">Entra in un clan</span>
-            <div class="prefix-field"><span class="prefix">TAG</span><input id="joinTag" maxlength="4" autocomplete="off" placeholder="SGR" style="text-transform:uppercase"></div>
+            <div class="prefix-field"><span class="prefix">TAG</span><input id="joinTag" maxlength="4" autocomplete="off" placeholder="404" style="text-transform:uppercase"></div>
             <div class="row"><button class="save-btn sm" id="joinBtn" type="button">Entra</button><span class="hint" id="joinHint"></span></div>
           </div>
           <div class="card">
@@ -1059,7 +1059,7 @@
       <div class="card" style="margin-top:22px">
         <div class="share-link"><span class="mono" id="shareUrl"></span><button class="save-btn sm" id="shareCopy" type="button">Copia</button><a class="ghost-btn sm" id="shareOpen" href="#" target="_blank" rel="noopener">Apri</a></div>
         <div class="label">anteprima su discord e whatsapp</div>
-        <div class="dpv" id="discordPv"><div style="flex:1;min-width:0"><small>sigari.bio</small><b id="dpvTitle"></b><p id="dpvDesc"></p></div><img id="dpvImg" alt=""></div>
+        <div class="dpv" id="discordPv"><div style="flex:1;min-width:0"><small>404.bio</small><b id="dpvTitle"></b><p id="dpvDesc"></p></div><img id="dpvImg" alt=""></div>
         <p class="hint">Titolo, descrizione e immagine si cambiano da Pagina e privacy. Il colore della barra è il tuo accento.</p>
       </div>
       <div class="label section-label">un link per ogni social</div>
@@ -1094,7 +1094,7 @@
       <p class="desc">Come è fatta questa dashboard e dove trovi ogni cosa. L'abbiamo costruita copiando la struttura di guns.lol: stessa logica, stessi nomi delle parti, ma tutto gratis.</p>
       <div class="label section-label">trova un'impostazione</div>
       <div class="card"><p>Usa la ricerca in cima al menu (o premi <span class="kbd">Ctrl</span> + <span class="kbd">K</span>): scrivi "sfondo", "font", "musica", "badge"… e ci arrivi con un clic.</p></div>
-      <div class="label section-label">guns.lol → sigari.bio</div>
+      <div class="label section-label">guns.lol → 404.bio</div>
       <div class="map" id="guideMap"></div>
       <div class="label section-label">cosa abbiamo copiato da guns.lol</div>
       <div class="card guide-text">
@@ -1126,9 +1126,9 @@
         </div>
           <div class="label section-label" id="set-alias">nomi extra</div>
           <div class="card">
-            <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre sigari.bio/@altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
+            <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre 404.bio/@altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
             <div class="active-list" id="aliasList"></div>
-            <div class="prefix-field"><span class="prefix">sigari.bio/@</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
+            <div class="prefix-field"><span class="prefix">404.bio/@</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
             <div class="row"><button class="save-btn sm" id="aliasAdd" type="button">Aggiungi</button><span class="hint" id="aliasHint"></span></div>
           </div>
         <div class="label section-label">accesso</div>
@@ -1420,7 +1420,7 @@
   /* ---------- Badges page and the guide ---------- */
   const BADGE_INFO = {
     beta: "Per chi è arrivato durante la beta pubblica.",
-    early: "Per i primi profili di sigari.bio.",
+    early: "Per i primi profili di 404.bio.",
     verified: "Per creator e persone conosciute. Lo assegniamo noi.",
     partner: "Per i server e i progetti partner.",
     winner: "Per chi vince il topic della settimana."
@@ -1670,7 +1670,7 @@
   function buildPickers() {
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
     $$("select[data-opts]").forEach(sel => { sel.innerHTML = (OPTS[sel.dataset.opts] || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join(""); });
-    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "sigari").slice(0, 9)}</span><small>${l}</small>`);
+    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "404").slice(0, 9)}</span><small>${l}</small>`);
     ensureFonts(FONTS.map(f => f[0]));
     $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("") + '<option value="custom">Il tuo font</option>';
     pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS);
@@ -2071,7 +2071,7 @@
   const tplKey = (t, source) => source && source.id ? source.id : "builtin:" + t.id;
   function miniPreview(box, appearanceObj, thumb) {
     const a = previewAppearance(appearanceObj, thumb);
-    miniMounts.push(mountProfile(box, { handle, displayName: draft.displayName || handle, bio: "", links: [{ title: "Il mio link", url: "https://sigari.bio" }], appearance: a }, { preview: true, entrance: false }));
+    miniMounts.push(mountProfile(box, { handle, displayName: draft.displayName || handle, bio: "", links: [{ title: "Il mio link", url: "https://404.bio" }], appearance: a }, { preview: true, entrance: false }));
   }
   // One card per template: preview (click to try it on your profile), favourite star, part picker, Use
   function tplCard(t, meta, source) {
@@ -2461,8 +2461,8 @@
     $("shareUrl").textContent = pubUrl("").replace(/^https?:\/\//, "");
     $("shareOpen").href = mode === "guest" ? "#" : pubUrl("");
     $("discordPv").style.setProperty("--acc", a.colors.accent);
-    $("dpvTitle").textContent = a.title.text || `${draft.displayName || handle} · sigari.bio`;
-    $("dpvDesc").textContent = a.seo.description || plainText(draft.bio || "") || "Un profilo su sigari.bio";
+    $("dpvTitle").textContent = a.title.text || `${draft.displayName || handle} · 404.bio`;
+    $("dpvDesc").textContent = a.seo.description || plainText(draft.bio || "") || "Un profilo su 404.bio";
     const img = a.seo.image || draft.avatarUrl;
     $("dpvImg").style.display = img ? "" : "none";
     if (img) $("dpvImg").src = img;
@@ -2484,7 +2484,7 @@
       const list = snap.docs.filter(d => d.data().uid === uid).map(d => d.id);
       box.replaceChildren(...list.map(name => {
         const row = document.createElement("div"); row.className = "alias-row";
-        const t = document.createElement("span"); t.textContent = "sigari.bio/@" + name;
+        const t = document.createElement("span"); t.textContent = "404.bio/@" + name;
         const del = document.createElement("button"); del.type = "button"; del.className = "ghost-btn sm"; del.textContent = "Libera";
         del.addEventListener("click", async () => {
           if (!confirm(`Liberare @${name}? Chiunque potrà prenderlo.`)) return;
@@ -2816,7 +2816,7 @@
   const DAY = 864e5;
   const isoDay = t => new Date(t).toISOString().slice(0, 10);
   let anRange = 30, anMetric = "v", anDays = [], feedUnsub = null, feedLast = null;
-  const REF_LABEL = { diretto: "Link diretto", instagram: "Instagram", tiktok: "TikTok", discord: "Discord", x: "X", youtube: "YouTube", google: "Google", whatsapp: "WhatsApp", telegram: "Telegram", reddit: "Reddit", twitch: "Twitch", snapchat: "Snapchat", facebook: "Facebook", spotify: "Spotify", qr: "QR code", sigari: "sigari.bio", altro: "Altri siti" };
+  const REF_LABEL = { diretto: "Link diretto", instagram: "Instagram", tiktok: "TikTok", discord: "Discord", x: "X", youtube: "YouTube", google: "Google", whatsapp: "WhatsApp", telegram: "Telegram", reddit: "Reddit", twitch: "Twitch", snapchat: "Snapchat", facebook: "Facebook", spotify: "Spotify", qr: "QR code", sigari: "404.bio", altro: "Altri siti" };
   const DEV_LABEL = { mobile: "Telefono", desktop: "Computer", tablet: "Tablet" };
   const T_MID = [5, 20, 45, 120, 240];
   function demoDays(n) {
@@ -2999,7 +2999,7 @@
     $$("[data-seg]").forEach(renderSeg);
     const pub = `${location.origin}/@${handle}`;
     $("sideHandle").textContent = "@" + handle;
-    $("sideUrl").textContent = `sigari.bio/@${handle}`;
+    $("sideUrl").textContent = `404.bio/@${handle}`;
     $("sideUrl").href = mode === "guest" ? "#" : pub;
     $("openPublic").href = mode === "guest" ? "#" : pub;
     $("openPublic").classList.toggle("hidden", mode === "guest");
@@ -3033,7 +3033,7 @@
     try { saved = JSON.parse(store.get(DRAFT_KEY) || "null"); } catch (_) { saved = null; }
     const wanted = (params.get("handle") || saved?.handle || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
     handle = wanted.length >= 3 ? wanted : "ospite";
-    const base = saved || { displayName: handle, bio: "", tags: [], location: "", avatarUrl: "", links: [{ title: "Il mio primo link", url: "https://sigari.bio", hidden: false }], socials: {}, weekly: null, appearance: {} };
+    const base = saved || { displayName: handle, bio: "", tags: [], location: "", avatarUrl: "", links: [{ title: "Il mio primo link", url: "https://404.bio", hidden: false }], socials: {}, weekly: null, appearance: {} };
     draft = snapshot(base);
     savedJSON = saved ? JSON.stringify(snapshot(saved)) : "";
     if (!saved) savedJSON = JSON.stringify(snapshot(base));

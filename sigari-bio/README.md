@@ -1,4 +1,4 @@
-# sigari.bio
+# 404.bio
 
 Landing page, login, dashboard e pagina pubblica del profilo. Ogni pagina è un unico file HTML; il profilo viene disegnato da un solo modulo condiviso (`profile-kit.js`), così l'anteprima della dashboard e la pagina pubblica sono identiche.
 
@@ -9,9 +9,9 @@ sigari-bio/
 ├── index.html        Landing: hero con profilo da personalizzare dal vivo, statistiche, template, topic, clan, partner, FAQ
 ├── login.html        Login e registrazione (?handle=nome, ?mode=login, ?from=ospite porta il profilo dell'ospite nell'account)
 ├── dashboard.html    Dashboard: anche senza account (modalità ospite, salva nel browser)
-├── profile.html      Pagina pubblica, servita su sigari.bio/@nome (in locale: profile.html?u=nome)
+├── profile.html      Pagina pubblica, servita su 404.bio/@nome (in locale: profile.html?u=nome)
 ├── explore.html      Esplora i profili: nuovi, più visti, cerca una @
-├── clan.html         Pagina di un clan (?tag=SGR) o classifica dei clan
+├── clan.html         Pagina di un clan (?tag=404) o classifica dei clan
 ├── paste.html        Un testo condiviso con un link (?id=…)
 ├── profile-kit.js    Il renderer dei profili: font, effetti, layout, musica, widget, template, topic
 ├── vendor/qrcode.mjs Generatore di QR code (qrcode-generator, licenza MIT)
@@ -29,7 +29,7 @@ sigari-bio/
 4. **Discord (opzionale)**: provider OpenID Connect con ID `oidc.discord`, issuer `https://discord.com`, scope `identify email`; poi `DISCORD_ENABLED = true` in `login.html`.
 5. **Google Cloud Console > Credenziali**: limita la API key ai domini del sito.
 
-Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qualcuno apre sigari.bio/@nome, mette nella pagina titolo, descrizione, foto e colore del profilo, così l'anteprima del link su Discord, WhatsApp e Telegram mostra il profilo. Se qualcosa non va, serve la pagina normale.
+Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qualcuno apre 404.bio/@nome, mette nella pagina titolo, descrizione, foto e colore del profilo, così l'anteprima del link su Discord, WhatsApp e Telegram mostra il profilo. Se qualcosa non va, serve la pagina normale.
 
 ## Come funziona
 

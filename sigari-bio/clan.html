@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Clan · sigari.bio</title>
-<meta name="description" content="I clan di sigari.bio: una TAG riservata, i membri e la classifica.">
+<title>Clan · 404.bio</title>
+<meta name="description" content="I clan di 404.bio: una TAG riservata, i membri e la classifica.">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@
 </style>
 </head>
 <body>
-<header class="top"><a class="logo" href="/">sigari<span>.bio</span></a><span class="sp"></span><a href="explore.html" style="font-size:13px;color:#aaa">esplora</a><a class="btn" href="dashboard.html#clans" style="height:36px;font-size:13px">I tuoi clan</a></header>
+<header class="top"><a class="logo" href="/">404<span>.bio</span></a><span class="sp"></span><a href="explore.html" style="font-size:13px;color:#aaa">esplora</a><a class="btn" href="dashboard.html#clans" style="height:36px;font-size:13px">I tuoi clan</a></header>
 <main id="main"><p class="note">Carico…</p></main>
 <script type="module">
   const $ = id => document.getElementById(id);
@@ -67,7 +67,7 @@
       return;
     }
     const c = snap.data(), color = safeHex(c.color);
-    document.title = `[${c.tag}] ${c.name} · sigari.bio`;
+    document.title = `[${c.tag}] ${c.name} · 404.bio`;
     const t = h("div", "tag", c.tag); t.style.setProperty("--c", color); t.style.setProperty("--on", readable(color));
     const stats = h("div", "stats");
     const stat = (n, l) => { const d = h("div"); const b = h("b", null, n); d.append(b, l); stats.appendChild(d); return b; };
