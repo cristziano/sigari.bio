@@ -124,6 +124,16 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Bottone "la mia carta" sul profilo, carta a schermo intero che si inclina col mouse | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
 | Schermo intero e link 404.bio/nome cliccabile nell'anteprima | FUNZIONA |  | idea 404.bio |
 | Indirizzo corto 404.bio/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
+| Password dimenticata (link via email) | DA ATTIVARE | regole Firebase già ok; l'email la manda Firebase | tutti |
+| Verifica email all'iscrizione | FUNZIONA |  | tutti |
+| Elimina account (profilo, @, nomi extra, file, account) | DA ATTIVARE | pubblicare le nuove regole Firebase | GDPR |
+| Scarica i miei dati (file JSON) | FUNZIONA |  | GDPR |
+| Privacy e Termini, consenso all'iscrizione (14 anni) | FUNZIONA | farli controllare da un esperto | legge |
+| Segnala un profilo (motivo + dettagli, li legge lo staff dalla console) | DA ATTIVARE | pubblicare le nuove regole Firebase | guns |
+| Una sola @ principale per account, nomi riservati anche nel database | DA ATTIVARE | pubblicare le nuove regole Firebase | sicurezza |
+| Carta scaricabile come immagine e come storia Instagram | FUNZIONA |  | idea 404.bio |
+| Icona, anteprima di condivisione, robots.txt, sitemap, installabile sul telefono | FUNZIONA |  | tutti |
+| Sfondo di riserva se una GIF/foto non esiste più | FUNZIONA |  | idea 404.bio |
 | Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea 404.bio |
 | Profilo privato o fuori dalla classifica | FUNZIONA |  | guns |
 | Nascondi visite e badge | FUNZIONA |  | guns |

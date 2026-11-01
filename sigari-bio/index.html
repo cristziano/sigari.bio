@@ -2,6 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>404.bio · Prendi la tua @</title>
 <meta name="description" content="Un nome, una pagina, tutto quello che fai. Il link in bio in bianco e nero con mood fumo, dither e ASCII, glow, musica e cursori personalizzati.">
@@ -9,6 +13,11 @@
 <meta name="color-scheme" content="dark">
 <meta property="og:locale" content="it_IT">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://sigaribio.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sigaribio.vercel.app/og.png">
 <meta property="og:title" content="404.bio · Prendi la tua @">
 <meta property="og:description" content="Un nome, una pagina, tutto quello che fai. Prendila prima che lo faccia qualcun altro.">
 <meta property="og:site_name" content="404.bio">
@@ -822,7 +831,7 @@
 
 <footer>
   <div class="foot">
-    <span>Fatto da 404studios, tutti i diritti riservati.</span>
+    <span>Fatto da 404studios, tutti i diritti riservati. · <a href="privacy.html" style="color:inherit">Privacy</a> · <a href="termini.html" style="color:inherit">Termini</a></span>
     <nav aria-label="Piè di pagina"><a href="login.html?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/404studios" target="_blank" rel="noopener">discord</a></nav>
   </div>
   <div class="word" aria-hidden="true">404.bio</div>
@@ -838,7 +847,14 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fine = matchMedia("(pointer: fine)").matches;
   const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
-  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios"];
+  if (new URLSearchParams(location.search).has("addio")) {
+    const n = document.createElement("div");
+    n.textContent = "Account eliminato. Ci dispiace vederti andare: la tua @ adesso è libera.";
+    n.style.cssText = "position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:200;background:#fff;color:#000;padding:10px 16px;border-radius:999px;font:500 13px Geist,system-ui;box-shadow:0 10px 30px rgba(0,0,0,.5)";
+    document.body.appendChild(n); setTimeout(() => n.remove(), 6000);
+    history.replaceState(null, "", location.pathname);
+  }
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "privacy", "termini"];
   const state = { handle: "", avail: null, mood: "smoke" };
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
   const rarity = h => h.length === 3 ? ["leggendaria", 4] : h.length === 4 ? ["epica", 3] : h.length === 5 ? ["rara", 2] : ["classica", 1];

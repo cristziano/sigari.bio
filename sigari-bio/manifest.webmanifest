@@ -1,0 +1,13 @@
+{
+  "name": "404.bio",
+  "short_name": "404.bio",
+  "description": "Prendi la tua @: la pagina link in bio di 404studios.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

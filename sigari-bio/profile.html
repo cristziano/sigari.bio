@@ -2,6 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>404.bio</title>
 <meta name="description" content="Un profilo su 404.bio">
@@ -20,6 +24,18 @@
   .msg a { display:inline-flex; align-items:center; height:44px; padding:0 18px; margin-top:22px; border-radius:10px; background:#fff; color:#000; font-weight:600; text-decoration:none; }
   .brand { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:30; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.55); text-decoration:none; padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
   .brand:hover { color:#fff; }
+  .hidden { display:none !important; }
+  .report-btn { position:fixed; right:12px; bottom:14px; z-index:30; border:0; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.4); padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); cursor:pointer; }
+  .report-btn:hover { color:#fff; }
+  .report { margin:auto; border:1px solid #2a2a2a; border-radius:16px; background:#0b0b0b; color:#f2f2f2; padding:18px; width:min(380px,92vw); }
+  .report::backdrop { background:rgba(0,0,0,.7); }
+  .report form { display:grid; gap:10px; font:14px "Geist",system-ui,sans-serif; }
+  .report select, .report textarea { width:100%; border:1px solid #2a2a2a; border-radius:10px; background:#000; color:#f2f2f2; padding:10px; font:inherit; }
+  .report textarea { min-height:80px; resize:vertical; }
+  .report-row { display:flex; gap:8px; justify-content:flex-end; }
+  .report-row button { border:1px solid #2a2a2a; border-radius:99px; background:none; color:#f2f2f2; padding:8px 14px; cursor:pointer; font:inherit; }
+  .report-row button[type=submit] { background:#fff; color:#000; border-color:#fff; }
+  .report small { color:#9a9a9a; min-height:1em; }
   .loading { color:#555; font:400 13px "Geist Mono",monospace; }
 </style>
 </head>
@@ -27,6 +43,24 @@
 <div id="root"></div>
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
 <a class="brand" href="/" id="brand">404.bio</a>
+<button class="report-btn hidden" id="reportBtn" type="button">segnala</button>
+<dialog class="report" id="reportDlg">
+  <form method="dialog" id="reportForm">
+    <b>Segnala questo profilo</b>
+    <select id="reportReason" required>
+      <option value="">Perché?</option>
+      <option value="spam">Spam o truffa</option>
+      <option value="falso">Si finge un'altra persona</option>
+      <option value="offensivo">Offensivo o d'odio</option>
+      <option value="illegale">Contenuti illegali</option>
+      <option value="minori">Mette in pericolo dei minori</option>
+      <option value="altro">Altro</option>
+    </select>
+    <textarea id="reportText" maxlength="500" placeholder="Dettagli (facoltativo)"></textarea>
+    <div class="report-row"><button type="button" id="reportCancel">Annulla</button><button type="submit" id="reportSend">Invia</button></div>
+    <small id="reportOut"></small>
+  </form>
+</dialog>
 
 <script type="module">
   import { mountProfile, normalizeProfile } from "./profile-kit.js";
@@ -154,6 +188,23 @@
       }
     };
     mountProfile(document.getElementById("root"), p, { preview: false, onEvent, actions });
+    // "segnala": goes to the reports collection, which only staff read
+    const rb = document.getElementById("reportBtn"), dlg = document.getElementById("reportDlg");
+    rb.classList.remove("hidden");
+    rb.addEventListener("click", () => { document.getElementById("reportOut").textContent = ""; dlg.showModal(); });
+    document.getElementById("reportCancel").addEventListener("click", () => dlg.close());
+    document.getElementById("reportForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const reason = document.getElementById("reportReason").value, out = document.getElementById("reportOut");
+      if (!reason) { out.textContent = "Scegli un motivo."; return; }
+      if (sessionStorage.getItem("404-report-" + handle)) { out.textContent = "Hai già segnalato questo profilo. Grazie."; return; }
+      try {
+        await F.addDoc(F.collection(db, "reports"), { handle, reason, text: document.getElementById("reportText").value.trim().slice(0, 500), createdAt: F.serverTimestamp() });
+        sessionStorage.setItem("404-report-" + handle, "1");
+        out.textContent = "Segnalazione inviata. Grazie, la controlliamo.";
+        setTimeout(() => dlg.close(), 1600);
+      } catch (_) { out.textContent = "Non riuscito. Puoi scriverci su discord.gg/404studios."; }
+    });
 
     // One view per browser session; the rules only allow +1 on this field
     const key = "sigari-view-" + handle;

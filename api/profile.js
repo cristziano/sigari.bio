@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
         const name = str(f.displayName) || handle;
         const t = str(title.text) || `${name} · 404.bio`;
         const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 404.bio`;
-        const img = httpsUrl(str(seo.image)) || httpsUrl(str(f.avatarUrl));
+        const img = httpsUrl(str(seo.image)) || httpsUrl(str(f.avatarUrl)) || origin + "/og.png";
         const color = /^#[0-9a-f]{6}$/i.test(str(colors.accent)) ? str(colors.accent) : "#ffffff";
         const tags = [
           `<title>${esc(t)}</title>`,

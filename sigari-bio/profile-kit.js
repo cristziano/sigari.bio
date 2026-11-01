@@ -1493,10 +1493,16 @@ export function mountProfile(root, input, opts = {}) {
       if (a.bg.type === "gradient") bgEl.style.background = grad; else bgEl.style.background = "";
       if (a.bg.type === "image" && a.bg.image) {
         if (a.bg.fit === "tile") { const t = el("div", "pk-tile"); t.style.backgroundImage = `url("${a.bg.image.replace(/"/g, "%22")}")`; bgEl.appendChild(t); }
-        else { const img = el("img"); img.src = a.bg.image; img.alt = ""; img.decoding = "async"; bgEl.appendChild(img); }
+        else {
+          const img = el("img"); img.src = a.bg.image; img.alt = ""; img.decoding = "async";
+          // a GIF or photo that no longer exists: fall back to the profile colours instead of a black hole
+          img.addEventListener("error", () => { img.remove(); bgEl.style.background = grad; }, { once: true });
+          bgEl.appendChild(img);
+        }
       }
       if (a.bg.type === "video" && a.bg.video) {
         const v = el("video"); if (a.bg.poster) v.poster = a.bg.poster; v.src = a.bg.video; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", "");
+        v.addEventListener("error", () => { v.remove(); bgEl.style.background = a.bg.poster ? `url("${a.bg.poster.replace(/"/g, "%22")}") center/cover, ${grad}` : grad; }, { once: true });
         bgEl.appendChild(v); v.play().catch(() => {});
       }
       root.style.setProperty("--pk-banner", a.bg.type === "image" && a.bg.image ? `url("${a.bg.image.replace(/"/g, "%22")}") center/cover` : a.bg.type === "gradient" ? grad : `linear-gradient(135deg, ${c.accent}, ${c.primary})`);

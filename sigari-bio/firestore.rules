@@ -8,12 +8,17 @@ service cloud.firestore {
     // @handle reservations. Extra names (aliases) live here too, with aliasOf pointing to the main handle.
     match /usernames/{handle} {
       allow read: if true;
+      // One main @ per account (the account document is created together with it),
+      // extra names only next to a main @ you own, and never the names of the site's own pages
       allow create: if signedIn()
                     && request.resource.data.uid == request.auth.uid
-                    && (!('aliasOf' in request.resource.data) || ownsHandle(request.resource.data.aliasOf));
+                    && handle.matches('^[a-z0-9_]{3,20}$')
+                    && !(handle in ['api', '404', 'www', 'admin', 'dashboard', 'login', 'explore', 'clan', 'clans', 'paste', 'profile', 'index', 'settings', 'help', 'sigari', 'studios', '404studios', 'privacy', 'termini'])
+                    && (('aliasOf' in request.resource.data && ownsHandle(request.resource.data.aliasOf))
+                        || (!('aliasOf' in request.resource.data) && !exists(/databases/$(database)/documents/users/$(request.auth.uid))));
       allow update: if false;
-      // Only extra names can be given back; the main handle stays
-      allow delete: if signedIn() && resource.data.uid == request.auth.uid && ('aliasOf' in resource.data);
+      // Your names can be given back (the main one only when you delete the account)
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
     // Private account document: only its owner
@@ -21,7 +26,7 @@ service cloud.firestore {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
 
-    // Public profile, rendered at sigari.bio/@handle
+    // Public profile, rendered at 404.bio/handle
     match /profiles/{handle} {
       allow read: if true;
 
@@ -38,7 +43,18 @@ service cloud.firestore {
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
                     && request.resource.data.views == resource.data.get('views', 0) + 1;
 
-      allow delete: if false;
+      // Deleting the account removes the public page too
+      allow delete: if ownsHandle(handle);
+    }
+
+    // Reports of a profile ("Segnala"): anyone can send one, only staff read them from the console
+    match /reports/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['handle', 'reason', 'text', 'createdAt'])
+                    && request.resource.data.handle is string && request.resource.data.handle.matches('^[a-z0-9_]{3,20}$')
+                    && request.resource.data.reason in ['spam', 'falso', 'offensivo', 'illegale', 'minori', 'altro']
+                    && request.resource.data.text is string && request.resource.data.text.size() <= 500
+                    && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if false;
     }
 
     // Daily statistics written by the public page. Each write adds exactly 1 to up to

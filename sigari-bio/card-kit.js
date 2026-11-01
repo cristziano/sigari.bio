@@ -389,3 +389,56 @@ export function openCardViewer(card, data) {
   addEventListener("keydown", key);
   return done;
 }
+
+/* ---------- Download the card as an image (normal or Instagram story) ---------- */
+const H2I = "https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
+let h2iLoading = null;
+function loadHtmlToImage() {
+  if (window.htmlToImage) return Promise.resolve(window.htmlToImage);
+  if (!h2iLoading) h2iLoading = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = H2I; s.async = true;
+    s.onload = () => resolve(window.htmlToImage);
+    s.onerror = () => { h2iLoading = null; reject(new Error("Non riesco a caricare lo strumento per creare l'immagine. Controlla la connessione.")); };
+    document.head.appendChild(s);
+  });
+  return h2iLoading;
+}
+const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+// Returns a PNG data URL. Photos from sites that don't allow it are left out instead of breaking the image.
+export async function cardImage(card, data, { story = false } = {}) {
+  const lib = await loadHtmlToImage();
+  const host = h("div");
+  host.style.cssText = "position:fixed;left:-12000px;top:0;width:1200px;pointer-events:none";
+  document.body.appendChild(host);
+  const m = mountCard(host, card, data, { tilt: false });
+  m.el.querySelector(".k4-rays")?.classList.remove("spin");
+  m.el.style.boxShadow = "none";
+  let url;
+  try {
+    if (document.fonts) await document.fonts.ready;
+    await Promise.all([...host.querySelectorAll("img")].map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {})));
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    url = await lib.toPng(m.el, { pixelRatio: 1, cacheBust: true, imagePlaceholder: BLANK });
+  } finally { m.destroy(); host.remove(); }
+  if (!story) return url;
+  const img = new Image(); img.src = url; await img.decode();
+  const cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1920;
+  const x = cv.getContext("2d");
+  const c = normalizeCard(card);
+  const g = x.createRadialGradient(540, 860, 80, 540, 900, 1200);
+  g.addColorStop(0, "#1e1e1e"); g.addColorStop(1, "#000"); x.fillStyle = g; x.fillRect(0, 0, 1080, 1920);
+  const w = 960, hh = w / 1.586;
+  x.save(); x.translate(540, 860); x.rotate(-0.06);
+  x.shadowColor = "rgba(0,0,0,.85)"; x.shadowBlur = 90; x.shadowOffsetY = 40;
+  x.drawImage(img, -w / 2, -hh / 2, w, hh); x.restore();
+  x.textAlign = "center";
+  x.fillStyle = c.accent === "#000000" ? "#ffffff" : "#ffffff";
+  x.font = "700 66px Geist, Arial, sans-serif"; x.fillText("404.bio/" + (data.handle || "tuonome"), 540, 1420);
+  x.fillStyle = "#8a8a8a"; x.font = "500 34px 'Geist Mono', monospace"; x.fillText("prendi la tua @", 540, 1490);
+  return cv.toDataURL("image/png");
+}
+export function downloadDataUrl(url, name) {
+  const a = document.createElement("a"); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}

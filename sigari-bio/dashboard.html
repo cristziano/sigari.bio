@@ -2,6 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>404.bio · Dashboard</title>
 <meta name="theme-color" content="#000000">
@@ -783,6 +787,8 @@
         <div class="row" style="margin-top:18px;flex-wrap:wrap">
           <button class="save-btn" id="cardOpen" type="button">Apri l'editor</button>
           <button class="ghost-btn" id="cardFull" type="button">Schermo intero</button>
+          <button class="ghost-btn" id="cardPng" type="button">Scarica immagine</button>
+          <button class="ghost-btn" id="cardStory" type="button">Scarica per la storia</button>
           <a class="ghost-btn pub-link" data-publink href="#" target="_blank" rel="noopener">404.bio/tuonome ↗</a>
         </div>
         <div class="card-box" style="margin-top:18px">
@@ -1216,6 +1222,17 @@
           </form>
           <p class="hint hidden" id="googleOnlyNote">Questo account accede con Google: email e password si gestiscono da Google.</p>
         </div>
+        <div class="label section-label">zona pericolosa</div>
+        <div class="card">
+          <p class="hint">Cancella il profilo pubblico, la tua @, i nomi extra, i file caricati e l'account. Non si torna indietro.</p>
+          <div class="row" style="margin-top:10px"><button class="ghost-btn" id="deleteAccount" type="button" style="border-color:#7a2a2a;color:#ff8a8a">Elimina account</button></div>
+          <div class="status" id="deleteStatus"></div>
+        </div>
+      </div>
+      <div class="label section-label">i tuoi dati</div>
+      <div class="card">
+        <p class="hint">Un file con tutto quello che hai messo su 404.bio: profilo, link, aspetto, carta. Lo puoi tenere come copia.</p>
+        <div class="row" style="margin-top:10px"><button class="ghost-btn" id="exportData" type="button">Scarica i miei dati</button><a class="ghost-btn" href="privacy.html" target="_blank" style="text-decoration:none">Privacy</a><a class="ghost-btn" href="termini.html" target="_blank" style="text-decoration:none">Termini</a></div>
       </div>
     </section>
 
@@ -1246,6 +1263,7 @@
       <button class="ghost-btn sm" id="csExit" type="button">&larr; Esci</button>
       <a class="ghost-btn sm pub-link" data-publink href="#" target="_blank" rel="noopener">404.bio/tuonome ↗</a>
       <span class="cs-sp"></span>
+      <button class="ghost-btn sm" id="csPng" type="button">Scarica</button>
       <button class="ghost-btn sm" id="csFull" type="button">Schermo intero</button>
       <button class="save-btn sm" id="csSave" type="button">Salva</button>
     </div>
@@ -1725,7 +1743,7 @@
   /* =========================================================
      Carta: the identity card editor (studio) and the public link
      ========================================================= */
-  const RESERVED_NAMES = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios"];
+  const RESERVED_NAMES = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "privacy", "termini"];
   const cardInfo = () => ({ handle, avatarUrl: draft.avatarUrl, displayName: draft.displayName });
   let cardThumb = null, cardStage = null, selSticker = "";
   const C = {
@@ -1897,6 +1915,19 @@
     else node.classList.add("fake-full");
   }
   $("csFull").addEventListener("click", () => toggleFull($("csStage")));
+  async function downloadCard(story) {
+    if (!draft.card) return;
+    setStatus(story ? "Preparo l'immagine per la storia…" : "Preparo l'immagine…");
+    try {
+      const m = await import("./card-kit.js");
+      const url = await m.cardImage(draft.card, cardInfo(), { story });
+      m.downloadDataUrl(url, `404bio-${handle}${story ? "-storia" : ""}.png`);
+      setStatus("Immagine scaricata.", "ok");
+    } catch (err) { setStatus("Immagine non riuscita: " + friendly(err), "err"); }
+  }
+  $("cardPng").addEventListener("click", () => downloadCard(false));
+  $("cardStory").addEventListener("click", () => downloadCard(true));
+  $("csPng").addEventListener("click", () => downloadCard(false));
   $("pvFull").addEventListener("click", () => toggleFull($("frame")));
   $("cardFull").addEventListener("click", () => {
     if (!draft.card) return;
@@ -2587,6 +2618,51 @@
     $("googleOnlyNote").classList.toggle("hidden", pw);
   }
   function setFormStatus(id, msg, type = "") { const s = $(id); s.textContent = msg; s.className = "status" + (msg ? " show " + type : ""); }
+
+  /* ---------- Your data: download everything, delete the account ---------- */
+  $("exportData").addEventListener("click", () => {
+    const data = { sito: "404.bio", esportato: new Date().toISOString(), handle, account: mode === "guest" ? null : { email: account && account.email, uid }, profilo: snapshot(draft) };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `404bio-${handle}-dati.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    setStatus("File scaricato.", "ok");
+  });
+  $("deleteAccount").addEventListener("click", async () => {
+    if (mode === "guest") return;
+    const typed = prompt(`Per eliminare tutto scrivi il tuo nome: ${handle}`);
+    if (typed === null) return;
+    if (typed.trim().toLowerCase().replace(/^@/, "") !== handle) return setFormStatus("deleteStatus", "Il nome non corrisponde: non ho cancellato niente.", "err");
+    setFormStatus("deleteStatus", "Cancello…");
+    try {
+      const { A, F, S, db, storage } = await firebase();
+      // Firebase asks for a recent login before deleting an account
+      const pw = (account.providerData || []).some(p => p.providerId === "password");
+      if (pw) {
+        const pass = prompt("Per sicurezza scrivi la tua password");
+        if (!pass) return setFormStatus("deleteStatus", "Annullato.", "");
+        await A.reauthenticateWithCredential(account, A.EmailAuthProvider.credential(account.email, pass));
+      } else {
+        await A.reauthenticateWithPopup(account, new A.GoogleAuthProvider());
+      }
+      // files: avatar and everything in media/<uid>
+      const del = r => S.deleteObject(r).catch(() => {});
+      await del(S.ref(storage, `avatars/${uid}`));
+      try { const all = await S.listAll(S.ref(storage, `media/${uid}`)); await Promise.all(all.items.map(del)); } catch (_) { /* nothing uploaded */ }
+      // extra names, public profile, the @, the private profile
+      const aliases = await F.getDocs(F.query(F.collection(db, "usernames"), F.where("aliasOf", "==", handle)));
+      await Promise.all(aliases.docs.filter(d => d.data().uid === uid).map(d => F.deleteDoc(d.ref)));
+      await F.deleteDoc(F.doc(db, "profiles", handle)).catch(() => {});
+      await F.deleteDoc(F.doc(db, "usernames", handle));
+      await F.deleteDoc(F.doc(db, "users", uid));
+      await A.deleteUser(account);
+      store.set(DRAFT_KEY, "");
+      location.replace("index.html?addio=1");
+    } catch (err) {
+      setFormStatus("deleteStatus", err && err.code === "auth/requires-recent-login" ? "Per sicurezza esci, rientra e riprova subito." : "Non riuscito: " + friendly(err), "err");
+    }
+  });
   $("emailForm").addEventListener("submit", async e => {
     e.preventDefault();
     const newEmail = $("newEmail").value.trim(), pw = $("emailPw").value;
