@@ -40,10 +40,10 @@ module.exports = async (req, res) => {
           description: text,
           color: 0xffffff,
           fields: [
-            { name: "Da", value: handle ? `[@${handle}](https://404.bio/${handle})` : "ospite", inline: true },
+            { name: "Da", value: handle ? `[@${handle}](https://18k.bio/${handle})` : "ospite", inline: true },
             ...(link ? [{ name: "Riferimento", value: link, inline: true }] : [])
           ],
-          footer: { text: "dall'app 404.bio" },
+          footer: { text: "dall'app 18k.bio" },
           timestamp: new Date().toISOString()
         }]
       })

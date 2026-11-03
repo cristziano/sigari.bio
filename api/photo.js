@@ -4,7 +4,7 @@
 const { ALBUMS, SNOWFLAKE, discord, mediaOf } = require("./_discord");
 
 module.exports = async (req, res) => {
-  const url = new URL(req.url, "https://404.bio");
+  const url = new URL(req.url, "https://18k.bio");
   const album = ALBUMS[url.searchParams.get("album") || ""];
   const m = url.searchParams.get("m") || "", i = Math.max(0, Math.min(20, parseInt(url.searchParams.get("i") || "0", 10) || 0));
   if (!album || !SNOWFLAKE.test(m)) { res.statusCode = 400; return res.end("Foto sconosciuta."); }

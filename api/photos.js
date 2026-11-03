@@ -4,7 +4,7 @@
 const { ALBUMS, SNOWFLAKE, discord, guildOf, mediaOf, avatarOf, thumbUrl } = require("./_discord");
 
 module.exports = async (req, res) => {
-  const url = new URL(req.url, "https://404.bio");
+  const url = new URL(req.url, "https://18k.bio");
   const key = url.searchParams.get("album") || "";
   const before = url.searchParams.get("before") || "";
   res.setHeader("Content-Type", "application/json; charset=utf-8");

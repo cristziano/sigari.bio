@@ -1,4 +1,4 @@
-/* 404.bio card kit.
+/* 18k.bio card kit.
    The identity card people design in the dashboard (Carta) and show on their profile.
    One renderer for the editor, the profile button and the full screen view. */
 
@@ -10,7 +10,7 @@ export const CARD_PATTERNS = [["none", "Niente"], ["grain", "Grana"], ["dots", "
 export const CARD_BORDERS = [["none", "Nessuno"], ["line", "Linea"], ["double", "Doppio"], ["neon", "Neon"], ["chrome", "Cromo"]];
 export const CARD_NAME_POS = [["bl", "In basso"], ["tl", "In alto"], ["c", "Al centro"], ["br", "A destra"]];
 export const STICKER_STYLES = [["diecut", "Sticker (bordo bianco)"], ["plain", "Solo ombra"], ["round", "Tondo"], ["polaroid", "Polaroid"], ["glow", "Bagliore"]];
-export const STICKER_EMOJI = ["★", "♥", "✦", "☾", "⚡", "☠", "♛", "✿", "☯", "♠", "404", "XO", "OK", "#1"];
+export const STICKER_EMOJI = ["★", "♥", "✦", "☾", "⚡", "☠", "♛", "✿", "☯", "♠", "18K", "XO", "OK", "#1"];
 
 export const DEFAULT_CARD = {
   on: true,
@@ -225,7 +225,7 @@ export function mountCard(root, card, data, opts = {}) {
     const handle = info.handle || "tuonome";
     const name = `@${handle}`;
     txt.replaceChildren();
-    if (cur.showBrand) { const b = h("div", "k4-brand"); b.innerHTML = "404<i>.bio</i>"; txt.appendChild(b); }
+    if (cur.showBrand) { const b = h("div", "k4-brand"); b.innerHTML = "18k<i>.bio</i>"; txt.appendChild(b); }
     if (cur.showAvatar) {
       const a = h("div", "k4-av");
       if (info.avatarUrl) { const i = h("img"); i.alt = ""; i.src = info.avatarUrl; i.onerror = () => { a.textContent = handle[0].toUpperCase(); }; a.appendChild(i); }
@@ -239,7 +239,7 @@ export function mountCard(root, card, data, opts = {}) {
     const meta = h("div", "k4-meta");
     const lines = [];
     if (cur.line) lines.push(cur.line);
-    if (cur.showDate) lines.push("404.bio/" + handle);
+    if (cur.showDate) lines.push("18k.bio/" + handle);
     meta.textContent = lines.join("\n"); meta.style.whiteSpace = "pre-line";
     if (lines.length) txt.appendChild(meta);
     renderStickers();
@@ -434,7 +434,7 @@ export async function cardImage(card, data, { story = false } = {}) {
   x.drawImage(img, -w / 2, -hh / 2, w, hh); x.restore();
   x.textAlign = "center";
   x.fillStyle = c.accent === "#000000" ? "#ffffff" : "#ffffff";
-  x.font = "700 66px Geist, Arial, sans-serif"; x.fillText("404.bio/" + (data.handle || "tuonome"), 540, 1420);
+  x.font = "700 66px Geist, Arial, sans-serif"; x.fillText("18k.bio/" + (data.handle || "tuonome"), 540, 1420);
   x.fillStyle = "#8a8a8a"; x.font = "500 34px 'Geist Mono', monospace"; x.fillText("prendi la tua @", 540, 1490);
   return cv.toDataURL("image/png");
 }

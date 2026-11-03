@@ -20,7 +20,7 @@ function token() {
 async function discord(path, init = {}) {
   const r = await fetch(API + path, {
     ...init,
-    headers: { Authorization: "Bot " + token(), "User-Agent": "DiscordBot (https://404.bio, 1.0)", ...(init.body ? { "Content-Type": "application/json" } : {}), ...(init.headers || {}) }
+    headers: { Authorization: "Bot " + token(), "User-Agent": "DiscordBot (https://18k.bio, 1.0)", ...(init.body ? { "Content-Type": "application/json" } : {}), ...(init.headers || {}) }
   });
   if (r.status === 429) { const e = new Error("Discord ci chiede di rallentare, riprova tra poco."); e.status = 429; throw e; }
   if (!r.ok) { const e = new Error("Discord ha risposto " + r.status); e.status = r.status === 403 || r.status === 404 ? r.status : 502; throw e; }

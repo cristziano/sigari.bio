@@ -1,4 +1,4 @@
-# 404.bio — catalogo completo delle feature
+# 18k.bio — catalogo completo delle feature
 
 Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.bio, lnk.bio, Linktree, Beacons, bio.link e Carrd.
 Stato aggiornato il 2026-10-30, dopo il secondo giro di feature, controllato sul codice, nel browser e con Firebase simulato (regole e login veri):
@@ -13,7 +13,7 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 1. Identità e @
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Prendi la tua @ (404.bio/nome) | FUNZIONA |  | tutti |
+| Prendi la tua @ (18k.bio/nome) | FUNZIONA |  | tutti |
 | Controllo dal vivo se il nome è libero | FUNZIONA |  | guns, feds |
 | Rarità del nome (3 / 4 / 5 / 6+ lettere) | FUNZIONA | solo sulla landing | haunt |
 | Una @ per account, bloccata | FUNZIONA |  | — |
@@ -23,9 +23,9 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
 | Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
-| Domini dei partner (404.gin/@nome, tuoserver.gg/nome) | SOSPESO | c'è solo la presentazione sulla landing | idea 404.bio |
-| Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea 404.bio |
-| Preset del link con il dominio dei partner | SOSPESO | serve configurare i domini | idea 404.bio |
+| Domini dei partner (18k.gin/@nome, tuoserver.gg/nome) | SOSPESO | c'è solo la presentazione sulla landing | idea 18k.bio |
+| Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea 18k.bio |
+| Preset del link con il dominio dei partner | SOSPESO | serve configurare i domini | idea 18k.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -97,14 +97,14 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 6. Community
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Topic della settimana | DA ATTIVARE | regole Firebase (per vedere le risposte sulla landing) | idea 404.bio |
+| Topic della settimana | DA ATTIVARE | regole Firebase (per vedere le risposte sulla landing) | idea 18k.bio |
 | Pubblicare template: pubblici, non in elenco, privati; usarne solo una parte | DA ATTIVARE | regole Firebase | guns |
 | Classifica profili per visite | DA ATTIVARE | regole Firebase; finché non ci sono 3 profili mostra un esempio | guns |
 | Contatore visite pubblico | DA ATTIVARE | regole Firebase | guns, lnk.bio |
-| Statistiche: visite, clic, social, ascolti, tempo, grafico 7/30 giorni | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
-| Feed delle interazioni in diretta | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
-| Clan con TAG riservata e pagina del clan | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 404.bio |
-| Fino a 3 clan per profilo, 1 principale | DA ATTIVARE | regole Firebase | idea 404.bio |
+| Statistiche: visite, clic, social, ascolti, tempo, grafico 7/30 giorni | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 18k.bio |
+| Feed delle interazioni in diretta | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 18k.bio |
+| Clan con TAG riservata e pagina del clan | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | idea 18k.bio |
+| Fino a 3 clan per profilo, 1 principale | DA ATTIVARE | regole Firebase | idea 18k.bio |
 | Classifica dei clan | DA ATTIVARE | regole Firebase | fakecrime |
 | Guestbook (firme di chi ha un account) | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | feds |
 | Esplora profili: nuovi, più visti, cerca una @ | DA ATTIVARE | regole Firebase | fakecrime |
@@ -116,15 +116,15 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Anteprima dal vivo mentre modifichi (desktop e telefono) | FUNZIONA |  | feds |
-| Pagina pubblica 404.bio/nome | DA ATTIVARE | regole Firebase | tutti |
-| Carta d'identità personale (editor a schermo pieno: opzioni a sinistra, solo la carta al centro) | FUNZIONA |  | idea 404.bio |
-| Carta: 10 stili pronti, gradienti a 2-5 colori, foto di sfondo con zoom/posizione/sfocatura/b&n | FUNZIONA |  | idea 404.bio |
-| Carta: raggi di luce (colore, numero, posizione, rotazione), riflesso olografico, punto di luce, bagliore | FUNZIONA |  | idea 404.bio |
-| Carta: texture (grana, puntini, griglia, righe, scanline, dither, stelle, scacchi), 5 bordi, angoli | FUNZIONA |  | idea 404.bio |
-| Carta: foto trasformata in sticker (sfondo tolto da solo, ritaglio, bordo bianco), simboli e testi, trascina/ruota/ingrandisci | FUNZIONA |  | idea 404.bio |
-| Bottone "la mia carta" sul profilo, carta a schermo intero che si inclina col mouse | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
-| Schermo intero e link 404.bio/nome cliccabile nell'anteprima | FUNZIONA |  | idea 404.bio |
-| Indirizzo corto 404.bio/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 404.bio |
+| Pagina pubblica 18k.bio/nome | DA ATTIVARE | regole Firebase | tutti |
+| Carta d'identità personale (editor a schermo pieno: opzioni a sinistra, solo la carta al centro) | FUNZIONA |  | idea 18k.bio |
+| Carta: 10 stili pronti, gradienti a 2-5 colori, foto di sfondo con zoom/posizione/sfocatura/b&n | FUNZIONA |  | idea 18k.bio |
+| Carta: raggi di luce (colore, numero, posizione, rotazione), riflesso olografico, punto di luce, bagliore | FUNZIONA |  | idea 18k.bio |
+| Carta: texture (grana, puntini, griglia, righe, scanline, dither, stelle, scacchi), 5 bordi, angoli | FUNZIONA |  | idea 18k.bio |
+| Carta: foto trasformata in sticker (sfondo tolto da solo, ritaglio, bordo bianco), simboli e testi, trascina/ruota/ingrandisci | FUNZIONA |  | idea 18k.bio |
+| Bottone "la mia carta" sul profilo, carta a schermo intero che si inclina col mouse | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 18k.bio |
+| Schermo intero e link 18k.bio/nome cliccabile nell'anteprima | FUNZIONA |  | idea 18k.bio |
+| Indirizzo corto 18k.bio/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 18k.bio |
 | Password dimenticata (link via email) | DA ATTIVARE | regole Firebase già ok; l'email la manda Firebase | tutti |
 | Verifica email all'iscrizione | FUNZIONA |  | tutti |
 | Elimina account (profilo, @, nomi extra, file, account) | DA ATTIVARE | pubblicare le nuove regole Firebase | GDPR |
@@ -132,10 +132,10 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Privacy e Termini, consenso all'iscrizione (14 anni) | FUNZIONA | farli controllare da un esperto | legge |
 | Segnala un profilo (motivo + dettagli, li legge lo staff dalla console) | DA ATTIVARE | pubblicare le nuove regole Firebase | guns |
 | Una sola @ principale per account, nomi riservati anche nel database | DA ATTIVARE | pubblicare le nuove regole Firebase | sicurezza |
-| Carta scaricabile come immagine e come storia Instagram | FUNZIONA |  | idea 404.bio |
+| Carta scaricabile come immagine e come storia Instagram | FUNZIONA |  | idea 18k.bio |
 | Icona, anteprima di condivisione, robots.txt, sitemap, installabile sul telefono | FUNZIONA |  | tutti |
-| Sfondo di riserva se una GIF/foto non esiste più | FUNZIONA |  | idea 404.bio |
-| Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea 404.bio |
+| Sfondo di riserva se una GIF/foto non esiste più | FUNZIONA |  | idea 18k.bio |
+| Se il nome è libero la pagina dice "è libera, prendila" | FUNZIONA |  | idea 18k.bio |
 | Profilo privato o fuori dalla classifica | FUNZIONA |  | guns |
 | Nascondi visite e badge | FUNZIONA |  | guns |
 | Titolo della scheda (anche animato) e favicon | FUNZIONA |  | guns, lnk.bio |
@@ -158,12 +158,12 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 |---|---|---|---|
 | Accesso con Google | FUNZIONA | serve il dominio .vercel.app tra i domini autorizzati | — |
 | Email e password | FUNZIONA |  | — |
-| Dashboard senza account, profilo portato nell'account alla registrazione | FUNZIONA |  | idea 404.bio |
+| Dashboard senza account, profilo portato nell'account alla registrazione | FUNZIONA |  | idea 18k.bio |
 | Dashboard chiara / scura | FUNZIONA |  | — |
 | Accesso con Discord | DA ATTIVARE | il codice c'è ma è spento: va configurato in Firebase | guns, feds |
 | Premium a vita, paghi una volta | MANCA |  | guns, feds, haunt |
 
-## Idee che i concorrenti NON hanno (vantaggio di 404.bio)
+## Idee che i concorrenti NON hanno (vantaggio di 18k.bio)
 - **Moods**: la stessa estetica bianco e nero in tre texture (fumo, dither, ASCII), scelta dal visitatore. Sulla landing.
 - **Anteprima del link prima di registrarti**: scrivi la @ e vedi come appare su Discord, Instagram e TikTok. Sulla landing.
 - **Rarità visibile del nome**: sulla landing; da portare sul profilo come badge.
