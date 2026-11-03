@@ -371,6 +371,12 @@
   .pt-link span b { color:#fff; font-weight:500; }
   .pt-row { display:grid; grid-template-columns:70px 1fr; gap:10px; align-items:start; margin-top:14px; }
   .pt-row .chips { margin-top:0; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:34px; padding:0 12px; border:1px solid var(--line2, #2c2c2c); border-radius:999px; background:rgba(255,255,255,.03); color:#cfcfcf; font:500 12.5px var(--mono, monospace); cursor:pointer; transition:border-color .2s, background .2s, color .2s; -webkit-tap-highlight-color:transparent; }
+  .chip small { font-size:10.5px; color:#777; }
+  .chip:hover { border-color:#777; color:#fff; }
+  .chip[aria-pressed="true"] { background:#fff; border-color:#fff; color:#000; }
+  .chip[aria-pressed="true"] small { color:#555; }
   .pt-k { font:400 11px var(--mono); color:#6a6a6a; padding-top:9px; }
   .pt-prev { margin-top:18px; padding:16px; border-radius:12px; background:#0d0d0d; border:1px solid var(--line); }
   .pt-emb { display:flex; justify-content:space-between; gap:12px; padding:12px 14px; border-radius:6px; border-left:3px solid #fff; background:#151515; transition:all .4s var(--ease); }
@@ -711,14 +717,14 @@
   <section class="s" id="partners">
     <div class="wrap">
       <div class="sh rv"><span class="no">06 / partner</span><div>
-        <h2 class="h2">Il tuo server, il tuo link. <span class="g">Per ogni membro.</span></h2>
-        <p class="sub">Ogni server partner può mettere il suo nome nei link dei profili dei suoi membri. Stessa pagina, con il nome che la tua community conosce già. Poi scegli formato e stile dell'anteprima tra tanti preset.</p>
+        <h2 class="h2">Un nome, tanti prefissi. <span class="g">Sempre 18k.</span></h2>
+        <p class="sub">Il tuo link è 18k.bio/tuonome. Oppure scegli un prefisso: 18k.gg, 18k.lol, 18k.rip, 18k.fm e altri, sempre con /tuonome dopo. Stessa pagina, il vibe che vuoi. Poi scegli lo stile dell'anteprima.</p>
       </div></div>
       <div class="pt">
         <div class="pt-builder rv">
           <div class="stx-h"><span>link da condividere</span><span>preset</span></div>
           <div class="pt-link"><span id="ptLink" class="mono"></span><button class="btn" type="button" id="ptCopy" data-mag>Copia</button></div>
-          <div class="pt-row"><span class="pt-k">dominio</span><div class="chips" id="ptDomain"></div></div>
+          <div class="pt-row"><span class="pt-k">prefisso</span><div class="chips" id="ptDomain"></div></div>
           <div class="pt-row"><span class="pt-k">formato</span><div class="chips" id="ptFormat"></div></div>
           <div class="pt-row"><span class="pt-k">anteprima</span><div class="chips" id="ptEmbed"></div></div>
           <div class="pt-prev" id="ptPrev" data-embed="classic">
@@ -1395,8 +1401,11 @@
 
   /* ---------- Partners: link presets + partner wall ---------- */
   const INVITE = "https://discord.gg/18k";
-  const DOMAINS = [["18k.bio", "predefinito"], ["18k.gin", "partner"], ["tuoserver.gg", "il tuo server"]];
-  const FORMATS = [["/", "/nome"], ["/@", "/@nome"], ["sub", "nome.dominio"]];
+  // The address is always prefix + "/" + name: 18k.bio/nome is the default, the others are 18k prefixes
+  const DOMAINS = [["18k.bio", "predefinito"], ["18k.gin", "partner"],
+    ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
+    ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
+  const FORMATS = [["/", "/nome"], ["/@", "/@nome"]];
   const EMBEDS = ["classica", "banner", "mono"];
   const pt = { domain: 0, format: 0, embed: 0 };
   const chipRow = (el, items, key) => {

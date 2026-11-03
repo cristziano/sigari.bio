@@ -4,7 +4,7 @@ Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.
 Stato aggiornato il 2026-10-30, dopo il secondo giro di feature, controllato sul codice, nel browser e con Firebase simulato (regole e login veri):
 
 - **FUNZIONA** (57): c'è ed è stata provata.
-- **SOSPESO**: tutto quello che dipende dal dominio, in pausa finché non decidete il dominio nuovo (vedi README, "Cambio dominio").
+- **SOSPESO**: tutto quello che dipende dal dominio: il nome è 18k.bio, manca comprarlo e collegarlo (vedi README, "Dominio e prefissi").
 - **DA ATTIVARE** (31): c'è, ma serve un passaggio (scritto nella nota) oppure qui non si poteva provare.
 - **MANCA** (11): da costruire.
 
@@ -19,11 +19,11 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Una @ per account, bloccata | FUNZIONA |  | — |
 | Badge dello staff (beta, prima ora, verificato, partner, vincitore) | DA ATTIVARE | regole Firebase; si assegnano dalla console | guns |
 | Nomi extra: fino a 3 @ che portano a te | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
-| Dominio personale | SOSPESO | in pausa finché non si sceglie il dominio nuovo |  | haunt, lnk.bio, Carrd |
+| Dominio personale | SOSPESO | sarà sempre prefisso/nome (18k.bio/nome o un prefisso 18k): manca collegare i domini |  | haunt, lnk.bio, Carrd |
 | Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
 | Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
-| Domini dei partner (18k.gin/@nome, tuoserver.gg/nome) | SOSPESO | c'è solo la presentazione sulla landing | idea 18k.bio |
+| Prefissi 18k (18k.gin, 18k.gg, 18k.lol, 18k.wtf, 18k.rip, 18k.fm, 18k.vip, 18k.ink, 18k.cc, 18kt.bio, x18k.bio) + /nome | SOSPESO | c'è la presentazione sulla landing, mancano i domini | idea 18k.bio |
 | Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea 18k.bio |
 | Preset del link con il dominio dei partner | SOSPESO | serve configurare i domini | idea 18k.bio |
 

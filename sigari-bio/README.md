@@ -51,14 +51,20 @@ Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qua
 
 Apri la cartella in VS Code e avvia **Live Server** su `index.html`. La pagina pubblica in locale: `profile.html?u=nome`.
 
-## Cambio dominio (in pausa)
+## Dominio e prefissi
 
-Il dominio 18k.bio non è definitivo: tutto quello che dipende dal dominio è **sospeso** finché non si sceglie quello nuovo. Quando c'è, si cambia qui:
+Il sito si chiama **18k.bio** ed è il dominio principale. Ogni profilo è sempre **prefisso/nomeutente**:
 
-- **Vercel → Settings → Domains**: aggiungere il dominio nuovo.
-- **Firebase → Authentication → Settings → Authorized domains**: aggiungere il dominio nuovo (senza, il login con Google non va).
-- **Testi "18k.bio/nome"** mostrati nel sito (index, login, dashboard, card-kit, profile-kit, api/request.js, api/profile.js): cercare `18k.bio`.
-- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a sigaribio.vercel.app, che funziona).
-- **Domini dei partner** (18k.gin, tuoserver.gg) e preset dei link: da decidere.
+- predefinito: `18k.bio/nomeutente` (anche `18k.bio/@nomeutente`);
+- prefissi 18k: `18k.gin`, `18k.gg`, `18k.lol`, `18k.wtf`, `18k.rip`, `18k.fm`, `18k.vip`, `18k.ink`, `18k.cc`, `18kt.bio`, `x18k.bio`, sempre con `/nomeutente` dopo.
+
+Niente domini esterni (tipo il dominio di un server) e niente sottodomini (nome.18k.bio).
+
+Per accenderli (lo fa chi gestisce Vercel e Firebase, ancora da fare):
+
+- **Comprare** 18k.bio e i prefissi che si vogliono usare.
+- **Vercel → Settings → Domains**: aggiungere ogni dominio. Il codice funziona su tutti senza modifiche, perché le rotte `/nome` e `/@nome` valgono per qualsiasi dominio.
+- **Firebase → Authentication → Settings → Authorized domains**: aggiungerli (senza, il login con Google non va).
+- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a sigaribio.vercel.app, che funziona): passarli a 18k.bio.
 
 Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre il sito, quindi funziona con qualsiasi dominio.
