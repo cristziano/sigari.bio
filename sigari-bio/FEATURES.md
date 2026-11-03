@@ -4,6 +4,7 @@ Ricerca fatta il 2026-10-29 su guns.lol, feds.lol, haunt.gg, fakecrime.bio, e-z.
 Stato aggiornato il 2026-10-30, dopo il secondo giro di feature, controllato sul codice, nel browser e con Firebase simulato (regole e login veri):
 
 - **FUNZIONA** (57): c'è ed è stata provata.
+- **SOSPESO**: tutto quello che dipende dal dominio, in pausa finché non decidete il dominio nuovo (vedi README, "Cambio dominio").
 - **DA ATTIVARE** (31): c'è, ma serve un passaggio (scritto nella nota) oppure qui non si poteva provare.
 - **MANCA** (11): da costruire.
 
@@ -18,13 +19,13 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Una @ per account, bloccata | FUNZIONA |  | — |
 | Badge dello staff (beta, prima ora, verificato, partner, vincitore) | DA ATTIVARE | regole Firebase; si assegnano dalla console | guns |
 | Nomi extra: fino a 3 @ che portano a te | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
-| Dominio personale | MANCA |  | haunt, lnk.bio, Carrd |
+| Dominio personale | SOSPESO | in pausa finché non si sceglie il dominio nuovo |  | haunt, lnk.bio, Carrd |
 | Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
 | Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
-| Domini dei partner (404.gin/@nome, tuoserver.gg/nome) | MANCA | c'è solo la presentazione sulla landing | idea 404.bio |
+| Domini dei partner (404.gin/@nome, tuoserver.gg/nome) | SOSPESO | c'è solo la presentazione sulla landing | idea 404.bio |
 | Condividi: un link per ogni social, QR code personalizzabile, anteprima Discord | FUNZIONA |  | idea 404.bio |
-| Preset del link con il dominio dei partner | MANCA | serve configurare i domini | idea 404.bio |
+| Preset del link con il dominio dei partner | SOSPESO | serve configurare i domini | idea 404.bio |
 
 ## 2. Contenuto del profilo
 | Feature | Stato | Nota | Chi ce l'ha |
@@ -148,7 +149,7 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Image host: carichi e hai subito il link diretto | DA ATTIVARE | serve Storage attivo | guns, fakecrime |
-| Dominio personale per gli upload | MANCA |  | guns |
+| Dominio personale per gli upload | SOSPESO |  | guns |
 | Galleria sul profilo (griglia, scorrevole, polaroid) | FUNZIONA |  | guns |
 | Text paste con link | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
 

@@ -50,3 +50,15 @@ Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qua
 ## Avvio in locale
 
 Apri la cartella in VS Code e avvia **Live Server** su `index.html`. La pagina pubblica in locale: `profile.html?u=nome`.
+
+## Cambio dominio (in pausa)
+
+Il dominio 404.bio non è definitivo: tutto quello che dipende dal dominio è **sospeso** finché non si sceglie quello nuovo. Quando c'è, si cambia qui:
+
+- **Vercel → Settings → Domains**: aggiungere il dominio nuovo.
+- **Firebase → Authentication → Settings → Authorized domains**: aggiungere il dominio nuovo (senza, il login con Google non va).
+- **Testi "404.bio/nome"** mostrati nel sito (index, login, dashboard, card-kit, profile-kit, api/request.js, api/profile.js): cercare `404.bio`.
+- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a sigaribio.vercel.app, che funziona).
+- **Domini dei partner** (404.gin, tuoserver.gg) e preset dei link: da decidere.
+
+Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre il sito, quindi funziona con qualsiasi dominio.
