@@ -636,7 +636,7 @@
           <div class="stx-h"><span>le tue tag </span><span id="slotCount">2 / 3 slot</span></div>
           <div class="cl-id">
             <div class="av" data-initial>T</div>
-            <div><div class="cl-name"><span data-at>@tuonome</span> <span class="ctag prim" id="primTag">404</span></div><small>il gruppo primario appare accanto al tuo nome</small></div>
+            <div><div class="cl-name"><span data-at>@tuonome</span> <span class="ctag prim" id="primTag">18K</span></div><small>il gruppo primario appare accanto al tuo nome</small></div>
           </div>
           <div class="slots" id="slots"></div>
           <form class="cl-add" id="tagForm" novalidate>
@@ -755,7 +755,7 @@
         <div class="shot rv" style="--d:.08s">
           <div class="shot-h"><span data-name>tuonome</span><span>instagram</span></div>
           <div class="ig"><div class="ringed"><div class="av" data-initial>T</div></div><div class="stats"><div><b>48</b>post</div><div><b>2.100</b>follower</div><div><b>312</b>seguiti</div></div></div>
-          <div class="bio2"><b style="color:#fff">404studios</b><br>nero, bianco e senza filtri<br><span class="lk">↗ <span data-url>404.bio/tuonome</span></span></div>
+          <div class="bio2"><b style="color:#fff">18k</b><br>nero, bianco e senza filtri<br><span class="lk">↗ <span data-url>404.bio/tuonome</span></span></div>
         </div>
         <div class="shot tt rv" style="--d:.16s">
           <div class="shot-h"><span>profilo</span><span>tiktok</span></div>
@@ -831,7 +831,7 @@
 
 <footer>
   <div class="foot">
-    <span>Fatto da 404studios, tutti i diritti riservati. · <a href="privacy.html" style="color:inherit">Privacy</a> · <a href="termini.html" style="color:inherit">Termini</a></span>
+    <span>Fatto da 18k, tutti i diritti riservati. · <a href="privacy.html" style="color:inherit">Privacy</a> · <a href="termini.html" style="color:inherit">Termini</a></span>
     <nav aria-label="Piè di pagina"><a href="login.html?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
   </div>
   <div class="word" aria-hidden="true">404.bio</div>
@@ -854,7 +854,7 @@
     document.body.appendChild(n); setTimeout(() => n.remove(), 6000);
     history.replaceState(null, "", location.pathname);
   }
-  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "privacy", "termini"];
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
   const state = { handle: "", avail: null, mood: "smoke" };
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
   const rarity = h => h.length === 3 ? ["leggendaria", 4] : h.length === 4 ? ["epica", 3] : h.length === 5 ? ["rara", 2] : ["classica", 1];
@@ -1332,8 +1332,8 @@
   })();
 
   /* ---------- Clans: tag slots (demo) + leaderboard (example data) ---------- */
-  const TAKEN = ["404", "VOID", "GHO", "NYX", "ASH", "MONO", "HEX", "OG"];
-  const slots = [{ tag: "404", name: "404studios" }, { tag: "VOID", name: "void" }, null];
+  const TAKEN = ["18K", "VOID", "GHO", "NYX", "ASH", "MONO", "HEX", "OG"];
+  const slots = [{ tag: "18K", name: "18k" }, { tag: "VOID", name: "void" }, null];
   let primary = 0;
   function renderSlots() {
     const box = $("#slots");
@@ -1376,8 +1376,8 @@
   renderSlots();
 
   const LB = {
-    profiles: [["nyx", "404", 48210], ["vanta", "VOID", 41987], ["ghost", "404", 36502], ["luna", "GHO", 29870], ["kai", "HEX", 24113], ["mono", "MONO", 19640], ["ash", "VOID", 15302]],
-    clans: [["404", "404studios", 128440, 312], ["VOID", "void", 97210, 188], ["GHO", "ghost club", 61300, 96], ["HEX", "hex", 44120, 71], ["MONO", "mono", 30980, 52], ["NYX", "nyx crew", 21400, 40], ["OG", "og", 12050, 18]]
+    profiles: [["nyx", "18K", 48210], ["vanta", "VOID", 41987], ["ghost", "18K", 36502], ["luna", "GHO", 29870], ["kai", "HEX", 24113], ["mono", "MONO", 19640], ["ash", "VOID", 15302]],
+    clans: [["18K", "18k", 128440, 312], ["VOID", "void", 97210, 188], ["GHO", "ghost club", 61300, 96], ["HEX", "hex", 44120, 71], ["MONO", "mono", 30980, 52], ["NYX", "nyx crew", 21400, 40], ["OG", "og", 12050, 18]]
   };
   function renderLB(kind) {
     $("#lb").innerHTML = LB[kind].map((r, i) => kind === "profiles"
@@ -1420,7 +1420,7 @@
     setTimeout(() => { btn.textContent = "Copia"; }, 1600);
   });
   // Partner list: add real partner servers here
-  const PARTNERS = [{ name: "404studios", role: "proprietario", domain: "404.gin", mark: "404", href: INVITE }];
+  const PARTNERS = [{ name: "18k", role: "proprietario", domain: "404.gin", mark: "18k", href: INVITE }];
   const OPEN_SLOTS = 3;
   $("#ptWall").innerHTML = PARTNERS.map((p, i) => `<a class="pc2 rv" style="--d:${i * .06}s" href="${p.href}" target="_blank" rel="noopener"><span class="lg">${p.mark}</span><b>${p.name}</b><small>${p.role}</small><span class="dm">${p.domain}/<span data-at>@tuonome</span></span></a>`).join("")
     + Array.from({ length: OPEN_SLOTS }, (_, i) => `<a class="pc2 open rv" style="--d:${(PARTNERS.length + i) * .06}s" href="${INVITE}" target="_blank" rel="noopener"><span class="lg">+</span><b>Il tuo server</b><small>posto partner libero</small><span class="dm">tuoserver.gg/<span data-at>@tuonome</span></span></a>`).join("");
@@ -1454,7 +1454,7 @@
     // Each template returns [className, innerHTML]. Positions, photos and stickers are random every time.
     const T = [
       ["foto intera", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div>${brand()}<div class="who" style="font:italic 400 9cqw 'Instrument Serif', serif">${AT()}</div><div class="meta2">MEMBRO<br>DAL 2026</div>`]],
-      ["gotico", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">404<br>STUDIOS</div>`]],
+      ["gotico", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.28"><div class="big" style="right:${R(4, 14)}%;top:${R(-6, 8)}%;font:400 52cqw 'UnifrakturMaguntia', serif;opacity:.9">${INI()}</div>${brand()}<div class="who" style="font:400 8cqw 'Pirata One', serif">${AT()}</div><div class="stamp" style="right:${R(6, 20)}%;bottom:${R(26, 40)}%;transform:rotate(${R(-20, 20)}deg)">18K</div>`]],
       ["iceman", () => ["", `<div style="position:absolute;inset:0;background:radial-gradient(110% 90% at 72% 38%, #141a20, #000 62%)"></div><svg class="glove" viewBox="0 0 200 220" aria-hidden="true"><defs><radialGradient id="gm" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#cfe6f5"/><stop offset="1" stop-color="#3a4652"/></radialGradient><pattern id="rh" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#11161b"/><circle cx="3.5" cy="3.5" r="2.9" fill="url(#gm)"/></pattern><filter id="mb" x="-40%" y="-10%" width="180%" height="120%"><feGaussianBlur stdDeviation="9 1"/></filter><g id="hand"><path d="M70 214 L76 168 Q58 150 60 124 Q62 104 80 98 L132 98 Q150 102 150 122 L148 160 Q140 182 122 190 L126 214 Z"/><rect x="92" y="18" width="21" height="96" rx="10.5" transform="rotate(-6 102 66)"/><rect x="117" y="28" width="20" height="88" rx="10" transform="rotate(4 127 72)"/><rect x="139" y="50" width="18" height="74" rx="9" transform="rotate(14 148 87)"/><circle cx="58" cy="86" r="24" fill="none" stroke-width="17"/><path d="M60 124 Q40 112 36 96" fill="none" stroke-width="17" stroke-linecap="round"/></g></defs><use href="#hand" fill="#cfe6f5" stroke="#cfe6f5" opacity=".28" filter="url(#mb)" transform="translate(-26 4)"/><use href="#hand" fill="url(#rh)" stroke="url(#rh)"/><use href="#hand" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/></svg>${brand()}<div class="big" style="left:6%;top:24%;font:400 4cqw var(--mono);letter-spacing:.5em;opacity:.55">ICED OUT</div><div class="who ice" style="font:400 8.6cqw 'Rubik Mono One', sans-serif">${AT()}</div>${Array.from({ length: 5 }, (_, i) => `<div class="glint" style="left:${R(4, 70)}%;top:${R(48, 86)}%;animation-delay:${(i * .37).toFixed(2)}s"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.2 9.8L24 12l-9.8 2.2L12 24l-2.2-9.8L0 12l9.8-2.2z"/></svg></div>`).join("")}<div class="meta2">❄ 1/1</div>`]],
       ["terminale", () => ["", `<div style="position:absolute;inset:0;background:#050505"></div><div class="lines" style="left:6%;top:${R(10, 22)}%">&gt; whoami\n${AT()}\n&gt; classifica --settimana\n#${Math.floor(R(1, 99))} ▮</div><div class="scan"></div><div class="meta2" style="font-family:'VT323',monospace;font-size:4cqw">404.bio</div>${stk("cross", R(70, 84), R(12, 30), 12, 0)}`]],
       ["pixel", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
