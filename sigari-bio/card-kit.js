@@ -10,6 +10,7 @@ export const CARD_PATTERNS = [["none", "Niente"], ["grain", "Grana"], ["dots", "
 export const CARD_BORDERS = [["none", "Nessuno"], ["line", "Linea"], ["double", "Doppio"], ["neon", "Neon"], ["chrome", "Cromo"]];
 export const CARD_NAME_POS = [["bl", "In basso"], ["tl", "In alto"], ["c", "Al centro"], ["br", "A destra"]];
 export const STICKER_STYLES = [["diecut", "Sticker (bordo bianco)"], ["plain", "Solo ombra"], ["round", "Tondo"], ["polaroid", "Polaroid"], ["glow", "Bagliore"]];
+export const TEXT_PARTS = ["brand", "avatar", "num", "name", "meta"];
 export const STICKER_EMOJI = ["★", "♥", "✦", "☾", "⚡", "☠", "♛", "✿", "☯", "♠", "18K", "XO", "OK", "#1"];
 
 export const DEFAULT_CARD = {
@@ -93,6 +94,10 @@ export function normalizeCard(raw) {
   c.number = String(c.number || "").slice(0, 24); c.line = String(c.line || "").slice(0, 60);
   c.stickers = (Array.isArray(c.stickers) ? c.stickers : []).map(normalizeSticker).filter(Boolean).slice(0, 12);
   c.preset = String(c.preset || "").slice(0, 20);
+  // texts moved freely in the editor: top-left corner in % of the card
+  const pos = isObj(c.pos) ? c.pos : {};
+  c.pos = {};
+  TEXT_PARTS.forEach(k => { if (isObj(pos[k])) c.pos[k] = { x: clamp(pos[k].x, -5, 105, 6), y: clamp(pos[k].y, -5, 105, 8) }; });
   return c;
 }
 
@@ -101,7 +106,7 @@ export function applyCardPreset(card, id) {
   if (!p) return normalizeCard(card);
   const cur = normalizeCard(card);
   // A preset changes the look, never your stickers and texts
-  const keep = { stickers: cur.stickers, number: cur.number, line: cur.line, on: cur.on, showBrand: cur.showBrand, showAvatar: cur.showAvatar, showNumber: cur.showNumber, showDate: cur.showDate };
+  const keep = { pos: cur.pos, stickers: cur.stickers, number: cur.number, line: cur.line, on: cur.on, showBrand: cur.showBrand, showAvatar: cur.showAvatar, showNumber: cur.showNumber, showDate: cur.showDate };
   return normalizeCard({ ...merge(DEFAULT_CARD, p.c), ...keep, preset: id });
 }
 
@@ -165,6 +170,15 @@ const CSS = `
 .k4[data-border=double] .k4-edge{box-shadow:inset 0 0 0 1px var(--k4-bc),inset 0 0 0 5px transparent,inset 0 0 0 6px color-mix(in srgb,var(--k4-bc) 60%,transparent)}
 .k4[data-border=neon] .k4-edge{box-shadow:inset 0 0 0 1.5px var(--k4-bc),inset 0 0 18px color-mix(in srgb,var(--k4-bc) 60%,transparent)}
 .k4[data-border=chrome] .k4-edge{border:2px solid transparent;background:linear-gradient(135deg,#fff,#777,#fff,#444,#eee) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0)}
+.k4-guides{position:absolute;inset:0;z-index:40;pointer-events:none}
+.k4-guides{mix-blend-mode:normal}
+.k4-guide{position:absolute;background:#ff2bd6;box-shadow:0 0 6px #ff2bd6}
+.k4-guide.v{top:-4%;bottom:-4%;width:2px;margin-left:-1px}
+.k4-guide.h{left:-3%;right:-3%;height:2px;margin-top:-1px}
+.k4.edit .k4-txt{pointer-events:none}
+.k4.edit .k4-txt>[data-part]{pointer-events:auto;cursor:move}
+.k4.edit .k4-txt>[data-part]:hover,.k4.edit .k4-txt>[data-part].drag{outline:1px dashed color-mix(in srgb,var(--k4-acc) 70%,transparent);outline-offset:3px}
+.k4.edit .k4-txt>[data-part].free{right:auto!important;bottom:auto!important}
 @media (prefers-reduced-motion:reduce){.k4-rays.spin{animation:none}}
 `;
 function ensureCss() {
@@ -225,30 +239,40 @@ export function mountCard(root, card, data, opts = {}) {
     const handle = info.handle || "tuonome";
     const name = `@${handle}`;
     txt.replaceChildren();
-    if (cur.showBrand) { const b = h("div", "k4-brand"); b.innerHTML = "18k<i>.bio</i>"; txt.appendChild(b); }
+    if (cur.showBrand) { const b = h("div", "k4-brand"); b.dataset.part = "brand"; b.innerHTML = "18k<i>.bio</i>"; txt.appendChild(b); }
     if (cur.showAvatar) {
-      const a = h("div", "k4-av");
+      const a = h("div", "k4-av"); a.dataset.part = "avatar";
       if (info.avatarUrl) { const i = h("img"); i.alt = ""; i.src = info.avatarUrl; i.onerror = () => { a.textContent = handle[0].toUpperCase(); }; a.appendChild(i); }
       else a.textContent = handle[0].toUpperCase();
       txt.appendChild(a);
     }
-    if (cur.showNumber) { const n = h("div", "k4-num"); n.textContent = cur.number || "N° " + String([...handle].reduce((x, ch) => (x * 31 + ch.charCodeAt(0)) % 10000, 7)).padStart(4, "0"); txt.appendChild(n); }
-    const nm = h("div", "k4-name");
+    if (cur.showNumber) { const n = h("div", "k4-num"); n.dataset.part = "num"; n.textContent = cur.number || "N° " + String([...handle].reduce((x, ch) => (x * 31 + ch.charCodeAt(0)) % 10000, 7)).padStart(4, "0"); txt.appendChild(n); }
+    const nm = h("div", "k4-name"); nm.dataset.part = "name";
     nm.innerHTML = `<b>@</b>`; nm.appendChild(document.createTextNode(cur.upper ? handle.toUpperCase() : handle));
     txt.appendChild(nm);
-    const meta = h("div", "k4-meta");
+    const meta = h("div", "k4-meta"); meta.dataset.part = "meta";
     const lines = [];
     if (cur.line) lines.push(cur.line);
     if (cur.showDate) lines.push("18k.bio/" + handle);
     meta.textContent = lines.join("\n"); meta.style.whiteSpace = "pre-line";
     if (lines.length) txt.appendChild(meta);
+    txt.querySelectorAll("[data-part]").forEach(placePart);
     renderStickers();
     requestAnimationFrame(() => fit(nm));
+  }
+  // A text moved by hand sits at its own spot (top-left corner, % of the card)
+  function placePart(n) {
+    const p = cur.pos[n.dataset.part];
+    n.classList.toggle("free", !!p);
+    if (!p) { n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.transform = ""; return; }
+    n.style.left = p.x + "%"; n.style.top = p.y + "%"; n.style.right = "auto"; n.style.bottom = "auto"; n.style.transform = "none";
+    n.style.transformOrigin = "0 0";
   }
   // The name always fits on one line
   function fit(nm) {
     nm.style.scale = "";
-    const room = el.clientWidth * (cur.namePos === "c" ? .88 : .86) - (cur.namePos === "c" ? 0 : el.clientWidth * .06), need = nm.scrollWidth;
+    const free = cur.pos.name;
+    const room = free ? el.clientWidth * (.97 - free.x / 100) : el.clientWidth * (cur.namePos === "c" ? .88 : .86) - (cur.namePos === "c" ? 0 : el.clientWidth * .06), need = nm.scrollWidth;
     if (room > 0 && need > room) nm.style.scale = (room / need).toFixed(3);
   }
   function renderStickers() {
@@ -278,6 +302,71 @@ export function mountCard(root, card, data, opts = {}) {
     });
     for (const [id, n] of nodes) if (!seen.has(id)) { n.remove(); nodes.delete(id); }
   }
+
+  /* ---------- Snapping guides (like Canva): edges and centres line up with the card and with each other ---------- */
+  let guides = null;
+  const SNAP = 1.4; // % of the card
+  function showGuides(vs, hs) {
+    if (!guides) { guides = h("div", "k4-guides"); el.appendChild(guides); }
+    guides.replaceChildren(...vs.map(x => { const g = h("div", "k4-guide v"); g.style.left = x + "%"; return g; }), ...hs.map(y => { const g = h("div", "k4-guide h"); g.style.top = y + "%"; return g; }));
+  }
+  function hideGuides() { if (guides) { guides.remove(); guides = null; } }
+  // box: {l, t, w, h} in % of the card; skip: the node being moved. Returns the snapped box and the lines to draw.
+  function snapBox(box, skip) {
+    const r = el.getBoundingClientRect();
+    const xs = [6, 50, 94], ys = [8, 50, 92];
+    el.querySelectorAll(".k4-txt>[data-part], .k4-s").forEach(n => {
+      if (n === skip) return;
+      const b = n.getBoundingClientRect();
+      const l = (b.left - r.left) / r.width * 100, t = (b.top - r.top) / r.height * 100, w = b.width / r.width * 100, hh = b.height / r.height * 100;
+      xs.push(l, l + w / 2, l + w); ys.push(t, t + hh / 2, t + hh);
+    });
+    const pick = (points, lines) => {
+      let best = null;
+      points.forEach((p, i) => lines.forEach(L => { const d = L - p; if (Math.abs(d) <= SNAP && (!best || Math.abs(d) < Math.abs(best.d))) best = { d, line: L, i }; }));
+      return best;
+    };
+    const bx = pick([box.l, box.l + box.w / 2, box.l + box.w], xs);
+    const by = pick([box.t, box.t + box.h / 2, box.t + box.h], ys);
+    const out = { ...box };
+    if (bx) out.l += bx.d;
+    if (by) out.t += by.d;
+    return { box: out, vs: bx ? [bx.line] : [], hs: by ? [by.line] : [] };
+  }
+  // Move a text freely; a click without moving asks the editor to open its options
+  function attachTextDrag() {
+    el.addEventListener("pointerdown", e => {
+      const n = e.target.closest(".k4-txt>[data-part]");
+      if (!n || !opts.editable) return;
+      e.preventDefault(); e.stopPropagation();
+      const part = n.dataset.part, r = el.getBoundingClientRect(), b = n.getBoundingClientRect();
+      const start = { x: e.clientX, y: e.clientY, l: (b.left - r.left) / r.width * 100, t: (b.top - r.top) / r.height * 100, w: b.width / r.width * 100, h: b.height / r.height * 100 };
+      let moved = false, last = null;
+      el.setPointerCapture(e.pointerId);
+      const move = ev => {
+        const dx = ev.clientX - start.x, dy = ev.clientY - start.y;
+        if (!moved && Math.hypot(dx, dy) < 4) return;
+        if (!moved) {
+          moved = true; n.classList.add("drag", "free");
+          // the name may be scaled: keep its scale but place it by its real corner
+          n.style.right = "auto"; n.style.bottom = "auto"; n.style.transform = "none"; n.style.transformOrigin = "0 0";
+        }
+        const raw = { l: start.l + dx / r.width * 100, t: start.t + dy / r.height * 100, w: start.w, h: start.h };
+        const sn = snapBox(raw, n);
+        last = { x: Math.round(Math.max(-5, Math.min(105, sn.box.l)) * 10) / 10, y: Math.round(Math.max(-5, Math.min(105, sn.box.t)) * 10) / 10 };
+        n.style.left = last.x + "%"; n.style.top = last.y + "%";
+        showGuides(sn.vs, sn.hs);
+      };
+      const up = () => {
+        el.removeEventListener("pointermove", move); el.removeEventListener("pointerup", up); el.removeEventListener("pointercancel", up);
+        n.classList.remove("drag"); hideGuides();
+        if (moved && last) { cur.pos[part] = last; opts.onPartMove && opts.onPartMove(part, last); if (part === "name") fit(n); }
+        else opts.onPick && opts.onPick(part);
+      };
+      el.addEventListener("pointermove", move); el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    });
+  }
+  if (opts.editable) attachTextDrag();
   // Drag stickers around the card in the editor
   function attachDrag(n) {
     n.addEventListener("pointerdown", e => {
@@ -288,16 +377,24 @@ export function mountCard(root, card, data, opts = {}) {
       const sk = cur.stickers.find(x => x.id === id); if (!sk) return;
       const ox = sk.x - (e.clientX - r.left) / r.width * 100, oy = sk.y - (e.clientY - r.top) / r.height * 100;
       n.setPointerCapture(e.pointerId);
+      const nb = n.getBoundingClientRect(), sw = nb.width / r.width * 100, sh = nb.height / r.height * 100;
       const move = ev => {
-        sk.x = Math.round(Math.max(-5, Math.min(105, (ev.clientX - r.left) / r.width * 100 + ox)) * 10) / 10;
-        sk.y = Math.round(Math.max(-5, Math.min(105, (ev.clientY - r.top) / r.height * 100 + oy)) * 10) / 10;
+        const cx = (ev.clientX - r.left) / r.width * 100 + ox, cy = (ev.clientY - r.top) / r.height * 100 + oy;
+        const sn = snapBox({ l: cx - sw / 2, t: cy - sh / 2, w: sw, h: sh }, n);
+        sk.x = Math.round(Math.max(-5, Math.min(105, sn.box.l + sw / 2)) * 10) / 10;
+        sk.y = Math.round(Math.max(-5, Math.min(105, sn.box.t + sh / 2)) * 10) / 10;
         n.style.setProperty("--x", sk.x); n.style.setProperty("--y", sk.y);
+        showGuides(sn.vs, sn.hs);
       };
-      const up = () => { n.removeEventListener("pointermove", move); n.removeEventListener("pointerup", up); n.removeEventListener("pointercancel", up); opts.onSticker && opts.onSticker(id, { x: sk.x, y: sk.y }); };
+      const up = () => { n.removeEventListener("pointermove", move); n.removeEventListener("pointerup", up); n.removeEventListener("pointercancel", up); hideGuides(); opts.onSticker && opts.onSticker(id, { x: sk.x, y: sk.y }); };
       n.addEventListener("pointermove", move); n.addEventListener("pointerup", up); n.addEventListener("pointercancel", up);
     });
   }
-  if (opts.editable) el.addEventListener("pointerdown", e => { if (!e.target.closest(".k4-s")) { selected = ""; renderStickers(); opts.onSelect && opts.onSelect(""); } });
+  if (opts.editable) el.addEventListener("pointerdown", e => {
+    if (e.target.closest(".k4-s") || e.target.closest(".k4-txt>[data-part]")) return;
+    selected = ""; renderStickers(); opts.onSelect && opts.onSelect("");
+    opts.onPick && opts.onPick("bg");
+  });
   // Light follows the pointer; the card tilts a little
   const finePointer = typeof matchMedia !== "undefined" && matchMedia("(pointer: fine)").matches;
   const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;

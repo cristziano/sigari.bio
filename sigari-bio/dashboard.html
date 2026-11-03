@@ -34,6 +34,7 @@
   .loading { position:fixed; inset:0; display:grid; place-items:center; color:var(--d); font-size:14px; z-index:2; }
 
 
+  .pv-hint { text-align:center; font:400 11px "Geist Mono",monospace; color:var(--d); margin:-4px 0 8px; }
   /* ---------- Carta ---------- */
   .card-empty { margin-top:24px; display:grid; gap:18px; justify-items:start; }
   .card-ghost { width:min(460px,100%); aspect-ratio:1.586; border-radius:18px; border:1px dashed var(--b); display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--d); background:repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,.02) 10px 20px); }
@@ -758,8 +759,8 @@
           <textarea class="text" data-k="bio" id="bioInput" maxlength="300" placeholder="Una riga su di te"></textarea>
           <p class="hint">Seleziona del testo e usa i bottoni, oppure scrivi: **grassetto** *corsivo* ||spoiler|| [glow]testo[/glow] [#ff5fc8]colore[/] [testo](https://link)</p>
         </div>
-        <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
-        <div class="gc"><div class="label">posizione</div><input class="text" data-k="location" maxlength="60" placeholder="Città, paese"></div>
+        <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
+        <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
         <div class="gc"><div class="label">effetti di sfondo</div><select class="text" data-k="appearance.effect" data-opts="effects"></select></div>
         <div class="gc"><div class="label">effetti sul nome</div><select class="text" data-k="appearance.nameFx" data-opts="nameFx"></select></div>
         <div class="gc"><div class="label">opacità del profilo <span class="val" data-show="appearance.card.opacity" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.card.opacity"><div class="marks"><span>20%</span><span>50%</span><span>80%</span></div></div>
@@ -767,7 +768,7 @@
         <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
         <div class="gc" data-when="appearance.nameFx=gradient"><div class="label">colori del gradiente</div><div class="hex-row"><input type="color" data-k="appearance.nameGradient.0"><input type="color" data-k="appearance.nameGradient.1"></div></div>
         <div class="gc"><div class="label">presenza discord</div><input class="text" data-k="appearance.widgets.discordId" inputmode="numeric" maxlength="20" placeholder="il tuo ID utente discord"><p class="hint">Entra una volta in <a href="https://discord.gg/lanyard" target="_blank" rel="noopener">discord.gg/lanyard</a>, poi Discord, Impostazioni, Avanzate, Modalità sviluppatore; tasto destro sul tuo nome, "Copia ID utente".</p></div>
-        <div class="gc"><div class="label">tag</div><input class="text" data-k="tags" data-type="tags" placeholder="dark, musica, gaming (massimo 5)"></div>
+        <div class="gc"><div class="label">tag</div><input class="text" id="tagsInput" data-k="tags" data-type="tags" placeholder="dark, musica, gaming (massimo 5)"></div>
         <div class="gc span-2"><div class="label">impostazioni glow</div>
           <div class="chips-toggle">
             <label><input type="checkbox" data-k="appearance.glow.username"><span>Nome</span></label>
@@ -1295,6 +1296,7 @@
       <button class="ghost-btn sm" id="pvFull" type="button" title="Schermo intero">⛶</button>
       <button class="ghost-btn sm pv-close" id="closePreview" type="button">Chiudi</button>
     </div>
+    <p class="pv-hint">tocca una parte del profilo per modificarla</p>
     <div class="trialbar hidden" id="trialBar"><span>Stai provando <b id="trialName"></b></span><button class="ghost-btn sm" id="trialCancel" type="button">Annulla</button><button class="save-btn sm" id="trialUse" type="button">Usa</button></div>
     <div class="frame" id="frame"><div class="pv-root" id="pvRoot"></div></div>
   </aside>
@@ -1331,7 +1333,7 @@
       <button class="save-btn sm" id="csSave" type="button">Salva</button>
     </div>
     <div class="cs-card" id="csCard"></div>
-    <p class="cs-tip">Trascina gli sticker sulla carta. Tocca uno sticker per cambiarne grandezza e rotazione.</p>
+    <p class="cs-tip">Trascina testi e sticker dove vuoi: le linee rosa dicono quando sono allineati. Tocca una parte della carta per le sue opzioni.</p>
   </div>
 </div>
 
@@ -1789,10 +1791,23 @@
   /* =========================================================
      Preview
      ========================================================= */
+  // Tap a part of the preview to jump to the setting that changes it
+  const PICK_TARGET = {
+    avatar: "customize#avatarPick", name: "customize#dnInput", head: "customize#dnInput", bio: "customize#bioInput",
+    meta: "customize#locInput", tags: "customize#tagsInput", banner: "customize#bannerPick", bg: "customize#bgThumb",
+    badges: "badges", soctop: "links#socialGrid", socbot: "links#socialGrid", links: "links#linksList",
+    widgets: "widgets", embeds: "widgets", music: "music", topic: "topic", gallery: "gallery", forms: "inbox",
+    card: "card", box: "layout"
+  };
+  function pickToEdit(part) {
+    const target = PICK_TARGET[part] || "customize";
+    showView(target);
+    $("preview").classList.remove("open"); // on phones the preview covers the editor
+  }
   const previewData = () => ({ ...draft, handle, badges, views: liveViews });
   function renderPreview() {
     if (!draft) return;
-    if (!preview) preview = mountProfile($("pvRoot"), previewData(), { preview: true });
+    if (!preview) preview = mountProfile($("pvRoot"), previewData(), { preview: true, onPick: pickToEdit });
     else preview.update(previewData());
     $("ovLinks").textContent = (draft.links || []).filter(l => !l.hidden && l.title).length;
     $("ovSocials").textContent = Object.keys(draft.socials || {}).length;
@@ -1812,7 +1827,7 @@
   const cardInfo = () => ({ handle, avatarUrl: draft.avatarUrl, displayName: draft.displayName });
   let cardThumb = null, cardStage = null, selSticker = "";
   const C = {
-    sec: (title, body, open) => `<details class="cs-sec"${open ? " open" : ""}><summary>${title}</summary><div class="cs-body">${body}</div></details>`,
+    sec: (title, body, open, id = "") => `<details class="cs-sec"${id ? ` id="${id}"` : ""}${open ? " open" : ""}><summary>${title}</summary><div class="cs-body">${body}</div></details>`,
     sw: (label, k) => `<div class="toggle-row"><span>${label}</span><label class="ios"><input class="sr-only" type="checkbox" data-k="${k}"><span class="track"><span class="knob"></span></span></label></div>`,
     rng: (label, k, min, max, unit = "") => `<div class="field"><div class="label">${label} <span class="val" data-show="${k}" data-unit="${unit}"></span></div><input type="range" min="${min}" max="${max}" data-k="${k}"></div>`,
     col: (label, k) => `<label class="color-field"><span class="cname">${label}</span><span class="hex-row"><input type="color" data-k="${k}"><input class="hex-input" data-hex="${k}" maxlength="7"></span></label>`,
@@ -1830,7 +1845,7 @@
     + C.sec("Sfondo", C.seg("card.bg.type", "cardBg")
       + `<div data-when="card.bg.type=color">${C.col("Colore", "card.bg.color")}</div>`
       + `<div data-when="card.bg.type=gradient" class="cs-body" style="padding:0">${C.seg("card.bg.kind", "gradKind")}<div class="label">colori del gradiente</div><div class="cs-stops" id="csStops"></div>${C.rng("angolo", "card.bg.angle", 0, 360, "°")}</div>`
-      + `<div data-when="card.bg.type=image" class="cs-body" style="padding:0"><div class="row"><button class="save-btn sm" id="cardBgPick" type="button">Carica una foto</button><span class="hint">anche GIF</span></div><input type="file" id="cardBgInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input class="text" type="url" data-k="card.bg.image" placeholder="oppure il link di un'immagine (anche Pinterest)">${C.rng("zoom", "card.bg.zoom", 100, 300, "%")}${C.rng("posizione orizzontale", "card.bg.x", 0, 100, "%")}${C.rng("posizione verticale", "card.bg.y", 0, 100, "%")}${C.rng("scurisci", "card.bg.dim", 0, 90, "%")}${C.rng("sfoca", "card.bg.blur", 0, 20)}${C.sw("Bianco e nero", "card.bg.gray")}</div>`, true)
+      + `<div data-when="card.bg.type=image" class="cs-body" style="padding:0"><div class="row"><button class="save-btn sm" id="cardBgPick" type="button">Carica una foto</button><span class="hint">anche GIF</span></div><input type="file" id="cardBgInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input class="text" type="url" data-k="card.bg.image" placeholder="oppure il link di un'immagine (anche Pinterest)">${C.rng("zoom", "card.bg.zoom", 100, 300, "%")}${C.rng("posizione orizzontale", "card.bg.x", 0, 100, "%")}${C.rng("posizione verticale", "card.bg.y", 0, 100, "%")}${C.rng("scurisci", "card.bg.dim", 0, 90, "%")}${C.rng("sfoca", "card.bg.blur", 0, 20)}${C.sw("Bianco e nero", "card.bg.gray")}</div>`, true, "csSecBg")
     + C.sec("Luce", C.sw("Raggi di luce", "card.rays.on")
       + `<div data-when="card.rays.on=true" class="cs-body" style="padding:0">${C.col("Colore dei raggi", "card.rays.color")}${C.rng("quanti raggi", "card.rays.count", 4, 40)}${C.rng("intensità", "card.rays.strength", 0, 100, "%")}${C.rng("da dove partono: orizzontale", "card.rays.x", -20, 120, "%")}${C.rng("da dove partono: verticale", "card.rays.y", -20, 120, "%")}${C.sw("Girano piano", "card.rays.spin")}</div>`
       + C.sw("Riflesso olografico (segue il mouse)", "card.holo.on")
@@ -1848,12 +1863,13 @@
       + `<div class="label">posizione del nome</div>` + C.seg("card.namePos", "cardPos")
       + C.sw("Scritta 18k.bio", "card.showBrand") + C.sw("Foto profilo", "card.showAvatar") + C.sw("Numero", "card.showNumber")
       + `<div data-when="card.showNumber=true">${C.txt("Numero (vuoto = automatico)", "card.number", "N° 0404", 24)}</div>`
-      + C.txt("Riga in più", "card.line", "es. fondatore, rapper, 2026", 60) + C.sw("Indirizzo 18k.bio/nome", "card.showDate"))
+      + C.txt("Riga in più", "card.line", "es. fondatore, rapper, 2026", 60) + C.sw("Indirizzo 18k.bio/nome", "card.showDate")
+      + `<p class="hint">Trascina i testi direttamente sulla carta: le linee rosa ti dicono quando sono allineati.</p><div class="row"><button class="ghost-btn sm" id="csResetPos" type="button">Rimetti i testi al loro posto</button></div>`, false, "csSecText")
     + C.sec("Sticker", `<div class="row" style="flex-wrap:wrap"><button class="save-btn sm" id="stkPick" type="button">Foto → sticker</button><label class="hint" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="stkCut" checked> togli lo sfondo</label></div><input type="file" id="stkInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
       <p class="hint">Carica una foto: il sistema toglie lo sfondo intorno, la ritaglia e le mette il bordo bianco da sticker. Funziona meglio con sfondi tinta unita.</p>
       <div class="label">oppure un simbolo</div><div class="cs-emoji" id="stkEmoji"></div>
       <div class="row"><input class="text" id="stkText" maxlength="6" placeholder="testo breve" style="flex:1"><button class="ghost-btn sm" id="stkTextAdd" type="button">Aggiungi</button></div>
-      <div class="label">i tuoi sticker</div><div class="stk-list" id="stkList"></div><div id="stkEdit"></div>`, true);
+      <div class="label">i tuoi sticker</div><div class="stk-list" id="stkList"></div><div id="stkEdit"></div>`, true, "csSecStk");
 
   function renderCardStops() {
     if (!draft || !draft.card) return;
@@ -1941,11 +1957,25 @@
       if (!cardStage) cardStage = mountCard($("csCard"), draft.card, cardInfo(), {
         editable: true,
         onSelect(id) { selSticker = id; renderStickerUI(); },
-        onSticker(id, patch) { const sk = draft.card.stickers.find(x => x.id === id); if (sk) { Object.assign(sk, patch); changed(); } }
+        onSticker(id, patch) { const sk = draft.card.stickers.find(x => x.id === id); if (sk) { Object.assign(sk, patch); changed(); } },
+        // drag a text: save where it was dropped
+        onPartMove(part, pos) { draft.card.pos = { ...(draft.card.pos || {}), [part]: pos }; changed(); },
+        // a click on a part of the card opens the options for that part
+        onPick(part) { openCardSection(part === "bg" ? "csSecBg" : "csSecText", part); }
       });
       else cardStage.update(draft.card, cardInfo());
     }
   }
+  const PART_FIELD = { name: "card.font", brand: "card.showBrand", avatar: "card.showAvatar", num: "card.number", meta: "card.line" };
+  function openCardSection(id, part) {
+    const sec = $(id); if (!sec) return;
+    sec.open = true;
+    const field = PART_FIELD[part] && sec.querySelector(`[data-k="${PART_FIELD[part]}"]`);
+    const target = field ? (field.closest(".field, .toggle-row") || field) : sec;
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    target.classList.remove("flash"); void target.offsetWidth; target.classList.add("flash");
+  }
+  $("csResetPos").addEventListener("click", () => { draft.card.pos = {}; changed(); });
   function openStudio() {
     if (!draft.card) { draft.card = normalizeCard({}); changed(); }
     draft.card = normalizeCard(draft.card);

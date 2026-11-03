@@ -665,6 +665,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-embed iframe{display:block;width:100%;border:0}
 .pk-topic img{width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;display:block}
 .pk-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.pk-pick [data-pk-hot]{outline:1.5px dashed rgba(255,255,255,.6);outline-offset:5px;border-radius:10px;cursor:pointer}
+.pk-pick .pk-bg{cursor:pointer}
 .pk-cardbtn{display:flex;align-items:center;gap:8px;margin:16px auto 0;padding:9px 16px;border-radius:999px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:500 13px/1 inherit;cursor:pointer;transition:transform .2s,border-color .2s}
 .pk-cardbtn:hover{transform:translateY(-2px);border-color:var(--pk-accent)}
 .pk-tags span{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--pk-border);color:var(--pk-muted)}
@@ -1394,6 +1396,34 @@ export function mountProfile(root, input, opts = {}) {
   const bgEl = root.querySelector(".pk-bg"), fxEl = root.querySelector(".pk-fx"), card = root.querySelector(".pk-card");
   const SLOTS = ["banner", "head", "badges", "bio", "meta", "soctop", "widgets", "music", "embeds", "topic", "links", "gallery", "socbot", "forms", "tags"];
   const slot = Object.fromEntries(SLOTS.map(n => { const d = el("div", "pk-s pk-s-" + n); card.appendChild(d); return [n, d]; }));
+  // Editor preview: every part of the profile is a shortcut to the setting that changes it
+  if (opts.onPick) {
+    root.classList.add("pk-pick");
+    const partOf = t => {
+      if (!t || t.closest(".pk-enter")) return null;
+      if (t.closest("button, input, textarea, select, audio, video, iframe, label") && !t.closest(".pk-cardbtn")) return null;
+      const av = t.closest(".pk-av"); if (av) return ["avatar", av];
+      const nm = t.closest(".pk-name"); if (nm) return ["name", nm];
+      const cb = t.closest(".pk-cardbtn"); if (cb) return ["card", cb];
+      const sl = t.closest(".pk-s"); if (sl) return [[...sl.classList].find(c => c.startsWith("pk-s-")).slice(5), sl];
+      if (t.closest(".pk-card")) return ["box", card];
+      return ["bg", null];
+    };
+    let hot = null;
+    root.addEventListener("pointerover", e => {
+      const p = partOf(e.target), n = p && p[1];
+      if (n === hot) return;
+      if (hot) hot.removeAttribute("data-pk-hot");
+      hot = n; if (hot) hot.setAttribute("data-pk-hot", "");
+    });
+    root.addEventListener("pointerleave", () => { if (hot) hot.removeAttribute("data-pk-hot"); hot = null; });
+    root.addEventListener("click", e => {
+      const p = partOf(e.target);
+      if (!p) return;
+      e.preventDefault(); e.stopPropagation();
+      opts.onPick(p[0]);
+    }, true);
+  }
   // Replaces a slot's children only when they actually differ, so live iframes stay put.
   const fill = (name, nodes) => {
     const box = slot[name], cur = [...box.childNodes];
