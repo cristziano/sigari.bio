@@ -8,6 +8,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>18k.bio · Dashboard</title>
+<meta name="description" content="La dashboard di 18k.bio: crea e modifica il tuo profilo.">
+<meta name="robots" content="noindex">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -548,6 +550,44 @@
     .savebar { left:12px; right:12px; transform:none; justify-content:space-between; white-space:normal; }
   }
   @media (max-width:520px) { .asset-grid { grid-template-columns:1fr; } .acc-v { font-size:17px; } }
+
+  /* Phone: slim top bar, bottom tabs, "Altro" sheet */
+  .mtabs, .msheet { display:none; }
+  .map-row.simple { grid-template-columns:minmax(0,1fr) auto !important; }
+  .gb-short { display:none; }
+  @media (max-width:900px) {
+    .mtop { align-items:center; flex-wrap:nowrap !important; padding:10px 16px calc(10px) !important; }
+    .mtop select { display:none !important; }
+    .mlogo { font-weight:700; font-size:16px; letter-spacing:-.02em; color:var(--fg); text-decoration:none; }
+    .mlogo span { color:var(--d); }
+    .mtitle { flex:1; min-width:0; font-size:13px; color:var(--m); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .mtabs { display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:35; padding:6px 6px calc(6px + env(safe-area-inset-bottom)); background:var(--glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-top:1px solid var(--b); }
+    .mtabs button { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0 4px; min-height:48px; border:0; background:none; color:var(--d); font:inherit; font-size:11px; border-radius:12px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    .mtabs button.on { color:var(--fg); }
+    .mtabs button.on svg { transform:translateY(-1px); }
+    .msheet:not(.hidden) { display:block; position:fixed; inset:0; z-index:55; background:var(--overlay); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+    .msheet-in { position:absolute; left:0; right:0; bottom:0; max-height:86vh; overflow-y:auto; padding:16px 16px calc(80px + env(safe-area-inset-bottom)); background:var(--s1, var(--bg)); border-top:1px solid var(--b); border-radius:20px 20px 0 0; animation:sheetUp .22s ease-out; }
+    @keyframes sheetUp { from { transform:translateY(30px); opacity:0; } }
+    .msheet-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; font-size:16px; }
+    .msheet .m-search { display:block; width:100%; margin-bottom:14px; }
+    .msheet-g { margin:14px 0 6px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--d); }
+    .msheet-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .msheet-grid button { display:flex; align-items:center; gap:10px; min-height:48px; padding:10px 12px; border:1px solid var(--b); border-radius:12px; background:var(--s2); color:var(--fg); font:inherit; font-size:13.5px; text-align:left; cursor:pointer; }
+    .msheet-grid button svg { flex:none; width:18px; height:18px; color:var(--m); }
+    .msheet-grid button.active { border-color:var(--fg); }
+    .msheet-foot { display:flex; gap:8px; justify-content:space-between; margin-top:18px; }
+    .main { padding-bottom:170px !important; }
+    .savebar { bottom:calc(74px + env(safe-area-inset-bottom)) !important; }
+    .topbar { min-height:0; margin-bottom:10px; }
+    .topbar .theme-btn { display:none; }
+    .guestbar { padding:8px 8px 8px 12px; font-size:12.5px; flex-wrap:nowrap; }
+    .gb-long { display:none; }
+    .gb-short { display:inline; flex:1; min-width:0; }
+    .guestbar .save-btn { height:32px; padding:0 12px; font-size:12.5px; flex:none; }
+    .msheet .search-res { position:static; margin:-6px 0 10px; max-height:none; box-shadow:none; }
+    .msheet:has(.search-res:not(.hidden)) #msheetList { display:none; }
+    button, .ghost-btn, a.save-btn { touch-action:manipulation; }
+  }
   @media (prefers-reduced-motion: reduce) { .view.pix { animation:none; } .blob { animation:none; } .flash { animation:none; } }
 </style>
 </head>
@@ -576,26 +616,38 @@
     </div>
   </aside>
 
+  <nav class="mtabs" id="mtabs" aria-label="Menu"><button type="button" data-tab="overview"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button type="button" data-tab="customize"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Profilo</span></button><button type="button" data-tab="links"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span>Link</span></button><button type="button" data-tab="card"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/></svg><span>Carta</span></button><button type="button" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Altro</span></button></nav>
+  <div class="msheet hidden" id="msheet" role="dialog" aria-modal="true" aria-label="Tutte le sezioni">
+    <div class="msheet-in">
+      <div class="msheet-top"><b>Tutte le sezioni</b><button type="button" class="ghost-btn sm" id="msheetClose">Chiudi</button></div>
+      <input class="text m-search" id="mSearch" type="search" placeholder="Cerca un'impostazione" autocomplete="off" aria-label="Cerca un'impostazione">
+      <div id="msheetList"></div>
+      <div class="msheet-foot"><label class="ghost-btn sm" for="themeToggle">Tema chiaro / scuro</label><button type="button" class="ghost-btn sm" id="msheetOut">Esci</button></div>
+    </div>
+  </div>
+
   <main class="main" id="main">
     <div class="mtop">
+      <a class="mlogo" href="index.html">18k<span>.bio</span></a>
+      <span class="mtitle" id="mTitle"></span>
+      <button class="ghost-btn sm" id="openPreview" type="button">Anteprima</button>
       <select class="text" id="mnav" aria-label="Sezione"></select>
-      <button class="ghost-btn" id="openPreview" type="button">Anteprima</button>
-      <input class="text m-search" id="mSearch" type="search" placeholder="Cerca un'impostazione" autocomplete="off" aria-label="Cerca un'impostazione">
     </div>
     <div class="topbar">
       <span class="crumb" id="crumb"></span>
       <div class="guestbar hidden" id="guestbar">
-        <span>Stai provando senza account. <b id="guestHandle">@ospite</b> non è ancora tua e le modifiche restano solo su questo dispositivo.</span>
+        <span class="gb-short">Modalità prova: le modifiche restano su questo telefono.</span>
+        <span class="gb-long">Stai provando senza account. <b id="guestHandle">@ospite</b> non è ancora tua e le modifiche restano solo su questo dispositivo.</span>
         <a class="save-btn" id="guestClaim" href="login.html">Registrati e salva</a>
       </div>
       <input type="checkbox" id="themeToggle" class="sr-only" aria-label="Tema chiaro">
-      <label class="ghost-btn sm" for="themeToggle" title="Tema chiaro o scuro">tema</label>
+      <label class="ghost-btn sm theme-btn" for="themeToggle" title="Tema chiaro o scuro">tema</label>
     </div>
 
     <!-- OVERVIEW (guns.lol: Account > Overview) -->
     <section class="view hidden" id="view-overview">
       <h2>Panoramica</h2>
-      <p class="desc">Il tuo account a colpo d'occhio, come la pagina Account di guns.lol.</p>
+      <p class="desc">Il tuo account a colpo d'occhio.</p>
       <div class="acc-grid">
         <div class="acc-card"><span class="acc-k">nome utente</span><b class="acc-v" id="ovHandle">@tuonome</b><button type="button" class="acc-go" data-go="settings">Gestisci</button></div>
         <div class="acc-card"><span class="acc-k">nomi extra</span><b class="acc-v" id="ovAlias">—</b><button type="button" class="acc-go" data-go="settings#set-alias">Aggiungi</button></div>
@@ -657,7 +709,7 @@
       </div>
       <div class="label section-label">il tuo badge</div>
       <div class="card">
-        <div class="toggle-row"><span>Mostra un badge tutto mio<small>Icona, nome e colore li scegli tu. Su guns.lol si paga, qui no.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.on"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="toggle-row"><span>Mostra un badge tutto mio<small>Icona, nome e colore li scegli tu.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.on"><span class="track"><span class="knob"></span></span></label></div>
         <div class="field-grid" data-when="appearance.badges.custom.on=true">
           <div class="field"><div class="label">nome</div><input class="text" data-k="appearance.badges.custom.label" maxlength="24" placeholder="es. fondatore"></div>
           <label class="color-field"><span class="cname">Colore</span><span class="hex-row"><input type="color" data-k="appearance.badges.custom.color"><input class="hex-input" data-hex="appearance.badges.custom.color" maxlength="7" placeholder="come gli altri"></span></label>
@@ -1205,23 +1257,19 @@
       </div>
     </section>
 
-    <!-- GUIDE: the guns.lol report, inside the dashboard -->
+    <!-- GUIDE: how the dashboard works -->
     <section class="view hidden" id="view-guide">
       <h2>Guida</h2>
-      <p class="desc">Come è fatta questa dashboard e dove trovi ogni cosa. L'abbiamo costruita copiando la struttura di guns.lol: stessa logica, stessi nomi delle parti, ma tutto gratis.</p>
-      <div class="label section-label">trova un'impostazione</div>
-      <div class="card"><p>Usa la ricerca in cima al menu (o premi <span class="kbd">Ctrl</span> + <span class="kbd">K</span>): scrivi "sfondo", "font", "musica", "badge"… e ci arrivi con un clic.</p></div>
-      <div class="label section-label">guns.lol → 18k.bio</div>
-      <div class="map" id="guideMap"></div>
-      <div class="label section-label">cosa abbiamo copiato da guns.lol</div>
+      <p class="desc">Come funziona la dashboard e dove trovi ogni cosa.</p>
+      <div class="label section-label">in tre passi</div>
       <div class="card guide-text">
-        <p><b>Il menu.</b> guns.lol divide la dashboard in Account (panoramica, statistiche, badge, impostazioni), Customize, Links, Premium, Image Host e Templates, con "Condividi il profilo" in fondo. Qui è uguale: Account, Profilo (Personalizza, Link, Template), Avanzate (il loro Premium), Community e Image Host.</p>
-        <p><b>Una sola pagina per personalizzare.</b> La loro pagina Customize ha quattro parti: Assets Uploader, General Customization, Color Customization e Other Customization. La nostra Personalizza ha le stesse quattro: Caricamenti (avatar, sfondo, audio, cursore, banner, font), Generale (descrizione, effetti di sfondo e sul nome dai menu a tendina, opacità e sfocatura del profilo, presenza Discord, posizione, glow), Colori (accento, testo, sfondo, icone, gradiente del profilo) e Altro (icone monocromatiche, titolo animato, controllo volume, avatar e decorazione di Discord).</p>
-        <p><b>I link.</b> Come su guns.lol: una griglia di icone, tocchi quella che vuoi e scrivi il nome utente; sotto i link personalizzati. In più qui puoi fare sezioni, link in evidenza, link programmati e con password.</p>
-        <p><b>I template.</b> Come su guns.lol: Esplora con ricerca e tag, Preferiti, Usati di recente, I miei, Crea; visibilità pubblica, non in elenco o privata; puoi prendere solo un pezzo (solo sfondo, solo colori…) e provare un template sul tuo profilo prima di usarlo. I 40 template pronti sono fatti come i profili veri di guns.lol: sfondo video o GIF vero (pioggia, auto di notte, Tokyo, anime lofi, fumo, VHS, neve, fuoco…), schermata "clicca per entrare", effetti, font e colori abbinati. Nelle anteprime gira una GIF piccola; il video vero parte quando lo provi o lo usi.</p>
-        <p><b>Avanzate.</b> Su guns.lol è la parte Premium: layout, bordi, font, scrittura animata, effetti del cursore, metadati e SEO. Qui ci sono le stesse cose in Layout e bottoni, Font ed effetti, Musica e audio, Widget, Metadati e privacy, e sono gratis.</p>
-        <p><b>Cosa non abbiamo copiato.</b> Pagamenti (premium, regali, badge a pagamento), domini personalizzati per le immagini e l'app per fare screenshot: servono server o accordi che qui non ci sono.</p>
+        <p><b>1. Personalizza.</b> Foto profilo, sfondo, colori e font. Oppure parti da un template già pronto.</p>
+        <p><b>2. Aggiungi i link.</b> Tocca un social, scrivi il tuo nome utente, fatto.</p>
+        <p><b>3. Salva e condividi.</b> Il tuo profilo è su 18k.bio/tuonome. Da "Condividi il profilo" hai anche il QR code.</p>
+        <p><b>Trucco.</b> Nell'anteprima tocca una parte del profilo (la foto, il nome, un link) e ti porta dritto dove si modifica. Per cercare un'impostazione usa la ricerca (sul computer anche Ctrl + K).</p>
       </div>
+      <div class="label section-label">dove trovi ogni cosa</div>
+      <div class="map" id="guideMap"></div>
     </section>
 
     <section class="view hidden" id="view-settings">
@@ -1455,12 +1503,16 @@
   const NAV_KEY = "sigari-nav-closed";
   function buildNav() {
     let closed = [];
-    try { closed = JSON.parse(store.get(NAV_KEY) || "[]"); } catch (_) { closed = []; }
+    // First visit: only the essentials open, the rest one tap away
+    try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["avanzate", "community", "image host"]; } catch (_) { closed = []; }
     const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
     $("nav").innerHTML = NAV.map(([group, items]) => `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
       + `<div class="nav-foot">${FOOT.map(item).join("")}</div>`;
     $("mnav").innerHTML = NAV.map(([group, items]) => `<optgroup label="${group}">${items.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`).join("") + `<optgroup label="altro">${FOOT.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`;
     $$("#nav button").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
+    // Phone: the same sections as big buttons in the "Altro" sheet
+    $("msheetList").innerHTML = [...NAV, ["altro", FOOT]].map(([group, items]) => `<div class="msheet-g">${group}</div><div class="msheet-grid">${items.map(([v, label, icon]) => `<button type="button" data-view="${v}">${I(icon)}<span>${label}</span></button>`).join("")}</div>`).join("");
+    $$("#msheetList button").forEach(b => b.addEventListener("click", () => { closeSheet(); showView(b.dataset.view); }));
     $$("#nav details").forEach(d => d.addEventListener("toggle", () => {
       const shut = $$("#nav details").filter(x => !x.open).map(x => x.dataset.group);
       store.set(NAV_KEY, JSON.stringify(shut));
@@ -1477,6 +1529,10 @@
     const open = document.querySelector(`#nav button[data-view="${name}"]`)?.closest("details");
     if (open && !open.open) open.open = true;
     $("mnav").value = name;
+    $("mTitle").textContent = VIEW_NAMES[name] || "";
+    const tab = ["overview", "customize", "links", "card"].includes(name) ? name : "more";
+    $$("#mtabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+    $$("#msheetList button").forEach(b => b.classList.toggle("active", b.dataset.view === name));
     $$(".view").forEach(v => v.classList.add("hidden"));
     const v = $("view-" + name);
     v.classList.remove("hidden");
@@ -1563,7 +1619,7 @@
   }
   function openHit(h) {
     $("setSearch").value = ""; $("searchRes").classList.add("hidden");
-    $("preview").classList.remove("open");
+    $("preview").classList.remove("open"); closeSheet();
     showView(h.view);
     if (h.el && !h.el.classList.contains("view")) setTimeout(() => focusTarget(h.el), 80);
   }
@@ -1582,8 +1638,18 @@
       $("setSearch").focus();
     }
   });
-  document.addEventListener("click", e => { if (!e.target.closest(".side-search")) $("searchRes").classList.add("hidden"); });
+  document.addEventListener("click", e => { if (!e.target.closest(".side-search, .m-search, .search-res")) $("searchRes").classList.add("hidden"); });
   // On phones the search sits in the top bar and reuses the same results
+  function openSheet() { $("msheet").classList.remove("hidden"); }
+  function closeSheet() { $("msheet").classList.add("hidden"); $("mSearch").value = ""; $("searchRes").classList.add("hidden"); }
+  $$("#mtabs button").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.tab === "more") { $("msheet").classList.contains("hidden") ? openSheet() : closeSheet(); return; }
+    closeSheet(); $("preview").classList.remove("open"); showView(b.dataset.tab);
+  }));
+  $("msheetClose").addEventListener("click", closeSheet);
+  $("msheet").addEventListener("click", e => { if (e.target === $("msheet")) closeSheet(); });
+  $("msheetOut").addEventListener("click", () => $("logoutBtn").click());
+  $("mSearch").addEventListener("focus", () => { if ($("searchRes").previousElementSibling !== $("mSearch")) $("mSearch").after($("searchRes")); });
   $("mSearch").addEventListener("input", () => { $("setSearch").value = $("mSearch").value; runSearch(); $("searchRes").classList.toggle("m", true); });
   $("mSearch").addEventListener("keydown", e => { if (e.key === "Enter") { const h = $("searchRes")._hits; if (h && h[0]) { $("mSearch").value = ""; openHit(h[0]); } } });
 
@@ -1606,31 +1672,28 @@
     }));
   }
   const GUIDE = [
-    ["Account › Overview", "Panoramica", "overview", "Nome utente, nomi extra, visite e scorciatoie per modificare il profilo."],
-    ["Account › Analytics", "Statistiche", "analytics", "Visite, clic, social, provenienza, dispositivi, zone, diretta."],
-    ["Account › Badges", "Badge", "badges", "Badge ufficiali, colore e forma, il tuo badge personale (gratis)."],
-    ["Account › Settings", "Impostazioni", "settings", "Email, password e nomi extra (alias)."],
-    ["Customize › Assets Uploader", "Personalizza › Caricamenti", "customize#c-assets", "Avatar, sfondo, audio, cursore, banner, font."],
-    ["Customize › General", "Personalizza › Generale", "customize#c-general", "Descrizione, effetti di sfondo e sul nome, opacità, sfocatura, Discord, glow."],
-    ["Customize › Colors", "Personalizza › Colori", "customize#c-colors", "Accento, testo, sfondo, icone, gradiente del profilo."],
-    ["Customize › Other", "Personalizza › Altro", "customize#c-other", "Icone monocromatiche, titolo animato, volume, avatar di Discord."],
-    ["Links", "Link", "links", "Griglia dei social e link personalizzati, sezioni, password."],
-    ["Templates", "Template", "templates", "Esplora, preferiti, usati di recente, i miei, crea."],
-    ["Premium › Layout", "Avanzate › Layout e bottoni", "layout", "Layout, bordi, avatar, decorazioni, bottoni."],
-    ["Premium › Fonts, Typewriter, Cursor effects", "Avanzate › Font ed effetti", "effects", "20 font, descrizione animata, scia del cursore, suoni, ingresso."],
-    ["Customize › Audio Manager", "Avanzate › Musica e audio", "music", "Playlist, testi sincronizzati, Spotify, Last.fm."],
-    ["Premium › Second Tab / Widgets", "Avanzate › Widget", "widgets", "GitHub, Twitch, YouTube, orologio."],
-    ["Premium › Metadata & SEO", "Avanzate › Metadati e privacy", "page", "Titolo, descrizione e immagine dell'anteprima, privacy."],
-    ["Image Host › Gallery", "Image Host › Galleria", "gallery", "Carica immagini con link diretto, mostrale sul profilo."],
-    ["Image Host › Pastes", "Image Host › Paste", "pastes", "Testi condivisi con un link."],
-    ["Leaderboard", "Community › Clan, Esplora", "clans", "Classifica dei clan e profili più visti."],
-    ["Share Your Profile", "Condividi il profilo", "share", "Link, QR code, link per ogni social, anteprima Discord."]
+    ["Panoramica", "overview", "Nome utente, visite e scorciatoie."],
+    ["Personalizza", "customize", "Foto, sfondo, banner, colori, descrizione."],
+    ["Carta", "card", "La tua carta d'identità 18k.bio, con sticker e testi liberi."],
+    ["Foto", "photos", "Le foto del server Discord 18k, pronte da usare."],
+    ["Link", "links", "Social e link personalizzati."],
+    ["Template", "templates", "Profili già pronti da provare e usare."],
+    ["Statistiche", "analytics", "Visite, clic, da dove arrivano."],
+    ["Badge", "badges", "I tuoi badge e il badge personale."],
+    ["Layout e bottoni", "layout", "Forma del profilo, bordi, bottoni."],
+    ["Font ed effetti", "effects", "Font, scritte animate, effetti del cursore, suoni."],
+    ["Musica e audio", "music", "Playlist, testi, Spotify, Last.fm."],
+    ["Widget", "widgets", "GitHub, Twitch, YouTube, orologio."],
+    ["Metadati e privacy", "page", "Anteprima del link e privacy."],
+    ["Clan, Messaggi, Topic", "clans", "La parte community."],
+    ["Galleria e Paste", "gallery", "Immagini e testi con un link."],
+    ["Condividi il profilo", "share", "Link, QR code, anteprima Discord."],
+    ["Impostazioni", "settings", "Email, password, scarica i dati, elimina account."]
   ];
   function renderGuide() {
-    $("guideMap").replaceChildren(...GUIDE.map(([g, ours, go, what]) => {
-      const r = document.createElement("div"); r.className = "map-row";
-      r.innerHTML = `<span class="mg"></span><span class="ma">→</span><span class="mo"><b></b><small></small></span><button type="button" class="ghost-btn sm">Apri</button>`;
-      r.querySelector(".mg").textContent = g;
+    $("guideMap").replaceChildren(...GUIDE.map(([ours, go, what]) => {
+      const r = document.createElement("div"); r.className = "map-row simple";
+      r.innerHTML = `<span class="mo"><b></b><small></small></span><button type="button" class="ghost-btn sm">Apri</button>`;
       r.querySelector("b").textContent = ours;
       r.querySelector("small").textContent = what;
       r.querySelector("button").dataset.go = go;
@@ -3571,7 +3634,7 @@
     $("sideUrl").textContent = `18k.bio/${handle}`;
     $("sideUrl").href = mode === "guest" ? "#" : pub;
     renderPubLinks();
-    $("logoutBtn").textContent = mode === "guest" ? "Accedi" : "Esci";
+    $("logoutBtn").textContent = $("msheetOut").textContent = mode === "guest" ? "Accedi" : "Esci";
     if (mode === "guest") {
       $("guestbar").classList.remove("hidden");
       $("guestHandle").textContent = "@" + handle;
