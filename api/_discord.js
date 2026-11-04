@@ -4,7 +4,7 @@
 
 const ALBUMS = {
   sets: { channel: "1531029648593518866", name: "Sets" },
-  replie: { channel: "1546667763605569566", name: "Replie" },
+  replies: { channel: "1546667763605569566", name: "Replies" },
   pfps: { channel: "1441581025133199440", name: "Pfps" }
 };
 const REQUEST_CHANNEL = "1544837625213489253";

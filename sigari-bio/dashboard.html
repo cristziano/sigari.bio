@@ -2097,7 +2097,7 @@
   /* =========================================================
      Foto: the photos posted in the 18k Discord channels (api/photos.js)
      ========================================================= */
-  const PH = { albums: [["sets", "Sets"], ["replie", "Replie"], ["pfps", "Pfps"]], album: "sets", items: [], next: null, loading: false, cur: null };
+  const PH = { albums: [["sets", "Sets"], ["replies", "Replies"], ["pfps", "Pfps"]], album: "sets", items: [], next: null, loading: false, cur: null };
   const absUrl = u => /^https?:/.test(u) ? u : location.origin + u;
   const escTxt = s => String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   function renderPhTabs() {
