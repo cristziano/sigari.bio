@@ -7,7 +7,7 @@
 //   ?test=1 -> posts now, without waiting 3 hours (never twice within 10 minutes)
 const { discord } = require("./_discord");
 
-const CHANNEL = ""; // the new channel id; while empty, a channel with "pinterest" or "auto" in its name is used
+const CHANNEL = "1441581025133199440"; // pfps (also feeds the Foto library of the site); empty = a channel with "pinterest" or "auto" in its name
 const SETS = "1531029648593518866"; // any channel of the 18k server, to find the server
 async function findChannel() {
   if (CHANNEL) return CHANNEL;
@@ -75,7 +75,14 @@ module.exports = async (req, res) => {
     const seen = new Set(), recentTopics = [];
     if (CH) {
       const me = await discord("/users/@me");
-      const msgs = await discord(`/channels/${CH}/messages?limit=100`);
+      // People post here too: go back up to 500 messages to find the bot's last post
+      let msgs = [], before = "";
+      for (let page = 0; page < 5; page++) {
+        const batch = await discord(`/channels/${CH}/messages?limit=100${before ? "&before=" + before : ""}`);
+        msgs = msgs.concat(batch);
+        if (batch.length < 100 || batch.some(m => m.author && m.author.id === me.id && m.embeds && m.embeds[0] && m.embeds[0].footer && /topic: /.test(m.embeds[0].footer.text))) break;
+        before = batch[batch.length - 1].id;
+      }
       const mine = msgs.filter(m => m.author && m.author.id === me.id);
       mine.forEach(m => (m.embeds || []).forEach(e => e.image && e.image.url && seen.add(e.image.url.split("?")[0])));
       mine.forEach(m => { const f = m.embeds && m.embeds[0] && m.embeds[0].footer && m.embeds[0].footer.text; const t = f && /topic: (.+) · (\d)\/3/.exec(f); if (t && !recentTopics.includes(t[1])) recentTopics.push(t[1]); });
