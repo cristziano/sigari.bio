@@ -1,0 +1,13 @@
+# Every hour opens 18k.bio's autopost address. The address itself decides
+# whether it is time (about every 3 hours), so this needs no secrets.
+name: Foto automatiche 18k
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: curl -sS --max-time 60 https://sigaribio.vercel.app/api/autopost || true
