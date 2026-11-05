@@ -346,6 +346,7 @@ export function normalizeProfile(raw) {
     badges: (Array.isArray(p.badges) ? p.badges : []).filter(b => BADGES[b]).slice(0, 8),
     weekly: isObj(p.weekly) ? { week: String(p.weekly.week || ""), text: String(p.weekly.text || "").slice(0, 200), link: String(p.weekly.link || "").slice(0, 600), image: String(p.weekly.image || "").slice(0, 600), show: !!p.weekly.show } : null,
     views: Math.max(0, Math.floor(+p.views || 0)),
+    likes: Math.max(0, Math.floor(+p.likes || 0)),
     card: cardData(p.card),
     appearance: normalizeAppearance(p.appearance)
   };

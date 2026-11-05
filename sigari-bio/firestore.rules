@@ -13,7 +13,7 @@ service cloud.firestore {
       allow create: if signedIn()
                     && request.resource.data.uid == request.auth.uid
                     && handle.matches('^[a-z0-9_]{3,20}$')
-                    && !(handle in ['api', '404', 'www', 'admin', 'dashboard', 'login', 'explore', 'clan', 'clans', 'paste', 'profile', 'index', 'settings', 'help', 'sigari', 'studios', '404studios', '18k', 'privacy', 'termini'])
+                    && !(handle in ['api', '404', 'www', 'admin', 'dashboard', 'login', 'explore', 'esplora', 'clan', 'clans', 'paste', 'profile', 'index', 'settings', 'help', 'sigari', 'studios', '404studios', '18k', 'privacy', 'termini'])
                     && (('aliasOf' in request.resource.data && ownsHandle(request.resource.data.aliasOf))
                         || (!('aliasOf' in request.resource.data) && !exists(/databases/$(database)/documents/users/$(request.auth.uid))));
       allow update: if false;
@@ -34,17 +34,37 @@ service cloud.firestore {
       // and the badges, which only staff assign from the Firebase console
       allow create: if ownsHandle(handle)
                     && !('views' in request.resource.data)
+                    && !('likes' in request.resource.data)
                     && request.resource.data.get('badges', []).hasOnly(['beta']);
       allow update: if ownsHandle(handle)
                     && request.resource.data.get('views', 0) == resource.data.get('views', 0)
+                    && request.resource.data.get('likes', 0) == resource.data.get('likes', 0)
                     && request.resource.data.get('badges', []) == resource.data.get('badges', []);
 
       // Visitors can only add one view at a time
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
                     && request.resource.data.views == resource.data.get('views', 0) + 1;
 
+      // Likes: the counter moves by one only together with the like document of that account
+      allow update: if signedIn()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+                    && ((request.resource.data.likes == resource.data.get('likes', 0) + 1
+                         && !exists(/databases/$(database)/documents/profiles/$(handle)/likes/$(request.auth.uid))
+                         && existsAfter(/databases/$(database)/documents/profiles/$(handle)/likes/$(request.auth.uid)))
+                     || (request.resource.data.likes == resource.data.get('likes', 0) - 1
+                         && exists(/databases/$(database)/documents/profiles/$(handle)/likes/$(request.auth.uid))
+                         && !existsAfter(/databases/$(database)/documents/profiles/$(handle)/likes/$(request.auth.uid))));
+
       // Deleting the account removes the public page too
       allow delete: if ownsHandle(handle);
+
+      // One like per account: profiles/{handle}/likes/{uid}
+      match /likes/{uid} {
+        allow read: if true;
+        allow create: if signedIn() && request.auth.uid == uid
+                      && request.resource.data.keys().hasOnly(['createdAt']);
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
     }
 
     // Reports of a profile ("Segnala"): anyone can send one, only staff read them from the console

@@ -6,6 +6,10 @@
       "destination": "/sigari-bio/index.html"
     },
     {
+      "source": "/esplora",
+      "destination": "/sigari-bio/explore.html"
+    },
+    {
       "source": "/:handle(@[a-zA-Z0-9_]{3,20})",
       "destination": "/api/profile?h=:handle"
     },

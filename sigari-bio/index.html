@@ -164,6 +164,15 @@
   .hero-c { pointer-events:none; }
   .guest-link { display:inline-block; margin-top:12px; margin-left:4px; font:400 12px var(--mono); color:#8f8f8f; text-decoration:underline; text-underline-offset:3px; }
   .guest-link:hover { color:#fff; }
+  .explore-pill { font:600 12px var(--mono); color:#fff; padding:7px 12px; border:1px solid var(--line2, #2c2c2c); border-radius:999px; text-decoration:none; transition:border-color .2s, background .2s; }
+  .explore-pill:hover { border-color:#fff; background:rgba(255,255,255,.06); }
+  .explore-band { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:24px; margin:0 var(--gut, 24px); padding:28px 32px; border-radius:22px; background:#fff; color:#000; text-decoration:none; position:relative; z-index:2; transition:transform .25s; }
+  .explore-band:hover { transform:translateY(-3px); }
+  .eb-k { font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.12em; color:#666; }
+  .eb-t { font-size:clamp(22px, 3.2vw, 40px); font-weight:700; letter-spacing:-.04em; line-height:1.05; }
+  .eb-t em { font-style:normal; color:#8a8a8a; }
+  .eb-go { font-weight:600; font-size:14px; padding:12px 18px; border-radius:999px; background:#000; color:#fff; white-space:nowrap; }
+  @media (max-width:700px){ .explore-band { grid-template-columns:1fr; gap:12px; padding:22px; margin:0 16px; } .eb-go { justify-self:start; } }
   .hero-c > * { pointer-events:auto; }
   .hero-c { position:absolute; left:var(--gut); right:var(--gut); bottom:84px; display:grid; grid-template-columns:minmax(0, 720px) 1fr; gap:24px; align-items:end; }
   .eyebrow-row { display:flex; gap:10px; align-items:center; font:500 11.5px var(--mono); color:#bdbdbd; }
@@ -526,6 +535,7 @@
     <a href="#plans">piani</a>
   </nav>
   <div class="nav-r">
+    <a class="explore-pill" href="explore.html">esplora</a>
     <a class="ghost" href="login.html?mode=login" id="navLogin">accedi</a>
     <a class="btn" href="#top" id="navClaim" data-mag data-focus-claim>Prendi la tua @</a>
   </div>
@@ -571,6 +581,7 @@
           </div>
         </form>
         <a class="guest-link intro" style="--d:1.4s" href="dashboard.html" data-guest>oppure prova la dashboard senza account</a>
+        <a class="guest-link intro" style="--d:1.5s" href="explore.html">guarda tutti i profili →</a>
       </div>
       <div class="moods intro" style="--d:1.45s">
         <span class="moods-l">mood del sito</span>
@@ -586,6 +597,12 @@
   </section>
 
   <!-- INDEX -->
+  <a class="explore-band" href="explore.html" aria-label="Esplora tutti i profili">
+    <span class="eb-k">esplora</span>
+    <span class="eb-t">Tutti i profili. <em>Guarda, cerca, metti like.</em></span>
+    <span class="eb-go">Apri esplora ↗</span>
+  </a>
+
   <section class="s" id="index">
     <div class="wrap">
       <div class="sh rv"><span class="no">01 / funzioni</span><div>
@@ -863,7 +880,7 @@
     document.body.appendChild(n); setTimeout(() => n.remove(), 6000);
     history.replaceState(null, "", location.pathname);
   }
-  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
   const state = { handle: "", avail: null, mood: "smoke" };
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
   const rarity = h => h.length === 3 ? ["leggendaria", 4] : h.length === 4 ? ["epica", 3] : h.length === 5 ? ["rara", 2] : ["classica", 1];
