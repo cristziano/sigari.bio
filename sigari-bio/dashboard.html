@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#000; --fg:#fff; --inv-bg:#fff; --inv-fg:#000; --blob:#fff; --input:#000; --glass:rgba(0,0,0,.78); --s1:#0b0b0b; --s2:#111; --s3:#1d1d1d; --b:#2c2c2c; --m:#9a9a9a; --d:#5c5c5c; --overlay:rgba(0,0,0,.6); --int:0.08; color-scheme:dark; }
-  :root.light { --bg:#fff; --fg:#000; --inv-bg:#000; --inv-fg:#fff; --blob:#000; --input:#fff; --glass:rgba(255,255,255,.86); --s1:#f6f6f6; --s2:#fff; --s3:#eee; --b:#e2e2e2; --m:#666; --d:#9a9a9a; --overlay:rgba(255,255,255,.6); color-scheme:light; }
+  :root { --bg:#000; --fg:#fff; --inv-bg:#fff; --inv-fg:#000; --blob:#fff; --input:#000; --glass:rgba(0,0,0,.78); --s1:#0b0b0b; --s2:#111; --s3:#1d1d1d; --b:#2c2c2c; --m:#b2b2b2; --d:#828282; --overlay:rgba(0,0,0,.6); --int:0.05; color-scheme:dark; }
+  :root.light { --bg:#fff; --fg:#000; --inv-bg:#000; --inv-fg:#fff; --blob:#000; --input:#fff; --glass:rgba(255,255,255,.86); --s1:#f6f6f6; --s2:#fff; --s3:#eee; --b:#e2e2e2; --m:#4f4f4f; --d:#7a7a7a; --overlay:rgba(255,255,255,.6); color-scheme:light; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; }
   body { background:var(--bg); color:var(--fg); font-family:"Geist",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; overflow:hidden; transition:background-color .35s, color .35s; }
@@ -551,11 +551,34 @@
   }
   @media (max-width:520px) { .asset-grid { grid-template-columns:1fr; } .acc-v { font-size:17px; } }
 
+  .slots { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; max-width:820px; margin-bottom:22px; }
+  .slot { display:flex; flex-direction:column; gap:8px; min-height:118px; padding:12px; border:1px solid var(--b); border-radius:14px; background:var(--s1); }
+  .slot .sw { height:34px; border-radius:9px; border:1px solid var(--b); background-size:cover; background-position:center; }
+  .slot b { font-size:13.5px; } .slot small { color:var(--m); font-size:12px; }
+  .slot .acts { display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; }
+  .slot.empty { align-items:center; justify-content:center; border-style:dashed; text-align:center; color:var(--m); }
+  .slot.locked { align-items:center; justify-content:center; text-align:center; color:var(--d); border-style:dashed; }
+  .slot.locked b { color:var(--m); }
+  @media (max-width:640px) { .slots { grid-template-columns:1fr; } .slot { min-height:0; } }
+  .ph-found { margin-top:14px; }
+  .ph-found-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin-top:8px; }
+  .ph-found-grid img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--b); display:block; }
   .explore-hero { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:18px 0 4px; padding:18px 20px; border-radius:16px; text-decoration:none; color:var(--inv-fg); background:var(--inv-bg); max-width:820px; transition:transform .2s; }
   .explore-hero:hover { transform:translateY(-2px); }
   .explore-hero b { display:block; font-size:18px; letter-spacing:-.02em; }
   .explore-hero small { display:block; margin-top:3px; font-size:13px; opacity:.7; }
   .explore-hero .eh-go { flex:none; font-weight:600; font-size:13px; padding:8px 14px; border-radius:999px; border:1px solid currentColor; }
+  /* Readability pass: a bit bigger text, more air between blocks, calmer details */
+  .desc { font-size:15px; line-height:1.55; }
+  .label { font-size:12px; letter-spacing:.03em; }
+  .section-label { margin:34px 0 12px; }
+  .card { padding:22px; gap:20px; }
+  .hint { font-size:12.5px; line-height:1.55; }
+  .nav button { font-size:14px; }
+  .field { gap:9px; }
+  .toggle-row { font-size:13.5px; }
+  .seg button { font-size:13px; }
+  .view > h2 { letter-spacing:-.03em; }
   /* Phone: slim top bar, bottom tabs, "Altro" sheet */
   .mtabs, .msheet { display:none; }
   .map-row.simple { grid-template-columns:minmax(0,1fr) auto !important; }
@@ -731,6 +754,9 @@
     <section class="view hidden" id="view-customize">
       <h2>Personalizza</h2>
       <p class="desc">Tutto quello che si vede sul profilo, in una pagina sola. Le modifiche appaiono subito nell'anteprima; alla fine premi Salva.</p>
+      <div class="label section-label">i tuoi look <span class="val" id="slotCount"></span></div>
+      <p class="hint" style="margin:-4px 0 10px">Salva la combinazione attuale (sfondo, colori, font, effetti, foto, carta) e cambiala con un tocco. 1 slot per tutti, 3 per i premium.</p>
+      <div class="slots" id="slots"></div>
       <nav class="subnav" aria-label="Parti della pagina"><a href="#c-assets">Caricamenti</a><a href="#c-general">Generale</a><a href="#c-colors">Colori</a><a href="#c-other">Altro</a></nav>
 
       <h3 class="sec-h" id="c-assets">Caricamenti</h3>
@@ -890,19 +916,21 @@
     <section class="view hidden" id="view-photos">
       <h2>Foto</h2>
       <p class="desc">Le foto mandate nei canali del server Discord 18k arrivano qui da sole. Toccane una per usarla come sfondo, foto profilo, banner o sulla tua carta.</p>
-      <div class="ph-tabs" id="phTabs"></div>
-      <div class="ph-note" id="phNote">Carico…</div>
-      <div class="ph-grid" id="phGrid"></div>
-      <div class="row" style="justify-content:center;margin-top:16px"><button class="ghost-btn hidden" id="phMore" type="button">Carica altre</button></div>
       <div class="label section-label">fai una richiesta</div>
       <form class="card ph-req" id="phReq" novalidate>
-        <p class="hint">Vuoi un set, una pfp o un edit? La richiesta arriva nel canale richieste del server 18k.</p>
+        <p class="hint">Vuoi un set, una pfp o un edit? La richiesta arriva nel canale richieste del server 18k e il bot ti trova subito 3 foto simili. Una richiesta a settimana, serve un account.</p>
         <div class="seg" id="phReqType"><button type="button" data-v="set" class="on">Set</button><button type="button" data-v="pfp">Pfp</button><button type="button" data-v="edit">Edit</button><button type="button" data-v="altro">Altro</button></div>
         <textarea class="text" id="phReqText" maxlength="800" placeholder="Cosa vuoi? Colori, personaggio, stile, per quando…"></textarea>
         <input class="text" id="phReqLink" type="url" maxlength="300" placeholder="Link di riferimento (Pinterest, foto…) facoltativo">
         <input id="phReqWeb" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
         <div class="row"><button class="save-btn" id="phReqSend" type="submit">Manda la richiesta</button><span class="hint" id="phReqOut"></span></div>
+        <div class="ph-found hidden" id="phFound"><div class="label">il bot ha trovato</div><div class="ph-found-grid" id="phFoundGrid"></div></div>
       </form>
+      <div class="label section-label">la libreria</div>
+      <div class="ph-tabs" id="phTabs"></div>
+      <div class="ph-note" id="phNote">Carico…</div>
+      <div class="ph-grid" id="phGrid"></div>
+      <div class="row" style="justify-content:center;margin-top:16px"><button class="ghost-btn hidden" id="phMore" type="button">Carica altre</button></div>
     </section>
 
     <section class="view hidden" id="view-links">
@@ -1554,7 +1582,8 @@
     if (name === "badges") renderBadges();
     if (name === "templates") renderTemplates();
     if (name === "card") renderCards();
-    if (name === "photos") renderPhotos();
+    if (name === "photos") { renderPhotos(); paintReqState(); }
+    if (name === "customize") loadSlots();
     if (name === "topic") renderTopic();
     if (name === "settings") renderSettings();
     if (name === "share") renderShare();
@@ -1668,7 +1697,8 @@
     early: "Per i primi profili di 18k.bio.",
     verified: "Per creator e persone conosciute. Lo assegniamo noi.",
     partner: "Per i server e i progetti partner.",
-    winner: "Per chi vince il topic della settimana."
+    winner: "Per chi vince il topic della settimana.",
+    premium: "Per i premium: 3 slot per i look invece di 1."
   };
   function renderBadges() {
     $("badgeList").replaceChildren(...Object.entries(BADGES).map(([id, [tip, path]]) => {
@@ -2200,17 +2230,111 @@
   // Requests go to the 18k request channel through api/request.js
   let reqType = "set";
   $("phReqType").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; reqType = b.dataset.v; $$("button", $("phReqType")).forEach(x => x.classList.toggle("on", x === b)); });
+  /* ---------- Saved looks: 1 slot, 3 with the premium badge (the rules check it too) ---------- */
+  const SLOT_KEY = "sigari-slots";
+  let slots = [], slotsLoaded = false;
+  const isPremium = () => badges.includes("premium");
+  const slotMax = () => (mode === "user" && isPremium() ? 3 : 1);
+  // Big pasted pictures (data: links) are left out so a slot stays small
+  const stripData = o => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === "string" && v.startsWith("data:") ? "" : v)));
+  const lookOf = () => stripData({ appearance: draft.appearance, card: draft.card || null, avatarUrl: draft.avatarUrl || "" });
+  async function loadSlots() {
+    if (!slotsLoaded) {
+      slotsLoaded = true;
+      if (mode === "user") {
+        try { const { F, db } = await firebase(); const s = await F.getDoc(F.doc(db, "slots", uid)); slots = s.exists() ? (s.data().items || []) : []; }
+        catch (_) { slots = []; }
+      } else { try { slots = JSON.parse(store.get(SLOT_KEY) || "[]"); } catch (_) { slots = []; } }
+    }
+    renderSlots();
+  }
+  async function saveSlots() {
+    if (mode !== "user") { store.set(SLOT_KEY, JSON.stringify(slots)); return; }
+    const { F, db } = await firebase();
+    await F.setDoc(F.doc(db, "slots", uid), { items: slots, updatedAt: F.serverTimestamp() });
+  }
+  function renderSlots() {
+    const max = slotMax();
+    $("slotCount").textContent = `${slots.length}/${max}`;
+    $("slots").replaceChildren(...[0, 1, 2].map(i => {
+      const s = slots[i], d = document.createElement("div");
+      if (i >= max) {
+        d.className = "slot locked";
+        d.innerHTML = `<b>Slot ${i + 1}</b><small>Solo premium</small>`;
+        return d;
+      }
+      if (!s) {
+        d.className = "slot empty";
+        d.innerHTML = `<small>Slot ${i + 1} vuoto</small><button type="button" class="ghost-btn sm" data-slot-save="${i}">Salva il look attuale</button>`;
+        return d;
+      }
+      d.className = "slot";
+      const a = s.look && s.look.appearance || {}, bg = a.bg || {};
+      const sw = document.createElement("div"); sw.className = "sw";
+      sw.style.background = bg.type === "image" && bg.image ? `url("${String(bg.image).replace(/"/g, "%22")}") center/cover` : `linear-gradient(135deg, ${(a.colors && a.colors.accent) || "#fff"}, ${(a.colors && a.colors.primary) || "#111"})`;
+      const b = document.createElement("b"); b.textContent = s.name || `Look ${i + 1}`;
+      const sm = document.createElement("small"); sm.textContent = s.savedAt ? new Date(s.savedAt).toLocaleDateString("it-IT", { day: "numeric", month: "short" }) : "";
+      const acts = document.createElement("div"); acts.className = "acts";
+      acts.innerHTML = `<button type="button" class="save-btn" style="height:30px;padding:0 12px;font-size:12.5px" data-slot-use="${i}">Usa</button><button type="button" class="ghost-btn sm" data-slot-save="${i}">Sovrascrivi</button><button type="button" class="ghost-btn sm" data-slot-del="${i}">Elimina</button>`;
+      d.append(sw, b, sm, acts);
+      return d;
+    }));
+  }
+  $("slots").addEventListener("click", async e => {
+    const sv = e.target.closest("[data-slot-save]"), us = e.target.closest("[data-slot-use]"), dl = e.target.closest("[data-slot-del]");
+    try {
+      if (sv) {
+        const i = +sv.dataset.slotSave; if (i >= slotMax()) return;
+        const name = (prompt("Nome del look", (slots[i] && slots[i].name) || `Look ${i + 1}`) || "").trim().slice(0, 30);
+        if (!name) return;
+        slots[i] = { name, savedAt: Date.now(), look: lookOf() };
+        slots = slots.filter(Boolean).slice(0, slotMax());
+        await saveSlots(); renderSlots(); setStatus(`Look "${name}" salvato.`, "ok");
+      }
+      if (us) {
+        const s = slots[+us.dataset.slotUse]; if (!s || !s.look) return;
+        draft.appearance = normalizeAppearance(s.look.appearance);
+        if (s.look.card) draft.card = s.look.card;
+        if (s.look.avatarUrl) draft.avatarUrl = s.look.avatarUrl;
+        syncControls(); renderAvatarBox(); renderPreview(); changed();
+        setStatus(`Look "${s.name}" messo sul profilo. Premi Salva per pubblicarlo.`, "ok");
+      }
+      if (dl) {
+        const i = +dl.dataset.slotDel; if (!slots[i] || !confirm(`Eliminare "${slots[i].name}"?`)) return;
+        slots.splice(i, 1); await saveSlots(); renderSlots();
+      }
+    } catch (_) { setStatus("Non riuscito: le regole di Firebase vanno aggiornate (vedi README).", "warn"); }
+  });
+
+  // One request a week per account: the server checks it, this only shows the date
+  const REQ_KEY = "sigari-req-next";
+  const reqWait = () => { let n = 0; try { n = +store.get(REQ_KEY) || 0; } catch (_) { n = 0; } return n > Date.now() ? n : 0; };
+  function paintReqState() {
+    const n = reqWait(), out = $("phReqOut");
+    if (mode === "guest") { out.innerHTML = 'Per fare una richiesta serve un account. <a href="login.html" style="color:var(--fg)">Registrati</a>'; return; }
+    if (n) out.textContent = "Prossima richiesta dal " + new Date(n).toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" }) + ".";
+  }
+  function showFound(list) {
+    $("phFoundGrid").replaceChildren(...list.map(u => { const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; const im = document.createElement("img"); im.src = u; im.alt = ""; im.loading = "lazy"; a.appendChild(im); return a; }));
+    $("phFound").classList.toggle("hidden", !list.length);
+  }
   $("phReq").addEventListener("submit", async e => {
     e.preventDefault();
     const text = $("phReqText").value.trim(), out = $("phReqOut");
+    if (mode === "guest") { paintReqState(); return; }
+    if (reqWait()) { paintReqState(); return; }
     if (text.length < 5) { out.textContent = "Scrivi cosa vuoi (almeno qualche parola)."; return; }
-    $("phReqSend").disabled = true; out.textContent = "Invio…";
+    $("phReqSend").disabled = true; out.textContent = "Invio… il bot cerca 3 foto";
     try {
-      const r = await fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ handle: mode === "guest" ? "" : handle, type: reqType, text, link: $("phReqLink").value.trim(), website: $("phReqWeb").value }) });
+      const { auth } = await firebase();
+      const token = auth.currentUser ? await auth.currentUser.getIdToken() : "";
+      const r = await fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + token }, body: JSON.stringify({ handle, type: reqType, text, link: $("phReqLink").value.trim(), website: $("phReqWeb").value }) });
       const j = await r.json().catch(() => ({}));
+      if (j.next) store.set(REQ_KEY, String(j.next));
       if (!r.ok) throw new Error(j.error || "Non riuscito.");
       $("phReqText").value = ""; $("phReqLink").value = "";
-      out.textContent = "Richiesta mandata nel canale richieste di 18k.";
+      showFound(j.found || []);
+      out.textContent = "Richiesta mandata nel canale richieste di 18k." + ((j.found || []).length ? " Il bot ha già trovato queste:" : "");
     } catch (err) { out.textContent = err.message; }
     finally { $("phReqSend").disabled = false; }
   });
@@ -2935,6 +3059,7 @@
       await Promise.all(aliases.docs.filter(d => d.data().uid === uid).map(d => F.deleteDoc(d.ref)));
       await F.deleteDoc(F.doc(db, "profiles", handle)).catch(() => {});
       await F.deleteDoc(F.doc(db, "usernames", handle));
+      await F.deleteDoc(F.doc(db, "slots", uid)).catch(() => {});
       await F.deleteDoc(F.doc(db, "users", uid));
       await A.deleteUser(account);
       store.set(DRAFT_KEY, "");

@@ -26,6 +26,19 @@ service cloud.firestore {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
 
+    // Saved looks ("i tuoi look"): 1 slot for everyone, 3 with the premium badge
+    function isPremium() {
+      return 'premium' in get(/databases/$(database)/documents/profiles/$(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.handle)).data.get('badges', []);
+    }
+    match /slots/{uid} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid
+                            && request.resource.data.keys().hasOnly(['items', 'updatedAt'])
+                            && request.resource.data.items is list
+                            && (request.resource.data.items.size() <= 1
+                                || (request.resource.data.items.size() <= 3 && isPremium()));
+    }
+
     // Public profile, rendered at 404.bio/handle
     match /profiles/{handle} {
       allow read: if true;

@@ -68,3 +68,12 @@ Per accenderli (lo fa chi gestisce Vercel e Firebase, ancora da fare):
 - **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a sigaribio.vercel.app, che funziona): passarli a 18k.bio.
 
 Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre il sito, quindi funziona con qualsiasi dominio.
+
+## Premium e look salvati
+
+- Gli slot "i tuoi look" (Personalizza) sono 1 per tutti e 3 per i premium. Il limite è anche nelle regole di Firestore (`slots/{uid}`).
+- Per dare il premium a qualcuno: Firebase → Firestore → `profiles/<nome>` → campo `badges` → aggiungi `premium`. Solo dalla console: l'utente non può darselo da solo.
+
+## Richieste dall'app
+
+- Serve un account, una richiesta a settimana per account. Il bot cerca 3 foto su Pinterest dal testo della richiesta e le mette nel messaggio del canale richieste.

@@ -23,7 +23,7 @@ async function rawBody(req) {
 const plain = s => String(s || "").replace(/\[(?:glow|rainbow|\/glow|\/rainbow|#[0-9a-f]{6}|\/)\]/gi, "").replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, "$1").replace(/\*\*|__|~~|\|\||`|\*/g, "").replace(/\s+/g, " ").trim();
 const https = s => (/^https:\/\/[^\s"'<>]+$/.test(String(s || "")) ? String(s) : "");
 const colorOf = hex => { const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || "")); const n = m ? parseInt(m[1], 16) : 0xffffff; return n === 0 ? 0x111111 : n; };
-const BADGE = { beta: "beta", verified: "verificato", staff: "staff", founder: "founder", partner: "partner", winner: "vincitore topic", og: "og", donor: "supporter" };
+const BADGE = { beta: "beta", verified: "verificato", staff: "staff", founder: "founder", partner: "partner", winner: "vincitore topic", premium: "premium", og: "og", donor: "supporter" };
 const reply = (res, data) => { res.setHeader("Content-Type", "application/json"); res.end(JSON.stringify({ type: 4, data: { allowed_mentions: { parse: [] }, ...data } })); };
 const secret = (res, content) => reply(res, { content, flags: 64 });
 
