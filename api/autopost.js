@@ -4,7 +4,7 @@
 // Every post: 4 pictures of one topic, only pictures. The next post uses another topic.
 // State lives in the channel itself (the invisible link of the bot's pictures).
 //   ?dry=1  -> only shows what it would post (nothing is sent)
-//   ?test=1 -> posts now, without waiting 3 hours (never twice within 10 minutes)
+//   ?test=1 -> posts now, without waiting 3 hours (never twice within 10 minutes); &topic=xyz chooses the topic
 const { discord } = require("./_discord");
 const { pinterest, shuffle } = require("./_pinterest");
 
@@ -62,7 +62,10 @@ module.exports = async (req, res) => {
     }
     // A new topic every post, never one of the last 10
     const fresh = TOPICS.filter(x => !recentTopics.slice(0, 10).includes(x));
-    const topic = recentTopics.length ? shuffle(fresh.length ? fresh : TOPICS.slice())[0] : TOPICS[0];
+    // ?test=1&topic=xyz picks the topic of a test post by hand
+    const forced = (test || dry) && /[?&]topic=([^&]+)/.exec(req.url || "");
+    const topic = forced ? decodeURIComponent(forced[1].replace(/\+/g, " ")).replace(/[^\w !.'-]/g, "").trim().slice(0, 60)
+      : recentTopics.length ? shuffle(fresh.length ? fresh : TOPICS.slice())[0] : TOPICS[0];
     if (test && last && Date.now() - last < 10 * 60e3) return res.end(JSON.stringify({ skipped: true, reason: "ultimo invio meno di 10 minuti fa" }));
     if (!dry && !test && last && Date.now() - last < EVERY) return res.end(JSON.stringify({ skipped: true, next_in_min: Math.round((EVERY - (Date.now() - last)) / 60000) }));
 
