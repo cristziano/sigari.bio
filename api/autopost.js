@@ -6,7 +6,7 @@
 //   ?dry=1  -> only shows what it would post (nothing is sent)
 //   ?test=1 -> posts now, without waiting 3 hours (never twice within 10 minutes); &topic=xyz chooses the topic
 const { discord } = require("./_discord");
-const { pinterest, shuffle } = require("./_pinterest");
+const { pinterest, shuffle, isMatching } = require("./_pinterest");
 
 const CHANNEL = "1441581025133199440"; // pfps (also feeds the Foto library of the site); empty = a channel with "pinterest" or "auto" in its name
 const SETS = "1531029648593518866"; // any channel of the 18k server, to find the server
@@ -69,15 +69,20 @@ module.exports = async (req, res) => {
     if (test && last && Date.now() - last < 10 * 60e3) return res.end(JSON.stringify({ skipped: true, reason: "ultimo invio meno di 10 minuti fa" }));
     if (!dry && !test && last && Date.now() - last < EVERY) return res.end(JSON.stringify({ skipped: true, next_in_min: Math.round((EVERY - (Date.now() - last)) / 60000) }));
 
-    const found = (await pinterest(topic)).filter(u => !seen.has(u.split("?")[0]));
-    const pick = shuffle(found).slice(0, 4);
+    const res0 = await pinterest(topic);
+    const fresh0 = u => !seen.has(u.split("?")[0]);
+    const found = res0.filter(fresh0);
+    // Matching topics: 2 real pairs (A, B, A, B) from carousel pins; otherwise 4 single pictures
+    const pairs = shuffle(res0.pairs.filter(p => p.every(fresh0)));
+    const pick = isMatching(topic) && pairs.length ? pairs.slice(0, 2).flat().concat(shuffle(found).slice(0, Math.max(0, 4 - pairs.slice(0, 2).length * 2))).slice(0, 4) : shuffle(found).slice(0, 4);
     if (pick.length < 2) { res.statusCode = 502; return res.end(JSON.stringify({ error: "Pinterest non ha dato abbastanza foto per questo topic.", topic })); }
     // Only pictures: no title, no text. Embeds that share the same url show up as one gallery.
     const link = SEARCH + encodeURIComponent(topic);
+    const pairsUsed = isMatching(topic) ? Math.min(2, pairs.length) : 0;
     const embeds = pick.map(u => ({ url: link, image: { url: u } }));
-    if (dry) return res.end(JSON.stringify({ dry: true, channel: CH || null, topic, found: found.length, would_post: pick }));
+    if (dry) return res.end(JSON.stringify({ dry: true, channel: CH || null, topic, query: res0.query, found: found.length, pairs: res0.pairs.length, pairs_used: pairsUsed, would_post: pick }));
     await discord(`/channels/${CH}/messages`, { method: "POST", body: JSON.stringify({ embeds, allowed_mentions: { parse: [] } }) });
-    res.end(JSON.stringify({ ok: true, topic, posted: pick.length }));
+    res.end(JSON.stringify({ ok: true, topic, query: res0.query, posted: pick.length, pairs_used: pairsUsed }));
   } catch (e) {
     res.statusCode = e.status || 500;
     res.end(JSON.stringify({ error: e.message }));
