@@ -38,7 +38,7 @@ async function profileByDiscord(id) {
 // A name typed by the user: the main @ or an extra name that points to it
 async function profileByName(name) {
   const h = String(name || "").toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "").slice(0, 20);
-  if (h.length < 3) return null;
+  if (!h) return null;
   let p = await getDoc("profiles/" + h);
   if (p) return { handle: h, ...p };
   const u = await getDoc("usernames/" + h);

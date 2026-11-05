@@ -173,7 +173,7 @@
     { title: "Portfolio", url: "#" },
     { title: "Contatti", url: "#" }
   ];
-  const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
+  const HANDLE_RE = /^[a-z0-9_]{1,20}$/;
   // 18k.bio/<name> is the profile address, so the names of the site's own pages are reserved
   // ?next=/path brings the user back after login (e.g. to like a profile); only paths on this site
   const NEXT = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(?!\/)[\w\-./?=&%@]*$/.test(n) ? n : "dashboard.html"; })();
@@ -290,7 +290,7 @@
     const pw2 = $("confirm").value;
 
     if (mode === "signup") {
-      if (!HANDLE_RE.test(handle)) return authErr("La @: da 3 a 20 tra lettere, numeri o trattini bassi.");
+      if (!HANDLE_RE.test(handle)) return authErr("La @: da 1 a 20 tra lettere, numeri o trattini bassi.");
       if (RESERVED.includes(handle)) return authErr("Questo nome è riservato al sito. Scegline un altro.");
       if (!$("consent").checked) return authErr("Per iscriverti spunta la casella dei termini e della privacy.");
       if (!email) return authErr("Scrivi la tua email.");

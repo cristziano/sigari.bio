@@ -3265,7 +3265,7 @@
   }
   $("aliasAdd").addEventListener("click", async () => {
     const name = $("aliasInput").value.trim().toLowerCase().replace(/^@/, "");
-    if (!/^[a-z0-9_]{3,20}$/.test(name)) return setStatus("Da 3 a 20 caratteri: lettere, numeri o _.", "err");
+    if (!/^[a-z0-9_]{1,20}$/.test(name)) return setStatus("Da 1 a 20 caratteri: lettere, numeri o _.", "err");
     if (RESERVED_NAMES.includes(name)) return setStatus("Questo nome è riservato al sito.", "err");
     try {
       const { F, db } = await firebase();
@@ -3797,7 +3797,7 @@
     let saved = null;
     try { saved = JSON.parse(store.get(DRAFT_KEY) || "null"); } catch (_) { saved = null; }
     const wanted = (params.get("handle") || saved?.handle || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
-    handle = wanted.length >= 3 ? wanted : "ospite";
+    handle = wanted.length >= 1 ? wanted : "ospite";
     const base = saved || { displayName: handle, bio: "", tags: [], location: "", avatarUrl: "", links: [{ title: "Il mio primo link", url: "https://18k.bio", hidden: false }], socials: {}, weekly: null, appearance: {} };
     draft = snapshot(base);
     savedJSON = saved ? JSON.stringify(snapshot(saved)) : "";

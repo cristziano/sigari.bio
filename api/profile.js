@@ -41,13 +41,13 @@ module.exports = async (req, res) => {
     return res.end();
   }
   try {
-    if (handle.length >= 3) {
+    if (handle.length >= 1) {
       const f = await getDoc("profiles/" + handle);
       if (!f) {
         // An extra name sends people to the main profile
         const u = await getDoc("usernames/" + handle);
         const main = u && str(u.aliasOf);
-        if (main && /^[a-z0-9_]{3,20}$/.test(main)) {
+        if (main && /^[a-z0-9_]{1,20}$/.test(main)) {
           res.statusCode = 302;
           res.setHeader("Location", "/" + main + (url.searchParams.get("utm_source") ? "?utm_source=" + encodeURIComponent(url.searchParams.get("utm_source")) : ""));
           return res.end();

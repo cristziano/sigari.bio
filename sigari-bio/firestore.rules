@@ -12,7 +12,7 @@ service cloud.firestore {
       // extra names only next to a main @ you own, and never the names of the site's own pages
       allow create: if signedIn()
                     && request.resource.data.uid == request.auth.uid
-                    && handle.matches('^[a-z0-9_]{3,20}$')
+                    && handle.matches('^[a-z0-9_]{1,20}$')
                     && !(handle in ['api', '404', 'www', 'admin', 'dashboard', 'login', 'explore', 'esplora', 'clan', 'clans', 'paste', 'profile', 'index', 'settings', 'help', 'sigari', 'studios', '404studios', '18k', 'privacy', 'termini'])
                     && (('aliasOf' in request.resource.data && ownsHandle(request.resource.data.aliasOf))
                         || (!('aliasOf' in request.resource.data) && !exists(/databases/$(database)/documents/users/$(request.auth.uid))));
@@ -83,7 +83,7 @@ service cloud.firestore {
     // Reports of a profile ("Segnala"): anyone can send one, only staff read them from the console
     match /reports/{id} {
       allow create: if request.resource.data.keys().hasOnly(['handle', 'reason', 'text', 'createdAt'])
-                    && request.resource.data.handle is string && request.resource.data.handle.matches('^[a-z0-9_]{3,20}$')
+                    && request.resource.data.handle is string && request.resource.data.handle.matches('^[a-z0-9_]{1,20}$')
                     && request.resource.data.reason in ['spam', 'falso', 'offensivo', 'illegale', 'minori', 'altro']
                     && request.resource.data.text is string && request.resource.data.text.size() <= 500
                     && request.resource.data.createdAt == request.time;
