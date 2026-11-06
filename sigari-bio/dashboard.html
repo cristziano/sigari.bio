@@ -586,7 +586,7 @@
   @media (max-width:900px) {
     .mtop { align-items:center; flex-wrap:nowrap !important; padding:10px 16px calc(10px) !important; }
     .mtop select { display:none !important; }
-    .mlogo { font-weight:700; font-size:16px; letter-spacing:-.02em; color:var(--fg); text-decoration:none; }
+    .mlogo { padding:8px 0; font-weight:700; font-size:16px; letter-spacing:-.02em; color:var(--fg); text-decoration:none; }
     .mlogo span { color:var(--d); }
     .mtitle { flex:1; min-width:0; font-size:13px; color:var(--m); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .mtabs { display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:35; padding:6px 6px calc(6px + env(safe-area-inset-bottom)); background:var(--glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-top:1px solid var(--b); }
@@ -624,7 +624,7 @@
 <div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 <div class="loading" id="loading">Caricamento…</div>
 <div class="welcome hidden" id="welcome" role="status" aria-live="polite">
-  <div class="welcome-inner"><p class="welcome-kicker" id="welcomeKicker"></p><h1 class="welcome-name" id="welcomeName"></h1></div>
+  <div class="welcome-inner"><p class="welcome-kicker" id="welcomeKicker"></p><p class="welcome-name" id="welcomeName"></p></div>
 </div>
 
 <section class="dash hidden" id="dash">
