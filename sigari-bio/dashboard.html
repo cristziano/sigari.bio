@@ -3047,9 +3047,9 @@
         const pass = prompt("Per sicurezza scrivi la tua password");
         if (!pass) return setFormStatus("deleteStatus", "Annullato.", "");
         await A.reauthenticateWithCredential(account, A.EmailAuthProvider.credential(account.email, pass));
-      } else {
+      } else if ((account.providerData || []).some(p => p.providerId === "google.com")) {
         await A.reauthenticateWithPopup(account, new A.GoogleAuthProvider());
-      }
+      } // Discord accounts (custom sign-in): no popup; if the login is too old Firebase asks to sign in again
       // files: avatar and everything in media/<uid>
       const del = r => S.deleteObject(r).catch(() => {});
       await del(S.ref(storage, `avatars/${uid}`));

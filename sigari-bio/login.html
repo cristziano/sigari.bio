@@ -151,9 +151,9 @@
   import {
     getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, OAuthProvider,
     createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser,
-    sendPasswordResetEmail, sendEmailVerification
+    sendPasswordResetEmail, sendEmailVerification, signInWithCustomToken
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-  import { getFirestore, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCoT9dNoX36cQfvOHDn2d-d-N2_m_MdMzM",
@@ -165,8 +165,8 @@
     measurementId: "G-Q2PEC2D88K"
   };
 
-  const DISCORD_ENABLED = false;
-  const DISCORD_PROVIDER_ID = "oidc.discord";
+  // Discord sign-in goes through api/discord-login.js (Firebase has no Discord provider)
+  const DL_KEY = "18k-discord-login";
   const DEFAULT_APPEARANCE = { theme: "pure", effect: "lava", intensity: 80, cursor: "default", buttons: { variant: "solid", palette: "white", shape: "rounded", shadow: "none", hover: "none" } };
   const DEFAULT_LINKS = [
     { title: "Ultima uscita", url: "#" },
@@ -359,12 +359,40 @@
   });
 
   $("btnDiscord").addEventListener("click", () => {
-    if (!DISCORD_ENABLED) return authErr("L'accesso con Discord non è ancora attivo.");
-    const provider = new OAuthProvider(DISCORD_PROVIDER_ID);
-    provider.addScope("identify");
-    provider.addScope("email");
-    oauthSignIn(provider);
+    // Remember the @ and the consent: the page reloads after Discord
+    try { sessionStorage.setItem(DL_KEY, JSON.stringify({ handle: $("username").value.trim().toLowerCase(), consent: $("consent").checked })); } catch (_) { /* storage blocked */ }
+    setBusy(true);
+    location.href = "/api/discord-login";
   });
+
+  // Back from Discord: #dt=<token>&dn=<name>&de=<email>&di=<discord id>, or #derr=<message>
+  (async () => {
+    if (!/^#(dt|derr)=/.test(location.hash)) return;
+    const h = new URLSearchParams(location.hash.slice(1));
+    history.replaceState(null, "", location.pathname + location.search);
+    if (h.get("derr")) return authErr(h.get("derr"));
+    let saved = {};
+    try { saved = JSON.parse(sessionStorage.getItem(DL_KEY) || "{}"); sessionStorage.removeItem(DL_KEY); } catch (_) { saved = {}; }
+    setBusy(true);
+    try {
+      const cred = await signInWithCustomToken(auth, h.get("dt"));
+      const exists = (await getDoc(doc(db, "users", cred.user.uid))).exists();
+      if (!exists) {
+        const handle = String(saved.handle || "");
+        // A new account without a @ is not kept
+        const dropHalf = () => deleteUser(cred.user).catch(() => signOut(auth));
+        if (!saved.consent) { await dropHalf(); throw new Error("Per iscriverti spunta la casella dei termini e della privacy, poi Continua con Discord. Non ho salvato niente."); }
+        if (!HANDLE_RE.test(handle) || RESERVED.includes(handle)) { await dropHalf(); throw new Error("Prima scegli la tua @, poi Continua con Discord. Non ho salvato niente."); }
+        try {
+          await claimHandle(cred.user.uid, handle, { email: h.get("de") || null, provider: "discord" });
+          // The Discord id goes in "presenza discord": the bot's /pfp finds the profile by it
+          if (h.get("di")) await updateDoc(doc(db, "users", cred.user.uid), { "appearance.widgets.discordId": h.get("di") }).catch(() => {});
+        } catch (err) { await deleteUser(cred.user).catch(() => {}); throw err; }
+      }
+      location.replace(NEXT);
+    } catch (err) { authErr(friendly(err)); }
+    finally { setBusy(false); }
+  })();
 
   // Already signed in with a profile? Skip the form and go straight to the dashboard.
   onAuthStateChanged(auth, async user => {
