@@ -330,10 +330,12 @@
       const cred = await signInWithPopup(auth, provider);
       const exists = (await getDoc(doc(db, "users", cred.user.uid))).exists();
       if (!exists) {
-        if (!$("consent").checked) { await signOut(auth); throw new Error("Per iscriverti spunta la casella dei termini e della privacy."); }
+        // A new account without a @ is not kept: Firebase already created it with the email, so remove it
+        const dropHalf = () => deleteUser(cred.user).catch(() => signOut(auth));
+        if (!$("consent").checked) { await dropHalf(); throw new Error("Per iscriverti spunta la casella dei termini e della privacy. Non ho salvato niente."); }
         if (!HANDLE_RE.test(handle) || RESERVED.includes(handle)) {
-          await signOut(auth);
-          throw new Error("Prima scegli la tua @, poi continua con questo account.");
+          await dropHalf();
+          throw new Error("Prima scegli la tua @, poi continua con questo account. Non ho salvato niente.");
         }
         try {
           await claimHandle(cred.user.uid, handle, { email: cred.user.email || null, provider: provider.providerId });
