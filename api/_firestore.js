@@ -1,5 +1,5 @@
 // Read-only access to the public Firestore documents (profiles, usernames), as any visitor would.
-const PROJECT = "sigari-bio-52324";
+const PROJECT = "kbio-c6126";
 const BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
 
 // Firestore REST values -> plain JS

@@ -5,7 +5,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const PROJECT = "sigari-bio-52324";
+const PROJECT = "kbio-c6126";
 const PAGE = path.join(process.cwd(), "sigari-bio", "profile.html");
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

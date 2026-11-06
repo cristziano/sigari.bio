@@ -1,7 +1,7 @@
 // Checks a Firebase ID token (the "Bearer" sent by the dashboard) without any secret:
 // the signature is verified with Google's public certificates for Firebase Auth.
 const crypto = require("crypto");
-const PROJECT = "sigari-bio-52324";
+const PROJECT = "kbio-c6126";
 const CERTS = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
 let certs = null, certsUntil = 0;
 

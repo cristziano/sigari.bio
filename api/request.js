@@ -9,7 +9,7 @@ const { pinterest, shuffle } = require("./_pinterest");
 
 const TYPES = { set: "Set", pfp: "Pfp", edit: "Edit", altro: "Altro" };
 const WEEK = 7 * 864e5;
-const PROJECT = "sigari-bio-52324";
+const PROJECT = "kbio-c6126";
 
 async function readBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
