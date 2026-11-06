@@ -3055,12 +3055,15 @@
       await del(S.ref(storage, `avatars/${uid}`));
       try { const all = await S.listAll(S.ref(storage, `media/${uid}`)); await Promise.all(all.items.map(del)); } catch (_) { /* nothing uploaded */ }
       // extra names, public profile, the @, the private profile
-      const aliases = await F.getDocs(F.query(F.collection(db, "usernames"), F.where("aliasOf", "==", handle)));
-      await Promise.all(aliases.docs.filter(d => d.data().uid === uid).map(d => F.deleteDoc(d.ref)));
+      // Each step is best effort: whatever older rules refuse, the account itself (with the email) is always deleted
+      try {
+        const aliases = await F.getDocs(F.query(F.collection(db, "usernames"), F.where("aliasOf", "==", handle)));
+        await Promise.all(aliases.docs.filter(d => d.data().uid === uid).map(d => F.deleteDoc(d.ref).catch(() => {})));
+      } catch (_) { /* no extra names, or not allowed */ }
       await F.deleteDoc(F.doc(db, "profiles", handle)).catch(() => {});
-      await F.deleteDoc(F.doc(db, "usernames", handle));
+      await F.deleteDoc(F.doc(db, "usernames", handle)).catch(() => {});
       await F.deleteDoc(F.doc(db, "slots", uid)).catch(() => {});
-      await F.deleteDoc(F.doc(db, "users", uid));
+      await F.deleteDoc(F.doc(db, "users", uid)).catch(() => {});
       await A.deleteUser(account);
       store.set(DRAFT_KEY, "");
       location.replace("index.html?addio=1");
