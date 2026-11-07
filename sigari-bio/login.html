@@ -79,6 +79,7 @@
   .footer { position:relative; z-index:1; text-align:center; font-size:12px; color:var(--d); margin-top:48px; padding-bottom:8px; }
   .loading { position:fixed; inset:0; display:grid; place-items:center; color:var(--d); font-size:14px; z-index:2; background:#000; }
 </style>
+<script src="alert.js"></script>
 </head>
 <body>
 
@@ -186,8 +187,11 @@
   let mode = "signup";
   const $ = id => document.getElementById(id);
 
+  // Errors and warnings go to the alert at the top of the screen; progress ("Invio…") stays by the button
   function setStatus(msg, type = "") {
     const el = $("authStatus");
+    if (type === "err" || type === "warn") { window.topAlert && topAlert(msg, type); el.textContent = ""; el.className = "status"; return; }
+    if (type === "ok" && msg) window.topAlert && topAlert(msg, "ok");
     el.textContent = msg;
     el.className = "status" + (msg ? " show " + type : "");
   }

@@ -618,6 +618,7 @@
   }
   @media (prefers-reduced-motion: reduce) { .view.pix { animation:none; } .blob { animation:none; } .flash { animation:none; } }
 </style>
+<script src="alert.js"></script>
 </head>
 <body>
 
@@ -1743,10 +1744,12 @@
   /* =========================================================
      Status + save bar
      ========================================================= */
+  // Messages show at the top of the screen (the old box sits under all the pages, out of sight)
   function setStatus(msg, type = "") {
     const s = $("dashStatus");
-    s.textContent = msg;
-    s.className = "status" + (msg ? " show " + type : "");
+    s.textContent = ""; s.className = "status";
+    if (msg && /…$/.test(msg) && !type) return; // "Salvataggio…": the save bar already shows it
+    if (window.topAlert) topAlert(msg, type || "ok");
   }
   const isDirty = () => draft && JSON.stringify(snapshot(draft)) !== savedJSON;
   function updateSaveBar() {
@@ -3021,7 +3024,7 @@
     $("passwordForm").classList.toggle("hidden", !pw);
     $("googleOnlyNote").classList.toggle("hidden", pw);
   }
-  function setFormStatus(id, msg, type = "") { const s = $(id); s.textContent = msg; s.className = "status" + (msg ? " show " + type : ""); }
+  function setFormStatus(id, msg, type = "") { const s = $(id); s.textContent = msg; s.className = "status" + (msg ? " show " + type : ""); if (msg && (type === "err" || type === "warn") && window.topAlert) topAlert(msg, type); }
 
   /* ---------- Your data: download everything, delete the account ---------- */
   $("exportData").addEventListener("click", () => {
