@@ -124,13 +124,14 @@ export const DEFAULT_APPEARANCE = {
   avatar: { show: true, shape: "circle", size: 92, ring: "none", deco: "none", discord: false, discordDeco: false },
   badges: { show: true, color: "", style: "box", custom: { on: false, icon: "star", label: "", color: "" } },
   socialsStyle: { style: "plain", size: 40, position: "top", align: "center" },
-  buttons: { variant: "solid", palette: "white", custom: "#ffffff", shape: "rounded", shadow: "none", hover: "lift", align: "center", icons: true },
+  buttons: { variant: "solid", palette: "white", custom: "#ffffff", shape: "rounded", shadow: "none", hover: "lift", align: "center", icons: true, size: "m", font: "body", upper: false, border: 1, gradient: false, anim: "none" },
+  widgetStyle: { style: "card", radius: 14, size: "normal", accentTag: true },
   cursor: { type: "default", url: "", trail: "none" },
   sfx: { hover: "none", click: "none", volume: 50 },
   enter: { on: false, text: "clicca per entrare", style: "blur" },
   music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true },
   lastfm: { user: "", show: false },
-  widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false },
+  widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false, discordServer: "", spotify: "", roblox: "" },
   title: { text: "", animated: false },
   seo: { description: "", image: "" },
   privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false },
@@ -260,6 +261,16 @@ export function normalizeAppearance(raw) {
   b.shape = ["square", "rounded", "pill"].includes(b.shape) ? b.shape : "rounded";
   b.shadow = ["none", "soft", "glow", "hard"].includes(b.shadow) ? b.shadow : "none";
   b.hover = ["none", "lift", "grow", "glow", "shine"].includes(b.hover) ? b.hover : "lift";
+  b.size = ["s", "m", "l"].includes(b.size) ? b.size : "m";
+  b.font = ["body", "name", "mono"].includes(b.font) ? b.font : "body";
+  b.upper = !!b.upper; b.gradient = !!b.gradient;
+  b.border = clamp(b.border, 0, 3, 1);
+  b.anim = ["none", "shine", "pulse", "border"].includes(b.anim) ? b.anim : "none";
+  const ws = a.widgetStyle = isObj(a.widgetStyle) ? a.widgetStyle : {};
+  ws.style = ["card", "glass", "outline", "minimal", "neon"].includes(ws.style) ? ws.style : "card";
+  ws.radius = clamp(ws.radius, 0, 28, 14);
+  ws.size = ["compact", "normal", "large"].includes(ws.size) ? ws.size : "normal";
+  ws.accentTag = ws.accentTag !== false;
   b.align = b.align === "left" ? "left" : "center";
   b.icons = b.icons !== false;
   a.cursor.type = ["default", "crosshair", "custom"].includes(a.cursor.type) ? a.cursor.type : "default";
@@ -291,6 +302,9 @@ export function normalizeAppearance(raw) {
   a.widgets.discordId = String(a.widgets.discordId || "").replace(/\D/g, "").slice(0, 20);
   a.widgets.discordPresence = a.widgets.discordPresence === true;
   a.widgets.github = String(a.widgets.github || "").replace(/[^a-z0-9-]/gi, "").slice(0, 39);
+  a.widgets.discordServer = String(a.widgets.discordServer || "").replace(/^(https?:\/\/)?(www\.)?(discord\.gg|discord\.com\/invite)\//i, "").replace(/[^a-z0-9-]/gi, "").slice(0, 40);
+  a.widgets.spotify = /^https:\/\/open\.spotify\.com\//.test(String(a.widgets.spotify || "")) ? String(a.widgets.spotify).slice(0, 300) : "";
+  a.widgets.roblox = String(a.widgets.roblox || "").replace(/[^a-z0-9_]/gi, "").slice(0, 20);
   a.widgets.clock = String(a.widgets.clock || "").slice(0, 40);
   a.widgets.showViews = a.widgets.showViews !== false;
   a.widgets.twitch = String(a.widgets.twitch || "").replace(/^https?:\/\/(www\.)?twitch\.tv\//i, "").replace(/[^a-z0-9_]/gi, "").slice(0, 25);
@@ -655,13 +669,31 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk[data-hover=glow] .pk-link:hover,.pk[data-glinks="1"] .pk-link{box-shadow:0 0 22px color-mix(in srgb,var(--pk-accent) 45%,transparent)}
 .pk[data-hover=shine] .pk-link::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transition:left .6s}
 .pk[data-hover=shine] .pk-link:hover::after{left:120%}
-.pk-w{display:flex;align-items:center;gap:12px;margin-top:12px;padding:11px 12px;border-radius:14px;background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left;font-size:13px;text-decoration:none}
+.pk-w{display:flex;align-items:center;gap:12px;margin-top:12px;padding:11px 12px;border-radius:var(--pk-w-radius,14px);background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left;font-size:13px;text-decoration:none}
 .pk-w .pic{position:relative;width:44px;height:44px;border-radius:10px;background:#222;flex-shrink:0;overflow:visible}
 .pk-w .pic img{width:100%;height:100%;border-radius:inherit;object-fit:cover;display:block}
 .pk-w .txt{flex:1;min-width:0}
+.pk-w .pk-join{flex:none;padding:6px 12px;border-radius:999px;background:var(--pk-accent);color:var(--pk-accent-on,#000);font-size:12px;font-weight:700}
 .pk-w b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pk-w small{display:block;color:var(--pk-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pk-w .tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--pk-accent)}
+.pk[data-wtag="0"] .pk-w .tag{color:var(--pk-muted)}
+.pk[data-wstyle=glass] .pk-w{background:rgba(255,255,255,.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-color:rgba(255,255,255,.14)}
+.pk[data-wstyle=outline] .pk-w{background:transparent;border:1.5px solid var(--pk-accent)}
+.pk[data-wstyle=minimal] .pk-w{background:transparent;border-color:transparent;padding-left:0;padding-right:0}
+.pk[data-wstyle=neon] .pk-w{background:rgba(0,0,0,.35);border:1px solid var(--pk-accent);box-shadow:0 0 18px color-mix(in srgb,var(--pk-accent) 40%,transparent),inset 0 0 12px color-mix(in srgb,var(--pk-accent) 15%,transparent)}
+.pk[data-wsize=compact] .pk-w{padding:7px 9px;gap:9px;font-size:12px}.pk[data-wsize=compact] .pk-w .pic{width:32px;height:32px}
+.pk[data-wsize=large] .pk-w{padding:15px 16px;gap:14px;font-size:14.5px}.pk[data-wsize=large] .pk-w .pic{width:60px;height:60px}
+.pk-embed{border-radius:var(--pk-w-radius,14px)!important;overflow:hidden}
+.pk-link{min-height:var(--btn-h,50px)!important;font-size:var(--btn-fs,14px)!important;font-family:var(--btn-font,inherit)!important;text-transform:var(--btn-tt,none);letter-spacing:var(--btn-ls,0)}
+.pk[data-banim=shine] .pk-link::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);animation:pkShine 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes pkShine{60%,100%{transform:translateX(120%)}}
+.pk[data-banim=pulse] .pk-link{animation:pkPulse 2.4s ease-in-out infinite}
+@keyframes pkPulse{50%{transform:scale(1.025)}}
+.pk[data-banim=border] .pk-link{border-color:transparent!important;background-image:linear-gradient(var(--pk-surface),var(--pk-surface)),conic-gradient(from var(--pk-ang,0deg),var(--pk-accent),transparent 40%,var(--pk-accent));background-origin:border-box;background-clip:padding-box,border-box;border:2px solid transparent!important;animation:pkAng 3s linear infinite}
+@property --pk-ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes pkAng{to{--pk-ang:360deg}}
+@media (prefers-reduced-motion:reduce){.pk .pk-link,.pk .pk-link::after{animation:none!important}}
 .pk-dot{position:absolute;right:-3px;bottom:-3px;width:13px;height:13px;border-radius:50%;border:3px solid var(--pk-surface);background:#777}
 .pk-dot.online{background:#3ba55d}.pk-dot.idle{background:#faa61a}.pk-dot.dnd{background:#ed4245}
 .pk-eq{display:flex;align-items:flex-end;gap:2px;height:16px}
@@ -1018,18 +1050,40 @@ function githubWidget(user) {
   return w;
 }
 
+function discordServerWidget(code) {
+  const { w, pic, txt } = widgetShell(`https://discord.gg/${code}`);
+  setLines(txt, "server discord", "discord.gg/" + code, "");
+  cached("ds:" + code, 300000, () => getJSON(`/api/discord-invite?code=${encodeURIComponent(code)}`)).then(j => {
+    setPic(pic, j.icon);
+    setLines(txt, "server discord", j.name || code, `${j.online.toLocaleString("it-IT")} online · ${j.members.toLocaleString("it-IT")} membri`);
+    const b = el("span", "pk-join", "Entra"); w.appendChild(b);
+  }).catch(() => setLines(txt, "server discord", "discord.gg/" + code, "Invito non disponibile"));
+  return w;
+}
+function robloxWidget(user) {
+  const { w, pic, txt } = widgetShell(`https://www.roblox.com/search/users?keyword=${user}`);
+  setLines(txt, "roblox", user, "");
+  cached("rb:" + user, 600000, () => getJSON(`/api/lookup?p=roblox&u=${encodeURIComponent(user)}`)).then(j => {
+    if (!j.found) return setLines(txt, "roblox", user, "Utente non trovato");
+    setPic(pic, j.avatar); if (j.url) w.href = j.url;
+    setLines(txt, "roblox", j.name, "@" + j.handle);
+  }).catch(() => {});
+  return w;
+}
 function lastfmWidget(user) {
   const { w, pic, txt } = widgetShell(`https://www.last.fm/user/${user}`);
-  setLines(txt, "last.fm", user, "Ascolti recenti su Last.fm");
-  if (!LASTFM_API_KEY) return w;
-  cached("lf:" + user, 30000, () => getJSON(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(user)}&api_key=${LASTFM_API_KEY}&format=json&limit=1`)).then(j => {
-    const t = j?.recenttracks?.track?.[0];
-    if (!t) return;
-    const now = t["@attr"]?.nowplaying === "true";
-    setPic(pic, (t.image || []).slice(-1)[0]?.["#text"]);
-    setLines(txt, now ? "in ascolto ora" : "ultimo ascolto", t.name, t.artist?.["#text"] || "");
-    if (now) { const eq = el("div", "pk-eq"); eq.innerHTML = "<i></i><i></i><i></i>"; w.appendChild(eq); }
-  }).catch(() => {});
+  setLines(txt, "last.fm", user, "Carico cosa sta ascoltando…");
+  // Through our server (api/lastfm.js), which keeps the key; refreshed every 30 s while on screen
+  const load = () => cached("lf:" + user, 25000, () => getJSON(`/api/lastfm?user=${encodeURIComponent(user)}`)).then(j => {
+    const t = j && j.track;
+    if (!t) return setLines(txt, "last.fm", user, "Nessun ascolto ancora");
+    setPic(pic, t.image);
+    setLines(txt, t.now ? "in ascolto ora" : "ultimo ascolto", t.name, t.artist);
+    w.querySelector(".pk-eq")?.remove();
+    if (t.now) { const eq = el("div", "pk-eq"); eq.innerHTML = "<i></i><i></i><i></i>"; w.appendChild(eq); }
+  }).catch(() => setLines(txt, "last.fm", user, "Ascolti su Last.fm"));
+  load();
+  const timer = setInterval(() => { if (!w.isConnected) return clearInterval(timer); if (!document.hidden) { cache.delete("lf:" + user); load(); } }, 30000);
   return w;
 }
 
@@ -1513,12 +1567,16 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-soc", a.socialsStyle.size + "px");
     s.setProperty("--pk-soc-align", { left: "flex-start", center: "center", right: "flex-end" }[a.socialsStyle.align]);
     s.setProperty("--pk-link-align", a.buttons.align === "left" ? "flex-start" : "center");
+    s.setProperty("--pk-w-radius", a.widgetStyle.radius + "px");
+    s.setProperty("--pk-accent-on", readableOn(a.colors.accent));
+
     s.setProperty("--pk-g1", a.nameGradient[0]); s.setProperty("--pk-g2", a.nameGradient[1]);
     s.setProperty("--pk-dim", (a.bg.dim / 100).toFixed(2)); s.setProperty("--pk-bgblur", a.bg.blur + "px");
     s.setProperty("--pk-bgx", a.bg.x + "%"); s.setProperty("--pk-bgy", a.bg.y + "%"); s.setProperty("--pk-bgz", (a.bg.zoom / 100).toFixed(2));
     s.setProperty("--pk-bggray", (a.bg.gray / 100).toFixed(2)); s.setProperty("--pk-bgsat", (a.bg.sat / 100).toFixed(2));
     s.setProperty("--pk-tint", a.bg.tint); s.setProperty("--pk-tinta", (a.bg.tintA / 100).toFixed(2)); s.setProperty("--pk-vig", (a.bg.vignette / 100).toFixed(2));
     const ds = root.dataset;
+    ds.wstyle = a.widgetStyle.style; ds.wsize = a.widgetStyle.size; ds.wtag = a.widgetStyle.accentTag ? "1" : "0"; ds.banim = a.buttons.anim;
     ds.layout = a.layout; ds.border = a.card.border; ds.cardgrad = a.card.gradient ? "1" : "0"; ds.avshape = a.avatar.shape; ds.avring = a.avatar.ring;
     ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover; ds.bstyle = a.badges.style;
     ds.gname = a.glow.username ? "1" : "0"; ds.gsoc = a.glow.socials ? "1" : "0"; ds.gbadges = a.glow.badges ? "1" : "0"; ds.glinks = a.glow.links ? "1" : "0";
@@ -1675,6 +1733,8 @@ export function mountProfile(root, input, opts = {}) {
     if (a.widgets.discordPresence && a.widgets.discordId) widgets.push(keyedNode("dc:" + a.widgets.discordId, () => discordWidget(a.widgets.discordId)));
     if (a.lastfm.show && a.lastfm.user) widgets.push(keyedNode("lf:" + a.lastfm.user, () => lastfmWidget(a.lastfm.user)));
     if (a.widgets.github) widgets.push(keyedNode("gh:" + a.widgets.github, () => githubWidget(a.widgets.github)));
+    if (a.widgets.discordServer) widgets.push(keyedNode("ds:" + a.widgets.discordServer, () => discordServerWidget(a.widgets.discordServer)));
+    if (a.widgets.roblox) widgets.push(keyedNode("rb:" + a.widgets.roblox, () => robloxWidget(a.widgets.roblox)));
     fill("widgets", widgets);
 
     const m = a.music, music = [];
@@ -1692,6 +1752,7 @@ export function mountProfile(root, input, opts = {}) {
     fill("music", music);
 
     const embeds = [];
+    if (a.widgets.spotify && spotifyEmbed(a.widgets.spotify)) embeds.push(keyedNode("spw:" + a.widgets.spotify, () => embed(spotifyEmbed(a.widgets.spotify), "Spotify")));
     if (a.widgets.twitch) embeds.push(keyedNode("tw:" + a.widgets.twitch, () => embed(twitchEmbed(a.widgets.twitch), "Twitch")));
     const ytw = youtubeWidget(a.widgets.youtube);
     if (ytw) embeds.push(keyedNode("ytw:" + ytw.src, () => embed(ytw, "YouTube")));
@@ -1935,6 +1996,12 @@ function applyButtons(s, a) {
   s.setProperty("--btn-border", v === "outline" ? `1px solid ${col}` : v === "glass" ? `1px solid color-mix(in srgb, ${col} 35%, transparent)` : v === "ghost" ? "1px solid transparent" : `1px solid ${col}`);
   s.setProperty("--btn-blur", "none");
   s.setProperty("--btn-radius", { square: "4px", rounded: "14px", pill: "999px" }[b.shape]);
+  s.setProperty("--btn-h", { s: "42px", m: "50px", l: "60px" }[b.size]);
+  s.setProperty("--btn-fs", { s: "13px", m: "14px", l: "16px" }[b.size]);
+  s.setProperty("--btn-font", b.font === "name" ? "var(--pk-name-font)" : b.font === "mono" ? "'Geist Mono',ui-monospace,monospace" : "var(--pk-body-font)");
+  s.setProperty("--btn-tt", b.upper ? "uppercase" : "none"); s.setProperty("--btn-ls", b.upper ? ".06em" : "0");
+  if (b.gradient) s.setProperty("--btn-bg", `linear-gradient(120deg, ${col}, ${c.accent === col ? c.primary : c.accent})`);
+  if (v !== "ghost") s.setProperty("--btn-border", b.border ? (v === "outline" ? `${b.border}px solid ${col}` : `${b.border}px solid color-mix(in srgb, ${col} ${v === "glass" ? 35 : 100}%, transparent)`) : "0 solid transparent");
   s.setProperty("--btn-shadow", { none: "none", soft: "0 8px 24px rgba(0,0,0,.35)", glow: `0 0 24px color-mix(in srgb, ${col} 45%, transparent)`, hard: `4px 4px 0 ${c.border}` }[b.shadow]);
 }
 

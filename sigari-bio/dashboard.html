@@ -780,7 +780,7 @@
       <div class="label section-label">i tuoi look <span class="val" id="slotCount"></span></div>
       <p class="hint" style="margin:-4px 0 10px">Salva la combinazione attuale (sfondo, colori, font, effetti, foto, carta) e cambiala con un tocco. 1 slot per tutti, 3 per i premium.</p>
       <div class="slots" id="slots"></div>
-      <nav class="subnav" aria-label="Parti della pagina"><a href="#c-bg">Sfondo</a><a href="#c-assets">Caricamenti</a><a href="#c-general">Generale</a><a href="#c-colors">Colori</a><a href="#c-other">Altro</a></nav>
+      <nav class="subnav" aria-label="Parti della pagina"><a href="#c-bg">Sfondo</a><a href="#c-assets">Caricamenti</a><a href="#c-general">Generale</a><a href="#c-colors">Colori</a></nav>
 
       <h3 class="sec-h" id="c-bg">Sfondo</h3>
       <div class="card bg-studio">
@@ -916,15 +916,6 @@
         <div class="toggle-row"><span>Gradiente del profilo<small>La scheda sfuma dal colore della scheda all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
       </div>
 
-      <h3 class="sec-h" id="c-other">Altro</h3>
-      <div class="toggle-grid">
-        <div class="toggle-row"><span>Icone monocromatiche<small>Tutte le icone social dello stesso colore.</small></span><label class="ios"><input class="sr-only" type="checkbox" id="monoIcons"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>Titolo animato<small>Il titolo della scheda si scrive da solo.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.title.animated"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>Controllo del volume<small>Mostra il player della musica.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>Contatore delle visite</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.showViews"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>"Clicca per entrare"<small>Serve per far partire la musica.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.enter.on"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>Nome in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.font.upper"><span class="track"><span class="knob"></span></span></label></div>
-      </div>
       <p class="hint" style="margin-top:14px">Vuoi di più? Layout, bottoni, font, effetti del cursore e metadati sono nel menu Avanzate.</p>
     </section>
 
@@ -989,6 +980,7 @@
       <div class="row" style="max-width:820px"><button class="add-btn" id="addLink" type="button" style="flex:2">+ Aggiungi un link</button><button class="add-btn" id="addSection" type="button" style="flex:1">+ Aggiungi una sezione</button></div>
       <div class="label section-label">come appaiono le icone</div>
       <div class="card">
+        <div class="toggle-row"><span>Icone monocromatiche<small>Tutte le icone social dello stesso colore.</small></span><label class="ios"><input class="sr-only" type="checkbox" id="monoIcons"><span class="track"><span class="knob"></span></span></label></div>
         <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.socialsStyle.style" data-o="socStyle"></div></div>
         <div class="field-grid">
           <div class="field"><div class="label">posizione</div><div class="seg" data-seg="appearance.socialsStyle.position" data-o="socPos"></div></div>
@@ -1079,6 +1071,16 @@
           <div class="field"><div class="label">testo</div><div class="seg" data-seg="appearance.buttons.align" data-o="align"></div></div>
         </div>
         <div class="toggle-row"><span>Icona del sito nel bottone</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.icons"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.buttons.size" data-o="btnSize"></div></div>
+          <div class="field"><div class="label">font</div><div class="seg" data-seg="appearance.buttons.font" data-o="btnFont"></div></div>
+          <div class="field"><div class="label">spessore del bordo <span class="val" data-show="appearance.buttons.border" data-unit="px"></span></div><input type="range" min="0" max="3" data-k="appearance.buttons.border"></div>
+          <div class="field"><div class="label">animazione</div><div class="seg" data-seg="appearance.buttons.anim" data-o="btnAnim"></div></div>
+        </div>
+        <div class="toggle-grid">
+          <div class="toggle-row"><span>Testo in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.upper"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Riempimento sfumato<small>Dal colore del bottone all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.gradient"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
       </div>
     </section>
 
@@ -1097,6 +1099,7 @@
       </div>
       <div class="label section-label">descrizione animata</div>
       <div class="card">
+        <div class="toggle-row"><span>Nome in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.font.upper"><span class="track"><span class="knob"></span></span></label></div>
         <div class="seg" data-seg="appearance.bioFx" data-o="bioFx"></div>
         <div class="field" data-when="appearance.bioFx=typewriter|cycle">
           <div class="label">frasi, una per riga (massimo 6)</div>
@@ -1165,6 +1168,15 @@
     <section class="view hidden" id="view-widgets">
       <h2>Widget</h2>
       <p class="desc">Riquadri che si aggiornano da soli.</p>
+      <div class="label section-label">come appaiono i widget</div>
+      <div class="card">
+        <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.widgetStyle.style" data-o="wStyle"></div></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.widgetStyle.size" data-o="wSize"></div></div>
+          <div class="field"><div class="label">angoli <span class="val" data-show="appearance.widgetStyle.radius" data-unit="px"></span></div><input type="range" min="0" max="28" data-k="appearance.widgetStyle.radius"></div>
+        </div>
+        <div class="toggle-row"><span>Etichetta colorata<small>La scritta piccola sopra (es. "GITHUB") con il colore d'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgetStyle.accentTag"><span class="track"><span class="knob"></span></span></label></div>
+      </div>
       <div class="label section-label">video e live</div>
       <div class="card">
         <div class="field-grid">
@@ -1177,13 +1189,15 @@
       <div class="card">
         <div class="field-grid">
           <div class="field"><div class="label">github</div><input class="text" data-k="appearance.widgets.github" maxlength="39" placeholder="nome utente"></div>
+          <div class="field"><div class="label">server discord</div><input class="text" data-k="appearance.widgets.discordServer" maxlength="60" placeholder="invito, es. discord.gg/18k"></div>
+          <div class="field"><div class="label">roblox</div><input class="text" data-k="appearance.widgets.roblox" maxlength="20" placeholder="nome utente roblox"></div>
+          <div class="field"><div class="label">spotify</div><input class="text" type="url" data-k="appearance.widgets.spotify" maxlength="300" placeholder="link di un brano, album, playlist o artista"></div>
           <div class="field"><div class="label">orologio</div>
             <select class="text" data-k="appearance.widgets.clock">
               <option value="">Nessuno</option><option value="local">Ora del visitatore</option><option value="Europe/Rome">Roma</option><option value="Europe/London">Londra</option><option value="Europe/Paris">Parigi</option><option value="America/New_York">New York</option><option value="America/Los_Angeles">Los Angeles</option><option value="Asia/Tokyo">Tokyo</option>
             </select>
           </div>
         </div>
-        <div class="toggle-row"><span>Contatore delle visite sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.showViews"><span class="track"><span class="knob"></span></span></label></div>
       </div>
       <details class="quiet-box" id="discordLive">
         <summary>Stato Discord dal vivo <span>facoltativo</span></summary>
@@ -1207,12 +1221,12 @@
           <div class="field span-2"><div class="label">immagine per l'anteprima</div><input class="text" type="url" data-k="appearance.seo.image" placeholder="link di un'immagine"></div>
         </div>
       </div>
-      <div class="label section-label">privacy</div>
+      <div class="label section-label">visite e privacy</div>
       <div class="card">
         <div class="toggle-grid">
+        <div class="toggle-row"><span>Contatore delle visite sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.showViews"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Nascondi il numero di visite</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.hideViews"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Fuori da classifica ed esplora<small>Il profilo resta raggiungibile col link.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.unlisted"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Nascondi i badge</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.hideBadges"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Profilo privato<small>Solo tu lo vedi, dalla dashboard.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.private"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
@@ -1812,6 +1826,11 @@
      Bindings: every [data-k] control reads and writes the draft
      ========================================================= */
   const OPTS = {
+    btnSize: [["s", "Piccoli"], ["m", "Medi"], ["l", "Grandi"]],
+    btnFont: [["body", "Testo"], ["name", "Come il nome"], ["mono", "Mono"]],
+    btnAnim: [["none", "Nessuna"], ["shine", "Riflesso"], ["pulse", "Battito"], ["border", "Bordo che gira"]],
+    wStyle: [["card", "Scheda"], ["glass", "Vetro"], ["outline", "Contorno"], ["minimal", "Minimal"], ["neon", "Neon"]],
+    wSize: [["compact", "Compatti"], ["normal", "Normali"], ["large", "Grandi"]],
     bgType: [["color", "Colore"], ["gradient", "Gradiente"], ["image", "Foto / GIF"], ["video", "Video"]],
     gradKind: [["linear", "Lineare"], ["radial", "Radiale"], ["conic", "Conico"]],
     fit: [["cover", "Riempi"], ["contain", "Intera"], ["tile", "Ripeti"]],
