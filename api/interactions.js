@@ -73,7 +73,7 @@ module.exports = async (req, res) => {
     if (!p) {
       return secret(res, opt.nome
         ? `Nessun profilo **18k.bio/${String(opt.nome).toLowerCase().replace(/[^a-z0-9_@]/g, "").replace(/^@/, "")}**.`
-        : (opt.utente ? "Questa persona non ha collegato Discord al suo profilo 18k.bio." : "Non trovo il tuo profilo. Su 18k.bio: Personalizza > Generale > presenza discord, metti il tuo ID Discord e salva. Oppure usa `/pfp nome:tuonome`."));
+        : (opt.utente ? "Questa persona non ha collegato Discord al suo profilo 18k.bio." : "Non trovo il tuo profilo. Entra su 18k.bio con Discord (il collegamento è automatico), oppure in Widget > Stato Discord metti il tuo ID e salva. Oppure usa `/pfp nome:tuonome`."));
     }
     if (p.private) return secret(res, "Questo profilo è privato.");
     return reply(res, card(p));

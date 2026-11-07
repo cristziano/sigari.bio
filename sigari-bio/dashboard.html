@@ -112,6 +112,7 @@
   .logo { font-size:20px; font-weight:600; letter-spacing:-0.02em; padding:0 10px 18px; text-decoration:none; }
   .logo span { color:#666; }
   .nav-group { margin-bottom:4px; }
+  .nav-top { margin-bottom:10px; }
   .nav-group summary { list-style:none; display:flex; align-items:center; justify-content:space-between; padding:8px 12px; font:500 11px "Geist Mono",monospace; letter-spacing:.06em; text-transform:lowercase; color:var(--d); cursor:pointer; user-select:none; border-radius:8px; }
   .nav-group summary::-webkit-details-marker { display:none; }
   .nav-group summary:hover { color:var(--fg); }
@@ -667,7 +668,7 @@
     </div>
   </aside>
 
-  <nav class="mtabs" id="mtabs" aria-label="Menu"><button type="button" data-tab="overview"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button type="button" data-tab="customize"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Profilo</span></button><button type="button" data-tab="links"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span>Link</span></button><button type="button" data-tab="card"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/></svg><span>Carta</span></button><button type="button" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Altro</span></button></nav>
+  <nav class="mtabs" id="mtabs" aria-label="Menu"><button type="button" data-tab="overview"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button type="button" data-tab="customize"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Profilo</span></button><button type="button" data-tab="background"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span>Sfondo</span></button><button type="button" data-tab="links"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span>Link</span></button><button type="button" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Altro</span></button></nav>
   <div class="msheet hidden" id="msheet" role="dialog" aria-modal="true" aria-label="Tutte le sezioni">
     <div class="msheet-in">
       <div class="msheet-top"><b>Tutte le sezioni</b><button type="button" class="ghost-btn sm" id="msheetClose">Chiudi</button></div>
@@ -711,9 +712,9 @@
       </div>
       <div class="label section-label">gestisci il tuo profilo</div>
       <div class="manage-grid">
-        <button type="button" class="manage" data-go="customize#c-assets"><b>Avatar e sfondo</b><span>Carica foto, video, audio, cursore</span></button>
-        <button type="button" class="manage" data-go="customize#c-general"><b>Nome e descrizione</b><span>Bio, posizione, effetti</span></button>
-        <button type="button" class="manage" data-go="customize#c-colors"><b>Colori</b><span>Accento, testo, sfondo, icone</span></button>
+        <button type="button" class="manage" data-go="customize#avatarPick"><b>Foto profilo</b><span>Carica, forma e decorazione</span></button>
+        <button type="button" class="manage" data-go="background"><b>Sfondo</b><span>Colore, foto, GIF, video, effetti</span></button>
+        <button type="button" class="manage" data-go="layout"><b>Stile</b><span>Colori, scheda, font e nome</span></button>
         <button type="button" class="manage" data-go="templates"><b>Template</b><span>40 sfondi veri (video e GIF) e quelli della community</span></button>
         <button type="button" class="manage" data-go="badges"><b>Badge</b><span>Ufficiali e il tuo personale</span></button>
         <button type="button" class="manage" data-go="share"><b>Condividi</b><span>Link, QR code, anteprima</span></button>
@@ -775,14 +776,77 @@
 
     <!-- CUSTOMIZE (guns.lol: Customize, one page in four parts) -->
     <section class="view hidden" id="view-customize">
-      <h2>Personalizza</h2>
-      <p class="desc">Tutto quello che si vede sul profilo, in una pagina sola. Le modifiche appaiono subito nell'anteprima; alla fine premi Salva.</p>
-      <div class="label section-label">i tuoi look <span class="val" id="slotCount"></span></div>
-      <p class="hint" style="margin:-4px 0 10px">Salva la combinazione attuale (sfondo, colori, font, effetti, foto, carta) e cambiala con un tocco. 1 slot per tutti, 3 per i premium.</p>
-      <div class="slots" id="slots"></div>
-      <nav class="subnav" aria-label="Parti della pagina"><a href="#c-bg">Sfondo</a><a href="#c-assets">Caricamenti</a><a href="#c-general">Generale</a><a href="#c-colors">Colori</a></nav>
+      <h2>Profilo</h2>
+      <p class="desc">Chi sei: foto profilo, nome, descrizione e tag. Le modifiche appaiono subito nell'anteprima; alla fine premi Salva.</p>
+      <div class="label section-label">foto profilo</div>
+      <div class="asset-grid" style="grid-template-columns:minmax(0,1fr)">
+        <div class="asset" style="max-width:420px">
+          <div class="asset-h"><b>Foto profilo</b><span class="hint">PNG, JPG, WebP, GIF</span></div>
+          <div class="asset-pv"><div class="avatar big" id="avatarBig"></div></div>
+          <div class="row"><button class="save-btn sm" id="avatarPick" type="button">Carica</button><button class="ghost-btn sm" id="avatarRemove" type="button">Rimuovi</button></div>
+          <input class="text" id="avatarUrl" type="url" placeholder="oppure il link di un'immagine">
+          <p class="hint" id="avatarHint">Si salva con il resto delle modifiche.</p>
+          <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row"><span>Mostra l'avatar</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.show"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.avatar.shape" data-o="avShape"></div></div>
+          <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.avatar.ring" data-o="avRing"></div></div>
+          <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
+        </div>
+        <div class="label">decorazione</div>
+        <div class="chipgrid decogrid" id="decoPick"></div>
+        <div class="field">
+          <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(come su Discord: un'immagine trasparente sopra la pfp)</small></div>
+          <div class="row"><button class="save-btn sm" id="decoUpload" type="button">Carica PNG, GIF o APNG</button><input class="text" type="url" data-k="appearance.avatar.decoUrl" placeholder="oppure il link dell'immagine" style="flex:1;min-width:160px"></div>
+          <input type="file" id="decoInput" accept="image/png,image/gif,image/webp,image/apng" hidden>
+          <p class="hint">Usa un'immagine quadrata e trasparente al centro (tipo 240×240): viene messa sopra la pfp, un po' più grande, e le animazioni restano.</p>
+        </div>
+      </div>
+      <div class="label section-label">nome e descrizione</div>
+      <div class="gc-grid">
+        <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
+        <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
+        <div class="gc span-2"><div class="label">descrizione <span class="val" data-count="bio" data-max="300"></span></div>
+          <div class="fmt" id="bioFmt"></div>
+          <textarea class="text" data-k="bio" id="bioInput" maxlength="300" placeholder="Una riga su di te"></textarea>
+          <p class="hint">Seleziona del testo e usa i bottoni, oppure scrivi: **grassetto** *corsivo* ||spoiler|| [glow]testo[/glow] [#ff5fc8]colore[/] [testo](https://link)</p>
+        </div>
+        <div class="gc"><div class="label">tag</div><input class="text" id="tagsInput" data-k="tags" data-type="tags" placeholder="dark, musica, gaming (massimo 5)"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="label">descrizione animata</div>
+        <div class="seg" data-seg="appearance.bioFx" data-o="bioFx"></div>
+        <div class="field" data-when="appearance.bioFx=typewriter|cycle">
+          <div class="label">frasi, una per riga (massimo 6)</div>
+          <textarea class="text" data-k="appearance.bioLines" data-type="lines" placeholder="nero, bianco e senza filtri&#10;vota la mia pagina"></textarea>
+          <p class="hint">Se lasci vuoto, usa la tua descrizione.</p>
+          <div class="label">velocità <span class="val" data-show="appearance.typeSpeed" data-unit=" ms"></span></div>
+          <input type="range" min="20" max="200" step="5" data-k="appearance.typeSpeed">
+        </div>
+      </div>
+      <details class="quiet-box" id="bannerBox">
+        <summary>Banner in cima alla scheda <span>facoltativo</span></summary>
+        <div>
+          <div class="asset-h"><b>Banner</b><span class="hint">in cima alla scheda</span></div>
+          <div class="seg" data-seg="appearance.banner.type" data-o="bannerType"></div>
+          <div class="field" data-when="appearance.banner.type=image|video">
+            <div class="row" data-when="appearance.banner.type=image"><button class="save-btn sm" id="bannerPick" type="button">Carica</button><span class="hint">immagine o GIF</span></div>
+            <input class="text" type="url" data-k="appearance.banner.url" placeholder="link di un'immagine, una GIF o un .mp4">
+            <div class="label">altezza <span class="val" data-show="appearance.banner.height" data-unit="px"></span></div>
+            <input type="range" min="70" max="240" data-k="appearance.banner.height">
+          </div>
+          <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        </div>
+      </details>
+    </section>
 
-      <h3 class="sec-h" id="c-bg">Sfondo</h3>
+    <section class="view hidden" id="view-background">
+      <h2>Sfondo</h2>
+      <p class="desc">Quello che c'è dietro il profilo: colore, gradiente, foto, GIF o video, e l'effetto animato.</p>
+      <div style="margin-top:22px"></div>
       <div class="card bg-studio">
         <div class="bg-top">
           <div class="bg-pv"><div class="bg-thumb" id="bgThumb"></div></div>
@@ -836,87 +900,6 @@
         <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
         </div>
       </div>
-
-      <h3 class="sec-h" id="c-assets">Caricamenti</h3>
-      <div class="asset-grid">
-        <div class="asset">
-          <div class="asset-h"><b>Avatar</b><span class="hint">PNG, JPG, WebP, GIF</span></div>
-          <div class="asset-pv"><div class="avatar big" id="avatarBig"></div></div>
-          <div class="row"><button class="save-btn sm" id="avatarPick" type="button">Carica</button><button class="ghost-btn sm" id="avatarRemove" type="button">Rimuovi</button></div>
-          <input class="text" id="avatarUrl" type="url" placeholder="oppure il link di un'immagine">
-          <p class="hint" id="avatarHint">Si salva con il resto delle modifiche.</p>
-          <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-        </div>
-        <div class="asset">
-          <div class="asset-h"><b>Audio</b><span class="hint">MP3 fino a 8 MB</span></div>
-          <div class="asset-pv"><div class="audio-sum" id="audioSummary">Nessun audio</div></div>
-          <div class="row"><button class="save-btn sm" id="audioQuick" type="button">Carica</button><button class="ghost-btn sm" type="button" data-go="music">Gestisci audio</button></div>
-          <p class="hint">Playlist, testi e Spotify sono in Musica e audio.</p>
-        </div>
-        <div class="asset">
-          <div class="asset-h"><b>Cursore</b><span class="hint">PNG piccolo</span></div>
-          <div class="asset-pv"><div class="cur-thumb" id="curThumb"></div></div>
-          <div class="seg" data-seg="appearance.cursor.type" data-o="cursor"></div>
-          <div class="row" data-when="appearance.cursor.type=custom"><button class="save-btn sm" id="cursorPick" type="button">Carica</button><input class="text" type="url" data-k="appearance.cursor.url" placeholder="oppure un link" style="flex:1;min-width:120px"></div>
-          <input type="file" id="cursorInput" accept="image/png,image/gif,image/webp" hidden>
-        </div>
-        <div class="asset">
-          <div class="asset-h"><b>Font</b><span class="hint">TTF, OTF, WOFF</span></div>
-          <div class="row"><button class="save-btn sm" id="fontUpload" type="button">Carica</button><input class="text" type="url" data-k="appearance.font.custom" placeholder="oppure il link di un font" style="flex:1;min-width:120px"></div>
-          <div class="row"><button class="ghost-btn sm" id="useFontName" type="button">Per il nome</button><button class="ghost-btn sm" id="useFontBody" type="button">Per il testo</button></div>
-          <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" hidden>
-          <p class="hint">Gli altri 20 font sono in Font ed effetti.</p>
-        </div>
-      </div>
-
-      <details class="quiet-box" id="bannerBox">
-        <summary>Banner in cima alla scheda <span>facoltativo</span></summary>
-        <div>
-          <div class="asset-h"><b>Banner</b><span class="hint">in cima alla scheda</span></div>
-          <div class="seg" data-seg="appearance.banner.type" data-o="bannerType"></div>
-          <div class="field" data-when="appearance.banner.type=image|video">
-            <div class="row" data-when="appearance.banner.type=image"><button class="save-btn sm" id="bannerPick" type="button">Carica</button><span class="hint">immagine o GIF</span></div>
-            <input class="text" type="url" data-k="appearance.banner.url" placeholder="link di un'immagine, una GIF o un .mp4">
-            <div class="label">altezza <span class="val" data-show="appearance.banner.height" data-unit="px"></span></div>
-            <input type="range" min="70" max="240" data-k="appearance.banner.height">
-          </div>
-          <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-        </div>
-      </details>
-      <h3 class="sec-h" id="c-general">Generale</h3>
-      <div class="gc-grid">
-        <div class="gc span-2"><div class="label">descrizione <span class="val" data-count="bio" data-max="300"></span></div>
-          <div class="fmt" id="bioFmt"></div>
-          <textarea class="text" data-k="bio" id="bioInput" maxlength="300" placeholder="Una riga su di te"></textarea>
-          <p class="hint">Seleziona del testo e usa i bottoni, oppure scrivi: **grassetto** *corsivo* ||spoiler|| [glow]testo[/glow] [#ff5fc8]colore[/] [testo](https://link)</p>
-        </div>
-        <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
-        <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
-        <div class="gc"><div class="label">effetti sul nome</div><select class="text" data-k="appearance.nameFx" data-opts="nameFx"></select></div>
-        <div class="gc"><div class="label">opacità del profilo <span class="val" data-show="appearance.card.opacity" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.card.opacity"><div class="marks"><span>20%</span><span>50%</span><span>80%</span></div></div>
-        <div class="gc"><div class="label">sfocatura del profilo <span class="val" data-show="appearance.card.blur" data-unit="px"></span></div><input type="range" min="0" max="30" data-k="appearance.card.blur"><div class="marks"><span>0</span><span>15px</span><span>30px</span></div></div>
-        <div class="gc" data-when="appearance.nameFx=gradient"><div class="label">colori del gradiente</div><div class="hex-row"><input type="color" data-k="appearance.nameGradient.0"><input type="color" data-k="appearance.nameGradient.1"></div></div>
-        <div class="gc"><div class="label">tag</div><input class="text" id="tagsInput" data-k="tags" data-type="tags" placeholder="dark, musica, gaming (massimo 5)"></div>
-        <div class="gc span-2"><div class="label">impostazioni glow</div>
-          <div class="chips-toggle">
-            <label><input type="checkbox" data-k="appearance.glow.username"><span>Nome</span></label>
-            <label><input type="checkbox" data-k="appearance.glow.socials"><span>Social</span></label>
-            <label><input type="checkbox" data-k="appearance.glow.badges"><span>Badge</span></label>
-            <label><input type="checkbox" data-k="appearance.glow.links"><span>Bottoni</span></label>
-          </div>
-        </div>
-      </div>
-
-      <h3 class="sec-h" id="c-colors">Colori</h3>
-      <div class="label">palette rapide</div>
-      <div class="chipgrid" id="palettePick" style="margin-top:10px"></div>
-      <div class="color-grid" id="colorGrid" style="margin-top:12px"></div>
-      <div class="color-grid" style="margin-top:10px"><label class="color-field"><span class="cname">Sfondo della pagina</span><span class="hex-row"><input type="color" data-k="appearance.bg.color"><input class="hex-input" data-hex="appearance.bg.color" maxlength="7"></span></label></div>
-      <div class="card" style="margin-top:12px">
-        <div class="toggle-row"><span>Gradiente del profilo<small>La scheda sfuma dal colore della scheda all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
-      </div>
-
-      <p class="hint" style="margin-top:14px">Vuoi di più? Layout, bottoni, font, effetti del cursore e metadati sono nel menu Avanzate.</p>
     </section>
 
     <!-- LINKS (guns.lol: Links) -->
@@ -988,12 +971,39 @@
           <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.socialsStyle.size" data-unit="px"></span></div><input type="range" min="28" max="60" data-k="appearance.socialsStyle.size"></div>
         </div>
       </div>
+      <div class="label section-label">come appaiono i link</div>
+      <div class="card">
+        <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.buttons.variant" data-o="variant"></div></div>
+        <div class="field"><div class="label">colore</div><div class="chipgrid" id="btnPalette"></div>
+          <label class="color-field" data-when="appearance.buttons.palette=custom" style="max-width:220px"><span class="cname">Colore personalizzato</span><span class="hex-row"><input type="color" data-k="appearance.buttons.custom"><input class="hex-input" data-hex="appearance.buttons.custom" maxlength="7"></span></label>
+        </div>
+        <div class="field-grid">
+          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.buttons.shape" data-o="shape"></div></div>
+          <div class="field"><div class="label">ombra</div><div class="seg" data-seg="appearance.buttons.shadow" data-o="shadow"></div></div>
+          <div class="field"><div class="label">hover</div><div class="seg" data-seg="appearance.buttons.hover" data-o="hover"></div></div>
+          <div class="field"><div class="label">testo</div><div class="seg" data-seg="appearance.buttons.align" data-o="align"></div></div>
+        </div>
+        <div class="toggle-row"><span>Icona del sito nel bottone</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.icons"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.buttons.size" data-o="btnSize"></div></div>
+          <div class="field"><div class="label">font</div><div class="seg" data-seg="appearance.buttons.font" data-o="btnFont"></div></div>
+          <div class="field"><div class="label">spessore del bordo <span class="val" data-show="appearance.buttons.border" data-unit="px"></span></div><input type="range" min="0" max="3" data-k="appearance.buttons.border"></div>
+          <div class="field"><div class="label">animazione</div><div class="seg" data-seg="appearance.buttons.anim" data-o="btnAnim"></div></div>
+        </div>
+        <div class="toggle-grid">
+          <div class="toggle-row"><span>Testo in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.upper"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Riempimento sfumato<small>Dal colore del bottone all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.gradient"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
+      </div>
     </section>
 
     <!-- TEMPLATES (guns.lol: Templates) -->
     <section class="view hidden" id="view-templates">
       <div class="an-head">
-        <div><h2>Template</h2><p class="desc">Profili già pronti. Provali sul tuo profilo prima di usarli, prendi tutto o solo un pezzo, salva i preferiti.</p></div>
+        <div><h2>Template</h2><p class="desc">Profili già pronti. Provali sul tuo profilo prima di usarli, prendi tutto o solo un pezzo, salva i preferiti.</p>
+      <div class="label section-label">i tuoi look <span class="val" id="slotCount"></span></div>
+      <p class="hint" style="margin:-4px 0 10px">Salva la combinazione attuale (sfondo, colori, font, effetti, foto, carta) e cambiala con un tocco. 1 slot per tutti, 3 per i premium.</p>
+      <div class="slots" id="slots"></div></div>
         <button type="button" class="save-btn" data-tab="publish">+ Crea template</button>
       </div>
       <div class="tabs" role="tablist">
@@ -1034,12 +1044,19 @@
 
     <!-- ADVANCED: LAYOUT (guns.lol: Premium > Layout) -->
     <section class="view hidden" id="view-layout">
-      <h2>Layout e bottoni</h2>
-      <p class="desc">La forma del profilo: layout, scheda, avatar e bottoni.</p>
-      <div class="label section-label">layout</div>
+      <h2>Stile</h2>
+      <p class="desc">Come appare il profilo: colori, scheda, font e nome.</p>
+      <div class="label section-label">colori</div>
+      <div class="label">palette rapide</div>
+      <div class="chipgrid" id="palettePick" style="margin-top:10px"></div>
+      <div class="color-grid" id="colorGrid" style="margin-top:12px"></div>
+      <div class="color-grid" style="margin-top:10px"><label class="color-field"><span class="cname">Sfondo della pagina</span><span class="hex-row"><input type="color" data-k="appearance.bg.color"><input class="hex-input" data-hex="appearance.bg.color" maxlength="7"></span></label></div>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row"><span>Gradiente del profilo<small>La scheda sfuma dal colore della scheda all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
+      </div>
+      <div class="label section-label">forma del profilo</div>
       <div class="layouts" id="layoutPick"></div>
-      <div class="label section-label">scheda</div>
-      <div class="card">
+      <div class="card" style="margin-top:12px">
         <div class="field-grid">
           <div class="field"><div class="label">angoli <span class="val" data-show="appearance.card.radius" data-unit="px"></span></div><input type="range" min="0" max="40" data-k="appearance.card.radius"></div>
           <div class="field"><div class="label">larghezza <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="620" step="10" data-k="appearance.card.width"></div>
@@ -1047,54 +1064,11 @@
           <div class="field span-2"><div class="label">animazione del profilo</div><div class="seg" data-seg="appearance.entrance" data-o="entrance"></div></div>
         </div>
       </div>
-      <div class="label section-label">avatar</div>
-      <div class="card">
-        <div class="toggle-row"><span>Mostra l'avatar</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.show"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="field-grid">
-          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.avatar.shape" data-o="avShape"></div></div>
-          <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.avatar.ring" data-o="avRing"></div></div>
-          <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
-        </div>
-        <div class="label">decorazione</div>
-        <div class="chipgrid decogrid" id="decoPick"></div>
-        <div class="field">
-          <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(come su Discord: un'immagine trasparente sopra la pfp)</small></div>
-          <div class="row"><button class="save-btn sm" id="decoUpload" type="button">Carica PNG, GIF o APNG</button><input class="text" type="url" data-k="appearance.avatar.decoUrl" placeholder="oppure il link dell'immagine" style="flex:1;min-width:160px"></div>
-          <input type="file" id="decoInput" accept="image/png,image/gif,image/webp,image/apng" hidden>
-          <p class="hint">Usa un'immagine quadrata e trasparente al centro (tipo 240×240): viene messa sopra la pfp, un po' più grande, e le animazioni restano.</p>
-        </div>
+      <div class="gc-grid">
+        <div class="gc"><div class="label">opacità del profilo <span class="val" data-show="appearance.card.opacity" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.card.opacity"><div class="marks"><span>20%</span><span>50%</span><span>80%</span></div></div>
+        <div class="gc"><div class="label">sfocatura del profilo <span class="val" data-show="appearance.card.blur" data-unit="px"></span></div><input type="range" min="0" max="30" data-k="appearance.card.blur"><div class="marks"><span>0</span><span>15px</span><span>30px</span></div></div>
       </div>
-      <div class="label section-label">bottoni</div>
-      <div class="card">
-        <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.buttons.variant" data-o="variant"></div></div>
-        <div class="field"><div class="label">colore</div><div class="chipgrid" id="btnPalette"></div>
-          <label class="color-field" data-when="appearance.buttons.palette=custom" style="max-width:220px"><span class="cname">Colore personalizzato</span><span class="hex-row"><input type="color" data-k="appearance.buttons.custom"><input class="hex-input" data-hex="appearance.buttons.custom" maxlength="7"></span></label>
-        </div>
-        <div class="field-grid">
-          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.buttons.shape" data-o="shape"></div></div>
-          <div class="field"><div class="label">ombra</div><div class="seg" data-seg="appearance.buttons.shadow" data-o="shadow"></div></div>
-          <div class="field"><div class="label">hover</div><div class="seg" data-seg="appearance.buttons.hover" data-o="hover"></div></div>
-          <div class="field"><div class="label">testo</div><div class="seg" data-seg="appearance.buttons.align" data-o="align"></div></div>
-        </div>
-        <div class="toggle-row"><span>Icona del sito nel bottone</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.icons"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="field-grid">
-          <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.buttons.size" data-o="btnSize"></div></div>
-          <div class="field"><div class="label">font</div><div class="seg" data-seg="appearance.buttons.font" data-o="btnFont"></div></div>
-          <div class="field"><div class="label">spessore del bordo <span class="val" data-show="appearance.buttons.border" data-unit="px"></span></div><input type="range" min="0" max="3" data-k="appearance.buttons.border"></div>
-          <div class="field"><div class="label">animazione</div><div class="seg" data-seg="appearance.buttons.anim" data-o="btnAnim"></div></div>
-        </div>
-        <div class="toggle-grid">
-          <div class="toggle-row"><span>Testo in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.upper"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Riempimento sfumato<small>Dal colore del bottone all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.buttons.gradient"><span class="track"><span class="knob"></span></span></label></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ADVANCED: FONTS AND EFFECTS (guns.lol: Premium > Special Customization) -->
-    <section class="view hidden" id="view-effects">
-      <h2>Font ed effetti</h2>
-      <p class="desc">Font, descrizione animata, effetti del cursore, suoni e schermata d'ingresso.</p>
-      <div class="label section-label">font del nome</div>
+      <div class="label section-label">font</div>
       <div class="fontgrid" id="fontPick"></div>
       <div class="card" style="margin-top:12px">
         <div class="field-grid">
@@ -1103,20 +1077,48 @@
           <div class="field"><div class="label">spaziatura <span class="val" data-show="appearance.font.spacing"></span></div><input type="range" min="-8" max="30" data-k="appearance.font.spacing"></div>
         </div>
       </div>
-      <div class="label section-label">descrizione animata</div>
-      <div class="card">
+      <div class="card" style="margin-top:12px">
         <div class="toggle-row"><span>Nome in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.font.upper"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="seg" data-seg="appearance.bioFx" data-o="bioFx"></div>
-        <div class="field" data-when="appearance.bioFx=typewriter|cycle">
-          <div class="label">frasi, una per riga (massimo 6)</div>
-          <textarea class="text" data-k="appearance.bioLines" data-type="lines" placeholder="nero, bianco e senza filtri&#10;vota la mia pagina"></textarea>
-          <p class="hint">Se lasci vuoto, usa la tua descrizione.</p>
-          <div class="label">velocità <span class="val" data-show="appearance.typeSpeed" data-unit=" ms"></span></div>
-          <input type="range" min="20" max="200" step="5" data-k="appearance.typeSpeed">
+      </div>
+      <div class="asset-grid" style="grid-template-columns:minmax(0,1fr);margin-top:12px">
+        <div class="asset">
+          <div class="asset-h"><b>Carica un tuo font</b><span class="hint">TTF, OTF, WOFF</span></div>
+          <div class="row"><button class="save-btn sm" id="fontUpload" type="button">Carica</button><input class="text" type="url" data-k="appearance.font.custom" placeholder="oppure il link di un font" style="flex:1;min-width:120px"></div>
+          <div class="row"><button class="ghost-btn sm" id="useFontName" type="button">Per il nome</button><button class="ghost-btn sm" id="useFontBody" type="button">Per il testo</button></div>
+          <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" hidden>
+          <p class="hint">Oppure scegli uno dei 20 font qui sopra.</p>
         </div>
       </div>
-      <div class="label section-label">effetti del cursore</div>
-      <div class="card"><div class="field"><div class="label">scia</div><div class="seg" data-seg="appearance.cursor.trail" data-o="trail"></div></div></div>
+      <div class="label section-label">effetti sul nome e glow</div>
+      <div class="gc-grid">
+        <div class="gc"><div class="label">effetti sul nome</div><select class="text" data-k="appearance.nameFx" data-opts="nameFx"></select></div>
+        <div class="gc" data-when="appearance.nameFx=gradient"><div class="label">colori del gradiente</div><div class="hex-row"><input type="color" data-k="appearance.nameGradient.0"><input type="color" data-k="appearance.nameGradient.1"></div></div>
+        <div class="gc span-2"><div class="label">impostazioni glow</div>
+          <div class="chips-toggle">
+            <label><input type="checkbox" data-k="appearance.glow.username"><span>Nome</span></label>
+            <label><input type="checkbox" data-k="appearance.glow.socials"><span>Social</span></label>
+            <label><input type="checkbox" data-k="appearance.glow.badges"><span>Badge</span></label>
+            <label><input type="checkbox" data-k="appearance.glow.links"><span>Bottoni</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCED: FONTS AND EFFECTS (guns.lol: Premium > Special Customization) -->
+    <section class="view hidden" id="view-effects">
+      <h2>Interazioni</h2>
+      <p class="desc">Quello che succede quando qualcuno usa il tuo profilo: cursore, suoni e schermata d'ingresso.</p>
+      <div class="label section-label">cursore</div>
+      <div class="asset-grid" style="grid-template-columns:minmax(0,1fr)">
+        <div class="asset">
+          <div class="asset-h"><b>Cursore</b><span class="hint">PNG piccolo</span></div>
+          <div class="asset-pv"><div class="cur-thumb" id="curThumb"></div></div>
+          <div class="seg" data-seg="appearance.cursor.type" data-o="cursor"></div>
+          <div class="row" data-when="appearance.cursor.type=custom"><button class="save-btn sm" id="cursorPick" type="button">Carica</button><input class="text" type="url" data-k="appearance.cursor.url" placeholder="oppure un link" style="flex:1;min-width:120px"></div>
+          <input type="file" id="cursorInput" accept="image/png,image/gif,image/webp" hidden>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><div class="field"><div class="label">scia</div><div class="seg" data-seg="appearance.cursor.trail" data-o="trail"></div></div></div>
       <div class="label section-label">suoni</div>
       <div class="card">
         <p class="hint">Un piccolo suono quando passano sopra o cliccano link, social e foto. Tocca un suono per sentirlo.</p>
@@ -1136,9 +1138,17 @@
     </section>
 
     <section class="view hidden" id="view-music">
-      <h2>Musica e audio</h2>
+      <h2>Musica</h2>
       <p class="desc">Spotify, un tuo file audio, SoundCloud o YouTube. Più Last.fm per mostrare cosa stai ascoltando.</p>
-      <div class="card" style="margin-top:22px">
+      <div class="asset-grid" style="grid-template-columns:minmax(0,1fr);margin-top:22px">
+        <div class="asset">
+          <div class="asset-h"><b>Audio</b><span class="hint">MP3 fino a 8 MB</span></div>
+          <div class="asset-pv"><div class="audio-sum" id="audioSummary">Nessun audio</div></div>
+          <div class="row"><button class="save-btn sm" id="audioQuick" type="button">Carica</button></div>
+          
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
         <div class="field"><div class="label">sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
         <div class="field" data-when="appearance.music.type=spotify|soundcloud|youtube">
           <input class="text" type="url" data-k="appearance.music.url" id="musicUrl" placeholder="link">
@@ -1197,7 +1207,6 @@
           <div class="field"><div class="label">github</div><input class="text" data-k="appearance.widgets.github" maxlength="39" placeholder="nome utente"></div>
           <div class="field"><div class="label">server discord</div><input class="text" data-k="appearance.widgets.discordServer" maxlength="60" placeholder="invito, es. discord.gg/18k"></div>
           <div class="field"><div class="label">roblox</div><input class="text" data-k="appearance.widgets.roblox" maxlength="20" placeholder="nome utente roblox"></div>
-          <div class="field"><div class="label">spotify</div><input class="text" type="url" data-k="appearance.widgets.spotify" maxlength="300" placeholder="link di un brano, album, playlist o artista"></div>
           <div class="field"><div class="label">orologio</div>
             <select class="text" data-k="appearance.widgets.clock">
               <option value="">Nessuno</option><option value="local">Ora del visitatore</option><option value="Europe/Rome">Roma</option><option value="Europe/London">Londra</option><option value="Europe/Paris">Parigi</option><option value="America/New_York">New York</option><option value="America/Los_Angeles">Los Angeles</option><option value="Asia/Tokyo">Tokyo</option>
@@ -1216,24 +1225,14 @@
     </section>
 
     <section class="view hidden" id="view-page">
-      <h2>Metadati e privacy</h2>
-      <p class="desc">Il titolo della scheda del browser, l'anteprima quando condividi il link e chi può vedere cosa.</p>
-      <div class="label section-label">titolo e anteprima</div>
-      <div class="card">
+      <h2>Titolo e anteprima</h2>
+      <p class="desc">Il titolo nella scheda del browser e come appare il tuo link quando lo mandi su Discord, WhatsApp o Instagram.</p>
+      <div class="card" style="margin-top:22px">
         <div class="field-grid">
           <div class="field"><div class="label">titolo della scheda</div><input class="text" data-k="appearance.title.text" maxlength="60" placeholder="es. nyx ✦ dark"></div>
           <div class="toggle-row"><span>Titolo animato</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.title.animated"><span class="track"><span class="knob"></span></span></label></div>
           <div class="field span-2"><div class="label">descrizione per l'anteprima</div><input class="text" data-k="appearance.seo.description" maxlength="160" placeholder="Quello che appare sotto il link"></div>
           <div class="field span-2"><div class="label">immagine per l'anteprima</div><input class="text" type="url" data-k="appearance.seo.image" placeholder="link di un'immagine"></div>
-        </div>
-      </div>
-      <div class="label section-label">visite e privacy</div>
-      <div class="card">
-        <div class="toggle-grid">
-        <div class="toggle-row"><span>Contatore delle visite sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.showViews"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Nascondi il numero di visite</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.hideViews"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Fuori da classifica ed esplora<small>Il profilo resta raggiungibile col link.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.unlisted"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Profilo privato<small>Solo tu lo vedi, dalla dashboard.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.private"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
     </section>
@@ -1334,7 +1333,7 @@
         <div class="share-link"><span class="mono" id="shareUrl"></span><button class="save-btn sm" id="shareCopy" type="button">Copia</button><a class="ghost-btn sm" id="shareOpen" href="#" target="_blank" rel="noopener">Apri</a></div>
         <div class="label">anteprima su discord e whatsapp</div>
         <div class="dpv" id="discordPv"><div style="flex:1;min-width:0"><small>18k.bio</small><b id="dpvTitle"></b><p id="dpvDesc"></p></div><img id="dpvImg" alt=""></div>
-        <p class="hint">Titolo, descrizione e immagine si cambiano da Metadati e privacy. Il colore della barra è il tuo accento.</p>
+        <p class="hint">Titolo, descrizione e immagine si cambiano da Titolo e anteprima. Il colore della barra è il tuo accento.</p>
       </div>
       <div class="label section-label">un link per ogni social</div>
       <div class="card">
@@ -1368,7 +1367,7 @@
       <p class="desc">Come funziona la dashboard e dove trovi ogni cosa.</p>
       <div class="label section-label">in tre passi</div>
       <div class="card guide-text">
-        <p><b>1. Personalizza.</b> Foto profilo, sfondo, colori e font. Oppure parti da un template già pronto.</p>
+        <p><b>1. Profilo e sfondo.</b> Foto profilo, nome, descrizione, poi lo sfondo e lo stile. Oppure parti da un template già pronto.</p>
         <p><b>2. Aggiungi i link.</b> Tocca un social, scrivi il tuo nome utente, fatto.</p>
         <p><b>3. Salva e condividi.</b> Il tuo profilo è su 18k.bio/tuonome. Da "Condividi il profilo" hai anche il QR code.</p>
         <p><b>Trucco.</b> Nell'anteprima tocca una parte del profilo (la foto, il nome, un link) e ti porta dritto dove si modifica. Per cercare un'impostazione usa la ricerca (sul computer anche Ctrl + K).</p>
@@ -1425,6 +1424,15 @@
           <p class="hint">Cancella il profilo pubblico, la tua @, i nomi extra, i file caricati e l'account. Non si torna indietro.</p>
           <div class="row" style="margin-top:10px"><button class="ghost-btn" id="deleteAccount" type="button" style="border-color:#7a2a2a;color:#ff8a8a">Elimina account</button></div>
           <div class="status" id="deleteStatus"></div>
+        </div>
+      </div>
+      <div class="label section-label">visite e privacy</div>
+      <div class="card">
+        <div class="toggle-grid">
+        <div class="toggle-row"><span>Contatore delle visite sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.showViews"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Nascondi il numero di visite</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.hideViews"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Fuori da classifica ed esplora<small>Il profilo resta raggiungibile col link.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.unlisted"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Profilo privato<small>Solo tu lo vedi, dalla dashboard.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.privacy.private"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
       <div class="label section-label">i tuoi dati</div>
@@ -1578,24 +1586,26 @@
   const I = p => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   // The same groups as the guns.lol dashboard: Account, the profile editor, Premium (here: Avanzate), Image Host
   const NAV = [
+    ["", [
+      ["explore", "Esplora profili", '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', "tutti"]]],
     ["account", [
-      ["explore", "Esplora profili", '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', "tutti"],
       ["overview", "Panoramica", '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'],
       ["analytics", "Statistiche", '<path d="M3 17l6-6 4 4 8-8"/>'],
-      ["badges", "Badge", '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>'],
       ["settings", "Impostazioni", '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>']]],
-    ["profilo", [
-      ["customize", "Personalizza", '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "inizia qui"],
-      ["card", "Carta", '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/>', "nuovo"],
-      ["photos", "Foto", '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>', "18k"],
+    ["il tuo profilo", [
+      ["customize", "Profilo", '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "inizia qui"],
+      ["background", "Sfondo", '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>'],
+      ["layout", "Stile", '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
       ["links", "Link", '<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'],
-      ["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "40"]]],
-    ["avanzate", [
-      ["layout", "Layout e bottoni", '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
-      ["effects", "Font ed effetti", '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>'],
-      ["music", "Musica e audio", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
+      ["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
       ["widgets", "Widget", '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'],
-      ["page", "Metadati e privacy", '<rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>']]],
+      ["badges", "Badge", '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>']]],
+    ["extra", [
+      ["card", "Carta", '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/>', "nuovo"],
+      ["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "40"],
+      ["photos", "Foto", '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>', "18k"],
+      ["effects", "Interazioni", '<path d="M4 4l7 17 2.5-7.5L21 11z"/>'],
+      ["page", "Titolo e anteprima", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>']]],
     ["community", [
       ["clans", "Clan", '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>'],
       ["inbox", "Messaggi", '<path d="M4 4h16v12H8l-4 4z"/>'],
@@ -1610,14 +1620,14 @@
   function buildNav() {
     let closed = [];
     // First visit: only the essentials open, the rest one tap away
-    try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["avanzate", "community", "image host"]; } catch (_) { closed = []; }
+    try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["community", "image host"]; } catch (_) { closed = []; }
     const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
-    $("nav").innerHTML = NAV.map(([group, items]) => `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
+    $("nav").innerHTML = NAV.map(([group, items]) => !group ? `<div class="nav-top">${items.map(item).join("")}</div>` : `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
       + `<div class="nav-foot">${FOOT.map(item).join("")}</div>`;
     $("mnav").innerHTML = NAV.map(([group, items]) => `<optgroup label="${group}">${items.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`).join("") + `<optgroup label="altro">${FOOT.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`;
     $$("#nav button").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
     // Phone: the same sections as big buttons in the "Altro" sheet
-    $("msheetList").innerHTML = [...NAV, ["altro", FOOT]].map(([group, items]) => `<div class="msheet-g">${group}</div><div class="msheet-grid">${items.map(([v, label, icon]) => `<button type="button" data-view="${v}">${I(icon)}<span>${label}</span></button>`).join("")}</div>`).join("");
+    $("msheetList").innerHTML = [...NAV, ["altro", FOOT]].map(([group, items]) => `${group ? `<div class="msheet-g">${group}</div>` : ""}<div class="msheet-grid">${items.map(([v, label, icon]) => `<button type="button" data-view="${v}">${I(icon)}<span>${label}</span></button>`).join("")}</div>`).join("");
     $$("#msheetList button").forEach(b => b.addEventListener("click", () => { closeSheet(); showView(b.dataset.view); }));
     $$("#nav details").forEach(d => d.addEventListener("toggle", () => {
       const shut = $$("#nav details").filter(x => !x.open).map(x => x.dataset.group);
@@ -1636,7 +1646,7 @@
     if (open && !open.open) open.open = true;
     $("mnav").value = name;
     $("mTitle").textContent = VIEW_NAMES[name] || "";
-    const tab = ["overview", "customize", "links", "card"].includes(name) ? name : "more";
+    const tab = ["overview", "customize", "background", "links"].includes(name) ? name : "more";
     $$("#mtabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
     $$("#msheetList button").forEach(b => b.classList.toggle("active", b.dataset.view === name));
     $$(".view").forEach(v => v.classList.add("hidden"));
@@ -1652,7 +1662,7 @@
     if (name === "templates") renderTemplates();
     if (name === "card") renderCards();
     if (name === "photos") { renderPhotos(); paintReqState(); }
-    if (name === "customize") loadSlots();
+    if (name === "templates") loadSlots();
     if (name === "topic") renderTopic();
     if (name === "settings") renderSettings();
     if (name === "share") renderShare();
@@ -1782,22 +1792,23 @@
   }
   const GUIDE = [
     ["Panoramica", "overview", "Nome utente, visite e scorciatoie."],
-    ["Personalizza", "customize", "Foto, sfondo, banner, colori, descrizione."],
-    ["Carta", "card", "La tua carta d'identità 18k.bio, con sticker e testi liberi."],
-    ["Foto", "photos", "Le foto del server Discord 18k, pronte da usare."],
-    ["Link", "links", "Social e link personalizzati."],
-    ["Template", "templates", "Profili già pronti da provare e usare."],
-    ["Statistiche", "analytics", "Visite, clic, da dove arrivano."],
+    ["Profilo", "customize", "Foto profilo e decorazione, nome, descrizione, tag, banner."],
+    ["Sfondo", "background", "Colore, gradiente, foto, GIF o video, effetto animato."],
+    ["Stile", "layout", "Colori, forma della scheda, font, effetti sul nome, glow."],
+    ["Link", "links", "Social, link personalizzati e come appaiono."],
+    ["Musica", "music", "Il tuo audio, playlist, Spotify, SoundCloud, Last.fm."],
+    ["Widget", "widgets", "GitHub, server Discord, Roblox, Twitch, YouTube, orologio."],
     ["Badge", "badges", "I tuoi badge e il badge personale."],
-    ["Layout e bottoni", "layout", "Forma del profilo, bordi, bottoni."],
-    ["Font ed effetti", "effects", "Font, scritte animate, effetti del cursore, suoni."],
-    ["Musica e audio", "music", "Playlist, testi, Spotify, Last.fm."],
-    ["Widget", "widgets", "GitHub, Twitch, YouTube, orologio."],
-    ["Metadati e privacy", "page", "Anteprima del link e privacy."],
+    ["Carta", "card", "La tua carta d'identità 18k.bio."],
+    ["Template", "templates", "Profili pronti e i tuoi look salvati."],
+    ["Foto", "photos", "Le foto del server 18k e le richieste."],
+    ["Interazioni", "effects", "Cursore, suoni, schermata d'ingresso."],
+    ["Titolo e anteprima", "page", "Titolo della scheda e anteprima del link."],
+    ["Statistiche", "analytics", "Visite, clic, da dove arrivano."],
     ["Clan, Messaggi, Topic", "clans", "La parte community."],
     ["Galleria e Paste", "gallery", "Immagini e testi con un link."],
     ["Condividi il profilo", "share", "Link, QR code, anteprima Discord."],
-    ["Impostazioni", "settings", "Email, password, scarica i dati, elimina account."]
+    ["Impostazioni", "settings", "Account, privacy, scarica i dati, elimina account."]
   ];
   function renderGuide() {
     $("guideMap").replaceChildren(...GUIDE.map(([ours, go, what]) => {
@@ -1973,7 +1984,7 @@
   // Tap a part of the preview to jump to the setting that changes it
   const PICK_TARGET = {
     avatar: "customize#avatarPick", name: "customize#dnInput", head: "customize#dnInput", bio: "customize#bioInput",
-    meta: "customize#locInput", tags: "customize#tagsInput", banner: "customize#bannerPick", bg: "customize#bgThumb",
+    meta: "customize#locInput", tags: "customize#tagsInput", banner: "customize#bannerPick", bg: "background#bgThumb",
     badges: "badges", soctop: "links#socialGrid", socbot: "links#socialGrid", links: "links#linksList",
     widgets: "widgets", embeds: "widgets", music: "music", topic: "topic", gallery: "gallery", forms: "inbox",
     card: "card", box: "layout"
@@ -3113,8 +3124,8 @@
   function completion() {
     const a = draft.appearance;
     return [
-      ["Carica un avatar", !!draft.avatarUrl, "customize#c-assets"],
-      ["Scrivi la descrizione", !!(draft.bio || "").trim(), "customize#c-general"],
+      ["Carica un avatar", !!draft.avatarUrl, "customize#avatarPick"],
+      ["Scrivi la descrizione", !!(draft.bio || "").trim(), "customize#bioInput"],
       ["Aggiungi un link", (draft.links || []).some(l => l.title && l.url && l.url !== "https://"), "links"],
       ["Collega un social", Object.keys(draft.socials || {}).length > 0, "links"],
       ["Cambia sfondo o template", JSON.stringify(a.bg) !== JSON.stringify(DEFAULT_APPEARANCE.bg) || a.effect !== DEFAULT_APPEARANCE.effect, "templates"],
