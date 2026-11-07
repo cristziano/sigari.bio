@@ -147,6 +147,22 @@
   <footer class="footer">Fatto da 18k, tutti i diritti riservati. · <a href="privacy.html">Privacy</a> · <a href="termini.html">Termini</a></footer>
 </section>
 
+<!-- Step 2, only for new accounts: choose the @ and go straight in -->
+<section class="auth hidden" id="pick">
+  <div class="wrap">
+    <a class="logo" href="index.html">18k<span>.bio</span></a>
+    <h1>Scegli la tua @.</h1>
+    <p class="sub">Ultimo passo: sarà il tuo link <b id="pickUrl">18k.bio/…</b></p>
+    <form id="pickForm" novalidate>
+      <div class="field"><span class="pre">18k.bio/</span><input id="pickHandle" type="text" placeholder="iltuonome" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="La tua @"></div>
+      <div class="hint" id="pickHint">Da 1 a 20 tra lettere, numeri o _.</div>
+      <label class="consent"><input type="checkbox" id="pickConsent"> <span>Ho almeno 14 anni (o il permesso dei miei genitori) e accetto i <a href="termini.html" target="_blank">termini</a> e la <a href="privacy.html" target="_blank">privacy</a>.</span></label>
+      <button class="primary" id="pickBtn" type="submit">Entra &rarr;</button>
+      <button class="linkbtn" id="pickOut" type="button">Non sei tu? Esci</button>
+    </form>
+  </div>
+</section>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
@@ -226,13 +242,13 @@
   function setMode(m) {
     mode = m;
     const signup = m === "signup";
-    $("authTitle").textContent = signup ? "Prendi la tua @." : "Eccoti di nuovo.";
+    $("authTitle").textContent = signup ? "Crea il tuo account." : "Eccoti di nuovo.";
     $("authSub").firstChild.textContent = signup ? "Hai già un account? " : "Sei nuovo? ";
     $("toggleMode").textContent = signup ? "Accedi" : "Iscriviti";
-    $("usernameWrap").classList.toggle("hidden", !signup);
-    $("usernameHint").classList.toggle("hidden", !signup);
+    $("usernameWrap").classList.add("hidden");
+    $("usernameHint").classList.add("hidden");
     $("confirmWrap").classList.toggle("hidden", !signup);
-    $("consentWrap").classList.toggle("hidden", !signup);
+    $("consentWrap").classList.add("hidden");
     $("forgotBtn").classList.toggle("hidden", signup);
     $("submitBtn").innerHTML = signup ? "Iscriviti &rarr;" : "Accedi &rarr;";
     $("authStatus").className = "status";
@@ -294,9 +310,6 @@
     const pw2 = $("confirm").value;
 
     if (mode === "signup") {
-      if (!HANDLE_RE.test(handle)) return authErr("La @: da 1 a 20 tra lettere, numeri o trattini bassi.");
-      if (RESERVED.includes(handle)) return authErr("Questo nome è riservato al sito. Scegline un altro.");
-      if (!$("consent").checked) return authErr("Per iscriverti spunta la casella dei termini e della privacy.");
       if (!email) return authErr("Scrivi la tua email.");
       if (pw.length < 8) return authErr("La password deve avere almeno 8 caratteri.");
       if (pw !== pw2) return authErr("Le password non coincidono.");
@@ -308,14 +321,8 @@
     try {
       if (mode === "signup") {
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
-        try {
-          await claimHandle(cred.user.uid, handle, { email, provider: "password" });
-          sendEmailVerification(cred.user).catch(() => {});
-        } catch (err) {
-          await deleteUser(cred.user);
-          throw err;
-        }
-        location.replace(NEXT);
+        sendEmailVerification(cred.user).catch(() => {});
+        showPick(cred.user, { provider: "password", email });
       } else {
         await signInWithEmailAndPassword(auth, email, pw);
         // onAuthStateChanged handles the redirect
@@ -328,27 +335,12 @@
   });
 
   async function oauthSignIn(provider) {
-    const handle = $("username").value.trim().toLowerCase();
     setBusy(true);
     try {
       const cred = await signInWithPopup(auth, provider);
       const exists = (await getDoc(doc(db, "users", cred.user.uid))).exists();
-      if (!exists) {
-        // A new account without a @ is not kept: Firebase already created it with the email, so remove it
-        const dropHalf = () => deleteUser(cred.user).catch(() => signOut(auth));
-        if (!$("consent").checked) { await dropHalf(); throw new Error("Per iscriverti spunta la casella dei termini e della privacy. Non ho salvato niente."); }
-        if (!HANDLE_RE.test(handle) || RESERVED.includes(handle)) {
-          await dropHalf();
-          throw new Error("Prima scegli la tua @, poi continua con questo account. Non ho salvato niente.");
-        }
-        try {
-          await claimHandle(cred.user.uid, handle, { email: cred.user.email || null, provider: provider.providerId });
-        } catch (err) {
-          await deleteUser(cred.user);
-          throw err;
-        }
-      }
-      location.replace(NEXT);
+      if (exists) return location.replace(NEXT);
+      showPick(cred.user, { provider: provider.providerId, email: cred.user.email || null });
     } catch (err) {
       authErr(friendly(err));
     } finally {
@@ -363,8 +355,6 @@
   });
 
   $("btnDiscord").addEventListener("click", () => {
-    // Remember the @ and the consent: the page reloads after Discord
-    try { sessionStorage.setItem(DL_KEY, JSON.stringify({ handle: $("username").value.trim().toLowerCase(), consent: $("consent").checked })); } catch (_) { /* storage blocked */ }
     setBusy(true);
     location.href = "/api/discord-login";
   });
@@ -375,25 +365,12 @@
     const h = new URLSearchParams(location.hash.slice(1));
     history.replaceState(null, "", location.pathname + location.search);
     if (h.get("derr")) return authErr(h.get("derr"));
-    let saved = {};
-    try { saved = JSON.parse(sessionStorage.getItem(DL_KEY) || "{}"); sessionStorage.removeItem(DL_KEY); } catch (_) { saved = {}; }
     setBusy(true);
     try {
       const cred = await signInWithCustomToken(auth, h.get("dt"));
       const exists = (await getDoc(doc(db, "users", cred.user.uid))).exists();
-      if (!exists) {
-        const handle = String(saved.handle || "");
-        // A new account without a @ is not kept
-        const dropHalf = () => deleteUser(cred.user).catch(() => signOut(auth));
-        if (!saved.consent) { await dropHalf(); throw new Error("Per iscriverti spunta la casella dei termini e della privacy, poi Continua con Discord. Non ho salvato niente."); }
-        if (!HANDLE_RE.test(handle) || RESERVED.includes(handle)) { await dropHalf(); throw new Error("Prima scegli la tua @, poi Continua con Discord. Non ho salvato niente."); }
-        try {
-          await claimHandle(cred.user.uid, handle, { email: h.get("de") || null, provider: "discord" });
-          // The Discord id goes in "presenza discord": the bot's /pfp finds the profile by it
-          if (h.get("di")) await updateDoc(doc(db, "users", cred.user.uid), { "appearance.widgets.discordId": h.get("di") }).catch(() => {});
-        } catch (err) { await deleteUser(cred.user).catch(() => {}); throw err; }
-      }
-      location.replace(NEXT);
+      if (exists) return location.replace(NEXT);
+      showPick(cred.user, { provider: "discord", email: h.get("de") || null, discordId: h.get("di") || "" });
     } catch (err) { authErr(friendly(err)); }
     finally { setBusy(false); }
   })();
@@ -402,6 +379,7 @@
   onAuthStateChanged(auth, async user => {
     try {
       if (user && await redirectIfReady(user)) return;
+      if (user) { window.__authReady = true; return showPick(user, infoOf(user)); }
     } catch (_) { /* profile not readable: show the form anyway */ }
     window.__authReady = true;
     $("loading").classList.add("hidden");
@@ -427,6 +405,73 @@
       const input = $(btn.dataset.target);
       input.type = input.type === "password" ? "text" : "password";
     });
+  });
+
+  /* ---------- Step 2: choose the @ ---------- */
+  let pending = null; // { user, info }
+  const infoOf = u => {
+    const ids = (u.providerData || []).map(p => p.providerId);
+    if (u.uid.startsWith("discord:")) return { provider: "discord", email: u.email || null, discordId: u.uid.slice(8) };
+    return { provider: ids.includes("google.com") ? "google.com" : "password", email: u.email || null };
+  };
+  function showPick(user, info) {
+    pending = { user, info };
+    $("loading").classList.add("hidden");
+    $("auth").classList.add("hidden");
+    $("pick").classList.remove("hidden");
+    const start = $("pickHandle").value || preset || $("username").value.trim().toLowerCase();
+    $("pickHandle").value = start;
+    checkPick();
+    setTimeout(() => $("pickHandle").focus(), 50);
+  }
+  let pickTimer = 0, pickFree = null;
+  function checkPick() {
+    const h = $("pickHandle").value;
+    $("pickUrl").textContent = "18k.bio/" + (h || "…");
+    pickFree = null;
+    clearTimeout(pickTimer);
+    if (!h) { $("pickHint").textContent = "Da 1 a 20 tra lettere, numeri o _."; return; }
+    if (!HANDLE_RE.test(h)) { $("pickHint").textContent = "Solo lettere minuscole, numeri e _ (massimo 20)."; return; }
+    if (RESERVED.includes(h)) { $("pickHint").textContent = "Questo nome è riservato al sito."; pickFree = false; return; }
+    $("pickHint").textContent = "Controllo…";
+    pickTimer = setTimeout(async () => {
+      try {
+        const taken = (await getDoc(doc(db, "usernames", h))).exists();
+        if ($("pickHandle").value !== h) return;
+        pickFree = !taken;
+        $("pickHint").textContent = taken ? "@" + h + " è già presa. Provane un'altra." : "@" + h + " è libera ✓";
+      } catch (_) { $("pickHint").textContent = "Non riesco a controllare ora: lo vediamo quando premi Entra."; }
+    }, 300);
+  }
+  $("pickHandle").addEventListener("input", e => {
+    const v = e.target.value.toLowerCase().replace(/^@+/, "").replace(/[^a-z0-9_]/g, "");
+    if (v !== e.target.value) e.target.value = v;
+    checkPick();
+  });
+  $("pickForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!pending) return;
+    const h = $("pickHandle").value;
+    if (!HANDLE_RE.test(h)) return authErr("La @: da 1 a 20 tra lettere, numeri o trattini bassi.");
+    if (RESERVED.includes(h)) return authErr("Questo nome è riservato al sito. Scegline un altro.");
+    if (pickFree === false) return authErr("@" + h + " è già presa. Provane un'altra.");
+    if (!$("pickConsent").checked) return authErr("Spunta la casella dei termini e della privacy per entrare.");
+    $("pickBtn").disabled = true;
+    try {
+      const { user, info } = pending;
+      await claimHandle(user.uid, h, { email: info.email || null, provider: info.provider });
+      // Discord accounts: the id goes in "presenza discord", so the bot's /pfp finds the profile
+      if (info.discordId) await updateDoc(doc(db, "users", user.uid), { "appearance.widgets.discordId": info.discordId }).catch(() => {});
+      location.replace(NEXT);
+    } catch (err) {
+      authErr(friendly(err));
+    } finally { $("pickBtn").disabled = false; }
+  });
+  $("pickOut").addEventListener("click", async () => {
+    await signOut(auth).catch(() => {});
+    pending = null;
+    $("pick").classList.add("hidden");
+    $("auth").classList.remove("hidden");
   });
 
   // Coming from the landing page: ?handle=name prefills the @, ?mode=login opens the login form.
