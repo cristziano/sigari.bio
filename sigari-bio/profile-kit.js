@@ -130,7 +130,7 @@ export const DEFAULT_APPEARANCE = {
   enter: { on: false, text: "clicca per entrare", style: "blur" },
   music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true },
   lastfm: { user: "", show: false },
-  widgets: { discordId: "", github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false },
+  widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false },
   title: { text: "", animated: false },
   seo: { description: "", image: "" },
   privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false },
@@ -283,6 +283,7 @@ export function normalizeAppearance(raw) {
   a.lastfm.user = String(a.lastfm.user || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
   a.lastfm.show = !!a.lastfm.show && !!a.lastfm.user;
   a.widgets.discordId = String(a.widgets.discordId || "").replace(/\D/g, "").slice(0, 20);
+  a.widgets.discordPresence = a.widgets.discordPresence === true;
   a.widgets.github = String(a.widgets.github || "").replace(/[^a-z0-9-]/gi, "").slice(0, 39);
   a.widgets.clock = String(a.widgets.clock || "").slice(0, 40);
   a.widgets.showViews = a.widgets.showViews !== false;
@@ -1568,7 +1569,7 @@ export function mountProfile(root, input, opts = {}) {
       if (p.avatarUrl) { const img = el("img"); img.src = p.avatarUrl; img.alt = ""; av.appendChild(img); }
       else av.textContent = p.handle[0].toUpperCase();
       // Discord avatar and decoration through Lanyard
-      if ((a.avatar.discord || a.avatar.discordDeco) && a.widgets.discordId) {
+      if (a.widgets.discordPresence && (a.avatar.discord || a.avatar.discordDeco) && a.widgets.discordId) {
         const id = a.widgets.discordId;
         cached("ly:" + id, 30000, () => getJSON(`https://api.lanyard.rest/v1/users/${id}`)).then(j => {
           const u = j && j.success && j.data && j.data.discord_user;
@@ -1659,7 +1660,7 @@ export function mountProfile(root, input, opts = {}) {
     fill("socbot", hasSocials && a.socialsStyle.position === "bottom" ? [socials] : []);
 
     const widgets = [];
-    if (a.widgets.discordId) widgets.push(keyedNode("dc:" + a.widgets.discordId, () => discordWidget(a.widgets.discordId)));
+    if (a.widgets.discordPresence && a.widgets.discordId) widgets.push(keyedNode("dc:" + a.widgets.discordId, () => discordWidget(a.widgets.discordId)));
     if (a.lastfm.show && a.lastfm.user) widgets.push(keyedNode("lf:" + a.lastfm.user, () => lastfmWidget(a.lastfm.user)));
     if (a.widgets.github) widgets.push(keyedNode("gh:" + a.widgets.github, () => githubWidget(a.widgets.github)));
     fill("widgets", widgets);
