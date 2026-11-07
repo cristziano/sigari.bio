@@ -65,7 +65,7 @@ Per accenderli (lo fa chi gestisce Vercel e Firebase, ancora da fare):
 - **Comprare** 18k.bio e i prefissi che si vogliono usare.
 - **Vercel → Settings → Domains**: aggiungere ogni dominio. Il codice funziona su tutti senza modifiche, perché le rotte `/nome` e `/@nome` valgono per qualsiasi dominio.
 - **Firebase → Authentication → Settings → Authorized domains**: aggiungerli (senza, il login con Google non va).
-- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a sigaribio.vercel.app, che funziona): passarli a 18k.bio.
+- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a 18kbio.vercel.app, che funziona): passarli a 18k.bio.
 
 Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre il sito, quindi funziona con qualsiasi dominio.
 

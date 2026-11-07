@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - run: curl -sS --max-time 60 https://sigaribio.vercel.app/api/autopost || true
+      - run: curl -sS --max-time 60 -L https://18kbio.vercel.app/api/autopost || true

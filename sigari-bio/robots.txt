@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /dashboard.html
 Disallow: /sigari-bio/dashboard.html
-Sitemap: https://sigaribio.vercel.app/sitemap.xml
+Sitemap: https://18kbio.vercel.app/sitemap.xml
