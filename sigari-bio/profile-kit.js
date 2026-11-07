@@ -113,7 +113,7 @@ export const BADGE_ICONS = {
 export const DEFAULT_APPEARANCE = {
   v: 2,
   layout: "classic",
-  bg: { type: "color", color: "#000000", gradient: { kind: "linear", angle: 160, stops: ["#1a1a1a", "#000000", "#2b2b2b"] }, image: "", video: "", poster: "", fit: "cover", dim: 30, blur: 0 },
+  bg: { type: "color", color: "#000000", gradient: { kind: "linear", angle: 160, stops: ["#1a1a1a", "#000000", "#2b2b2b"] }, image: "", video: "", poster: "", fit: "cover", dim: 30, blur: 0, x: 50, y: 50, zoom: 100, gray: 0, sat: 100, tint: "#000000", tintA: 0, vignette: 0 },
   effect: "lava", effectColor: "#ffffff", intensity: 80,
   card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, gradient: false },
   colors: { accent: "#ffffff", text: "#ffffff", muted: "#9a9a9a", icon: "#ffffff", primary: "#0d0d0d", secondary: "#141414", border: "#2a2a2a" },
@@ -204,6 +204,12 @@ export function normalizeAppearance(raw) {
   a.bg.fit = ["cover", "contain", "tile"].includes(a.bg.fit) ? a.bg.fit : "cover";
   a.bg.dim = clamp(a.bg.dim, 0, 90, 30);
   a.bg.blur = clamp(a.bg.blur, 0, 24, 0);
+  // Photo controls: focus point, zoom, black and white, saturation, colour on top, dark edges
+  a.bg.x = clamp(a.bg.x, 0, 100, 50); a.bg.y = clamp(a.bg.y, 0, 100, 50);
+  a.bg.zoom = clamp(a.bg.zoom, 100, 250, 100);
+  a.bg.gray = clamp(a.bg.gray, 0, 100, 0); a.bg.sat = clamp(a.bg.sat, 0, 200, 100);
+  a.bg.tint = safeColor(a.bg.tint, "#000000"); a.bg.tintA = clamp(a.bg.tintA, 0, 90, 0);
+  a.bg.vignette = clamp(a.bg.vignette, 0, 100, 0);
   a.effect = pickOne(a.effect, EFFECTS, "none");
   a.effectColor = safeColor(a.effectColor, "#ffffff");
   a.intensity = clamp(a.intensity, 0, 100, 80);
@@ -563,9 +569,11 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk *{box-sizing:border-box;margin:0;padding:0}
 .pk a{color:inherit}
 .pk-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
-.pk-bg img,.pk-bg video{position:absolute;inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);object-fit:cover;filter:blur(var(--pk-bgblur,0px))}
+.pk-bg img,.pk-bg video{position:absolute;inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);object-fit:cover;object-position:var(--pk-bgx,50%) var(--pk-bgy,50%);transform:scale(var(--pk-bgz,1));transform-origin:var(--pk-bgx,50%) var(--pk-bgy,50%);filter:blur(var(--pk-bgblur,0px)) grayscale(var(--pk-bggray,0)) saturate(var(--pk-bgsat,1))}
+.pk-tint{position:absolute;inset:0;z-index:0;background:var(--pk-tint,#000);opacity:var(--pk-tinta,0);pointer-events:none}
+.pk-vig{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,var(--pk-vig,0)) 100%);pointer-events:none}
 .pk-bg[data-fit=contain] img,.pk-bg[data-fit=contain] video{object-fit:contain}
-.pk-bg .pk-tile{position:absolute;inset:0;background-repeat:repeat;background-size:auto;filter:blur(var(--pk-bgblur,0px))}
+.pk-bg .pk-tile{position:absolute;inset:0;background-repeat:repeat;background-size:auto;filter:blur(var(--pk-bgblur,0px)) grayscale(var(--pk-bggray,0)) saturate(var(--pk-bgsat,1))}
 .pk-dim{position:absolute;inset:0;z-index:0;background:#000;opacity:var(--pk-dim,0);pointer-events:none}
 .pk-fx{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .pk-fx canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -1395,7 +1403,7 @@ export function mountProfile(root, input, opts = {}) {
   injectStyle();
   const o = { preview: false, entrance: true, ...opts };
   root.classList.add("pk");
-  root.innerHTML = '<div class="pk-bg"></div><div class="pk-dim"></div><div class="pk-fx"></div><div class="pk-scroll"><article class="pk-card"></article></div>';
+  root.innerHTML = '<div class="pk-bg"></div><div class="pk-tint"></div><div class="pk-dim"></div><div class="pk-vig"></div><div class="pk-fx"></div><div class="pk-scroll"><article class="pk-card"></article></div>';
   const bgEl = root.querySelector(".pk-bg"), fxEl = root.querySelector(".pk-fx"), card = root.querySelector(".pk-card");
   const SLOTS = ["banner", "head", "badges", "bio", "meta", "soctop", "widgets", "music", "embeds", "topic", "links", "gallery", "socbot", "forms", "tags"];
   const slot = Object.fromEntries(SLOTS.map(n => { const d = el("div", "pk-s pk-s-" + n); card.appendChild(d); return [n, d]; }));
@@ -1507,6 +1515,9 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-link-align", a.buttons.align === "left" ? "flex-start" : "center");
     s.setProperty("--pk-g1", a.nameGradient[0]); s.setProperty("--pk-g2", a.nameGradient[1]);
     s.setProperty("--pk-dim", (a.bg.dim / 100).toFixed(2)); s.setProperty("--pk-bgblur", a.bg.blur + "px");
+    s.setProperty("--pk-bgx", a.bg.x + "%"); s.setProperty("--pk-bgy", a.bg.y + "%"); s.setProperty("--pk-bgz", (a.bg.zoom / 100).toFixed(2));
+    s.setProperty("--pk-bggray", (a.bg.gray / 100).toFixed(2)); s.setProperty("--pk-bgsat", (a.bg.sat / 100).toFixed(2));
+    s.setProperty("--pk-tint", a.bg.tint); s.setProperty("--pk-tinta", (a.bg.tintA / 100).toFixed(2)); s.setProperty("--pk-vig", (a.bg.vignette / 100).toFixed(2));
     const ds = root.dataset;
     ds.layout = a.layout; ds.border = a.card.border; ds.cardgrad = a.card.gradient ? "1" : "0"; ds.avshape = a.avatar.shape; ds.avring = a.avatar.ring;
     ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover; ds.bstyle = a.badges.style;
@@ -1515,7 +1526,8 @@ export function mountProfile(root, input, opts = {}) {
     root.style.cursor = a.cursor.type === "crosshair" ? "crosshair" : a.cursor.type === "custom" && a.cursor.url ? `url("${a.cursor.url.replace(/"/g, "%22")}") 4 4, auto` : "";
 
     // Background (rebuilt only when it changes)
-    const bgKey = JSON.stringify(a.bg);
+    // Only what changes the media rebuilds it; sliders (position, zoom, filters, tint) are CSS variables
+    const bgKey = JSON.stringify([a.bg.type, a.bg.color, a.bg.gradient, a.bg.image, a.bg.video, a.bg.poster, a.bg.fit]);
     if (bgKey !== st.bgKey) {
       st.bgKey = bgKey;
       bgEl.replaceChildren();
