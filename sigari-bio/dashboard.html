@@ -1057,6 +1057,12 @@
         </div>
         <div class="label">decorazione</div>
         <div class="chipgrid decogrid" id="decoPick"></div>
+        <div class="field">
+          <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(come su Discord: un'immagine trasparente sopra la pfp)</small></div>
+          <div class="row"><button class="save-btn sm" id="decoUpload" type="button">Carica PNG, GIF o APNG</button><input class="text" type="url" data-k="appearance.avatar.decoUrl" placeholder="oppure il link dell'immagine" style="flex:1;min-width:160px"></div>
+          <input type="file" id="decoInput" accept="image/png,image/gif,image/webp,image/apng" hidden>
+          <p class="hint">Usa un'immagine quadrata e trasparente al centro (tipo 240×240): viene messa sopra la pfp, un po' più grande, e le animazioni restano.</p>
+        </div>
       </div>
       <div class="label section-label">bottoni</div>
       <div class="card">
@@ -2709,7 +2715,16 @@
   const blobToDataUrl = b => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
 
   async function storeImage(file, kind, max) {
-    if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type)) throw new Error("Usa un'immagine PNG, JPG, WebP o GIF.");
+    if (!/^image\/(png|jpeg|webp|gif|apng)$/.test(file.type)) throw new Error("Usa un'immagine PNG, JPG, WebP o GIF.");
+    // Avatar decorations keep the original file, so animated PNG/GIF/WebP stay animated
+    if (kind === "deco") {
+      if (mode === "guest") { if (file.size > 900 * 1024) throw new Error("Per provarla senza account la decorazione deve pesare meno di 900 KB."); return blobToDataUrl(file); }
+      if (file.size > 3 * 1024 * 1024) throw new Error("La decorazione deve pesare al massimo 3 MB.");
+      const { S, storage } = await firebase();
+      const r = S.ref(storage, `media/${uid}/deco-${Date.now()}`);
+      await S.uploadBytes(r, file, { contentType: file.type, cacheControl: "public, max-age=31536000" });
+      return S.getDownloadURL(r);
+    }
     if (mode === "guest") {
       const blob = await shrink(file, Math.min(max, kind === "bg" ? 1280 : max), "image/webp", .8);
       return blobToDataUrl(blob);
@@ -2742,6 +2757,7 @@
   uploadFlow("avatarPick", "avatarInput", "avatar", 512, url => { draft.avatarUrl = url; renderAvatarBox(); });
   uploadFlow("bgPick", "bgInput", "bg", 1920, url => { draft.appearance.bg.image = url; draft.appearance.bg.type = "image"; });
   uploadFlow("cursorPick", "cursorInput", "cursor", 48, url => { draft.appearance.cursor.url = url; draft.appearance.cursor.type = "custom"; });
+  uploadFlow("decoUpload", "decoInput", "deco", 512, url => { draft.appearance.avatar.decoUrl = url; draft.appearance.avatar.deco = "custom"; });
   uploadFlow("bannerPick", "bannerInput", "banner", 1500, url => { draft.appearance.banner.url = url; draft.appearance.banner.type = "image"; });
   $("badgeColorReset").addEventListener("click", () => { draft.appearance.badges.color = ""; syncControls(); changed(); });
 
