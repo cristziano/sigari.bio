@@ -115,7 +115,7 @@ export const DEFAULT_APPEARANCE = {
   layout: "classic",
   bg: { type: "color", color: "#000000", gradient: { kind: "linear", angle: 160, stops: ["#1a1a1a", "#000000", "#2b2b2b"] }, image: "", video: "", poster: "", fit: "cover", dim: 30, blur: 0, x: 50, y: 50, zoom: 100, gray: 0, sat: 100, tint: "#000000", tintA: 0, vignette: 0 },
   effect: "lava", effectColor: "#ffffff", intensity: 80,
-  card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, gradient: false },
+  card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, gradient: false, borderColor: "", borderWidth: 1, shadow: "none", padding: 24, align: "center", pos: "center", grad2: "", gradAngle: 160, tilt: false },
   colors: { accent: "#ffffff", text: "#ffffff", muted: "#9a9a9a", icon: "#ffffff", primary: "#0d0d0d", secondary: "#141414", border: "#2a2a2a" },
   font: { name: "geist", body: "geist", nameSize: 100, upper: false, spacing: 0, custom: "" },
   nameFx: "none", nameGradient: ["#ffffff", "#8a8a8a"],
@@ -220,6 +220,16 @@ export function normalizeAppearance(raw) {
   a.card.width = clamp(a.card.width, 320, 620, 420);
   a.card.border = ["none", "solid", "glow", "animated"].includes(a.card.border) ? a.card.border : "solid";
   a.card.gradient = !!a.card.gradient;
+  // Full control of the profile box (the frame around the photo)
+  a.card.borderColor = safeColor(a.card.borderColor, "") || "";
+  a.card.borderWidth = clamp(a.card.borderWidth, 0, 6, 1);
+  a.card.shadow = ["none", "soft", "strong", "glow"].includes(a.card.shadow) ? a.card.shadow : "none";
+  a.card.padding = clamp(a.card.padding, 10, 48, 24);
+  a.card.align = a.card.align === "left" ? "left" : "center";
+  a.card.pos = a.card.pos === "top" ? "top" : "center";
+  a.card.grad2 = safeColor(a.card.grad2, "") || "";
+  a.card.gradAngle = clamp(a.card.gradAngle, 0, 360, 160);
+  a.card.tilt = !!a.card.tilt;
   for (const k of Object.keys(d.colors)) a.colors[k] = safeColor(a.colors[k], d.colors[k]);
   a.font.custom = safeFontUrl(a.font.custom) || "";
   a.font.name = FONT[a.font.name] || (a.font.name === "custom" && a.font.custom) ? a.font.name : "geist";
@@ -619,7 +629,12 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk[data-border=animated] .pk-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:conic-gradient(from var(--pk-a,0deg),transparent 0 62%,var(--pk-accent) 82%,transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pk-spin-a 4s linear infinite}
 @property --pk-a{syntax:"<angle>";inherits:false;initial-value:0deg}
 @keyframes pk-spin-a{to{--pk-a:360deg}}
-.pk[data-cardgrad="1"] .pk-card{background:linear-gradient(160deg,rgba(var(--pk-card-rgb),var(--pk-card-a)),color-mix(in srgb,var(--pk-accent) 22%,transparent))}
+.pk[data-cardgrad="1"] .pk-card{background:linear-gradient(var(--pk-gang,160deg),rgba(var(--pk-card-rgb),var(--pk-card-a)),var(--pk-g2,color-mix(in srgb,var(--pk-accent) 22%,transparent)))}
+.pk .pk-card{border-width:var(--pk-bw,1px);padding:calc(var(--pk-pad,24px) + 4px) var(--pk-pad,24px) var(--pk-pad,24px);box-shadow:var(--pk-cshadow,none);transition:transform .25s ease-out}
+.pk[data-bcustom="1"] .pk-card{border-color:var(--pk-bc)!important}
+.pk[data-calign=left] .pk-card{text-align:left}.pk[data-calign=left] .pk-head{align-items:flex-start}.pk[data-calign=left] .pk-soc{justify-content:flex-start}
+.pk[data-cpos=top] .pk-card{margin:6vh 0 auto}
+.pk[data-tilt="1"] .pk-card{will-change:transform}
 .pk-head{display:flex;flex-direction:column;align-items:center}
 .pk-av{position:relative;width:var(--pk-av);height:var(--pk-av);border-radius:50%;background:#1a1a1a;display:grid;place-items:center;flex-shrink:0;font:700 calc(var(--pk-av)*.38)/1 var(--pk-name-font);color:#fff}
 .pk-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
@@ -1485,6 +1500,13 @@ export function mountProfile(root, input, opts = {}) {
   root.classList.add("pk");
   root.innerHTML = '<div class="pk-bg"></div><div class="pk-tint"></div><div class="pk-dim"></div><div class="pk-vig"></div><div class="pk-fx"></div><div class="pk-scroll"><article class="pk-card"></article></div>';
   const bgEl = root.querySelector(".pk-bg"), fxEl = root.querySelector(".pk-fx"), card = root.querySelector(".pk-card");
+  // 3D tilt of the profile box (only when switched on, never with reduced motion)
+  root.addEventListener("pointermove", e => {
+    if (root.dataset.tilt !== "1" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `perspective(900px) rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 10).toFixed(2)}deg)`;
+  });
+  root.addEventListener("pointerleave", () => { card.style.transform = ""; });
   const SLOTS = ["banner", "head", "badges", "bio", "meta", "soctop", "widgets", "music", "embeds", "topic", "links", "gallery", "socbot", "forms", "tags"];
   const slot = Object.fromEntries(SLOTS.map(n => { const d = el("div", "pk-s pk-s-" + n); card.appendChild(d); return [n, d]; }));
   // Editor preview: every part of the profile is a shortcut to the setting that changes it
@@ -1603,6 +1625,12 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-tint", a.bg.tint); s.setProperty("--pk-tinta", (a.bg.tintA / 100).toFixed(2)); s.setProperty("--pk-vig", (a.bg.vignette / 100).toFixed(2));
     const ds = root.dataset;
     ds.wstyle = a.widgetStyle.style; ds.wsize = a.widgetStyle.size; ds.wtag = a.widgetStyle.accentTag ? "1" : "0"; ds.banim = a.buttons.anim;
+    s.setProperty("--pk-bw", a.card.borderWidth + "px"); s.setProperty("--pk-pad", a.card.padding + "px");
+    s.setProperty("--pk-gang", a.card.gradAngle + "deg");
+    if (a.card.grad2) s.setProperty("--pk-g2", a.card.grad2); else s.removeProperty("--pk-g2");
+    if (a.card.borderColor) s.setProperty("--pk-bc", a.card.borderColor);
+    s.setProperty("--pk-cshadow", { none: "none", soft: "0 18px 50px rgba(0,0,0,.45)", strong: "0 30px 90px rgba(0,0,0,.85)", glow: `0 0 44px color-mix(in srgb, ${a.colors.accent} 45%, transparent)` }[a.card.shadow]);
+    ds.bcustom = a.card.borderColor ? "1" : "0"; ds.calign = a.card.align; ds.cpos = a.card.pos; ds.tilt = a.card.tilt ? "1" : "0";
     ds.layout = a.layout; ds.border = a.card.border; ds.cardgrad = a.card.gradient ? "1" : "0"; ds.avshape = a.avatar.shape; ds.avring = a.avatar.ring;
     ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover; ds.bstyle = a.badges.style;
     ds.gname = a.glow.username ? "1" : "0"; ds.gsoc = a.glow.socials ? "1" : "0"; ds.gbadges = a.glow.badges ? "1" : "0"; ds.glinks = a.glow.links ? "1" : "0";

@@ -574,6 +574,12 @@
   .pz-h { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; padding-bottom:12px; border-bottom:1px solid var(--b); }
   .pz-h b { font-size:16.5px; letter-spacing:-.01em; }
   .pz-h span { font-size:12.5px; color:var(--m); }
+  .more-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+  .more-go { text-align:left; display:flex; flex-direction:column; gap:3px; padding:13px 14px; border-radius:12px; border:1px solid var(--b); background:transparent; color:inherit; font:inherit; cursor:pointer; transition:border-color .15s, background .15s; }
+  .more-go:hover { border-color:var(--fg); background:var(--s1); }
+  .more-go b { font-size:14px; } .more-go span { font-size:12px; color:var(--m); line-height:1.35; }
+  @media (max-width:900px) { .more-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:520px) { .more-grid { grid-template-columns:1fr; } }
   .pz-assets { grid-template-columns:repeat(4, minmax(0,1fr)) !important; }
   .pz-assets .asset-h { flex-direction:column; align-items:flex-start; gap:2px; }
   .pz-assets .asset-h .hint { font-size:11.5px; }
@@ -819,6 +825,38 @@
           </div>
         </div>
       </div>
+      <div class="card pz" id="c-box">
+        <div class="pz-h"><b>Profilo</b><span>il riquadro intorno alla foto: colore, trasparenza, bordo, forma</span></div>
+        <div class="label">colore e trasparenza</div>
+        <div class="field-grid">
+          <label class="color-field"><span class="cname">Colore del riquadro</span><span class="hex-row"><input type="color" data-k="appearance.colors.primary"><input class="hex-input" data-hex="appearance.colors.primary" maxlength="7"></span></label>
+          <div class="field"><div class="label">opacità del profilo <span class="val" data-show="appearance.card.opacity" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.card.opacity"><div class="marks"><span>20%</span><span>50%</span><span>80%</span></div></div>
+          <div class="field"><div class="label">sfocatura del profilo <span class="val" data-show="appearance.card.blur" data-unit="px"></span></div><input type="range" min="0" max="30" data-k="appearance.card.blur"><div class="marks"><span>0</span><span>15px</span><span>30px</span></div></div>
+          <div class="field"><div class="label">spazio interno <span class="val" data-show="appearance.card.padding" data-unit="px"></span></div><input type="range" min="10" max="48" data-k="appearance.card.padding"></div>
+        </div>
+        <div class="label">forma</div>
+        <div class="field-grid">
+          <div class="field"><div class="label">angoli <span class="val" data-show="appearance.card.radius" data-unit="px"></span></div><input type="range" min="0" max="40" data-k="appearance.card.radius"></div>
+          <div class="field"><div class="label">larghezza <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="620" step="10" data-k="appearance.card.width"></div>
+          <div class="field"><div class="label">testo</div><div class="seg" data-seg="appearance.card.align" data-o="cAlign"></div></div>
+          <div class="field"><div class="label">posizione</div><div class="seg" data-seg="appearance.card.pos" data-o="cPos"></div></div>
+        </div>
+        <div class="label">bordo e ombra</div>
+        <div class="field-grid">
+          <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.card.border" data-o="border"></div></div>
+          <div class="field"><div class="label">spessore del bordo <span class="val" data-show="appearance.card.borderWidth" data-unit="px"></span></div><input type="range" min="0" max="6" data-k="appearance.card.borderWidth"></div>
+          <div class="field"><div class="label">colore del bordo</div><div class="hex-row"><input type="color" data-k="appearance.card.borderColor"><button class="ghost-btn sm" type="button" id="borderAuto">Automatico</button></div></div>
+          <div class="field"><div class="label">ombra</div><div class="seg" data-seg="appearance.card.shadow" data-o="cShadow"></div></div>
+        </div>
+        <div class="label">effetti</div>
+        <div class="toggle-row"><span>Gradiente del profilo<small>La scheda sfuma dal colore della scheda all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field-grid" data-when="appearance.card.gradient=true">
+          <div class="field"><div class="label">secondo colore del gradiente</div><div class="hex-row"><input type="color" data-k="appearance.card.grad2"><button class="ghost-btn sm" type="button" id="grad2Auto">Usa l'accento</button></div></div>
+          <div class="field"><div class="label">direzione <span class="val" data-show="appearance.card.gradAngle" data-unit="°"></span></div><input type="range" min="0" max="360" data-k="appearance.card.gradAngle"></div>
+        </div>
+        <div class="toggle-row"><span>Inclinazione 3D<small>Il riquadro si inclina seguendo il mouse.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.tilt"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="field"><div class="label">animazione del profilo</div><div class="seg" data-seg="appearance.entrance" data-o="entrance"></div></div>
+      </div>
       <div class="card pz" id="c-bg">
         <div class="pz-h"><b>Sfondo</b><span>quello che c'è dietro il profilo</span></div>
         <div class="field"><div class="label">tipo di sfondo</div><div class="seg" data-seg="appearance.bg.type" data-o="bgType"></div></div>
@@ -863,7 +901,7 @@
       
       </div>
       <div class="card pz" id="c-general">
-        <div class="pz-h"><b>Generale</b><span>descrizione, nome, il riquadro del profilo, effetti e glow</span></div>
+        <div class="pz-h"><b>Generale</b><span>descrizione, nome, posizione, effetti di sfondo e sul nome, glow, tag</span></div>
         <div class="gc-grid">
           <div class="gc span-2"><div class="label">descrizione <span class="val" data-count="bio" data-max="300"></span></div>
           <div class="fmt" id="bioFmt"></div>
@@ -872,8 +910,6 @@
           </div>
           <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
           <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
-          <div class="gc"><div class="label">opacità del profilo <span class="val" data-show="appearance.card.opacity" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.card.opacity"><div class="marks"><span>20%</span><span>50%</span><span>80%</span></div></div>
-          <div class="gc"><div class="label">sfocatura del profilo <span class="val" data-show="appearance.card.blur" data-unit="px"></span></div><input type="range" min="0" max="30" data-k="appearance.card.blur"><div class="marks"><span>0</span><span>15px</span><span>30px</span></div></div>
       
           <div class="gc"><div class="label">effetti di sfondo</div><select class="text" data-k="appearance.effect" data-opts="effects"></select></div>
           <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
@@ -893,14 +929,11 @@
         </div>
       </div>
       <div class="card pz" id="c-colors">
-        <div class="pz-h"><b>Colori</b><span>accento, testo, icone, riquadro e sfondo</span></div>
+        <div class="pz-h"><b>Colori</b><span>accento, testo, icone, riquadri interni e sfondo</span></div>
         <div class="label">palette rapide</div>
         <div class="chipgrid" id="palettePick" style="margin-top:10px"></div>
         <div class="color-grid" id="colorGrid" style="margin-top:12px"></div>
         <div class="color-grid" style="margin-top:10px"><label class="color-field"><span class="cname">Sfondo della pagina</span><span class="hex-row"><input type="color" data-k="appearance.bg.color"><input class="hex-input" data-hex="appearance.bg.color" maxlength="7"></span></label></div>
-        <div class="card" style="margin-top:12px">
-        <div class="toggle-row"><span>Gradiente del profilo<small>La scheda sfuma dal colore della scheda all'accento.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.card.gradient"><span class="track"><span class="knob"></span></span></label></div>
-        </div>
       </div>
       <div class="card pz" id="c-other">
         <div class="pz-h"><b>Altro</b><span>piccole preferenze</span></div>
@@ -909,6 +942,20 @@
           <div class="toggle-row"><span>Titolo animato</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.title.animated"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Mostra il player</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Nome in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.font.upper"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
+      </div>
+      <div class="card pz" id="c-more">
+        <div class="pz-h"><b>Tutte le altre opzioni</b><span>qui sopra c'è la base: il resto è diviso in queste pagine</span></div>
+        <div class="more-grid">
+          <button type="button" class="more-go" data-go="layout"><b>Layout</b><span>disposizione, banner, forma e decorazione della foto</span></button>
+          <button type="button" class="more-go" data-go="effects"><b>Font ed effetti</b><span>font, scia del cursore, suoni, schermata d'ingresso</span></button>
+          <button type="button" class="more-go" data-go="links"><b>Link e social</b><span>icone, pulsanti e il loro stile</span></button>
+          <button type="button" class="more-go" data-go="music"><b>Musica</b><span>playlist, player, Last.fm</span></button>
+          <button type="button" class="more-go" data-go="widgets"><b>Widget</b><span>Discord, GitHub, Roblox, video, orologio</span></button>
+          <button type="button" class="more-go" data-go="card"><b>Carta</b><span>la carta 18k da condividere</span></button>
+          <button type="button" class="more-go" data-go="badges"><b>Badge</b><span>i tuoi badge e il loro colore</span></button>
+          <button type="button" class="more-go" data-go="templates"><b>Template e look</b><span>temi pronti e i tuoi look salvati</span></button>
+          <button type="button" class="more-go" data-go="page"><b>Metadati</b><span>titolo della scheda, anteprima sui social</span></button>
         </div>
       </div>
     </section>
@@ -1059,14 +1106,6 @@
       <p class="desc">La forma del riquadro del profilo, il banner e la foto profilo.</p>
       <div class="label section-label">layout del profilo</div>
       <div class="layouts" id="layoutPick"></div>
-      <div class="card" style="margin-top:12px">
-        <div class="field-grid">
-          <div class="field"><div class="label">angoli <span class="val" data-show="appearance.card.radius" data-unit="px"></span></div><input type="range" min="0" max="40" data-k="appearance.card.radius"></div>
-          <div class="field"><div class="label">larghezza <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="620" step="10" data-k="appearance.card.width"></div>
-          <div class="field span-2"><div class="label">bordo</div><div class="seg" data-seg="appearance.card.border" data-o="border"></div></div>
-          <div class="field span-2"><div class="label">animazione del profilo</div><div class="seg" data-seg="appearance.entrance" data-o="entrance"></div></div>
-        </div>
-      </div>
       <div class="label section-label">banner</div>
       <div class="card">
       
@@ -1862,6 +1901,9 @@
     gradKind: [["linear", "Lineare"], ["radial", "Radiale"], ["conic", "Conico"]],
     fit: [["cover", "Riempi"], ["contain", "Intera"], ["tile", "Ripeti"]],
     border: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["animated", "Animato"]],
+    cAlign: [["center", "Centrato"], ["left", "A sinistra"]],
+    cPos: [["center", "Al centro"], ["top", "In alto"]],
+    cShadow: [["none", "Nessuna"], ["soft", "Morbida"], ["strong", "Forte"], ["glow", "Luce"]],
     avShape: [["circle", "Cerchio"], ["rounded", "Arrotondato"], ["square", "Quadrato"], ["hex", "Esagono"]],
     avRing: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["spin", "Rotante"]],
     nameFx: NAME_FX, entrance: ENTRANCES,
@@ -1997,7 +2039,7 @@
     meta: "customize#locInput", tags: "customize#tagsInput", banner: "layout#bannerPick", bg: "customize#c-bg",
     badges: "badges", soctop: "links#socialGrid", socbot: "links#socialGrid", links: "links#linksList",
     widgets: "widgets", embeds: "widgets", music: "music", topic: "topic", gallery: "gallery", forms: "inbox",
-    card: "card", box: "customize#c-general"
+    card: "card", box: "customize#c-box"
   };
   function pickToEdit(part) {
     const target = PICK_TARGET[part] || "customize";
@@ -2482,7 +2524,7 @@
     ["Terminale", { accent: "#00ff66", text: "#00ff66", muted: "#0aa045", icon: "#00ff66", primary: "#000000", secondary: "#001a0a", border: "#00ff66" }],
     ["Oceano", { accent: "#7fe7ff", text: "#f0fbff", muted: "#9fc3cf", icon: "#bff3ff", primary: "#03141c", secondary: "#082431", border: "#1e5566" }]
   ];
-  const COLOR_FIELDS = [["accent", "Accento"], ["text", "Testo"], ["muted", "Testo secondario"], ["icon", "Icone"], ["primary", "Scheda"], ["secondary", "Riquadri"], ["border", "Bordi"]];
+  const COLOR_FIELDS = [["accent", "Accento"], ["text", "Testo"], ["muted", "Testo secondario"], ["icon", "Icone"], ["secondary", "Riquadri interni (link, widget)"], ["border", "Linee"]];
 
   function buildPickers() {
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
@@ -2693,6 +2735,9 @@
       } catch (_) { st.textContent = ""; }
     }, 500);
   }
+  // Profile box: back to the automatic border colour / gradient colour
+  $("borderAuto").addEventListener("click", () => { draft.appearance.card.borderColor = ""; syncControls(); changed(); });
+  $("grad2Auto").addEventListener("click", () => { draft.appearance.card.grad2 = ""; syncControls(); changed(); });
   // Quick background colours: one tap = plain colour background (the profile colours stay as they are)
   $("bgSwatches").addEventListener("click", e => {
     const b = e.target.closest("[data-bgc]"); if (!b) return;
