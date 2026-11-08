@@ -783,10 +783,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
 .pk-pick [data-pk-hot]{outline:1.5px dashed rgba(255,255,255,.6);outline-offset:5px;border-radius:10px;cursor:pointer}
 .pk-pick .pk-bg{cursor:pointer}
-.pk-cardbtn{display:flex;flex-direction:column;align-items:center;gap:8px;margin:18px auto 0;padding:0;border:0;background:none;color:var(--pk-muted);font:500 11.5px/1 inherit;cursor:pointer;letter-spacing:.04em}
-.pk-cardbtn .pk-cmini{width:150px;transform:rotate(-4deg);transition:transform .35s cubic-bezier(.2,.8,.2,1);pointer-events:none;border-radius:8px}
-.pk-cardbtn .pk-cmini .k4{box-shadow:0 14px 30px -10px rgba(0,0,0,.8)}
-.pk-cardbtn:hover .pk-cmini{transform:rotate(0) translateY(-4px) scale(1.04)}
+.pk-cardbtn{display:flex;align-items:center;gap:8px;margin:16px auto 0;padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font:500 13px/1 inherit;cursor:pointer;transition:transform .2s,border-color .2s}
+.pk-cardbtn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.5)}
 .pk-tags span{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--pk-border);color:var(--pk-muted)}
 .pk-banner{height:110px;margin:-28px -20px 0;border-radius:var(--pk-radius) var(--pk-radius) 0 0;background:var(--pk-banner);background-size:cover;background-position:center}
 .pk[data-layout=banner] .pk-head{margin-top:calc(var(--pk-av)*-.5)}
@@ -1995,12 +1993,10 @@ export function mountProfile(root, input, opts = {}) {
     // The identity card made in the dashboard: a button that shows it full screen
     // Shown also before the card is designed (the default card), unless it was switched off
     if (!p.card || p.card.on !== false) {
-      const ck = JSON.stringify(p.card || 0); let hs = 0; for (let i = 0; i < ck.length; i++) hs = (hs * 31 + ck.charCodeAt(i)) | 0;
-      tagNodes.push(keyedNode("cardbtn:" + hs + p.handle + p.avatarUrl, () => {
+      tagNodes.push(keyedNode("cardbtn", () => {
         const b = el("button", "pk-cardbtn");
         b.type = "button"; b.setAttribute("aria-label", "Apri la carta");
-        const mini = el("div", "pk-cmini"); b.append(mini, el("span", null, "tocca la carta"));
-        import("./card-kit.js").then(m => { const cur = p; m.mountCard(mini, cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }, {}); }).catch(() => {});
+        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>la mia carta</span>';
         b.addEventListener("click", () => {
           const cur = st.last;
           import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }));
