@@ -72,6 +72,9 @@ export function socialHref(sd, value) {
 export const LINK_DOMAINS = [["18k.bio", "predefinito"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
   ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
 
+export const MUSIC_POS = [["top", "In cima"], ["name", "Sotto il nome"], ["bio", "Sotto la descrizione"], ["bottom", "In fondo"], ["float-r", "Fluttuante a destra"], ["float-l", "Fluttuante a sinistra"]];
+export const PLAYER_STYLES = [["card", "Scheda"], ["glass", "Vetro"], ["minimal", "Minimal"], ["pill", "Pillola"], ["vinyl", "Vinile"], ["retro", "Retro"], ["neon", "Neon"], ["cassette", "Cassetta"]];
+
 export const SOCIALS = [
   { key: "instagram", label: "Instagram", color: "#E4405F", base: "https://instagram.com/" },
   { key: "tiktok", label: "TikTok", color: "#ff0050", base: "https://tiktok.com/@" },
@@ -161,7 +164,11 @@ export const DEFAULT_APPEARANCE = {
   cursor: { type: "default", url: "", trail: "none" },
   sfx: { hover: "none", click: "none", volume: 50 },
   enter: { on: false, text: "clicca per entrare", style: "blur" },
-  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true, cover: "" },
+  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true, cover: "",
+    // Where the music sits on the profile (all sources) and how the 18k player looks (own files)
+    pos: "name",
+    player: { style: "card", size: "m", radius: 16, color: "", bg: 70, cover: "square", bar: "line", marquee: false, fadeIn: true,
+      showCover: true, showTitle: true, showTime: true, showBar: true, showSkip: true, showVolume: true, showList: true } },
   lastfm: { user: "", show: false },
   widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false, discordServer: "", spotify: "", roblox: "", countdown: { date: "", label: "" }, weather: "", mood: "", note: "", pics: {} },
   title: { text: "", animated: false },
@@ -343,6 +350,19 @@ export function normalizeAppearance(raw) {
   a.music.blurCover = a.music.blurCover !== false;
   a.music.visualizer = ["none", "bars", "wave"].includes(a.music.visualizer) ? a.music.visualizer : "bars";
   a.music.lyrics = a.music.lyrics !== false;
+  a.music.pos = MUSIC_POS.some(x => x[0] === a.music.pos) ? a.music.pos : "name";
+  const pl = isObj(a.music.player) ? a.music.player : {}, dp = d.music.player;
+  a.music.player = {
+    style: PLAYER_STYLES.some(x => x[0] === pl.style) ? pl.style : "card",
+    size: ["s", "m", "l"].includes(pl.size) ? pl.size : "m",
+    radius: clamp(pl.radius, 0, 32, 16),
+    color: /^#[0-9a-f]{6}$/i.test(pl.color || "") ? pl.color : "",
+    bg: clamp(pl.bg, 0, 100, 70),
+    cover: ["square", "round", "vinyl", "none"].includes(pl.cover) ? pl.cover : "square",
+    bar: ["line", "thick", "dots", "none"].includes(pl.bar) ? pl.bar : "line",
+    marquee: !!pl.marquee, fadeIn: pl.fadeIn !== false
+  };
+  ["showCover", "showTitle", "showTime", "showBar", "showSkip", "showVolume", "showList"].forEach(k => { a.music.player[k] = pl[k] !== false && dp[k] !== false; });
   a.music.cover = safeUrl(a.music.cover, true) || "";
   a.lastfm.user = String(a.lastfm.user || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
   a.lastfm.show = !!a.lastfm.show && !!a.lastfm.user;
@@ -911,7 +931,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-lb{position:absolute;inset:0;z-index:8;display:grid;place-items:center;background:rgba(0,0,0,.86);padding:20px;cursor:zoom-out}
 .pk-lb img{max-width:100%;max-height:82%;border-radius:12px;display:block}
 .pk-lb p{margin-top:10px;font-size:13px;color:#ddd}
-.pk-mp{position:relative;overflow:hidden;margin-top:12px;border-radius:16px;border:1px solid var(--pk-border);background:var(--pk-surface);text-align:left}
+.pk-mp{--mp-a:var(--mp-acc,var(--pk-accent));position:relative;overflow:hidden;margin-top:12px;border-radius:var(--mp-r,16px);border:1px solid var(--pk-border);background:color-mix(in srgb,var(--pk-surface) calc(var(--mp-bga,.7)*100%),transparent);text-align:left}
 .pk-mp .mp-bg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.4);opacity:.55;transform:scale(1.1)}
 .pk-mp .mp-in{position:relative;padding:12px;display:grid;gap:10px}
 .pk-mp .mp-top{display:flex;gap:12px;align-items:center}
@@ -937,6 +957,37 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-mp .mp-list button{display:flex;gap:8px;align-items:center;border:0;background:none;color:var(--pk-muted);font:inherit;font-size:12px;padding:5px 6px;border-radius:7px;cursor:pointer;text-align:left}
 .pk-mp .mp-list button.on{color:var(--pk-text);background:color-mix(in srgb,var(--pk-text) 8%,transparent)}
 .pk-mp .mp-list span{font-family:ui-monospace,monospace;font-size:10.5px;opacity:.6;width:16px}
+.pk-mp .mp-bar i,.pk-mp .mp-ctl .mp-play{background:var(--mp-a)}.pk-mp .mp-ctl button.on{color:var(--mp-a)}.pk-mp .mp-ctl input{accent-color:var(--mp-a)}.pk-mp .mp-cov{color:var(--mp-a)}
+.pk-mp[data-hcover="1"] .mp-cov,.pk-mp[data-cov=none] .mp-cov,.pk-mp[data-htitle="1"] .mp-t,.pk-mp[data-htime="1"] .mp-time,.pk-mp[data-hbar="1"] .mp-bar,.pk-mp[data-bar=none] .mp-bar,.pk-mp[data-hvolume="1"] .mp-ctl input,.pk-mp[data-hlist="1"] .mp-list{display:none!important}
+.pk-mp[data-hskip="1"] .mp-ctl [data-k=prev],.pk-mp[data-hskip="1"] .mp-ctl [data-k=next],.pk-mp[data-hskip="1"] .mp-ctl [data-k=shuffle],.pk-mp[data-hskip="1"] .mp-ctl [data-k=loop]{display:none!important}
+.pk-mp[data-cov=round] .mp-cov{border-radius:50%}
+.pk-mp[data-cov=vinyl] .mp-cov{border-radius:50%;background-color:#0a0a0a;box-shadow:0 0 0 3px #111,0 0 0 4px rgba(255,255,255,.15),0 6px 18px rgba(0,0,0,.5);-webkit-mask:radial-gradient(circle,transparent 9%,#000 10%);mask:radial-gradient(circle,transparent 9%,#000 10%);animation:pk-spin 4s linear infinite;animation-play-state:paused}
+.pk-mp.is-on[data-cov=vinyl] .mp-cov,.pk-mp.is-on[data-st=vinyl] .mp-cov{animation-play-state:running}
+@keyframes pk-spin{to{transform:rotate(360deg)}}
+.pk-mp[data-bar=thick] .mp-bar{height:8px}
+.pk-mp[data-bar=dots] .mp-bar{height:6px;background:radial-gradient(circle,color-mix(in srgb,var(--pk-text) 30%,transparent) 1.5px,transparent 2px) 0 50%/8px 6px repeat-x}
+.pk-mp[data-bar=dots] .mp-bar i{background:radial-gradient(circle,var(--mp-a) 2px,transparent 2.5px) 0 50%/8px 6px repeat-x}
+.pk-mp[data-sz=s] .mp-in{padding:8px;gap:6px}.pk-mp[data-sz=s] .mp-cov{width:38px;height:38px}.pk-mp[data-sz=s] .mp-viz{height:16px}
+.pk-mp[data-sz=l] .mp-in{padding:18px;gap:14px}.pk-mp[data-sz=l] .mp-cov{width:84px;height:84px}.pk-mp[data-sz=l] .mp-t b{font-size:16px}
+.pk-mp[data-mq="1"] .mp-t b{text-overflow:clip}.pk-mp[data-mq="1"] .mp-t b span{display:inline-block;padding-left:100%;animation:pk-mq 9s linear infinite}
+@keyframes pk-mq{to{transform:translateX(-100%)}}
+.pk-mp[data-st=glass]{background:rgba(255,255,255,calc(var(--mp-bga,.7)*.12));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-color:rgba(255,255,255,.18)}
+.pk-mp[data-st=minimal]{background:none;border-color:transparent}.pk-mp[data-st=minimal] .mp-bg,.pk-mp[data-st=minimal] .mp-viz,.pk-mp[data-st=minimal] .mp-list{display:none}.pk-mp[data-st=minimal] .mp-in{padding:4px 0}
+.pk-mp[data-st=pill]{border-radius:999px}.pk-mp[data-st=pill] .mp-in{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 6px}.pk-mp[data-st=pill] .mp-top{flex:1;min-width:0}.pk-mp[data-st=pill] .mp-cov{width:36px;height:36px;border-radius:50%}
+.pk-mp[data-st=pill] .mp-viz,.pk-mp[data-st=pill] .mp-time,.pk-mp[data-st=pill] .mp-lrc,.pk-mp[data-st=pill] .mp-list,.pk-mp[data-st=pill] .mp-ctl input,.pk-mp[data-st=pill] .mp-bar,.pk-mp[data-st=pill] .mp-ctl [data-k=shuffle],.pk-mp[data-st=pill] .mp-ctl [data-k=loop]{display:none!important}
+.pk-mp[data-st=pill] .mp-ctl .mp-play{width:34px;height:34px}
+.pk-mp[data-st=vinyl] .mp-top{flex-direction:column;text-align:center}.pk-mp[data-st=vinyl] .mp-cov{width:132px;height:132px;border-radius:50%;background-color:#0a0a0a;box-shadow:0 0 0 6px #111,0 0 0 7px rgba(255,255,255,.12),0 14px 34px rgba(0,0,0,.6);-webkit-mask:radial-gradient(circle,transparent 8%,#000 9%);mask:radial-gradient(circle,transparent 8%,#000 9%);animation:pk-spin 5s linear infinite;animation-play-state:paused}
+.pk-mp[data-st=vinyl] .mp-t{width:100%}
+.pk-mp[data-st=vinyl] .mp-cov,.pk-mp[data-cov=vinyl] .mp-cov{background-image:repeating-radial-gradient(circle,#111 0 2px,#1c1c1c 2px 3px)}
+.pk-mp[data-st=vinyl] .mp-cov svg,.pk-mp[data-cov=vinyl] .mp-cov svg{display:none}
+.pk-mp[data-st=retro]{border-radius:0;border:2px solid var(--mp-a);background:#000;font-family:ui-monospace,monospace}.pk-mp[data-st=retro] .mp-bg{display:none}.pk-mp[data-st=retro] .mp-cov{border-radius:0;filter:grayscale(1) contrast(1.3)}.pk-mp[data-st=retro] .mp-t b{text-transform:uppercase;letter-spacing:.06em;color:var(--mp-a)}.pk-mp[data-st=retro] .mp-bar{border-radius:0;height:10px;border:1px solid var(--mp-a);background:none}.pk-mp[data-st=retro] .mp-bar i{border-radius:0}.pk-mp[data-st=retro] .mp-ctl .mp-play{border-radius:0}
+.pk-mp[data-st=neon]{border-color:var(--mp-a);box-shadow:0 0 18px color-mix(in srgb,var(--mp-a) 55%,transparent),inset 0 0 18px color-mix(in srgb,var(--mp-a) 20%,transparent)}.pk-mp[data-st=neon] .mp-t b{text-shadow:0 0 10px var(--mp-a)}.pk-mp[data-st=neon] .mp-bar i{box-shadow:0 0 10px var(--mp-a)}
+.pk-mp[data-st=cassette]{background:linear-gradient(180deg,#1b1b1b,#0c0c0c);border:1px solid #333;border-radius:10px}.pk-mp[data-st=cassette] .mp-bg{display:none}
+.pk-mp[data-st=cassette] .mp-top{background:#e8e2d0;color:#111;border-radius:6px;padding:8px 10px}.pk-mp[data-st=cassette] .mp-t small{color:#555}.pk-mp[data-st=cassette] .mp-cov{width:40px;height:40px;border-radius:50%;box-shadow:0 0 0 4px #222;animation:pk-spin 3s linear infinite;animation-play-state:paused}.pk-mp.is-on[data-st=cassette] .mp-cov{animation-play-state:running}
+.pk-s-music.mp-float{position:absolute;bottom:16px;z-index:30;width:min(320px,calc(100% - 32px));margin:0;text-align:left}
+.pk-s-music.mp-float.r{right:16px}.pk-s-music.mp-float.l{left:16px}
+.pk-s-music.mp-float .pk-mp{margin:0;box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
+.pk-s-music.mp-float .pk-embed{margin:0}
 .pk-form{display:grid;gap:7px;margin-top:12px;padding:12px;border-radius:14px;background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left}
 .pk-form .tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--pk-accent)}
 .pk-form input,.pk-form textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:inherit;font-size:13px;outline:0;resize:vertical}
@@ -1398,7 +1449,8 @@ function playlistPlayer(onEvent) {
   function paint() {
     const t = cur();
     if (!t) return;
-    q(".mp-t b").textContent = t.title || "Senza titolo";
+    const tb = q(".mp-t b"), tt = t.title || "Senza titolo";
+    if (m.player && m.player.marquee) tb.replaceChildren(el("span", null, tt)); else tb.textContent = tt;
     q(".mp-t small").textContent = t.artist || (m.tracks.length > 1 ? `${order[pos] + 1} di ${m.tracks.length}` : "");
     const cov = q(".mp-cov");
     cov.style.backgroundImage = t.cover ? `url("${t.cover.replace(/"/g, "%22")}")` : "";
@@ -1419,6 +1471,13 @@ function playlistPlayer(onEvent) {
   }
   const playIcon = () => { bPlay.innerHTML = svg(audio.paused ? ICO.play : ICO.pause, 14, true); bPlay.setAttribute("aria-label", audio.paused ? "Riproduci" : "Pausa"); };
   bPlay.addEventListener("click", () => { if (!audio.getAttribute("src")) load(pos, false); audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
+  // Fade in: the volume climbs to its value in about a second and a half
+  let fadeT = 0;
+  audio.addEventListener("play", () => {
+    if (!m || !m.player.fadeIn) return;
+    const target = m.volume / 100; let v = 0; audio.volume = 0; clearInterval(fadeT);
+    fadeT = setInterval(() => { v = Math.min(target, v + target / 15); audio.volume = v; if (v >= target) clearInterval(fadeT); }, 100);
+  });
   bNext.addEventListener("click", () => next(true));
   bPrev.addEventListener("click", () => { if (audio.currentTime > 3) audio.currentTime = 0; else load((pos - 1 + order.length) % order.length, !audio.paused); });
   bShuffle.addEventListener("click", () => { m.shuffle = !m.shuffle; makeOrder(order[pos]); paint(); });
@@ -1485,13 +1544,20 @@ function playlistPlayer(onEvent) {
       const sameList = m && JSON.stringify(m.tracks.map(t => t.url)) === JSON.stringify(nm.tracks.map(t => t.url));
       const keep = m ? order[pos] : 0;
       m = structuredClone(nm);
+      const P = m.player, ds = node.dataset;
+      ds.st = P.style; ds.sz = P.size; ds.cov = P.cover; ds.bar = P.bar; ds.mq = P.marquee ? "1" : "0";
+      ["Cover", "Title", "Time", "Bar", "Skip", "Volume", "List"].forEach(k => { ds["h" + k.toLowerCase()] = P["show" + k] ? "0" : "1"; });
+      node.style.setProperty("--mp-r", P.radius + "px");
+      node.style.setProperty("--mp-bga", (P.bg / 100).toFixed(2));
+      if (P.color) node.style.setProperty("--mp-acc", P.color); else node.style.removeProperty("--mp-acc");
       audio.volume = m.volume / 100;
       vol.value = m.volume;
       if (!sameList) { makeOrder(null); pos = 0; load(0, false); }
       else { makeOrder(keep); lrc = m.lyrics ? parseLrc(cur().lrc) : []; lrcIdx = -1; paint(); }
       requestAnimationFrame(loop);
     },
-    stop() { cancelAnimationFrame(raf); audio.pause(); }
+    stop() { cancelAnimationFrame(raf); audio.pause(); },
+    playing: () => !audio.paused
   };
 }
 
@@ -1923,8 +1989,29 @@ export function mountProfile(root, input, opts = {}) {
       st.audio = pl.audio;
       node.style.display = m.showPlayer ? "" : "none";
       music.push(node);
+      // the record / cassette turns only while playing
+      if (!pl.audio.__on) { pl.audio.__on = 1; pl.audio.addEventListener("play", () => node.classList.add("is-on")); pl.audio.addEventListener("pause", () => node.classList.remove("is-on")); }
     } else st.audio = null;
     fill("music", music);
+    // Where the music sits: moved inside the card, or floating in a corner of the page
+    {
+      const ms = slot.music, where = m.pos;
+      ms.classList.toggle("mp-float", where.startsWith("float"));
+      ms.classList.toggle("r", where === "float-r"); ms.classList.toggle("l", where === "float-l");
+      const ref = { top: slot.banner.nextSibling, name: slot.badges, bio: slot.meta, bottom: null }[where];
+      if (where.startsWith("float")) { if (ms.parentNode !== root) root.appendChild(ms); }
+      else if (where === "bottom") { if (ms.parentNode !== card || card.lastChild !== ms) card.appendChild(ms); }
+      else if (ref && ref !== ms && ms.nextSibling !== ref) card.insertBefore(ms, ref);
+    }
+    // Starts by itself: right away if the browser lets it, otherwise at the first touch, click, key or scroll
+    if (!opts.preview && m.type === "audio" && m.autoplay && st.audio && !st.autoArmed && (!a.enter.on || st.entered)) {
+      st.autoArmed = true;
+      const au = st.audio;
+      const go = () => { off(); if (au.paused) au.play().catch(() => {}); };
+      const evs = ["pointerdown", "keydown", "touchstart", "wheel"];
+      const off = () => evs.forEach(e => removeEventListener(e, go, true));
+      au.play().then(off).catch(() => evs.forEach(e => addEventListener(e, go, { capture: true, passive: true })));
+    }
 
     const embeds = [];
     if (a.widgets.spotify && spotifyEmbed(a.widgets.spotify)) embeds.push(keyedNode("spw:" + a.widgets.spotify, () => embed(spotifyEmbed(a.widgets.spotify), "Spotify")));

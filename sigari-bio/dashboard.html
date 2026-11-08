@@ -1010,7 +1010,6 @@
         <div class="toggle-grid">
           <div class="toggle-row"><span>Icone monocromatiche<small>Tutte le icone social dello stesso colore.</small></span><label class="ios"><input class="sr-only" type="checkbox" id="monoIcons"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Titolo animato</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.title.animated"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Mostra il player</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Nome in maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.font.upper"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
@@ -1286,7 +1285,13 @@
 
     <section class="view hidden" id="view-music">
       <h2>Musica</h2>
-      <p class="desc">Spotify, un tuo file audio, SoundCloud o YouTube. Più Last.fm per mostrare cosa stai ascoltando.</p>
+      <p class="desc">Cerca una canzone o carica i tuoi file, scegli dove sta e come appare il player. Più Last.fm per mostrare cosa stai ascoltando.</p>
+      <div class="card" style="margin-top:12px">
+        <div class="field"><div class="label">dove sta sul profilo</div><div class="seg seg-wrap" data-seg="appearance.music.pos" data-o="musicPos"></div></div>
+        <div class="toggle-row"><span>Parte da sola<small>Appena si apre il profilo; se il browser la blocca, parte al primo tocco o scroll del visitatore. Con "clicca per entrare" parte sempre subito.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="toggle-row"><span>Mostra il player<small>Spento: la musica suona lo stesso ma il player non si vede.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
+        <p class="hint">Partire da sola e nascondere il player funziona con i tuoi file audio (sorgente "File audio"). Spotify, Deezer, SoundCloud e YouTube non lo permettono: i loro player vanno toccati.</p>
+      </div>
       <div class="card ms-card" style="margin-top:12px">
         <div class="label">cerca una canzone</div>
         <div class="search-field ms-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="msQuery" type="search" placeholder="Titolo o artista, es. nettspend" autocomplete="off" maxlength="80"></div>
@@ -1307,13 +1312,36 @@
           <p class="hint">Nei tre puntini di ogni brano: copertina e testo sincronizzato (formato LRC). "Cerca il testo" lo prende da LRCLIB, se c'è.</p>
         </div>
         <div class="field-grid" data-when="appearance.music.type=audio">
-          <div class="field"><div class="label">volume <span class="val" data-show="appearance.music.volume" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.music.volume"></div>
           <div class="field"><div class="label">ripeti</div><div class="seg" data-seg="appearance.music.loop" data-o="loop"></div></div>
-          <div class="field"><div class="label">visualizzatore</div><div class="seg" data-seg="appearance.music.visualizer" data-o="viz"></div></div>
           <div class="toggle-row"><span>Ordine casuale</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.shuffle"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Parte quando entrano<small>Richiede "clicca per entrare".</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
-          <div class="toggle-row"><span>Copertina sfocata dietro il player</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.blurCover"><span class="track"><span class="knob"></span></span></label></div>
+        </div>
+      </div>
+      <div class="label section-label" data-when="appearance.music.type=audio">il player</div>
+      <div class="card" data-when="appearance.music.type=audio">
+        <div class="field"><div class="label">stile</div><div class="seg seg-wrap" data-seg="appearance.music.player.style" data-o="playerStyle"></div></div>
+        <div class="field-grid">
+          <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.music.player.size" data-o="playerSize"></div></div>
+          <div class="field"><div class="label">copertina</div><div class="seg" data-seg="appearance.music.player.cover" data-o="playerCover"></div></div>
+          <div class="field"><div class="label">barra</div><div class="seg" data-seg="appearance.music.player.bar" data-o="playerBar"></div></div>
+          <div class="field"><div class="label">visualizzatore</div><div class="seg" data-seg="appearance.music.visualizer" data-o="viz"></div></div>
+          <div class="field"><div class="label">colore</div><div class="hex-row"><input type="color" data-k="appearance.music.player.color"><button class="ghost-btn sm" type="button" id="playerColorAuto">Usa l'accento</button></div></div>
+          <div class="field"><div class="label">sfondo <span class="val" data-show="appearance.music.player.bg" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.music.player.bg"></div>
+          <div class="field"><div class="label">angoli <span class="val" data-show="appearance.music.player.radius" data-unit="px"></span></div><input type="range" min="0" max="32" data-k="appearance.music.player.radius"></div>
+          <div class="field"><div class="label">volume <span class="val" data-show="appearance.music.volume" data-unit="%"></span></div><input type="range" min="0" max="100" data-k="appearance.music.volume"></div>
+        </div>
+        <div class="label" style="margin-top:14px">cosa si vede</div>
+        <div class="field-grid">
+          <div class="toggle-row"><span>Copertina</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showCover"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Titolo e artista</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showTitle"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Barra di avanzamento</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showBar"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Minuti</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showTime"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Avanti, indietro, casuale, ripeti</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showSkip"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Volume</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showVolume"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Lista dei brani</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.showList"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Copertina sfocata dietro</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.blurCover"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Testo sincronizzato</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.lyrics"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Titolo che scorre</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.marquee"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Entra piano (volume che sale)</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.fadeIn"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
       <div class="label section-label">last.fm</div>
@@ -1702,7 +1730,7 @@
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
-    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS
+    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS, MUSIC_POS, PLAYER_STYLES
   } from "./profile-kit.js";
   import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, ensureOpenKeyframes, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
@@ -1789,13 +1817,13 @@
     ["profilo", [
       ["customize", "Personalizza", '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "inizia qui"],
       ["links", "Link", '<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'],
+      ["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
       ["templates", "Template", '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/>', "40"],
       ["card", "Carta", '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/>', "nuovo"],
       ["photos", "Foto", '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>', "18k"]]],
     ["avanzate", [
       ["layout", "Layout", '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
       ["effects", "Font ed effetti", '<path d="M4 4l7 17 2.5-7.5L21 11z"/>'],
-      ["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
       ["widgets", "Widget", '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'],
       ["page", "Il tuo link", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>']]],
     ["community", [
@@ -2054,6 +2082,10 @@
     cPos: [["center", "Al centro"], ["top", "In alto"]],
     cardOpen: CARD_OPEN, cardSpeed: [[0.6, "Lenta"], [1, "Normale"], [1.6, "Veloce"]],
     lnFormat: [["/", "/nome"], ["/@", "/@nome"]],
+    musicPos: MUSIC_POS, playerStyle: PLAYER_STYLES,
+    playerSize: [["s", "Piccolo"], ["m", "Medio"], ["l", "Grande"]],
+    playerCover: [["square", "Quadrata"], ["round", "Tonda"], ["vinyl", "Disco che gira"], ["none", "Nessuna"]],
+    playerBar: [["line", "Linea"], ["thick", "Spessa"], ["dots", "Puntini"], ["none", "Nessuna"]],
     cShadow: [["none", "Nessuna"], ["soft", "Morbida"], ["strong", "Forte"], ["glow", "Luce"]],
     avShape: [["circle", "Cerchio"], ["rounded", "Arrotondato"], ["square", "Quadrato"], ["hex", "Esagono"]],
     avRing: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["spin", "Rotante"]],
@@ -3100,6 +3132,7 @@
     const el = e.target, pos = el.selectionStart, v = el.value.replace(/\s+/g, "/").replace(/\/{2,}/g, "/");
     if (v !== el.value) { el.value = v; try { el.setSelectionRange(pos, pos); } catch (_) {} }
   }, true);
+  $("playerColorAuto").addEventListener("click", () => { draft.appearance.music.player.color = ""; syncControls(); changed(); });
   // Profile box: back to the automatic border colour / gradient colour
   $("borderAuto").addEventListener("click", () => { draft.appearance.card.borderColor = ""; syncControls(); changed(); });
   $("grad2Auto").addEventListener("click", () => { draft.appearance.card.grad2 = ""; syncControls(); changed(); });
