@@ -2788,7 +2788,7 @@
     $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Su Spotify non l'ho trovato: uso il player di Deezer.";
   });
 
-  /* ---------- Last.fm: real connection (api/lastfm-connect.js) ---------- */
+  /* ---------- Last.fm: real connection (api/lastfm.js?connect=1) ---------- */
   function renderLastfm() {
     const u = draft.appearance.lastfm.user;
     $("lfState").textContent = u ? `Collegato: ${u}` : "Last.fm non collegato";
@@ -2797,7 +2797,7 @@
   }
   $("lfConnect").addEventListener("click", () => {
     if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Last.fm lo stesso?")) return;
-    location.href = "/api/lastfm-connect";
+    location.href = "/api/lastfm?connect=1";
   });
   function lastfmReturn() {
     const h = new URLSearchParams((location.hash || "").slice(1));
