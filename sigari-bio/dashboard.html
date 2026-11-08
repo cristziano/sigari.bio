@@ -552,6 +552,17 @@
   .gp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin:12px 0; max-height:60vh; overflow:auto; }
   .gp-grid button { aspect-ratio:1; border:1px solid var(--b); border-radius:10px; background:var(--s3) center/cover; cursor:pointer; padding:0; }
   .gp-grid button:hover { outline:2px solid var(--fg); }
+  .open-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin-top:12px; }
+  .open-grid.sm { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .open-tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 8px 9px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--fg); font:inherit; cursor:pointer; }
+  .open-tile:hover { border-color:var(--m); }
+  .open-tile.on { border-color:var(--fg); box-shadow:0 0 0 1px var(--fg) inset; }
+  .open-tile b { font-size:12.5px; font-weight:500; }
+  .open-stage { width:100%; aspect-ratio:1.6; display:grid; place-items:center; perspective:600px; overflow:hidden; border-radius:8px; background:var(--s2); }
+  .open-mini { display:block; width:62%; aspect-ratio:1.586; border-radius:5px; background:linear-gradient(135deg,#2a2a2a,#000 55%,#4a4a4a); border:1px solid rgba(255,255,255,.35); box-shadow:0 6px 14px -6px rgba(0,0,0,.8); position:relative; }
+  .open-mini::after { content:""; position:absolute; left:10%; bottom:14%; width:40%; height:12%; border-radius:2px; background:rgba(255,255,255,.75); }
+  @media (max-width:900px) { .open-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (max-width:520px) { .open-grid { gap:6px; } .open-tile { padding:7px 5px 7px; gap:6px; } .open-tile b { font-size:11.5px; } }
   .tpl-src { display:inline-flex; gap:4px; padding:4px; margin-top:14px; border:1px solid var(--b); border-radius:12px; background:var(--s1); flex-wrap:wrap; }
   .tpl-src button { border:0; background:none; color:var(--m); border-radius:9px; padding:8px 14px; font:500 13px inherit; cursor:pointer; }
   .tpl-src button.on { background:var(--fg); color:var(--bg); }
@@ -1045,12 +1056,16 @@
         </div>
         <div class="card-box" style="margin-top:18px">
           <div class="toggle-row"><span>Mostra "la mia carta" sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="card.on"><span class="track"><span class="knob"></span></span></label></div>
-          <p class="hint">Sul profilo c'è sempre il bottone "la mia carta": chi lo tocca vede la tua carta aprirsi con l'animazione che scegli qui sotto.</p>
-          <div class="field" style="margin-top:12px"><div class="label">come si apre</div><div class="seg seg-wrap" data-seg="card.open.anim" data-o="cardOpen"></div></div>
-          <div class="field"><div class="label">velocità</div><div class="seg" data-seg="card.open.speed" data-o="cardSpeed"></div></div>
-          <button class="ghost-btn sm" id="cardTryOpen" type="button">Prova l'animazione</button>
+          <p class="hint">Sul profilo c'è sempre il bottone "mostra la mia carta": chi lo tocca vede la tua carta aprirsi con l'animazione che scegli qui sotto.</p>
           <button class="ghost-btn sm" id="cardDelete" type="button" style="margin-top:10px">Elimina la carta</button>
         </div>
+      </div>
+      <div class="label section-label">come si apre la carta</div>
+      <div class="card">
+        <p class="hint" style="margin-top:0">Quando qualcuno preme "mostra la mia carta" sul tuo profilo. Tocca un'animazione per vederla e sceglierla.</p>
+        <div class="open-grid" id="openGrid"></div>
+        <div class="field" style="margin-top:14px"><div class="label">velocità</div><div class="seg" data-seg="card.open.speed" data-o="cardSpeed"></div></div>
+        <button class="save-btn sm" id="cardTryOpen" type="button">Prova con la tua carta</button>
       </div>
     </section>
 
@@ -1689,7 +1704,7 @@
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
     BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS
   } from "./profile-kit.js";
-  import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
+  import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, ensureOpenKeyframes, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
   const $ = id => document.getElementById(id);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -1837,7 +1852,7 @@
     if (name === "analytics") renderAnalytics();
     if (name === "badges") renderBadges();
     if (name === "templates") renderTemplates();
-    if (name === "card") renderCards();
+    if (name === "card") { renderCards(); renderOpenGrids(); }
     if (name === "photos") { renderPhotos(); paintReqState(); }
     if (name === "templates") loadSlots();
     if (name === "topic") renderTopic();
@@ -2222,6 +2237,7 @@
   });
   $("csPanel").innerHTML = `<h3>La tua carta</h3><p class="hint" style="margin-bottom:10px">Ogni modifica si vede subito al centro. Ricordati di salvare.</p>`
     + C.sec("Stili pronti", `<div class="cs-presets" id="csPresets"></div><p class="hint">Cambiano colori e luci; sticker e testi restano.</p>`, true)
+    + C.sec("Come si apre sul profilo", `<div class="open-grid sm" id="csOpenGrid"></div><div class="label" style="margin-top:10px">velocità</div><div class="seg" data-seg="card.open.speed" data-o="cardSpeed"></div><button class="ghost-btn sm" type="button" id="csTryOpen" style="margin-top:10px">Prova</button>`)
     + C.sec("Sfondo", C.seg("card.bg.type", "cardBg")
       + `<div data-when="card.bg.type=color">${C.col("Colore", "card.bg.color")}</div>`
       + `<div data-when="card.bg.type=gradient" class="cs-body" style="padding:0">${C.seg("card.bg.kind", "gradKind")}<div class="label">colori del gradiente</div><div class="cs-stops" id="csStops"></div>${C.rng("angolo", "card.bg.angle", 0, 360, "°")}</div>`
@@ -2360,7 +2376,7 @@
     if (!draft.card) { draft.card = normalizeCard({}); changed(); }
     draft.card = normalizeCard(draft.card);
     $("cardStudio").classList.remove("hidden");
-    renderCardStops(); syncControls(); renderStickerUI(); renderCards();
+    renderCardStops(); syncControls(); renderStickerUI(); renderCards(); renderOpenGrids();
     $("csExit").focus();
   }
   function closeStudio() {
@@ -2409,10 +2425,34 @@
     import("./card-kit.js").then(m => m.openCardViewer(draft.card, cardInfo()));
   });
   addEventListener("keydown", e => { if (e.key === "Escape") $$(".fake-full").forEach(n => n.classList.remove("fake-full")); });
-  $("cardTryOpen").addEventListener("click", () => {
-    if (!draft.card) return;
+  /* ---------- How the card opens: 10 animations, each tile plays its own ---------- */
+  function renderOpenGrids() {
+    const cur = (draft.card && draft.card.open && draft.card.open.anim) || "flip";
+    ["openGrid", "csOpenGrid"].forEach(id => {
+      const g = $(id); if (!g) return;
+      if (!g.childElementCount) g.innerHTML = CARD_OPEN.map(([v, l]) => `<button type="button" class="open-tile" data-anim="${v}"><span class="open-stage"><i class="open-mini"></i></span><b>${l}</b></button>`).join("");
+      $$(".open-tile", g).forEach(b => b.classList.toggle("on", b.dataset.anim === cur));
+    });
+  }
+  function playTile(b) {
+    ensureOpenKeyframes();
+    const mini = b.querySelector(".open-mini"), sp = +((draft.card && draft.card.open && draft.card.open.speed) || 1);
+    const ms = Math.round((["drop", "swing"].includes(b.dataset.anim) ? 1100 : 800) / sp);
+    mini.style.animation = "none"; void mini.offsetWidth;
+    mini.style.animation = `k4o-${b.dataset.anim} ${ms}ms cubic-bezier(.2,.8,.2,1) both`;
+  }
+  ["openGrid", "csOpenGrid"].forEach(id => $(id).addEventListener("click", e => {
+    const b = e.target.closest(".open-tile"); if (!b) return;
+    if (!draft.card) draft.card = normalizeCard({});
+    draft.card.open = { ...(draft.card.open || { speed: 1 }), anim: b.dataset.anim };
+    changed(); syncControls(); renderOpenGrids(); renderCards(); playTile(b);
+  }));
+  const tryOpen = () => {
+    if (!draft.card) { draft.card = normalizeCard({}); changed(); syncControls(); renderCards(); }
     import("./card-kit.js").then(m => m.openCardViewer(draft.card, cardInfo()));
-  });
+  };
+  $("cardTryOpen").addEventListener("click", tryOpen);
+  $("csTryOpen").addEventListener("click", tryOpen);
 
 
   /* =========================================================

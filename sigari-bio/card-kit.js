@@ -485,6 +485,12 @@ export async function makeSticker(file, { removeBg = true, tolerance = 42, max =
 }
 
 /* ---------- Full screen card viewer (profile button) ---------- */
+export function ensureOpenKeyframes() {
+  if (document.getElementById("k4-in")) return;
+  const st = document.createElement("style"); st.id = "k4-in";
+  st.textContent = "@keyframes k4in{from{opacity:0}to{opacity:1}}" + Object.entries(OPEN_KF).map(([k, v]) => `@keyframes k4o-${k}{${v}}`).join("");
+  document.head.appendChild(st);
+}
 export function openCardViewer(card, data, opts = {}) {
   ensureCss();
   const c = normalizeCard(card);
@@ -498,11 +504,7 @@ export function openCardViewer(card, data, opts = {}) {
   const close = h("button"); close.type = "button"; close.textContent = "chiudi";
   close.style.cssText = "position:absolute;top:16px;right:16px;border:1px solid rgba(255,255,255,.3);background:#000;color:#fff;border-radius:999px;padding:8px 14px;font:500 13px system-ui;cursor:pointer";
   ov.append(box, close);
-  if (!document.getElementById("k4-in")) {
-    const st = h("style"); st.id = "k4-in";
-    st.textContent = "@keyframes k4in{from{opacity:0}to{opacity:1}}" + Object.entries(OPEN_KF).map(([k, v]) => `@keyframes k4o-${k}{${v}}`).join("");
-    document.head.appendChild(st);
-  }
+  ensureOpenKeyframes();
   // In full screen only that element is visible: the card opens inside it
   (document.fullscreenElement || document.webkitFullscreenElement || document.body).appendChild(ov);
   const m = mountCard(box, c, data, {});
