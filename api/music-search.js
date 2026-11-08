@@ -2,7 +2,8 @@
 //   GET /api/music-search?q=<text>       -> up to 12 songs { id, title, artist, cover, deezer, spotify? }
 //   GET /api/music-search?resolve=<id>   -> { spotify } the same song on Spotify, when it exists
 // With SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in Vercel it searches Spotify directly.
-// Without them it searches Deezer (free, no key) and finds the Spotify link through song.link.
+// Without them it searches Deezer (free, no key) and the profile uses the Deezer player.
+// (?resolve= asks song.link for the Spotify link; song.link now wants a key, so the dashboard doesn't use it.)
 let spToken = null;
 async function spotifyToken() {
   const id = process.env.SPOTIFY_CLIENT_ID, secret = process.env.SPOTIFY_CLIENT_SECRET;

@@ -1277,7 +1277,7 @@
         <div class="search-field ms-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="msQuery" type="search" placeholder="Titolo o artista, es. nettspend" autocomplete="off" maxlength="80"></div>
         <div class="ms-now hidden" id="msNow"></div>
         <div class="ms-list" id="msList"></div>
-        <p class="hint" id="msNote">Scrivi e scegli: il brano finisce sul profilo con il player di Spotify.</p>
+        <p class="hint" id="msNote">Scrivi e scegli: il brano finisce sul profilo con il suo player.</p>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="field"><div class="label">oppure scegli la sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
@@ -2761,7 +2761,7 @@
   $("msQuery").addEventListener("input", () => {
     clearTimeout(msTimer);
     const q = $("msQuery").value.trim();
-    if (q.length < 2) { $("msList").replaceChildren(); $("msNote").textContent = "Scrivi e scegli: il brano finisce sul profilo con il player di Spotify."; return; }
+    if (q.length < 2) { $("msList").replaceChildren(); $("msNote").textContent = "Scrivi e scegli: il brano finisce sul profilo con il suo player."; return; }
     msTimer = setTimeout(async () => {
       const seq = ++msSeq;
       $("msNote").textContent = "Cerco…";
@@ -2780,12 +2780,11 @@
     const b = e.target.closest(".ms-it"); if (!b) return;
     const s = $("msList").items[+b.dataset.i];
     b.querySelector("em").textContent = "un attimo…";
-    let sp = s.spotify;
-    if (!sp && s.id) { try { sp = (await (await fetch("/api/music-search?resolve=" + encodeURIComponent(s.id))).json()).spotify || ""; } catch (_) { sp = ""; } }
+    const sp = s.spotify;
     Object.assign(draft.appearance.music, sp ? { type: "spotify", url: sp } : { type: "deezer", url: s.deezer }, { title: `${s.title} — ${s.artist}`, cover: s.cover, showPlayer: true });
     changed(); syncControls(); renderMsNow();
     $("msList").replaceChildren(); $("msQuery").value = "";
-    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Su Spotify non l'ho trovato: uso il player di Deezer.";
+    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Fatto: sul profilo c'è il player di Deezer.";
   });
 
   /* ---------- Last.fm: real connection (api/lastfm.js?connect=1) ---------- */
