@@ -1626,10 +1626,10 @@ export function mountProfile(root, input, opts = {}) {
     root.classList.add("pk-pick");
     const partOf = t => {
       if (!t || t.closest(".pk-enter")) return null;
-      if (t.closest("button, input, textarea, select, audio, video, iframe, label") && !t.closest(".pk-cardbtn")) return null;
+      // buttons work as on the real page (the card button opens the card, also in the dashboard preview)
+      if (t.closest("button, input, textarea, select, audio, video, iframe, label")) return null;
       const av = t.closest(".pk-av"); if (av) return ["avatar", av];
       const nm = t.closest(".pk-name"); if (nm) return ["name", nm];
-      const cb = t.closest(".pk-cardbtn"); if (cb) return ["card", cb];
       const sl = t.closest(".pk-s"); if (sl) return [[...sl.classList].find(c => c.startsWith("pk-s-")).slice(5), sl];
       if (t.closest(".pk-card")) return ["box", card];
       return ["bg", null];
@@ -1996,7 +1996,7 @@ export function mountProfile(root, input, opts = {}) {
       tagNodes.push(keyedNode("cardbtn", () => {
         const b = el("button", "pk-cardbtn");
         b.type = "button"; b.setAttribute("aria-label", "Apri la carta");
-        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>la mia carta</span>';
+        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>mostra la mia carta</span>';
         b.addEventListener("click", () => {
           const cur = st.last;
           import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }));
