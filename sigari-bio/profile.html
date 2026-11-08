@@ -18,6 +18,8 @@
   html, body { height:100%; background:#000; color:#fff; font-family:"Geist",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
   #root { position:fixed; inset:0; }
   .msg[hidden] { display:none; }
+  .own-bar { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:2147482000; display:flex; align-items:center; gap:12px; padding:8px 8px 8px 16px; border-radius:999px; background:rgba(0,0,0,.78); border:1px solid rgba(255,255,255,.18); color:#fff; font:500 13px system-ui,sans-serif; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); max-width:calc(100vw - 24px); }
+  .own-bar a { padding:7px 14px; border-radius:999px; background:#fff; color:#000; text-decoration:none; font-weight:600; flex:none; }
   .msg { position:fixed; inset:0; display:grid; place-items:center; text-align:center; padding:24px; }
   .msg h1 { font-size:clamp(34px, 7vw, 64px); letter-spacing:-.05em; line-height:1; }
   .msg p { margin-top:14px; color:#8f8f8f; font-size:15px; }
@@ -131,11 +133,33 @@
     }
     const { F, db } = lite;
     const ref = F.doc(db, "profiles", handle);
+    // Who is looking (only loaded when needed): the owner sees their own profile even when it is not public
+    let authP = null;
+    const currentUser = () => authP || (authP = import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js").then(A => new Promise(res => {
+      const auth = A.getAuth(lite.app);
+      const off = A.onAuthStateChanged(auth, u => { off(); res(u); });
+    })));
+    const ownerDraft = async () => {
+      try {
+        const u = await currentUser();
+        if (!u) return null;
+        const me = await F.getDoc(F.doc(db, "users", u.uid));
+        return me.exists() && me.data().handle === handle ? me.data() : null;
+      } catch (_) { return null; }
+    };
+    let preview = false;
     let snap;
     try { snap = await F.getDoc(ref); }
     catch (_) { return show("Non riesco a caricare", "Il profilo non è raggiungibile adesso. Riprova tra poco."); }
 
-    if (!snap.exists()) {
+    let data = snap.exists() ? snap.data() : null;
+    // Not public (never published, draft, disabled, private): its owner still sees a preview
+    if (!data || data.draft || data.disabled || data.private) {
+      const own = await ownerDraft();
+      if (own) { data = { ...own, views: data && data.views || 0, likes: data && data.likes || 0, badges: data && data.badges || [] }; preview = true; }
+    }
+
+    if (!data) {
       // Not published yet, or an extra name that points to another profile
       let taken = false;
       try {
@@ -148,10 +172,9 @@
         ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"])
         : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
     }
-    const data = snap.data();
-    if (data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18k.bio", "/"]);
-    if (data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"]);
-    if (data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 18k.bio", "/"]);
+    if (!preview && data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18k.bio", "/"]);
+    if (!preview && data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"]);
+    if (!preview && data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 18k.bio", "/"]);
 
     msg.hidden = true;
     const p = normalizeProfile({ ...data, handle });
@@ -183,11 +206,6 @@
     };
 
     // Contact form, newsletter and guestbook write to the owner's inbox
-    let authP = null;
-    const currentUser = () => authP || (authP = import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js").then(A => new Promise(res => {
-      const auth = A.getAuth(lite.app);
-      const off = A.onAuthStateChanged(auth, u => { off(); res(u); });
-    })));
     const actions = {
       contact: d => F.addDoc(F.collection(db, "inbox", handle, "messages"), { name: d.name.slice(0, 60), contact: d.contact.slice(0, 120), text: d.text.slice(0, 1000), createdAt: F.serverTimestamp() }),
       subscribe: email => F.setDoc(F.doc(db, "inbox", handle, "subscribers", email), { email, createdAt: F.serverTimestamp() }),
@@ -205,6 +223,15 @@
         }
       }
     };
+    if (preview) {
+      // Only the owner sees this: no counters, no likes, a bar that says it is not online
+      mountProfile(document.getElementById("root"), p, { preview: false, onEvent: () => {}, actions: {} });
+      const bar = document.createElement("div");
+      bar.className = "own-bar";
+      bar.innerHTML = `<span><b>Anteprima</b> · solo tu la vedi, il profilo non è online</span><a href="/dashboard.html#publish">Pubblica</a>`;
+      document.body.appendChild(bar);
+      return;
+    }
     mountProfile(document.getElementById("root"), p, { preview: false, onEvent, actions });
     // Like: one per account, the count is on the public document
     const lb = document.getElementById("likeBtn"), ln = document.getElementById("likeN"), tip = document.getElementById("likeTip");
