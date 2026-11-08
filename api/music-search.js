@@ -31,8 +31,10 @@ module.exports = async (req, res) => {
       const r = await fetch(`https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent("https://www.deezer.com/track/" + resolve)}&userCountry=IT`, { signal: AbortSignal.timeout(7000) });
       const j = await r.json().catch(() => ({}));
       const sp = j.linksByPlatform && j.linksByPlatform.spotify && j.linksByPlatform.spotify.url;
-      res.setHeader("Cache-Control", "public, s-maxage=86400");
-      return res.end(JSON.stringify({ spotify: sp && /^https:\/\/open\.spotify\.com\//.test(sp) ? sp : "" }));
+      const ok = sp && /^https:\/\/open\.spotify\.com\//.test(sp);
+      // only a found link is kept in the cache; a miss is asked again next time
+      res.setHeader("Cache-Control", ok ? "public, s-maxage=86400" : "no-store");
+      return res.end(JSON.stringify({ spotify: ok ? sp : "", status: r.status }));
     }
     if (q.length < 2) return fail(400, "Scrivi almeno 2 lettere.");
     const tok = await spotifyToken().catch(() => null);
