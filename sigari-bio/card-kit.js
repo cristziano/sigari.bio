@@ -503,7 +503,8 @@ export function openCardViewer(card, data, opts = {}) {
     st.textContent = "@keyframes k4in{from{opacity:0}to{opacity:1}}" + Object.entries(OPEN_KF).map(([k, v]) => `@keyframes k4o-${k}{${v}}`).join("");
     document.head.appendChild(st);
   }
-  document.body.appendChild(ov);
+  // In full screen only that element is visible: the card opens inside it
+  (document.fullscreenElement || document.webkitFullscreenElement || document.body).appendChild(ov);
   const m = mountCard(box, c, data, {});
   const done = () => { m.destroy(); ov.remove(); removeEventListener("keydown", key); };
   const key = e => { if (e.key === "Escape") done(); };
