@@ -82,8 +82,10 @@
   }
 
   /* ---------- Foto (18k Discord) ---------- */
-  .ph-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-top:20px; }
-  .ph-tabs button { border:1px solid var(--b); background:none; border-radius:999px; padding:7px 14px; cursor:pointer; font:500 13px inherit; color:var(--m); }
+  .ph-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+  .ph-tabs button { border:1px solid transparent; background:none; border-radius:999px; padding:4px 10px; cursor:pointer; font:500 12px "Geist Mono",monospace; color:var(--d); }
+  .ph-tabs button:first-child { font:600 13px inherit; color:var(--m); padding:6px 14px; border-color:var(--b); margin-right:6px; }
+  .ph-tabs button:not(:first-child)::before { content:"#"; opacity:.6; }
   .ph-tabs button.on { background:var(--fg); color:var(--bg); border-color:var(--fg); }
   .ph-note { margin:14px 0 4px; font:400 12px "Geist Mono",monospace; color:var(--d); }
   .ph-grid { columns:3 180px; column-gap:10px; }
@@ -113,6 +115,23 @@
   .logo span { color:#666; }
   .nav-group { margin-bottom:4px; }
   .nav-top { margin-bottom:10px; }
+  .soontag { margin-left:auto; position:relative; font:600 9.5px "Geist Mono",monospace; letter-spacing:.12em; color:var(--d); padding:2px 6px; border:1px dashed var(--b); border-radius:6px; }
+  #nav button:has(.soontag) > span:not(.soontag), #nav button:has(.soontag) svg { opacity:.45; }
+  .view.soon { position:relative; }
+  .view.soon > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
+  .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 16px; margin-bottom:-120px; text-align:center; pointer-events:none; }
+  .soon-veil span { font-size:13px; color:var(--m); }
+  .glitch { position:relative; display:inline-block; font:800 clamp(30px,6vw,56px)/1 "Geist Mono",monospace; letter-spacing:-.02em; color:var(--fg); }
+  .glitch::before, .glitch::after { content:attr(data-text); position:absolute; inset:0; overflow:hidden; }
+  .glitch::before { color:#ff2a6d; animation:gl1 2.6s infinite steps(1,end); mix-blend-mode:screen; }
+  .glitch::after { color:#05d9e8; animation:gl2 2.1s infinite steps(1,end); mix-blend-mode:screen; }
+  @keyframes gl1 { 0%,100%{clip-path:inset(0 0 100% 0);transform:none} 8%{clip-path:inset(10% 0 60% 0);transform:translate(-4px,1px)} 12%{clip-path:inset(55% 0 20% 0);transform:translate(3px,-1px)} 16%{clip-path:inset(0 0 100% 0)} 54%{clip-path:inset(30% 0 45% 0);transform:translate(-3px,0)} 58%{clip-path:inset(0 0 100% 0)} }
+  @keyframes gl2 { 0%,100%{clip-path:inset(100% 0 0 0);transform:none} 20%{clip-path:inset(70% 0 5% 0);transform:translate(4px,0)} 24%{clip-path:inset(20% 0 65% 0);transform:translate(-3px,1px)} 28%{clip-path:inset(100% 0 0 0)} 76%{clip-path:inset(40% 0 40% 0);transform:translate(2px,-1px)} 80%{clip-path:inset(100% 0 0 0)} }
+  .soontag::after { content:""; }
+  #nav button:hover .soontag { animation:gl3 .4s steps(2,end) 2; }
+  @keyframes gl3 { 50% { transform:translate(-1px,1px) skewX(-8deg); color:#ff2a6d; } }
+  @media (prefers-reduced-motion:reduce) { .glitch::before, .glitch::after { animation:none; } }
+  .gc-quiet .label, .gc-quiet input { opacity:.8; }
   .nav-group summary { list-style:none; display:flex; align-items:center; justify-content:space-between; padding:8px 12px; font:500 11px "Geist Mono",monospace; letter-spacing:.06em; text-transform:lowercase; color:var(--d); cursor:pointer; user-select:none; border-radius:8px; }
   .nav-group summary::-webkit-details-marker { display:none; }
   .nav-group summary:hover { color:var(--fg); }
@@ -497,6 +516,45 @@
   .badge-row .bs { font:500 11px "Geist Mono",monospace; color:var(--d); }
   .badge-row.own .bs { color:var(--fg); }
   /* Templates */
+  .ms-search { max-width:none; margin-top:6px; }
+  .ms-list { display:grid; gap:6px; margin-top:10px; }
+  .ms-it { display:flex; align-items:center; gap:12px; padding:8px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--fg); text-align:left; font:inherit; cursor:pointer; }
+  .ms-it:hover { border-color:var(--fg); }
+  .ms-it img, .ms-now img { width:44px; height:44px; border-radius:8px; object-fit:cover; flex:none; background:var(--s3); }
+  .ms-it b, .ms-now b { display:block; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ms-it span, .ms-now span { font-size:12.5px; color:var(--m); }
+  .ms-it > div, .ms-now > div { flex:1; min-width:0; }
+  .ms-it em { font-style:normal; font-size:12px; color:var(--d); }
+  .ms-now { display:flex; align-items:center; gap:12px; margin-top:12px; padding:10px; border-radius:12px; background:var(--s2); border:1px solid var(--b); }
+  .ms-now .kick { display:block; font:500 10.5px "Geist Mono",monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--d); }
+  .lf-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .lf-logo { width:44px; height:44px; border-radius:12px; background:#d51007; color:#fff; display:grid; place-items:center; font:800 17px/1 "Geist",sans-serif; letter-spacing:-.04em; flex:none; }
+  .lf-txt { flex:1; min-width:200px; } .lf-txt b { display:block; font-size:15px; } .lf-txt span { font-size:12.5px; color:var(--m); }
+  .wp-list { display:grid; gap:8px; margin-top:10px; }
+  .wp-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px; border:1px solid var(--b); border-radius:12px; }
+  .wp-row .wp-pic { width:36px; height:36px; border-radius:9px; background:var(--s3) center/cover; flex:none; }
+  .wp-row b { flex:1; min-width:110px; font-size:13.5px; font-weight:500; }
+  .wp-empty { font-size:13px; color:var(--d); }
+  .ln-big { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 16px; border-radius:14px; background:var(--bg); border:1px solid var(--b); margin-bottom:14px; }
+  .ln-big span { flex:1; min-width:0; font:600 clamp(17px,2.4vw,22px) "Geist Mono",monospace; letter-spacing:-.02em; overflow-wrap:anywhere; }
+  .ln-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .ln-chips button { border:1px solid var(--b); background:var(--s1); color:var(--fg); border-radius:10px; padding:7px 11px; font:500 13px "Geist Mono",monospace; cursor:pointer; display:flex; gap:6px; align-items:baseline; }
+  .ln-chips button small { font:500 10.5px "Geist",sans-serif; color:var(--d); }
+  .ln-chips button.on { background:var(--fg); color:var(--bg); border-color:var(--fg); } .ln-chips button.on small { color:var(--bg); opacity:.7; }
+  .ln-split { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; align-items:start; }
+  .ln-embed { border-left:4px solid var(--ln-acc,#fff); background:#2b2d31; color:#dbdee1; border-radius:6px; padding:12px 14px; font:14px/1.35 "Geist",system-ui,sans-serif; }
+  .ln-embed .ln-site { font-size:12px; color:#b5bac1; } .ln-embed b { display:block; color:#00a8fc; margin:4px 0; font-size:15px; }
+  .ln-embed p { margin:0; font-size:13.5px; color:#dbdee1; }
+  .ln-img { margin-top:10px; border-radius:6px; aspect-ratio:1.91; background:#1e1f22 center/cover; }
+  @media (max-width:900px) { .ln-split { grid-template-columns:1fr; } }
+  .gp-dlg { border:1px solid var(--b); border-radius:18px; background:var(--s1); color:var(--fg); padding:18px; width:min(640px,92vw); }
+  .gp-dlg::backdrop { background:rgba(0,0,0,.6); }
+  .gp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin:12px 0; max-height:60vh; overflow:auto; }
+  .gp-grid button { aspect-ratio:1; border:1px solid var(--b); border-radius:10px; background:var(--s3) center/cover; cursor:pointer; padding:0; }
+  .gp-grid button:hover { outline:2px solid var(--fg); }
+  .tpl-src { display:inline-flex; gap:4px; padding:4px; margin-top:14px; border:1px solid var(--b); border-radius:12px; background:var(--s1); flex-wrap:wrap; }
+  .tpl-src button { border:0; background:none; color:var(--m); border-radius:9px; padding:8px 14px; font:500 13px inherit; cursor:pointer; }
+  .tpl-src button.on { background:var(--fg); color:var(--bg); }
   .tag-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; max-width:820px; }
   .tag-chips button { border:1px solid var(--b); background:var(--s1); color:var(--m); border-radius:999px; padding:5px 11px; font-size:12px; cursor:pointer; }
   .tag-chips button.on { background:var(--inv-bg); color:var(--inv-fg); border-color:var(--inv-bg); }
@@ -721,7 +779,7 @@
       </a>
       <div class="acc-grid">
         <div class="acc-card"><span class="acc-k">nome utente</span><b class="acc-v" id="ovHandle">@tuonome</b><button type="button" class="acc-go" data-go="settings">Gestisci</button></div>
-        <div class="acc-card"><span class="acc-k">nomi extra</span><b class="acc-v" id="ovAlias">—</b><button type="button" class="acc-go" data-go="settings#set-alias">Aggiungi</button></div>
+        <div class="acc-card"><span class="acc-k">alias</span><b class="acc-v" id="ovAlias">—</b><button type="button" class="acc-go" data-go="customize#akaInput">Modifica</button></div>
         <div class="acc-card"><span class="acc-k">visite al profilo</span><b class="acc-v" id="ovViews">—</b><span class="acc-n" id="ovViewsNote">Contate sulla pagina pubblica.</span><button type="button" class="acc-go" data-go="analytics">Statistiche</button></div>
         <div class="acc-card"><span class="acc-k">link e social</span><b class="acc-v"><span id="ovLinks">0</span> · <span id="ovSocials">0</span></b><span class="acc-n">link attivi · social collegati</span><button type="button" class="acc-go" data-go="links">Link</button></div>
       </div>
@@ -910,6 +968,7 @@
           </div>
           <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
           <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
+          <div class="gc gc-quiet"><div class="label">alias <span class="val">facoltativo</span></div><input class="text" id="akaInput" data-k="aka" maxlength="80" autocomplete="off" placeholder="nomi vecchi, es. cz/cristiano"><p class="hint">I nomi con cui ti conoscevano prima. Uno spazio diventa /. Sul profilo appaiono piccoli sotto la @.</p></div>
       
           <div class="gc"><div class="label">effetti di sfondo</div><select class="text" data-k="appearance.effect" data-opts="effects"></select></div>
           <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
@@ -955,13 +1014,19 @@
           <button type="button" class="more-go" data-go="card"><b>Carta</b><span>la carta 18k da condividere</span></button>
           <button type="button" class="more-go" data-go="badges"><b>Badge</b><span>i tuoi badge e il loro colore</span></button>
           <button type="button" class="more-go" data-go="templates"><b>Template e look</b><span>temi pronti e i tuoi look salvati</span></button>
-          <button type="button" class="more-go" data-go="page"><b>Metadati</b><span>titolo della scheda, anteprima sui social</span></button>
+          <button type="button" class="more-go" data-go="page"><b>Il tuo link</b><span>prefisso, anteprima su Discord e WhatsApp</span></button>
         </div>
       </div>
     </section>
 
 
     <!-- LINKS (guns.lol: Links) -->
+    <section class="view hidden" id="view-publish">
+      <h2>Pubblica</h2>
+      <p class="desc">Quando il profilo ti piace, lo metti online da qui. Il tasto Salva tiene le modifiche nel tuo account; se sei già online le vedono subito anche gli altri.</p>
+      <div id="publishRoot"><p class="hint" style="margin-top:22px">Carico…</p></div>
+    </section>
+
     <section class="view hidden" id="view-card">
       <h2>Carta</h2>
       <p class="desc">La tua carta d'identità di 18k.bio. Gradienti, raggi di luce, riflesso olografico, la tua foto come sfondo e le tue foto trasformate in sticker. Toccala per aprire l'editor: a sinistra tutte le opzioni, al centro solo la carta.</p>
@@ -980,7 +1045,10 @@
         </div>
         <div class="card-box" style="margin-top:18px">
           <div class="toggle-row"><span>Mostra "la mia carta" sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="card.on"><span class="track"><span class="knob"></span></span></label></div>
-          <p class="hint">Sul profilo compare un bottone: chi lo tocca vede la carta a schermo intero e la può inclinare col mouse.</p>
+          <p class="hint">Sul profilo compare la tua carta in piccolo: chi la tocca la vede aprirsi a schermo intero e la può inclinare col mouse.</p>
+          <div class="field" style="margin-top:12px"><div class="label">come si apre</div><div class="seg seg-wrap" data-seg="card.open.anim" data-o="cardOpen"></div></div>
+          <div class="field"><div class="label">velocità</div><div class="seg" data-seg="card.open.speed" data-o="cardSpeed"></div></div>
+          <button class="ghost-btn sm" id="cardTryOpen" type="button">Prova l'animazione</button>
           <button class="ghost-btn sm" id="cardDelete" type="button" style="margin-top:10px">Elimina la carta</button>
         </div>
       </div>
@@ -1003,6 +1071,7 @@
       <div class="ph-tabs" id="phTabs"></div>
       <div class="ph-note" id="phNote">Carico…</div>
       <div class="ph-grid" id="phGrid"></div>
+      <div id="phEnd" style="height:1px"></div>
       <div class="row" style="justify-content:center;margin-top:16px"><button class="ghost-btn hidden" id="phMore" type="button">Carica altre</button></div>
     </section>
 
@@ -1073,11 +1142,13 @@
       </div>
       <div class="tpl-tools" data-pane="explore">
         <div class="search-field" style="max-width:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="tplSearch" type="text" placeholder="Cerca per nome, tag o @autore" autocomplete="off"></div>
+        <div class="tpl-src" id="tplSrc"><button type="button" data-src="all" class="on">Tutti</button><button type="button" data-src="app">Generati dall'app</button><button type="button" data-src="user">Degli utenti</button></div>
         <div class="tag-chips" id="tplTagChips"></div>
-        <div class="tpl-grid" id="tplBuiltin"></div>
-        <div class="label section-label">dalla community</div>
-        <div class="tpl-grid" id="tplCommunity"></div>
-        <p class="hint" id="tplCommunityNote" style="margin-top:10px"></p>
+        <div class="label section-label" data-srcbox="app">generati dall'app</div>
+        <div class="tpl-grid" id="tplBuiltin" data-srcbox="app"></div>
+        <div class="label section-label" data-srcbox="user">degli utenti</div>
+        <div class="tpl-grid" id="tplCommunity" data-srcbox="user"></div>
+        <p class="hint" id="tplCommunityNote" data-srcbox="user" style="margin-top:10px"></p>
       </div>
       <div data-pane="fav" class="hidden"><div class="tpl-grid" id="tplFav"></div><p class="hint" id="tplFavNote" style="margin-top:10px"></p></div>
       <div data-pane="recent" class="hidden"><div class="tpl-grid" id="tplRecent"></div><p class="hint" id="tplRecentNote" style="margin-top:10px"></p></div>
@@ -1201,9 +1272,16 @@
     <section class="view hidden" id="view-music">
       <h2>Musica</h2>
       <p class="desc">Spotify, un tuo file audio, SoundCloud o YouTube. Più Last.fm per mostrare cosa stai ascoltando.</p>
+      <div class="card ms-card" style="margin-top:12px">
+        <div class="label">cerca una canzone</div>
+        <div class="search-field ms-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="msQuery" type="search" placeholder="Titolo o artista, es. nettspend" autocomplete="off" maxlength="80"></div>
+        <div class="ms-now hidden" id="msNow"></div>
+        <div class="ms-list" id="msList"></div>
+        <p class="hint" id="msNote">Scrivi e scegli: il brano finisce sul profilo con il player di Spotify.</p>
+      </div>
       <div class="card" style="margin-top:12px">
-        <div class="field"><div class="label">sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
-        <div class="field" data-when="appearance.music.type=spotify|soundcloud|youtube">
+        <div class="field"><div class="label">oppure scegli la sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
+        <div class="field" data-when="appearance.music.type=spotify|deezer|soundcloud|youtube">
           <input class="text" type="url" data-k="appearance.music.url" id="musicUrl" placeholder="link">
           <p class="hint" id="musicHint"></p>
         </div>
@@ -1224,12 +1302,15 @@
         </div>
       </div>
       <div class="label section-label">last.fm</div>
-      <div class="card">
-        <div class="field-grid">
-          <div class="field"><div class="label">nome utente last.fm</div><input class="text" data-k="appearance.lastfm.user" maxlength="30" placeholder="iltuonome"></div>
-          <div class="toggle-row"><span>Mostra cosa stai ascoltando</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.lastfm.show"><span class="track"><span class="knob"></span></span></label></div>
+      <div class="card lf-card">
+        <div class="lf-row">
+          <div class="lf-logo" aria-hidden="true">as</div>
+          <div class="lf-txt"><b id="lfState">Last.fm non collegato</b><span id="lfSub">Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.</span></div>
+          <button class="save-btn" id="lfConnect" type="button">Collega Last.fm</button>
         </div>
-        <p class="hint">Collega Spotify a Last.fm dalle impostazioni di Last.fm e ogni canzone che ascolti appare qui. Vuoi Spotify in diretta senza Last.fm? Usa il widget Discord nella sezione Widget.</p>
+        <div class="toggle-row"><span>Mostra il widget Last.fm sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.lastfm.show"><span class="track"><span class="knob"></span></span></label></div>
+        <details class="quiet-box"><summary>Scrivi il nome a mano <span>se non vuoi collegare</span></summary><input class="text" data-k="appearance.lastfm.user" maxlength="30" placeholder="nome utente last.fm"></details>
+        <p class="hint">Ascolti con Spotify? In Last.fm, Impostazioni, Applicazioni, collega Spotify: ogni canzone che ascolti appare da sola.</p>
       </div>
     </section>
 
@@ -1266,6 +1347,23 @@
           </div>
         </div>
       </div>
+      <div class="label section-label">widget veloci</div>
+      <div class="card">
+        <div class="field-grid">
+          <div class="field"><div class="label">meteo</div><input class="text" data-k="appearance.widgets.weather" maxlength="40" placeholder="la tua città, es. Milano"></div>
+          <div class="field"><div class="label">stato di adesso</div><input class="text" data-k="appearance.widgets.mood" maxlength="60" placeholder="es. 🎧 in studio fino a tardi"></div>
+          <div class="field"><div class="label">conto alla rovescia</div><input class="text" type="datetime-local" data-k="appearance.widgets.countdown.date"></div>
+          <div class="field"><div class="label">per cosa</div><input class="text" data-k="appearance.widgets.countdown.label" maxlength="40" placeholder="es. nuovo singolo"></div>
+          <div class="field span-2"><div class="label">nota</div><textarea class="text" data-k="appearance.widgets.note" maxlength="200" rows="2" placeholder="Un pensiero, un annuncio, una citazione"></textarea></div>
+        </div>
+        <p class="hint">Si aggiornano da soli: il meteo ogni quarto d'ora, il conto alla rovescia ogni secondo.</p>
+      </div>
+      <div class="label section-label">foto dei widget</div>
+      <div class="card">
+        <p class="hint" style="margin-top:0">Ogni widget ha la sua foto (il tuo avatar GitHub, l'icona del server…). Puoi cambiarla con una tua o toglierla.</p>
+        <div class="wp-list" id="wpList"></div>
+        <input type="file" id="wpInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+      </div>
       <details class="quiet-box" id="discordLive">
         <summary>Stato Discord dal vivo <span>facoltativo</span></summary>
         <p class="hint">Mostra sul profilo se sei online, cosa giochi o ascolti su Discord. Lo fa <a href="https://lanyard.rest" target="_blank" rel="noopener">Lanyard</a>, un servizio esterno gratuito: per farlo funzionare entri una volta nel suo server (discord.gg/lanyard), perché Discord non lascia leggere lo stato ai siti. Spento finché non lo accendi tu.</p>
@@ -1277,18 +1375,37 @@
     </section>
 
     <section class="view hidden" id="view-page">
-      <h2>Metadati</h2>
-      <p class="desc">Il titolo nella scheda del browser e come appare il tuo link quando lo mandi su Discord, WhatsApp o Instagram.</p>
-      <div class="card" style="margin-top:22px">
-        <div class="field-grid">
-          <div class="field"><div class="label">titolo della scheda</div><input class="text" data-k="appearance.title.text" maxlength="60" placeholder="es. nyx ✦ dark"></div>
-          <div class="field span-2"><div class="label">descrizione per l'anteprima</div><input class="text" data-k="appearance.seo.description" maxlength="160" placeholder="Quello che appare sotto il link"></div>
-          <div class="field span-2"><div class="label">immagine per l'anteprima</div><input class="text" type="url" data-k="appearance.seo.image" placeholder="link di un'immagine"></div>
+      <h2>Il tuo link</h2>
+      <p class="desc">Scegli il tuo indirizzo e come appare quando lo mandi su Discord, WhatsApp o Instagram.</p>
+      <div class="label section-label">indirizzo</div>
+      <div class="card">
+        <div class="ln-big"><span id="lnShow">18k.bio/tuonome</span><button class="ghost-btn sm" id="lnCopy" type="button">Copia</button></div>
+        <div class="label">prefisso</div>
+        <div class="ln-chips" id="lnDomains"></div>
+        <div class="field" style="margin-top:12px"><div class="label">forma</div><div class="seg" data-seg="appearance.link.format" data-o="lnFormat"></div></div>
+        <p class="hint">18k.bio/nome funziona già. Gli altri prefissi si accendono quando li attiviamo: la tua scelta resta salvata e il link cambia da solo.</p>
+      </div>
+      <div class="label section-label">anteprima del link</div>
+      <div class="card">
+        <div class="ln-split">
+          <div class="field-grid ln-fields">
+            <div class="field span-2"><div class="label">titolo</div><input class="text" data-k="appearance.title.text" maxlength="60" placeholder="es. nyx ✦ dark"></div>
+            <div class="field span-2"><div class="label">descrizione</div><input class="text" data-k="appearance.seo.description" maxlength="160" placeholder="Quello che appare sotto il link"></div>
+            <div class="field span-2"><div class="label">immagine</div>
+              <div class="row"><button class="save-btn sm" id="ogGallery" type="button">Dalla galleria</button><button class="ghost-btn sm" id="ogUpload" type="button">Carica</button><button class="ghost-btn sm" id="ogAvatar" type="button">Usa la foto profilo</button><button class="ghost-btn sm" id="ogClear" type="button">Togli</button><input type="file" id="ogInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden></div>
+              <input class="text" type="url" data-k="appearance.seo.image" placeholder="oppure il link di un'immagine" style="margin-top:8px">
+            </div>
+          </div>
+          <div class="ln-embed" id="lnEmbed" aria-label="Anteprima su Discord">
+            <span class="ln-site">18k.bio</span><b id="lnTitle"></b><p id="lnDesc"></p><div class="ln-img" id="lnImg"></div>
+          </div>
         </div>
+        <p class="hint">Senza immagine si usa la foto profilo. Discord e WhatsApp aggiornano l'anteprima dopo qualche minuto.</p>
       </div>
     </section>
 
-    <section class="view hidden" id="view-topic">
+    <section class="view hidden soon" id="view-topic">
+      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Topic della settimana</h2>
       <p class="desc">Ogni settimana c'è una cosa da mettere sul profilo. Chi la fa meglio vince il badge e finisce in cima alla pagina principale.</p>
       <div class="topic-hero" style="margin-top:22px">
@@ -1308,7 +1425,8 @@
       </div>
     </section>
 
-    <section class="view hidden" id="view-clans">
+    <section class="view hidden soon" id="view-clans">
+      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Clan</h2>
       <p class="desc">Un gruppo con la sua TAG riservata, da 2 a 4 caratteri. Puoi stare in 3 clan: il principale appare per primo, pieno, sotto il tuo nome.</p>
       <div class="card hidden" id="clanGuest" style="margin-top:22px"><p>I clan servono un account.</p><div class="row"><a class="save-btn" href="login.html?from=ospite" style="display:inline-flex;align-items:center;text-decoration:none">Registrati</a></div></div>
@@ -1335,7 +1453,8 @@
       <div class="lb-list" id="clanLb"></div>
     </section>
 
-    <section class="view hidden" id="view-inbox">
+    <section class="view hidden soon" id="view-inbox">
+      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Messaggi</h2>
       <p class="desc">Il modulo contatti, la newsletter e il guestbook del tuo profilo. Attivali qui, poi salva.</p>
       <div class="card" style="margin-top:22px">
@@ -1379,12 +1498,12 @@
 
     <section class="view hidden" id="view-share">
       <h2>Condividi</h2>
-      <p class="desc">Il tuo link, come appare su Discord, un link diverso per ogni social (così nelle statistiche vedi da dove arriva la gente), il QR code e i nomi extra.</p>
+      <p class="desc">Il tuo link, come appare su Discord, un link diverso per ogni social (così nelle statistiche vedi da dove arriva la gente), e il QR code.</p>
       <div class="card" style="margin-top:22px">
         <div class="share-link"><span class="mono" id="shareUrl"></span><button class="save-btn sm" id="shareCopy" type="button">Copia</button><a class="ghost-btn sm" id="shareOpen" href="#" target="_blank" rel="noopener">Apri</a></div>
         <div class="label">anteprima su discord e whatsapp</div>
         <div class="dpv" id="discordPv"><div style="flex:1;min-width:0"><small>18k.bio</small><b id="dpvTitle"></b><p id="dpvDesc"></p></div><img id="dpvImg" alt=""></div>
-        <p class="hint">Titolo, descrizione e immagine si cambiano da Metadati. Il colore della barra è il tuo accento.</p>
+        <p class="hint">Titolo, descrizione e immagine si cambiano da Il tuo link. Il colore della barra è il tuo accento.</p>
       </div>
       <div class="label section-label">un link per ogni social</div>
       <div class="card">
@@ -1444,8 +1563,8 @@
           </div>
           <p class="hint">Per ora la @ non si può cambiare.</p>
         </div>
-          <div class="label section-label" id="set-alias">nomi extra</div>
-          <div class="card">
+          <div class="label section-label hidden" id="set-alias">nomi extra</div>
+          <div class="card hidden" id="aliasCard">
             <p class="hint">Altri nomi che portano a te, fino a 3. Chi apre 18k.bio/altronome arriva sul tuo profilo, e nessun altro può prenderli.</p>
             <div class="active-list" id="aliasList"></div>
             <div class="prefix-field"><span class="prefix">18k.bio/</span><input id="aliasInput" maxlength="20" autocomplete="off" placeholder="altronome"></div>
@@ -1470,9 +1589,14 @@
           </form>
           <p class="hint hidden" id="googleOnlyNote">Questo account accede con Google: email e password si gestiscono da Google.</p>
         </div>
+        <div class="label section-label">pausa</div>
+        <div class="card">
+          <p class="hint" id="disableHint">Disattiva l'account: il profilo sparisce e chi apre il tuo link vede "account disattivato". Tutto resta salvato e lo riattivi quando vuoi.</p>
+          <div class="row" style="margin-top:10px"><button class="ghost-btn" id="disableAccount" type="button">Disattiva account</button></div>
+        </div>
         <div class="label section-label">zona pericolosa</div>
         <div class="card">
-          <p class="hint">Cancella il profilo pubblico, la tua @, i nomi extra, i file caricati e l'account. Non si torna indietro.</p>
+          <p class="hint">Cancella il profilo pubblico, la tua @, i file caricati e l'account. Non si torna indietro.</p>
           <div class="row" style="margin-top:10px"><button class="ghost-btn" id="deleteAccount" type="button" style="border-color:#7a2a2a;color:#ff8a8a">Elimina account</button></div>
           <div class="status" id="deleteStatus"></div>
         </div>
@@ -1563,9 +1687,9 @@
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
-    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance
+    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS
   } from "./profile-kit.js";
-  import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
+  import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
   const $ = id => document.getElementById(id);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -1607,11 +1731,13 @@
   let handle = "ospite";
   let badges = [];
   let liveViews = 0, liveLikes = 0;
+  // Public page state: never published, live, draft (saved but hidden) or disabled
+  const pub = { status: "never", at: 0, busy: false, error: "" };
   let draft = null;           // what the user is editing
   let savedJSON = "";         // last saved snapshot, for the unsaved-changes bar
   let preview = null;
 
-  const EDITABLE = ["displayName", "bio", "tags", "location", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery", "clans", "primaryClan", "card"];
+  const EDITABLE = ["displayName", "bio", "tags", "location", "aka", "avatarUrl", "links", "socials", "weekly", "appearance", "gallery", "clans", "primaryClan", "card"];
   function snapshot(d) {
     const n = normalizeProfile({ ...d, handle });
     const out = {};
@@ -1638,7 +1764,8 @@
   // The same groups as the guns.lol dashboard: Account, the profile editor, Premium (here: Avanzate), Image Host
   const NAV = [
     ["", [
-      ["explore", "Esplora profili", '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', "tutti"]]],
+      ["explore", "Esplora profili", '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', "tutti"],
+      ["publish", "Pubblica", '<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/>']]],
     ["account", [
       ["overview", "Panoramica", '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'],
       ["analytics", "Statistiche", '<path d="M3 17l6-6 4 4 8-8"/>'],
@@ -1655,11 +1782,11 @@
       ["effects", "Font ed effetti", '<path d="M4 4l7 17 2.5-7.5L21 11z"/>'],
       ["music", "Musica", '<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
       ["widgets", "Widget", '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'],
-      ["page", "Metadati", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>']]],
+      ["page", "Il tuo link", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>']]],
     ["community", [
-      ["clans", "Clan", '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>'],
-      ["inbox", "Messaggi", '<path d="M4 4h16v12H8l-4 4z"/>'],
-      ["topic", "Topic della settimana", '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>']]],
+      ["clans", "Clan", '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>', "soon"],
+      ["inbox", "Messaggi", '<path d="M4 4h16v12H8l-4 4z"/>', "soon"],
+      ["topic", "Topic della settimana", '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>', "soon"]]],
     ["image host", [
       ["gallery", "Galleria", '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>'],
       ["pastes", "Paste", '<path d="M8 4h8M9 2h6v4H9zM6 4H5a1 1 0 0 0-1 1v15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-1M8 11h8M8 15h5"/>']]]
@@ -1671,7 +1798,7 @@
     let closed = [];
     // First visit: only the essentials open, the rest one tap away
     try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["avanzate", "community", "image host"]; } catch (_) { closed = []; }
-    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
+    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag === "soon" ? '<span class="soontag" data-text="SOON">SOON</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
     $("nav").innerHTML = NAV.map(([group, items]) => !group ? `<div class="nav-top">${items.map(item).join("")}</div>` : `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
       + `<div class="nav-foot">${FOOT.map(item).join("")}</div>`;
     $("mnav").innerHTML = NAV.map(([group, items]) => `<optgroup label="${group}">${items.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`).join("") + `<optgroup label="altro">${FOOT.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`;
@@ -1718,6 +1845,10 @@
     if (name === "share") renderShare();
     if (name === "gallery") renderGallery();
     if (name === "clans") renderClans();
+    if (name === "publish") renderPublish();
+    if (name === "music") { renderMsNow(); renderLastfm(); }
+    if (name === "widgets") renderWidgetPics();
+    if (name === "page") renderLinkPage();
     if (name === "inbox") renderInbox();
     if (name === "pastes") renderPastes();
     if (name === "guide") renderGuide();
@@ -1851,7 +1982,7 @@
     ["Font ed effetti", "effects", "Font, descrizione animata, cursore, suoni, schermata d'ingresso."],
     ["Musica", "music", "Playlist, Spotify, SoundCloud, Last.fm."],
     ["Widget", "widgets", "GitHub, server Discord, Roblox, Twitch, YouTube, orologio."],
-    ["Metadati", "page", "Titolo della scheda e anteprima del link."],
+    ["Il tuo link", "page", "Prefisso, titolo, descrizione e immagine dell'anteprima del link."],
     ["Badge", "badges", "I tuoi badge e il badge personale."],
     ["Statistiche", "analytics", "Visite, clic, da dove arrivano."],
     ["Clan, Messaggi, Topic", "clans", "La parte community."],
@@ -1883,6 +2014,9 @@
   const isDirty = () => draft && JSON.stringify(snapshot(draft)) !== savedJSON;
   function updateSaveBar() {
     const dirty = isDirty();
+    if (!$("view-publish").classList.contains("hidden")) renderPublish();
+    if (!$("view-page").classList.contains("hidden")) renderLinkPage();
+    if (!$("view-music").classList.contains("hidden")) renderLastfm();
     $("saveBar").classList.toggle("hidden", !dirty);
     $("saveBarText").textContent = mode === "guest" ? "Modifiche non salvate su questo dispositivo." : "Hai modifiche non salvate.";
   }
@@ -1903,6 +2037,8 @@
     border: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["animated", "Animato"]],
     cAlign: [["center", "Centrato"], ["left", "A sinistra"]],
     cPos: [["center", "Al centro"], ["top", "In alto"]],
+    cardOpen: CARD_OPEN, cardSpeed: [[0.6, "Lenta"], [1, "Normale"], [1.6, "Veloce"]],
+    lnFormat: [["/", "/nome"], ["/@", "/@nome"]],
     cShadow: [["none", "Nessuna"], ["soft", "Morbida"], ["strong", "Forte"], ["glow", "Luce"]],
     avShape: [["circle", "Cerchio"], ["rounded", "Arrotondato"], ["square", "Quadrato"], ["hex", "Esagono"]],
     avRing: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["spin", "Rotante"]],
@@ -1924,7 +2060,7 @@
     cursor: [["default", "Normale"], ["crosshair", "Mirino"], ["custom", "Personalizzato"]],
     trail: [["none", "Nessuna"], ["dots", "Puntini"], ["sparkle", "Scintille"], ["ghost", "Anelli"]],
     enterStyle: [["blur", "Sfocato"], ["fade", "Nero"], ["pixel", "Pixel"]],
-    music: [["none", "Nessuna"], ["spotify", "Spotify"], ["audio", "File audio"], ["soundcloud", "SoundCloud"], ["youtube", "YouTube"]]
+    music: [["none", "Nessuna"], ["spotify", "Spotify"], ["deezer", "Deezer"], ["audio", "File audio"], ["soundcloud", "SoundCloud"], ["youtube", "YouTube"]]
   };
 
   function readControl(t) {
@@ -1962,7 +2098,7 @@
       });
       n.classList.toggle("hidden", !ok);
     });
-    $$("[data-seg]").forEach(s => $$("button", s).forEach(b => b.classList.toggle("on", String(getPath(draft, s.dataset.seg)) === b.dataset.v)));
+    $$("[data-seg]").forEach(s => $$("button", s).forEach(b => b.classList.toggle("on", String(getPath(draft, s.dataset.seg) ?? SEG_DEFAULT[s.dataset.seg]) === b.dataset.v)));
     $$("[data-pickfor]").forEach(g => $$(".pick", g).forEach(b => b.classList.toggle("on", String(getPath(draft, g.dataset.pickfor)) === b.dataset.v)));
     renderMusicHint();
     renderAssetThumbs();
@@ -1982,6 +2118,8 @@
   }
   $("monoIcons").addEventListener("change", e => { draft.appearance.socialsStyle.style = e.target.checked ? "plain" : "brand"; syncControls(); changed(); });
   $("audioQuick").addEventListener("click", () => $("audioPick").click());
+  // Shown as chosen when the value is not set yet
+  const SEG_DEFAULT = { "card.open.anim": "flip", "card.open.speed": 1 };
   function renderSeg(box) {
     if (box.childElementCount) return;
     const opts = OPTS[box.dataset.o] || [];
@@ -1990,7 +2128,7 @@
       const b = e.target.closest("button");
       if (!b) return;
       const cur = getPath(draft, box.dataset.seg);
-      setPath(draft, box.dataset.seg, typeof cur === "number" ? Number(b.dataset.v) : b.dataset.v);
+      setPath(draft, box.dataset.seg, typeof (cur ?? SEG_DEFAULT[box.dataset.seg]) === "number" ? Number(b.dataset.v) : b.dataset.v);
       if (box.dataset.o === "sfx") playSfx(b.dataset.v, draft.appearance.sfx.volume);
       changed();
     });
@@ -2271,12 +2409,18 @@
     import("./card-kit.js").then(m => m.openCardViewer(draft.card, cardInfo()));
   });
   addEventListener("keydown", e => { if (e.key === "Escape") $$(".fake-full").forEach(n => n.classList.remove("fake-full")); });
+  $("cardTryOpen").addEventListener("click", () => {
+    if (!draft.card) return;
+    import("./card-kit.js").then(m => m.openCardViewer(draft.card, cardInfo()));
+  });
 
 
   /* =========================================================
      Foto: the photos posted in the 18k Discord channels (api/photos.js)
      ========================================================= */
-  const PH = { albums: [["sets", "Sets"], ["replies", "Replies"], ["pfps", "Pfps"]], album: "sets", items: [], next: null, loading: false, cur: null };
+  // "Tutte" mixes the three channels by date and keeps loading while you scroll; the channels are small filters
+  const PH = { albums: [["all", "Tutte"], ["sets", "sets"], ["replies", "replies"], ["pfps", "pfps"]], album: "all", items: [], next: null, cur: {}, done: {}, buf: [], loading: false };
+  const PH_CH = ["sets", "replies", "pfps"];
   const absUrl = u => /^https?:/.test(u) ? u : location.origin + u;
   const escTxt = s => String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   function renderPhTabs() {
@@ -2284,33 +2428,61 @@
   }
   $("phTabs").addEventListener("click", e => {
     const b = e.target.closest("[data-album]"); if (!b || b.dataset.album === PH.album) return;
-    PH.album = b.dataset.album; PH.items = []; PH.next = null; renderPhTabs(); loadPhotos();
+    PH.album = b.dataset.album; PH.items = []; PH.next = null; PH.cur = {}; PH.done = {}; PH.buf = []; renderPhTabs(); loadPhotos();
   });
+  const fetchAlbum = async (al, before) => {
+    const r = await fetch(`/api/photos?album=${al}${before ? "&before=" + before : ""}`);
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || "Le foto non sono raggiungibili adesso.");
+    return j;
+  };
+  // One page: for "Tutte", every channel that still has photos gives its next page, then all mixed by date
+  async function nextPage() {
+    if (PH.album !== "all") {
+      const j = await fetchAlbum(PH.album, PH.next);
+      PH.next = j.next;
+      return { items: j.items.map(x => ({ ...x, album: PH.album })), more: !!j.next };
+    }
+    const want = PH_CH.filter(al => !PH.done[al]);
+    const pages = await Promise.all(want.map(al => fetchAlbum(al, PH.cur[al]).then(j => [al, j]).catch(() => [al, { items: [], next: null }])));
+    pages.forEach(([al, j]) => { PH.cur[al] = j.next; if (!j.next) PH.done[al] = true; PH.buf.push(...j.items.map(x => ({ ...x, album: al }))); });
+    PH.buf.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    const items = PH.buf.splice(0, PH.buf.length);
+    return { items, more: PH_CH.some(al => !PH.done[al]) };
+  }
   async function loadPhotos(more) {
     if (PH.loading) return;
     PH.loading = true;
     if (!more) { $("phGrid").replaceChildren(); $("phNote").textContent = "Carico le foto dal server 18k…"; }
     try {
-      const r = await fetch(`/api/photos?album=${PH.album}${more && PH.next ? "&before=" + PH.next : ""}`);
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.error || "Le foto non sono raggiungibili adesso.");
-      PH.items.push(...j.items); PH.next = j.next;
+      const j = await nextPage();
+      PH.items.push(...j.items); PH.hasMore = j.more;
       const frag = document.createDocumentFragment();
       j.items.forEach((it, idx) => {
         const b = document.createElement("button");
         b.type = "button"; b.className = "ph-it"; b.dataset.i = PH.items.length - j.items.length + idx;
-        b.innerHTML = `<img loading="lazy" decoding="async" alt="" src="${escTxt(it.thumb)}"${it.w && it.h ? ` width="${it.w}" height="${it.h}"` : ""}>${it.kind !== "image" ? `<span class="ph-k">${it.kind === "gif" ? "GIF" : "VIDEO"}</span>` : ""}<span class="ph-a">${escTxt(it.author.name)}</span>`;
+        b.innerHTML = `<img loading="lazy" decoding="async" alt="" src="${escTxt(it.thumb)}"${it.w && it.h ? ` width="${it.w}" height="${it.h}"` : ""}>${it.kind !== "image" ? `<span class="ph-k">${it.kind === "gif" ? "GIF" : "VIDEO"}</span>` : ""}<span class="ph-a">${escTxt(it.author.name)}${PH.album === "all" ? ` · ${it.album}` : ""}</span>`;
         b.querySelector("img").addEventListener("error", () => b.remove(), { once: true });
         frag.appendChild(b);
       });
       $("phGrid").appendChild(frag);
-      $("phNote").textContent = PH.items.length ? `${PH.items.length} ${PH.items.length === 1 ? "foto" : "foto"} da #${PH.albums.find(a => a[0] === PH.album)[1].toLowerCase()}` : "Ancora nessuna foto in questo canale.";
-      $("phMore").classList.toggle("hidden", !PH.next);
+      $("phNote").textContent = PH.items.length ? `${PH.items.length} foto${PH.album === "all" ? " da tutti i canali" : " da #" + PH.album}${PH.hasMore ? " · scorri per vederne altre" : ""}` : "Ancora nessuna foto qui.";
+      $("phMore").classList.toggle("hidden", !PH.hasMore);
     } catch (err) {
       $("phNote").textContent = err.message;
       $("phMore").classList.add("hidden");
-    } finally { PH.loading = false; }
+    } finally { PH.loading = false; setTimeout(phNearEnd, 50); }
   }
+  // Still room on screen after a page (big screens): load the next one too
+  function phNearEnd() {
+    if (!PH.hasMore || PH.loading || $("view-photos").classList.contains("hidden")) return;
+    const m = $("main").getBoundingClientRect(), e = $("phEnd").getBoundingClientRect();
+    if (e.top < m.bottom + 600) loadPhotos(true);
+  }
+  // Endless scroll: when the end of the grid comes into view, the next page loads by itself
+  if ("IntersectionObserver" in window) new IntersectionObserver(es => {
+    if (es.some(e => e.isIntersecting) && PH.hasMore && !PH.loading && !$("view-photos").classList.contains("hidden")) loadPhotos(true);
+  }, { root: $("main"), rootMargin: "600px" }).observe($("phEnd"));
   function renderPhotos() {
     renderPhTabs();
     if (!PH.items.length && !PH.loading) loadPhotos();
@@ -2574,6 +2746,154 @@
     soundcloud: "Incolla il link di una traccia o playlist di SoundCloud.",
     youtube: "Incolla il link di un video di YouTube."
   };
+  /* ---------- Song search (api/music-search.js) ---------- */
+  let msTimer = 0, msSeq = 0;
+  function renderMsNow() {
+    const m = draft.appearance.music, on = (m.type === "spotify" || m.type === "deezer") && m.url;
+    $("msNow").classList.toggle("hidden", !on);
+    if (on) $("msNow").innerHTML = `${m.cover ? `<img src="${escTxt(m.cover)}" alt="">` : ""}<div><span class="kick">sul profilo · ${m.type === "spotify" ? "Spotify" : "Deezer"}</span><b>${escTxt(m.title || "Brano scelto")}</b></div><button type="button" class="ghost-btn sm" id="msRemove">Togli</button>`;
+  }
+  $("msNow").addEventListener("click", e => {
+    if (!e.target.closest("#msRemove")) return;
+    Object.assign(draft.appearance.music, { type: "none", url: "", title: "", cover: "" });
+    changed(); syncControls(); renderMsNow();
+  });
+  $("msQuery").addEventListener("input", () => {
+    clearTimeout(msTimer);
+    const q = $("msQuery").value.trim();
+    if (q.length < 2) { $("msList").replaceChildren(); $("msNote").textContent = "Scrivi e scegli: il brano finisce sul profilo con il player di Spotify."; return; }
+    msTimer = setTimeout(async () => {
+      const seq = ++msSeq;
+      $("msNote").textContent = "Cerco…";
+      try {
+        const r = await fetch("/api/music-search?q=" + encodeURIComponent(q));
+        const j = await r.json().catch(() => ({}));
+        if (seq !== msSeq) return;
+        if (!r.ok) throw new Error(j.error || "La ricerca non risponde adesso.");
+        $("msList").innerHTML = j.items.map((s, i) => `<button type="button" class="ms-it" data-i="${i}">${s.cover ? `<img src="${escTxt(s.cover)}" alt="" loading="lazy">` : "<img alt=\"\">"}<div><b>${escTxt(s.title)}</b><span>${escTxt(s.artist)}</span></div><em>scegli</em></button>`).join("");
+        $("msList").items = j.items;
+        $("msNote").textContent = j.items.length ? "Tocca un brano per metterlo sul profilo." : "Nessun brano trovato.";
+      } catch (err) { if (seq === msSeq) { $("msList").replaceChildren(); $("msNote").textContent = err.message; } }
+    }, 350);
+  });
+  $("msList").addEventListener("click", async e => {
+    const b = e.target.closest(".ms-it"); if (!b) return;
+    const s = $("msList").items[+b.dataset.i];
+    b.querySelector("em").textContent = "un attimo…";
+    let sp = s.spotify;
+    if (!sp && s.id) { try { sp = (await (await fetch("/api/music-search?resolve=" + encodeURIComponent(s.id))).json()).spotify || ""; } catch (_) { sp = ""; } }
+    Object.assign(draft.appearance.music, sp ? { type: "spotify", url: sp } : { type: "deezer", url: s.deezer }, { title: `${s.title} — ${s.artist}`, cover: s.cover, showPlayer: true });
+    changed(); syncControls(); renderMsNow();
+    $("msList").replaceChildren(); $("msQuery").value = "";
+    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Su Spotify non l'ho trovato: uso il player di Deezer.";
+  });
+
+  /* ---------- Last.fm: real connection (api/lastfm-connect.js) ---------- */
+  function renderLastfm() {
+    const u = draft.appearance.lastfm.user;
+    $("lfState").textContent = u ? `Collegato: ${u}` : "Last.fm non collegato";
+    $("lfSub").textContent = u ? "Sul profilo: la tua foto Last.fm, i tuoi ascolti e cosa stai ascoltando adesso." : "Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.";
+    $("lfConnect").textContent = u ? "Cambia account" : "Collega Last.fm";
+  }
+  $("lfConnect").addEventListener("click", () => {
+    if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Last.fm lo stesso?")) return;
+    location.href = "/api/lastfm-connect";
+  });
+  function lastfmReturn() {
+    const h = new URLSearchParams((location.hash || "").slice(1));
+    if (h.has("lastfm")) {
+      const name = String(h.get("lastfm")).replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
+      if (name) { draft.appearance.lastfm.user = name; draft.appearance.lastfm.show = true; changed(); syncControls(); setStatus(`Last.fm collegato: ${name}. Salva per metterlo sul profilo.`, "ok"); }
+    } else if (h.has("lastfm-error")) setStatus(h.get("lastfm-error"), "err");
+    else return false;
+    history.replaceState(null, "", location.pathname + location.search + "#music");
+    return true;
+  }
+
+  /* ---------- Picture of each widget: automatic, your own, none ---------- */
+  const WP = [["dc", "Stato Discord", w => w.discordPresence && w.discordId], ["lf", "Last.fm", (w, a) => a.lastfm.show && a.lastfm.user], ["gh", "GitHub", w => w.github], ["ds", "Server Discord", w => w.discordServer], ["rb", "Roblox", w => w.roblox], ["wx", "Meteo", w => w.weather], ["cd", "Conto alla rovescia", w => w.countdown && w.countdown.date], ["md", "Stato di adesso", w => w.mood], ["nt", "Nota", w => w.note]];
+  let wpTarget = "";
+  function renderWidgetPics() {
+    const a = draft.appearance, w = a.widgets, pics = w.pics || {};
+    const on = WP.filter(([, , f]) => f(w, a));
+    $("wpList").innerHTML = on.length ? on.map(([k, label]) => {
+      const o = pics[k] || { mode: "auto" };
+      return `<div class="wp-row" data-k="${k}"><span class="wp-pic" style="${o.mode === "custom" && o.url ? `background-image:url('${escTxt(o.url)}')` : ""}"></span><b>${label}</b>
+        <div class="seg"><button type="button" data-m="auto" class="${o.mode !== "custom" && o.mode !== "none" ? "on" : ""}">Automatica</button><button type="button" data-m="custom" class="${o.mode === "custom" ? "on" : ""}">Mia</button><button type="button" data-m="none" class="${o.mode === "none" ? "on" : ""}">Nessuna</button></div>
+        ${o.mode === "custom" ? `<button type="button" class="ghost-btn sm" data-act="up">Carica</button><button type="button" class="ghost-btn sm" data-act="gal">Dalla galleria</button>` : ""}</div>`;
+    }).join("") : '<p class="wp-empty">Accendi un widget e qui puoi cambiarne la foto.</p>';
+  }
+  function setWidgetPic(k, o) {
+    const w = draft.appearance.widgets;
+    w.pics = { ...(w.pics || {}) };
+    if (o.mode === "auto") delete w.pics[k]; else w.pics[k] = o;
+    changed(); renderWidgetPics();
+  }
+  $("wpList").addEventListener("click", e => {
+    const row = e.target.closest(".wp-row"); if (!row) return;
+    const k = row.dataset.k, cur = (draft.appearance.widgets.pics || {})[k] || {};
+    const m = e.target.closest("[data-m]");
+    if (m) { setWidgetPic(k, { mode: m.dataset.m, url: m.dataset.m === "custom" ? cur.url || "" : "" }); if (m.dataset.m === "custom" && !cur.url) { wpTarget = k; $("wpInput").click(); } return; }
+    const act = e.target.closest("[data-act]");
+    if (act && act.dataset.act === "up") { wpTarget = k; $("wpInput").click(); }
+    if (act && act.dataset.act === "gal") pickFromGallery(url => setWidgetPic(k, { mode: "custom", url }));
+  });
+  $("wpInput").addEventListener("change", async e => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f || !wpTarget) return;
+    setStatus("Carico la foto…");
+    try { const url = await storeImage(f, "widget", 256); setWidgetPic(wpTarget, { mode: "custom", url }); setStatus("Foto del widget cambiata.", "ok"); }
+    catch (err) { setStatus(friendly(err), "err"); }
+  });
+
+  /* ---------- Gallery picker (your Galleria + the photos already on your profile) ---------- */
+  function pickFromGallery(cb) {
+    const seen = new Set();
+    const list = [...(draft.gallery || []).map(g => g.url), draft.avatarUrl, draft.appearance.banner && draft.appearance.banner.url, draft.appearance.bg && draft.appearance.bg.image]
+      .filter(u => u && !seen.has(u) && seen.add(u));
+    const d = document.createElement("dialog");
+    d.className = "gp-dlg";
+    d.innerHTML = `<b>Scegli un'immagine</b><div class="gp-grid">${list.map((u, i) => `<button type="button" data-i="${i}" style="background-image:url('${escTxt(u)}')" aria-label="Immagine ${i + 1}"></button>`).join("")}</div>${list.length ? "" : '<p class="hint">La galleria è vuota: carica le tue foto in Galleria.</p>'}<div class="row"><button type="button" class="ghost-btn sm" data-x="gal">Apri la Galleria</button><button type="button" class="ghost-btn sm" data-x="close">Chiudi</button></div>`;
+    document.body.appendChild(d);
+    d.addEventListener("close", () => d.remove());
+    d.addEventListener("click", e => {
+      const b = e.target.closest("[data-i]");
+      if (b) { cb(list[+b.dataset.i]); d.close(); return; }
+      const x = e.target.closest("[data-x]");
+      if (x) { d.close(); if (x.dataset.x === "gal") showView("gallery"); }
+      if (e.target === d) d.close();
+    });
+    d.showModal();
+  }
+
+  /* ---------- Il tuo link ---------- */
+  function renderLinkPage() {
+    const a = draft.appearance, l = a.link;
+    $("lnShow").textContent = `${l.domain}${l.format}${handle}`;
+    $("lnDomains").innerHTML = LINK_DOMAINS.map(([d, k]) => `<button type="button" data-d="${d}" class="${d === l.domain ? "on" : ""}">${d}<small>${d === "18k.bio" ? "attivo" : k}</small></button>`).join("");
+    $("lnTitle").textContent = a.title.text || `${draft.displayName || handle} · 18k.bio`;
+    $("lnDesc").textContent = a.seo.description || plainText(draft.bio || "") || `@${handle} su 18k.bio`;
+    const img = a.seo.image || draft.avatarUrl;
+    $("lnImg").style.backgroundImage = img ? `url('${String(img).replace(/'/g, "%27")}')` : "";
+    $("lnEmbed").style.setProperty("--ln-acc", a.colors.accent || "#fff");
+  }
+  $("lnDomains").addEventListener("click", e => {
+    const b = e.target.closest("[data-d]"); if (!b) return;
+    draft.appearance.link.domain = b.dataset.d; changed(); renderLinkPage();
+  });
+  $("lnCopy").addEventListener("click", () => { navigator.clipboard?.writeText(`${location.origin}/${handle}`).then(() => setStatus("Link copiato.", "ok")).catch(() => {}); });
+  $("ogGallery").addEventListener("click", () => pickFromGallery(url => { draft.appearance.seo.image = url; changed(); syncControls(); renderLinkPage(); }));
+  $("ogAvatar").addEventListener("click", () => { draft.appearance.seo.image = /^https:/.test(draft.avatarUrl || "") ? draft.avatarUrl : ""; changed(); syncControls(); renderLinkPage(); });
+  $("ogClear").addEventListener("click", () => { draft.appearance.seo.image = ""; changed(); syncControls(); renderLinkPage(); });
+  $("ogUpload").addEventListener("click", () => $("ogInput").click());
+  $("ogInput").addEventListener("change", async e => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    setStatus("Carico l'immagine…");
+    try { draft.appearance.seo.image = await storeImage(f, "og", 1200); changed(); syncControls(); renderLinkPage(); setStatus("Immagine dell'anteprima cambiata.", "ok"); }
+    catch (err) { setStatus(friendly(err), "err"); }
+  });
+
   function renderMusicHint() {
     if (!draft) return;
     const t = draft.appearance.music.type;
@@ -2735,6 +3055,11 @@
       } catch (_) { st.textContent = ""; }
     }, 500);
   }
+  // Alias: a space becomes "/" while typing
+  $("akaInput").addEventListener("input", e => {
+    const el = e.target, pos = el.selectionStart, v = el.value.replace(/\s+/g, "/").replace(/\/{2,}/g, "/");
+    if (v !== el.value) { el.value = v; try { el.setSelectionRange(pos, pos); } catch (_) {} }
+  }, true);
   // Profile box: back to the automatic border colour / gradient colour
   $("borderAuto").addEventListener("click", () => { draft.appearance.card.borderColor = ""; syncControls(); changed(); });
   $("grad2Auto").addEventListener("click", () => { draft.appearance.card.grad2 = ""; syncControls(); changed(); });
@@ -2924,9 +3249,11 @@
     const { F, db } = await firebase();
     await F.updateDoc(F.doc(db, "users", uid), data);
     savedJSON = JSON.stringify(data);
+    if (pub.status === "never") return "Salvato nel tuo account. Quando sei pronto, mettilo online da Pubblica.";
     try {
       await publishMirror(data);
-      return "Salvato. Il tuo profilo pubblico è aggiornato.";
+      if (pub.status === "live") pub.at = Date.now();
+      return pub.status === "live" ? "Salvato. Il tuo profilo pubblico è aggiornato." : "Salvato. Il profilo non è online: lo pubblichi da Pubblica.";
     } catch (err) {
       console.warn(err);
       return { warn: "Salvato nel tuo account, ma la pagina pubblica non si è aggiornata: le regole di Firestore vanno aggiornate (vedi README)." };
@@ -2938,7 +3265,9 @@
     const locked = await lockLinks(data.links);
     await F.runTransaction(db, async tx => {
       const snap = await tx.get(ref);
-      const out = data.appearance.privacy.private
+      const out = data.appearance.privacy.disabled ? { handle, private: true, disabled: true, updatedAt: F.serverTimestamp() }
+        : pub.status === "draft" ? { handle, private: true, draft: true, updatedAt: F.serverTimestamp() }
+        : data.appearance.privacy.private
         ? { handle, private: true, updatedAt: F.serverTimestamp() }
         : { ...publicFields({ ...data, links: locked, handle, badges }), private: false, unlisted: data.appearance.privacy.unlisted, updatedAt: F.serverTimestamp() };
       // Views and badges live on the public document: keep them exactly as they are
@@ -2974,7 +3303,13 @@
   /* =========================================================
      Templates
      ========================================================= */
-  let tplTab = "explore", tplQuery = "", tplTag = "";
+  let tplTab = "explore", tplQuery = "", tplTag = "", tplSrc = "all";
+  $("tplSrc").addEventListener("click", e => {
+    const b = e.target.closest("[data-src]"); if (!b) return;
+    tplSrc = b.dataset.src;
+    $$("#tplSrc button").forEach(x => x.classList.toggle("on", x === b));
+    $$("[data-srcbox]").forEach(x => x.classList.toggle("hidden", tplSrc !== "all" && x.dataset.srcbox !== tplSrc));
+  });
   const TPL_PARTS = [["all", "Tutto"], ["bg", "Solo sfondo"], ["colors", "Solo colori"], ["fonts", "Solo font"], ["layout", "Solo layout"], ["buttons", "Solo bottoni"]];
   const miniMounts = [];
   const FAV_KEY = "sigari-tpl-fav", RECENT_KEY = "sigari-tpl-recent";
@@ -3198,11 +3533,11 @@
     $("ovViewsNote").textContent = mode === "guest" ? "Arrivano quando il profilo è online." : `♥ ${liveLikes.toLocaleString("it-IT")} like · contate sulla pagina pubblica`;
     $("ovTopic").textContent = draft.weekly && draft.weekly.show && draft.weekly.week === currentTopic().id ? "sì" : "no";
     $("ovHandle").textContent = "@" + handle;
-    $("ovAlias").textContent = mode === "guest" ? "—" : "…";
-    if (mode === "user") firebase().then(({ F, db }) => F.getDocs(F.query(F.collection(db, "usernames"), F.where("aliasOf", "==", handle)))).then(snap => { const n = snap.docs.filter(d => d.data().uid === uid).map(d => "@" + d.id); $("ovAlias").textContent = n.length ? n.join(", ") : "nessuno"; }).catch(() => { $("ovAlias").textContent = "—"; });
+    $("ovAlias").textContent = draft.aka ? draft.aka.split("/").join(" / ") : "nessuno";
   }
   function renderSettings() {
     const guest = mode === "guest";
+    renderDisable();
     $("settingsGuest").classList.toggle("hidden", !guest);
     $("settingsUser").classList.toggle("hidden", guest);
     if (guest) return;
@@ -3226,6 +3561,73 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     setStatus("File scaricato.", "ok");
   });
+  /* =========================================================
+     Pubblica: React component (publish-panel.js, source in src/)
+     ========================================================= */
+  let pubUI = null, pubLoading = null;
+  function publishChecks() {
+    const a = draft.appearance;
+    return [
+      { id: "avatar", label: "Foto profilo", ok: !!draft.avatarUrl, go: "customize#avatarPick" },
+      { id: "bio", label: "Descrizione", ok: !!(draft.bio || "").trim(), go: "customize#c-general" },
+      { id: "links", label: "Almeno un link o un social", ok: (draft.links || []).length > 0 || Object.keys(draft.socials || {}).length > 0, go: "links" },
+      { id: "bg", label: "Sfondo", ok: a.bg.type !== "color" || a.bg.color !== "#000000", go: "customize#c-bg" },
+      { id: "card", label: "La tua carta", ok: !!draft.card, go: "card" }
+    ];
+  }
+  function shownLink() {
+    const l = draft.appearance.link || { domain: "18k.bio", format: "/" };
+    return `${l.domain}${l.format}${handle}`;
+  }
+  async function doPublish(next) {
+    if (mode !== "user" || pub.busy) return;
+    pub.busy = true; pub.error = ""; renderPublish();
+    const before = pub.status;
+    try {
+      pub.status = next;
+      const data = snapshot(draft);
+      const { F, db } = await firebase();
+      await F.updateDoc(F.doc(db, "users", uid), data);
+      savedJSON = JSON.stringify(data);
+      await publishMirror(data);
+      if (next === "live") pub.at = Date.now();
+      setStatus(next === "live" ? `Online: ${shownLink()}` : "Il profilo ora è una bozza: nessuno lo vede.", "ok");
+    } catch (err) {
+      pub.status = before; pub.error = "Non sono riuscito a pubblicare: " + friendly(err);
+    } finally { pub.busy = false; updateSaveBar(); renderPublish(); }
+  }
+  function renderPublish() {
+    const props = {
+      status: mode === "guest" ? "guest" : pub.status, url: `${location.origin}/${handle}`, shownUrl: shownLink(),
+      checks: publishChecks(), dirty: isDirty(), lastAt: pub.at, busy: pub.busy, error: pub.error,
+      onPublish: () => doPublish("live"), onDraft: () => doPublish("draft"),
+      onOpen: () => window.open(`${location.origin}/${handle}`, "_blank", "noopener"),
+      onGo: v => showView(v), onClaim: () => { location.href = "login.html"; }
+    };
+    if (pubUI) return pubUI.render(props);
+    if (!pubLoading) pubLoading = import("./publish-panel.js").then(m => { $("publishRoot").replaceChildren(); pubUI = m.mount($("publishRoot")); return pubUI; })
+      .catch(() => { pubLoading = null; $("publishRoot").innerHTML = '<p class="hint" style="margin-top:22px">Non riesco a caricare questa pagina. Ricarica.</p>'; });
+    pubLoading.then(ui => ui && ui.render(props));
+  }
+
+  // Disable: the profile goes away ("account disattivato"), everything stays saved
+  function renderDisable() {
+    const off = !!draft.appearance.privacy.disabled;
+    $("disableAccount").textContent = off ? "Riattiva account" : "Disattiva account";
+    $("disableAccount").disabled = mode !== "user";
+    $("disableHint").textContent = off ? "L'account è disattivato: chi apre il tuo link vede \"account disattivato\". Riattivalo e torna online." : "Disattiva l'account: il profilo sparisce e chi apre il tuo link vede \"account disattivato\". Tutto resta salvato e lo riattivi quando vuoi.";
+  }
+  $("disableAccount").addEventListener("click", async () => {
+    if (mode !== "user") return;
+    const off = !draft.appearance.privacy.disabled;
+    if (off && !confirm("Disattivare l'account? Il profilo sparisce finché non lo riattivi.")) return;
+    draft.appearance.privacy.disabled = off;
+    try {
+      await doPublish(off ? "disabled" : "live");
+      renderDisable();
+    } catch (err) { setStatus(friendly(err), "err"); }
+  });
+
   $("deleteAccount").addEventListener("click", async () => {
     if (mode === "guest") return;
     const typed = prompt(`Per eliminare tutto scrivi il tuo nome: ${handle}`);
@@ -3959,10 +4361,10 @@
     buildNav();
     buildPickers();
     $$("[data-seg]").forEach(renderSeg);
-    const pub = `${location.origin}/${handle}`;
+    const pubHref = `${location.origin}/${handle}`;
     $("sideHandle").textContent = "@" + handle;
     $("sideUrl").textContent = `18k.bio/${handle}`;
-    $("sideUrl").href = mode === "guest" ? "#" : pub;
+    $("sideUrl").href = mode === "guest" ? "#" : pubHref;
     renderPubLinks();
     $("logoutBtn").textContent = $("msheetOut").textContent = mode === "guest" ? "Accedi" : "Esci";
     if (mode === "guest") {
@@ -3983,7 +4385,8 @@
     updateSaveBar();
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     buildSearchIndex();
-    const first = ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
+    const fromLastfm = lastfmReturn();
+    const first = fromLastfm ? "music" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
     showView(first);
     openTemplateParam();
   }
@@ -4012,8 +4415,14 @@
     try {
       const { F, db } = await firebase();
       const snap = await F.getDoc(F.doc(db, "profiles", handle));
-      if (snap.exists()) { liveViews = snap.data().views || 0; liveLikes = snap.data().likes || 0; badges = snap.data().badges || badges; renderPreview(); renderOverview(); }
-      else await publishMirror(snapshot(draft)).catch(() => {});
+      if (snap.exists()) {
+        const d = snap.data();
+        liveViews = d.views || 0; liveLikes = d.likes || 0; badges = d.badges || badges;
+        pub.status = d.disabled || draft.appearance.privacy.disabled ? "disabled" : d.draft ? "draft" : "live";
+        pub.at = d.updatedAt && d.updatedAt.toMillis ? d.updatedAt.toMillis() : 0;
+        renderPreview(); renderOverview();
+      } else pub.status = "never";
+      renderDisable();
     } catch (_) { /* public mirror not readable yet */ }
     // Guest images carried over at sign up are still inline: move them to Storage
     migrateInlineImages().catch(() => {});

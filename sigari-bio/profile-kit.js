@@ -40,6 +40,38 @@ const FONT = Object.fromEntries(FONTS.map(f => [f[0], f]));
 const ICON_MAIL = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 5h20v14H2z M2 5l10 8 10-8" fill="none" stroke="#000" stroke-width="2"/></svg>');
 const ICON_WEB = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#000" stroke-width="2"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20" fill="none" stroke="#000" stroke-width="2"/></svg>');
 
+// Where a social opens: the profile page of that name, or a search for it (in the app or on the web)
+const enc = encodeURIComponent;
+const SOCIAL_FIND = {
+  discord: v => /^\d{15,20}$/.test(v) ? `https://discord.com/users/${v}` : `https://www.google.com/search?q=${enc('discord "' + v + '"')}`,
+  applemusic: v => `https://music.apple.com/search?term=${enc(v)}`,
+  playstation: v => `https://psnprofiles.com/${enc(v)}`,
+  xbox: v => `https://www.xboxgamertag.com/search/${enc(v)}`,
+  epicgames: v => `https://www.google.com/search?q=${enc('epic games "' + v + '"')}`,
+  riotgames: v => v.includes("#") ? `https://tracker.gg/valorant/profile/riot/${enc(v)}/overview` : `https://www.google.com/search?q=${enc('riot id "' + v + '"')}`,
+  tumblr: v => `https://www.tumblr.com/${enc(v)}`,
+  mastodon: v => { const m = v.match(/^@?([^@\s]+)@([a-z0-9.-]+\.[a-z]{2,})$/i); return m ? `https://${m[2]}/@${m[1]}` : `https://www.google.com/search?q=${enc('mastodon "' + v + '"')}`; },
+  roblox: v => /^\d+$/.test(v) ? `https://www.roblox.com/users/${v}/profile` : `https://www.roblox.com/search/users?keyword=${enc(v)}`,
+  steam: v => /^\d{17}$/.test(v) ? `https://steamcommunity.com/profiles/${v}` : `https://steamcommunity.com/id/${enc(v)}`,
+  spotify: v => /^[a-z0-9._-]{1,40}$/i.test(v) ? `https://open.spotify.com/user/${v}` : `https://open.spotify.com/search/${enc(v)}/users`,
+  whatsapp: v => `https://wa.me/${v.replace(/\D/g, "")}`,
+  email: v => `mailto:${v}`,
+  website: v => /\.[a-z]{2,}/i.test(v) ? `https://${v}` : `https://www.google.com/search?q=${enc(v)}`,
+  bluesky: v => `https://bsky.app/profile/${v.includes(".") ? v : v + ".bsky.social"}`
+};
+export function socialHref(sd, value) {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  if (/^(https?:|mailto:)/i.test(raw)) return safeLinkUrl(raw);
+  const v = raw.replace(/^@/, "");
+  if (SOCIAL_FIND[sd.key]) return safeLinkUrl(SOCIAL_FIND[sd.key](sd.key === "mastodon" ? raw : v));
+  if (sd.base) return safeLinkUrl(sd.base + enc(v).replace(/%2F/g, "/"));
+  return safeLinkUrl(`https://www.google.com/search?q=${enc(sd.label + ' "' + v + '"')}`);
+}
+
+export const LINK_DOMAINS = [["18k.bio", "predefinito"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
+  ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
+
 export const SOCIALS = [
   { key: "instagram", label: "Instagram", color: "#E4405F", base: "https://instagram.com/" },
   { key: "tiktok", label: "TikTok", color: "#ff0050", base: "https://tiktok.com/@" },
@@ -129,12 +161,14 @@ export const DEFAULT_APPEARANCE = {
   cursor: { type: "default", url: "", trail: "none" },
   sfx: { hover: "none", click: "none", volume: 50 },
   enter: { on: false, text: "clicca per entrare", style: "blur" },
-  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true },
+  music: { type: "none", url: "", autoplay: true, volume: 60, showPlayer: true, title: "", tracks: [], shuffle: false, loop: "all", blurCover: true, visualizer: "bars", lyrics: true, cover: "" },
   lastfm: { user: "", show: false },
-  widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false, discordServer: "", spotify: "", roblox: "" },
+  widgets: { discordId: "", discordPresence: false, github: "", clock: "", showViews: true, twitch: "", youtube: "", gallery: false, galleryStyle: "grid", contact: false, newsletter: false, newsletterText: "", guestbook: false, discordServer: "", spotify: "", roblox: "", countdown: { date: "", label: "" }, weather: "", mood: "", note: "", pics: {} },
   title: { text: "", animated: false },
   seo: { description: "", image: "" },
-  privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false },
+  privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false, disabled: false },
+  // Your link: which 18k prefix and /name or /@name (the prefixes go live when the domains are bought)
+  link: { domain: "18k.bio", format: "/" },
   glow: { username: false, socials: false, badges: false, links: false },
   entrance: "pixel"
 };
@@ -291,7 +325,7 @@ export function normalizeAppearance(raw) {
   a.enter.on = !!a.enter.on;
   a.enter.text = String(a.enter.text || "clicca per entrare").slice(0, 40);
   a.enter.style = ["blur", "pixel", "fade"].includes(a.enter.style) ? a.enter.style : "blur";
-  a.music.type = ["none", "spotify", "audio", "soundcloud", "youtube"].includes(a.music.type) ? a.music.type : "none";
+  a.music.type = ["none", "spotify", "deezer", "audio", "soundcloud", "youtube"].includes(a.music.type) ? a.music.type : "none";
   a.music.url = String(a.music.url || "").slice(0, 600);
   a.music.title = String(a.music.title || "").slice(0, 60);
   a.music.volume = clamp(a.music.volume, 0, 100, 60);
@@ -309,6 +343,7 @@ export function normalizeAppearance(raw) {
   a.music.blurCover = a.music.blurCover !== false;
   a.music.visualizer = ["none", "bars", "wave"].includes(a.music.visualizer) ? a.music.visualizer : "bars";
   a.music.lyrics = a.music.lyrics !== false;
+  a.music.cover = safeUrl(a.music.cover, true) || "";
   a.lastfm.user = String(a.lastfm.user || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
   a.lastfm.show = !!a.lastfm.show && !!a.lastfm.user;
   a.widgets.discordId = String(a.widgets.discordId || "").replace(/\D/g, "").slice(0, 20);
@@ -318,6 +353,15 @@ export function normalizeAppearance(raw) {
   a.widgets.spotify = /^https:\/\/open\.spotify\.com\//.test(String(a.widgets.spotify || "")) ? String(a.widgets.spotify).slice(0, 300) : "";
   a.widgets.roblox = String(a.widgets.roblox || "").replace(/[^a-z0-9_]/gi, "").slice(0, 20);
   a.widgets.clock = String(a.widgets.clock || "").slice(0, 40);
+  const cd = isObj(a.widgets.countdown) ? a.widgets.countdown : {};
+  a.widgets.countdown = { date: /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(cd.date || "") ? cd.date : "", label: String(cd.label || "").slice(0, 40) };
+  a.widgets.weather = String(a.widgets.weather || "").replace(/[<>"]/g, "").slice(0, 40);
+  a.widgets.mood = String(a.widgets.mood || "").slice(0, 60);
+  a.widgets.note = String(a.widgets.note || "").slice(0, 200);
+  // Each widget's picture: automatic, your own image, or none
+  const pics = isObj(a.widgets.pics) ? a.widgets.pics : {};
+  a.widgets.pics = {};
+  ["dc", "lf", "gh", "ds", "rb", "wx", "cd", "md", "nt"].forEach(k => { const x = pics[k]; if (isObj(x) && ["custom", "none"].includes(x.mode)) a.widgets.pics[k] = { mode: x.mode, url: x.mode === "custom" ? safeUrl(x.url, true) || "" : "" }; });
   a.widgets.showViews = a.widgets.showViews !== false;
   a.widgets.twitch = String(a.widgets.twitch || "").replace(/^https?:\/\/(www\.)?twitch\.tv\//i, "").replace(/[^a-z0-9_]/gi, "").slice(0, 25);
   a.widgets.youtube = String(a.widgets.youtube || "").trim().slice(0, 200);
@@ -331,6 +375,8 @@ export function normalizeAppearance(raw) {
   a.title.animated = !!a.title.animated;
   a.seo.description = String(a.seo.description || "").slice(0, 160);
   a.seo.image = safeUrl(a.seo.image) || "";
+  a.link.domain = LINK_DOMAINS.some(x => x[0] === a.link.domain) ? a.link.domain : "18k.bio";
+  a.link.format = a.link.format === "/@" ? "/@" : "/";
   for (const k of Object.keys(d.privacy)) a.privacy[k] = !!a.privacy[k];
   for (const k of Object.keys(d.glow)) a.glow[k] = !!a.glow[k];
   a.entrance = pickOne(a.entrance, ENTRANCES, "pixel");
@@ -371,6 +417,8 @@ export function normalizeProfile(raw) {
     bio: String(p.bio ?? "").slice(0, 300),
     tags: (Array.isArray(p.tags) ? p.tags : []).map(t => String(t).slice(0, 20)).filter(Boolean).slice(0, 5),
     location: String(p.location || "").slice(0, 60),
+    // Old names someone was known by, separated by "/"
+    aka: String(p.aka || "").replace(/\s*\/\s*/g, "/").replace(/\s+/g, "/").replace(/\/{2,}/g, "/").replace(/^\/|\/$/g, "").slice(0, 80),
     avatarUrl: safeUrl(p.avatarUrl, true) || "",
     links: (Array.isArray(p.links) ? p.links : []).slice(0, 30).map(normLink),
     clans, primaryClan: clans.includes(String(p.primaryClan || "").toUpperCase()) ? String(p.primaryClan).toUpperCase() : (clans[0] || ""),
@@ -494,7 +542,7 @@ export const TEMPLATE_PARTS = {
   layout: ["layout", "card", "avatar", "entrance"],
   buttons: ["buttons", "socialsStyle"]
 };
-const PERSONAL = ["music", "lastfm", "widgets", "title", "seo", "privacy"];
+const PERSONAL = ["music", "lastfm", "widgets", "title", "seo", "privacy", "link"];
 
 export function applyTemplate(current, tplAppearance, part = "all") {
   const cur = normalizeAppearance(current);
@@ -560,6 +608,10 @@ export function currentTopic(d = new Date()) {
 export function spotifyEmbed(url) {
   const m = String(url || "").match(/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|artist|episode|show)\/([a-z0-9]{10,40})/i);
   return m ? { src: `https://open.spotify.com/embed/${m[1]}/${m[2]}?theme=0`, height: m[1] === "track" || m[1] === "episode" ? 80 : 152 } : null;
+}
+export function deezerEmbed(url) {
+  const m = String(url || "").match(/deezer\.com\/(?:[a-z]{2}\/)?(track|album|playlist)\/(\d{1,15})/i);
+  return m ? { src: `https://widget.deezer.com/widget/dark/${m[1]}/${m[2]}?tracklist=false`, height: m[1] === "track" ? 150 : 300 } : null;
 }
 export function youtubeEmbed(url) {
   const m = String(url || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-z0-9_-]{11})/i);
@@ -663,6 +715,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-caret{display:inline-block;width:2px;height:.9em;margin-left:2px;vertical-align:-.08em;background:currentColor;animation:pk-blink 1s steps(1) infinite}
 @keyframes pk-blink{50%{opacity:0}}
 .pk-handle{margin-top:4px;font-size:13px;color:var(--pk-muted)}
+.pk-aka{margin-top:2px;font-size:11px;color:var(--pk-muted);opacity:.6;letter-spacing:.02em}
 .pk-badges{display:flex;gap:6px;justify-content:center;margin-top:9px}
 .pk-badge{position:relative;width:24px;height:24px;display:grid;place-items:center;border-radius:7px;background:var(--pk-surface);border:1px solid var(--pk-border);color:var(--pk-accent)}
 .pk[data-gbadges="1"] .pk-badge{box-shadow:0 0 12px color-mix(in srgb,var(--pk-accent) 50%,transparent)}
@@ -690,6 +743,9 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-w .pic{position:relative;width:44px;height:44px;border-radius:10px;background:#222;flex-shrink:0;overflow:visible}
 .pk-w .pic img{width:100%;height:100%;border-radius:inherit;object-fit:cover;display:block}
 .pk-w .txt{flex:1;min-width:0}
+.pk-w .pic[hidden]{display:none}
+.pk-w .pk-emo{position:absolute;inset:0;display:grid;place-items:center;font-size:22px;line-height:1}
+.pk-w-note{align-items:flex-start}.pk-note-t{margin:2px 0 0;font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
 .pk-w .pk-join{flex:none;padding:6px 12px;border-radius:999px;background:var(--pk-accent);color:var(--pk-accent-on,#000);font-size:12px;font-weight:700}
 .pk-w b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pk-w small{display:block;color:var(--pk-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -727,8 +783,10 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
 .pk-pick [data-pk-hot]{outline:1.5px dashed rgba(255,255,255,.6);outline-offset:5px;border-radius:10px;cursor:pointer}
 .pk-pick .pk-bg{cursor:pointer}
-.pk-cardbtn{display:flex;align-items:center;gap:8px;margin:16px auto 0;padding:9px 16px;border-radius:999px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:500 13px/1 inherit;cursor:pointer;transition:transform .2s,border-color .2s}
-.pk-cardbtn:hover{transform:translateY(-2px);border-color:var(--pk-accent)}
+.pk-cardbtn{display:flex;flex-direction:column;align-items:center;gap:8px;margin:18px auto 0;padding:0;border:0;background:none;color:var(--pk-muted);font:500 11.5px/1 inherit;cursor:pointer;letter-spacing:.04em}
+.pk-cardbtn .pk-cmini{width:150px;transform:rotate(-4deg);transition:transform .35s cubic-bezier(.2,.8,.2,1);pointer-events:none;border-radius:8px}
+.pk-cardbtn .pk-cmini .k4{box-shadow:0 14px 30px -10px rgba(0,0,0,.8)}
+.pk-cardbtn:hover .pk-cmini{transform:rotate(0) translateY(-4px) scale(1.04)}
 .pk-tags span{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--pk-border);color:var(--pk-muted)}
 .pk-banner{height:110px;margin:-28px -20px 0;border-radius:var(--pk-radius) var(--pk-radius) 0 0;background:var(--pk-banner);background-size:cover;background-position:center}
 .pk[data-layout=banner] .pk-head{margin-top:calc(var(--pk-av)*-.5)}
@@ -1028,13 +1086,19 @@ function cached(key, ttl, fn) {
 }
 const getJSON = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
 
-function widgetShell(href) {
+let PIC_OVER = {};
+function widgetShell(href, kind) {
   const w = el(href ? "a" : "div", "pk-w");
   if (href) { w.href = href; w.target = "_blank"; w.rel = "noopener noreferrer"; }
   const pic = el("div", "pic"), txt = el("div", "txt");
   w.append(pic, txt);
+  const o = kind && PIC_OVER[kind];
+  if (o && o.mode === "none") pic.hidden = true;
+  if (o && o.mode === "custom" && o.url) pic.dataset.fixed = o.url;
+  if (pic.dataset.fixed) { const img = el("img"); img.src = pic.dataset.fixed; img.alt = ""; img.loading = "lazy"; pic.prepend(img); }
   return { w, pic, txt };
 }
+const picKey = (k, o) => o ? `${k}:${o.mode}:${o.url}` : k;
 function setLines(txt, tag, title, sub) {
   txt.replaceChildren();
   if (tag) txt.appendChild(el("span", "tag", tag));
@@ -1042,6 +1106,7 @@ function setLines(txt, tag, title, sub) {
   if (sub) txt.appendChild(el("small", null, sub));
 }
 function setPic(pic, url) {
+  if (pic.hidden || pic.dataset.fixed) return;
   pic.querySelector("img")?.remove();
   const u = safeUrl(url);
   if (!u) return;
@@ -1050,7 +1115,7 @@ function setPic(pic, url) {
 }
 
 function discordWidget(id) {
-  const { w, pic, txt } = widgetShell(null);
+  const { w, pic, txt } = widgetShell(null, "dc");
   setLines(txt, "discord", "Carico lo stato…", "");
   cached("ly:" + id, 30000, () => getJSON(`https://api.lanyard.rest/v1/users/${id}`)).then(j => {
     if (!j.success) throw new Error("lanyard");
@@ -1069,7 +1134,7 @@ function discordWidget(id) {
 }
 
 function githubWidget(user) {
-  const { w, pic, txt } = widgetShell(`https://github.com/${user}`);
+  const { w, pic, txt } = widgetShell(`https://github.com/${user}`, "gh");
   setLines(txt, "github", user, "");
   cached("gh:" + user, 600000, () => getJSON(`https://api.github.com/users/${user}`)).then(g => {
     setPic(pic, g.avatar_url);
@@ -1079,7 +1144,7 @@ function githubWidget(user) {
 }
 
 function discordServerWidget(code) {
-  const { w, pic, txt } = widgetShell(`https://discord.gg/${code}`);
+  const { w, pic, txt } = widgetShell(`https://discord.gg/${code}`, "ds");
   setLines(txt, "server discord", "discord.gg/" + code, "");
   cached("ds:" + code, 300000, () => getJSON(`/api/discord-invite?code=${encodeURIComponent(code)}`)).then(j => {
     setPic(pic, j.icon);
@@ -1089,7 +1154,7 @@ function discordServerWidget(code) {
   return w;
 }
 function robloxWidget(user) {
-  const { w, pic, txt } = widgetShell(`https://www.roblox.com/search/users?keyword=${user}`);
+  const { w, pic, txt } = widgetShell(`https://www.roblox.com/search/users?keyword=${user}`, "rb");
   setLines(txt, "roblox", user, "");
   cached("rb:" + user, 600000, () => getJSON(`/api/lookup?p=roblox&u=${encodeURIComponent(user)}`)).then(j => {
     if (!j.found) return setLines(txt, "roblox", user, "Utente non trovato");
@@ -1099,19 +1164,68 @@ function robloxWidget(user) {
   return w;
 }
 function lastfmWidget(user) {
-  const { w, pic, txt } = widgetShell(`https://www.last.fm/user/${user}`);
-  setLines(txt, "last.fm", user, "Carico cosa sta ascoltando…");
+  const { w, pic, txt } = widgetShell(`https://www.last.fm/user/${user}`, "lf");
+  w.classList.add("pk-w-lf");
+  setLines(txt, "last.fm", user, "Carico il profilo…");
   // Through our server (api/lastfm.js), which keeps the key; refreshed every 30 s while on screen
   const load = () => cached("lf:" + user, 25000, () => getJSON(`/api/lastfm?user=${encodeURIComponent(user)}`)).then(j => {
-    const t = j && j.track;
-    if (!t) return setLines(txt, "last.fm", user, "Nessun ascolto ancora");
-    setPic(pic, t.image);
-    setLines(txt, t.now ? "in ascolto ora" : "ultimo ascolto", t.name, t.artist);
+    const t = j && j.track, u = j && j.profile;
+    setPic(pic, (u && u.image) || (t && t.image));
+    const head = u ? `${u.name}${u.plays ? " · " + Number(u.plays).toLocaleString("it-IT") + " ascolti" : ""}` : user;
+    if (!t) return setLines(txt, "last.fm", head, "Nessun ascolto ancora");
+    setLines(txt, t.now ? "last.fm · in ascolto ora" : "last.fm · ultimo ascolto", head, `${t.name} — ${t.artist}`);
     w.querySelector(".pk-eq")?.remove();
     if (t.now) { const eq = el("div", "pk-eq"); eq.innerHTML = "<i></i><i></i><i></i>"; w.appendChild(eq); }
   }).catch(() => setLines(txt, "last.fm", user, "Ascolti su Last.fm"));
   load();
   const timer = setInterval(() => { if (!w.isConnected) return clearInterval(timer); if (!document.hidden) { cache.delete("lf:" + user); load(); } }, 30000);
+  return w;
+}
+
+/* ---------- Small live widgets: countdown, weather, mood, note ---------- */
+const WX = { 0: ["☀️", "sereno"], 1: ["🌤️", "poco nuvoloso"], 2: ["⛅", "nuvoloso"], 3: ["☁️", "coperto"], 45: ["🌫️", "nebbia"], 48: ["🌫️", "nebbia"], 51: ["🌦️", "pioviggine"], 53: ["🌦️", "pioviggine"], 55: ["🌦️", "pioviggine"], 61: ["🌧️", "pioggia"], 63: ["🌧️", "pioggia"], 65: ["🌧️", "pioggia forte"], 71: ["🌨️", "neve"], 73: ["🌨️", "neve"], 75: ["❄️", "neve forte"], 80: ["🌦️", "rovesci"], 81: ["🌧️", "rovesci"], 82: ["⛈️", "rovesci forti"], 95: ["⛈️", "temporale"], 96: ["⛈️", "temporale"], 99: ["⛈️", "temporale"] };
+function emojiPic(pic, e) { if (pic.hidden || pic.dataset.fixed) return; pic.querySelector(".pk-emo")?.remove(); pic.appendChild(el("span", "pk-emo", e)); }
+function weatherWidget(city) {
+  const { w, pic, txt } = widgetShell(null, "wx");
+  setLines(txt, "meteo", city, "…");
+  cached("wx:" + city, 900000, async () => {
+    const g = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=it`);
+    const r = g.results && g.results[0]; if (!r) throw new Error("city");
+    const f = await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${r.latitude}&longitude=${r.longitude}&current=temperature_2m,weather_code&timezone=auto`);
+    return { name: r.name, temp: f.current.temperature_2m, code: f.current.weather_code };
+  }).then(d => {
+    const [e, label] = WX[d.code] || ["🌡️", ""];
+    emojiPic(pic, e);
+    setLines(txt, "meteo", `${Math.round(d.temp)}° a ${d.name}`, label);
+  }).catch(() => setLines(txt, "meteo", city, "Meteo non disponibile"));
+  return w;
+}
+function countdownWidget(cd) {
+  const { w, pic, txt } = widgetShell(null, "cd");
+  emojiPic(pic, "⏳");
+  const end = new Date(cd.date.length === 10 ? cd.date + "T00:00" : cd.date);
+  const tick = () => {
+    let s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+    const d = Math.floor(s / 86400); s %= 86400;
+    const hh = String(Math.floor(s / 3600)).padStart(2, "0"), mm = String(Math.floor(s % 3600 / 60)).padStart(2, "0"), ss = String(s % 60).padStart(2, "0");
+    setLines(txt, "conto alla rovescia", cd.label || end.toLocaleDateString("it-IT", { day: "numeric", month: "long" }), end <= Date.now() ? "è arrivato il giorno" : `${d}g ${hh}:${mm}:${ss}`);
+  };
+  tick();
+  const timer = setInterval(() => { if (!w.isConnected) return clearInterval(timer); tick(); }, 1000);
+  return w;
+}
+function moodWidget(text) {
+  const { w, pic, txt } = widgetShell(null, "md");
+  const m = text.match(/^\p{Extended_Pictographic}\uFE0F?/u);
+  emojiPic(pic, m ? m[0] : "💭");
+  setLines(txt, "adesso", m ? text.slice(m[0].length).trim() || text : text, "");
+  return w;
+}
+function noteWidget(text) {
+  const { w, pic, txt } = widgetShell(null, "nt");
+  w.classList.add("pk-w-note");
+  emojiPic(pic, "📌");
+  txt.replaceChildren(el("span", "tag", "nota"), el("p", "pk-note-t", text));
   return w;
 }
 
@@ -1714,6 +1828,7 @@ export function mountProfile(root, input, opts = {}) {
     nameEl.dataset.text = name;
     nameBox.appendChild(nameEl);
     nameBox.appendChild(el("div", "pk-handle", "@" + p.handle));
+    if (p.aka) nameBox.appendChild(el("div", "pk-aka", "aka " + p.aka.split("/").join(" / ")));
     if (p.clans.length) {
       const cl = el("div", "pk-clans");
       [p.primaryClan, ...p.clans.filter(t => t !== p.primaryClan)].forEach(t => {
@@ -1771,7 +1886,7 @@ export function mountProfile(root, input, opts = {}) {
       const v = p.socials[sd.key];
       if (!v) return;
       const raw = String(v).trim();
-      const url = /^(https?:|mailto:)/i.test(raw) ? safeLinkUrl(raw) : sd.base ? safeLinkUrl(sd.base + raw.replace(/^@/, "")) : null;
+      const url = socialHref(sd, raw);
       const n = el(url ? "a" : "span");
       if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; n.addEventListener("click", () => track("s", sd.key)); }
       n.title = url ? sd.label : `${sd.label}: ${raw}`;
@@ -1784,16 +1899,23 @@ export function mountProfile(root, input, opts = {}) {
     fill("soctop", hasSocials && a.socialsStyle.position === "top" ? [socials] : []);
     fill("socbot", hasSocials && a.socialsStyle.position === "bottom" ? [socials] : []);
 
-    const widgets = [];
-    if (a.widgets.discordPresence && a.widgets.discordId) widgets.push(keyedNode("dc:" + a.widgets.discordId, () => discordWidget(a.widgets.discordId)));
-    if (a.lastfm.show && a.lastfm.user) widgets.push(keyedNode("lf:" + a.lastfm.user, () => lastfmWidget(a.lastfm.user)));
-    if (a.widgets.github) widgets.push(keyedNode("gh:" + a.widgets.github, () => githubWidget(a.widgets.github)));
-    if (a.widgets.discordServer) widgets.push(keyedNode("ds:" + a.widgets.discordServer, () => discordServerWidget(a.widgets.discordServer)));
-    if (a.widgets.roblox) widgets.push(keyedNode("rb:" + a.widgets.roblox, () => robloxWidget(a.widgets.roblox)));
+    const widgets = [], W = a.widgets, PO = W.pics;
+    PIC_OVER = PO;
+    const wk = (k, v) => picKey(k, PO[k]) + ":" + v;
+    if (W.discordPresence && W.discordId) widgets.push(keyedNode(wk("dc", W.discordId), () => discordWidget(W.discordId)));
+    if (a.lastfm.show && a.lastfm.user) widgets.push(keyedNode(wk("lf", a.lastfm.user), () => lastfmWidget(a.lastfm.user)));
+    if (W.github) widgets.push(keyedNode(wk("gh", W.github), () => githubWidget(W.github)));
+    if (W.discordServer) widgets.push(keyedNode(wk("ds", W.discordServer), () => discordServerWidget(W.discordServer)));
+    if (W.roblox) widgets.push(keyedNode(wk("rb", W.roblox), () => robloxWidget(W.roblox)));
+    if (W.weather) widgets.push(keyedNode(wk("wx", W.weather), () => weatherWidget(W.weather)));
+    if (W.countdown.date) widgets.push(keyedNode(wk("cd", W.countdown.date + W.countdown.label), () => countdownWidget(W.countdown)));
+    if (W.mood) widgets.push(keyedNode(wk("md", W.mood), () => moodWidget(W.mood)));
+    if (W.note) widgets.push(keyedNode(wk("nt", W.note), () => noteWidget(W.note)));
     fill("widgets", widgets);
 
     const m = a.music, music = [];
     if (m.type === "spotify" && spotifyEmbed(m.url)) music.push(keyedNode("sp:" + m.url, () => embed(spotifyEmbed(m.url), "Spotify")));
+    if (m.type === "deezer" && deezerEmbed(m.url)) music.push(keyedNode("dz:" + m.url, () => embed(deezerEmbed(m.url), "Deezer")));
     if (m.type === "soundcloud" && soundcloudEmbed(m.url)) music.push(keyedNode("sc:" + m.url, () => embed(soundcloudEmbed(m.url), "SoundCloud")));
     if (m.type === "youtube" && youtubeEmbed(m.url)) music.push(keyedNode("yt:" + m.url, () => embed(youtubeEmbed(m.url), "YouTube")));
     if (m.type === "audio" && m.tracks.length) {
@@ -1871,11 +1993,14 @@ export function mountProfile(root, input, opts = {}) {
       tagNodes.push(tg);
     }
     // The identity card made in the dashboard: a button that shows it full screen
-    if (p.card && p.card.on !== false) {
-      tagNodes.push(keyedNode("cardbtn", () => {
+    // Shown also before the card is designed (the default card), unless it was switched off
+    if (!p.card || p.card.on !== false) {
+      const ck = JSON.stringify(p.card || 0); let hs = 0; for (let i = 0; i < ck.length; i++) hs = (hs * 31 + ck.charCodeAt(i)) | 0;
+      tagNodes.push(keyedNode("cardbtn:" + hs + p.handle + p.avatarUrl, () => {
         const b = el("button", "pk-cardbtn");
-        b.type = "button";
-        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>la mia carta</span>';
+        b.type = "button"; b.setAttribute("aria-label", "Apri la carta");
+        const mini = el("div", "pk-cmini"); b.append(mini, el("span", null, "tocca la carta"));
+        import("./card-kit.js").then(m => { const cur = p; m.mountCard(mini, cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }, {}); }).catch(() => {});
         b.addEventListener("click", () => {
           const cur = st.last;
           import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }));
@@ -2071,7 +2196,7 @@ export function readableOn(hex) {
 export function publicFields(p) {
   const n = normalizeProfile(p);
   return {
-    handle: n.handle, displayName: n.displayName, bio: n.bio, tags: n.tags, location: n.location,
+    handle: n.handle, displayName: n.displayName, bio: n.bio, tags: n.tags, location: n.location, aka: n.aka,
     avatarUrl: n.avatarUrl.startsWith("data:") ? "" : n.avatarUrl,
     links: n.links.filter(l => !l.hidden && (!l.password || l.lock)).map(({ password, ...l }) => l),
     socials: n.socials, badges: n.badges, clans: n.clans, primaryClan: n.primaryClan,

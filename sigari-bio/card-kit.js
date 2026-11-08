@@ -11,6 +11,21 @@ export const CARD_BORDERS = [["none", "Nessuno"], ["line", "Linea"], ["double", 
 export const CARD_NAME_POS = [["bl", "In basso"], ["tl", "In alto"], ["c", "Al centro"], ["br", "A destra"]];
 export const STICKER_STYLES = [["diecut", "Sticker (bordo bianco)"], ["plain", "Solo ombra"], ["round", "Tondo"], ["polaroid", "Polaroid"], ["glow", "Bagliore"]];
 export const TEXT_PARTS = ["brand", "avatar", "num", "name", "meta"];
+// How the card opens when someone taps it on the profile
+export const CARD_OPEN = [["flip", "Giro"], ["zoom", "Zoom"], ["rise", "Dal basso"], ["drop", "Caduta"], ["spin", "Trottola"], ["unfold", "Si apre"], ["swing", "Altalena"], ["glitch", "Glitch"], ["pixel", "Pixel"], ["blur", "Sfocato"]];
+export const CARD_OPEN_SPEED = [["0.6", "Lenta"], ["1", "Normale"], ["1.6", "Veloce"]];
+const OPEN_KF = {
+  flip: "0%{opacity:0;transform:perspective(1200px) rotateY(-180deg) scale(.6)}60%{opacity:1}100%{transform:perspective(1200px) rotateY(0) scale(1)}",
+  zoom: "0%{opacity:0;transform:scale(.2)}70%{opacity:1;transform:scale(1.05)}100%{transform:scale(1)}",
+  rise: "0%{opacity:0;transform:translateY(60vh) rotate(-8deg)}70%{opacity:1;transform:translateY(-12px) rotate(1deg)}100%{transform:none}",
+  drop: "0%{opacity:0;transform:translateY(-70vh) rotate(6deg)}55%{opacity:1;transform:translateY(0) rotate(0)}70%{transform:translateY(-26px)}85%{transform:translateY(0)}92%{transform:translateY(-8px)}100%{transform:none}",
+  spin: "0%{opacity:0;transform:rotate(-540deg) scale(.1)}100%{opacity:1;transform:none}",
+  unfold: "0%{opacity:0;transform:perspective(1200px) rotateX(90deg) scaleY(.2);transform-origin:50% 100%}100%{opacity:1;transform:perspective(1200px) rotateX(0) scaleY(1);transform-origin:50% 100%}",
+  swing: "0%{opacity:0;transform:perspective(1000px) rotateX(-70deg);transform-origin:50% 0}50%{opacity:1;transform:perspective(1000px) rotateX(25deg);transform-origin:50% 0}75%{transform:perspective(1000px) rotateX(-10deg);transform-origin:50% 0}100%{transform:none;transform-origin:50% 0}",
+  glitch: "0%{opacity:0;transform:translate(-30px,0) skewX(20deg);filter:hue-rotate(90deg)}15%{opacity:1;transform:translate(20px,4px) skewX(-15deg)}30%{transform:translate(-12px,-3px);filter:hue-rotate(-60deg)}45%{transform:translate(8px,0) skewX(6deg)}60%{transform:none;filter:none;clip-path:inset(20% 0 30% 0)}75%{clip-path:inset(0 0 60% 0)}100%{clip-path:inset(0);transform:none}",
+  pixel: "0%{opacity:0;filter:blur(14px) contrast(4);transform:scale(.92)}50%{opacity:1;filter:blur(6px) contrast(2.5)}100%{filter:none;transform:none}",
+  blur: "0%{opacity:0;filter:blur(30px);transform:scale(1.25)}100%{opacity:1;filter:none;transform:none}"
+};
 export const STICKER_EMOJI = ["★", "♥", "✦", "☾", "⚡", "☠", "♛", "✿", "☯", "♠", "18K", "XO", "OK", "#1"];
 
 export const DEFAULT_CARD = {
@@ -28,7 +43,8 @@ export const DEFAULT_CARD = {
   namePos: "bl",
   showBrand: true, showAvatar: true, showNumber: true, showDate: true,
   number: "", line: "",
-  stickers: []
+  stickers: [],
+  open: { anim: "flip", speed: 1 }
 };
 
 // Ready-made looks; everything stays editable after
@@ -94,6 +110,7 @@ export function normalizeCard(raw) {
   c.number = String(c.number || "").slice(0, 24); c.line = String(c.line || "").slice(0, 60);
   c.stickers = (Array.isArray(c.stickers) ? c.stickers : []).map(normalizeSticker).filter(Boolean).slice(0, 12);
   c.preset = String(c.preset || "").slice(0, 20);
+  c.open = { anim: pick(c.open && c.open.anim, CARD_OPEN, "flip"), speed: [0.6, 1, 1.6].includes(+(c.open && c.open.speed)) ? +c.open.speed : 1 };
   // texts moved freely in the editor: top-left corner in % of the card
   const pos = isObj(c.pos) ? c.pos : {};
   c.pos = {};
@@ -468,17 +485,26 @@ export async function makeSticker(file, { removeBg = true, tolerance = 42, max =
 }
 
 /* ---------- Full screen card viewer (profile button) ---------- */
-export function openCardViewer(card, data) {
+export function openCardViewer(card, data, opts = {}) {
   ensureCss();
+  const c = normalizeCard(card);
+  const anim = opts.anim || c.open.anim, speed = +(opts.speed || c.open.speed) || 1;
+  const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ms = Math.round((anim === "drop" || anim === "swing" ? 1100 : 800) / speed);
   const ov = h("div");
-  ov.style.cssText = "position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:k4in .35s steps(5,end)";
+  ov.style.cssText = `position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:k4in ${Math.round(ms * .5)}ms ease both`;
   const box = h("div"); box.style.cssText = "width:min(560px,92vw)";
+  if (!reduce) box.style.animation = `k4o-${anim} ${ms}ms cubic-bezier(.2,.8,.2,1) both`;
   const close = h("button"); close.type = "button"; close.textContent = "chiudi";
   close.style.cssText = "position:absolute;top:16px;right:16px;border:1px solid rgba(255,255,255,.3);background:#000;color:#fff;border-radius:999px;padding:8px 14px;font:500 13px system-ui;cursor:pointer";
   ov.append(box, close);
-  if (!document.getElementById("k4-in")) { const st = h("style"); st.id = "k4-in"; st.textContent = "@keyframes k4in{from{opacity:0}to{opacity:1}}"; document.head.appendChild(st); }
+  if (!document.getElementById("k4-in")) {
+    const st = h("style"); st.id = "k4-in";
+    st.textContent = "@keyframes k4in{from{opacity:0}to{opacity:1}}" + Object.entries(OPEN_KF).map(([k, v]) => `@keyframes k4o-${k}{${v}}`).join("");
+    document.head.appendChild(st);
+  }
   document.body.appendChild(ov);
-  const m = mountCard(box, card, data, {});
+  const m = mountCard(box, c, data, {});
   const done = () => { m.destroy(); ov.remove(); removeEventListener("keydown", key); };
   const key = e => { if (e.key === "Escape") done(); };
   close.addEventListener("click", done);

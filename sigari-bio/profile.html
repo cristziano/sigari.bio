@@ -149,6 +149,8 @@
         : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
     }
     const data = snap.data();
+    if (data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18k.bio", "/"]);
+    if (data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"]);
     if (data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 18k.bio", "/"]);
 
     msg.hidden = true;
