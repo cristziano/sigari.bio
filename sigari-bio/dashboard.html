@@ -1383,7 +1383,7 @@
         <div class="label">prefisso</div>
         <div class="ln-chips" id="lnDomains"></div>
         <div class="field" style="margin-top:12px"><div class="label">forma</div><div class="seg" data-seg="appearance.link.format" data-o="lnFormat"></div></div>
-        <p class="hint">18k.bio/nome funziona già. Gli altri prefissi si accendono quando li attiviamo: la tua scelta resta salvata e il link cambia da solo.</p>
+        <p class="hint">Il prefisso è solo una scritta: appare sopra l'anteprima quando mandi il link su Discord o WhatsApp. Il link vero resta sempre 18k.bio/nome, quindi funziona ovunque e non costa niente.</p>
       </div>
       <div class="label section-label">anteprima del link</div>
       <div class="card">
@@ -1397,7 +1397,7 @@
             </div>
           </div>
           <div class="ln-embed" id="lnEmbed" aria-label="Anteprima su Discord">
-            <span class="ln-site">18k.bio</span><b id="lnTitle"></b><p id="lnDesc"></p><div class="ln-img" id="lnImg"></div>
+            <span class="ln-site" id="lnSite">18k.bio</span><b id="lnTitle"></b><p id="lnDesc"></p><div class="ln-img" id="lnImg"></div>
           </div>
         </div>
         <p class="hint">Senza immagine si usa la foto profilo. Discord e WhatsApp aggiornano l'anteprima dopo qualche minuto.</p>
@@ -2869,7 +2869,8 @@
   function renderLinkPage() {
     const a = draft.appearance, l = a.link;
     $("lnShow").textContent = `${l.domain}${l.format}${handle}`;
-    $("lnDomains").innerHTML = LINK_DOMAINS.map(([d, k]) => `<button type="button" data-d="${d}" class="${d === l.domain ? "on" : ""}">${d}<small>${d === "18k.bio" ? "attivo" : k}</small></button>`).join("");
+    $("lnSite").textContent = `${l.domain}${l.format}${handle}`;
+    $("lnDomains").innerHTML = LINK_DOMAINS.map(([d, k]) => `<button type="button" data-d="${d}" class="${d === l.domain ? "on" : ""}">${d}<small>${k}</small></button>`).join("");
     $("lnTitle").textContent = a.title.text || `${draft.displayName || handle} · 18k.bio`;
     $("lnDesc").textContent = a.seo.description || plainText(draft.bio || "") || `@${handle} su 18k.bio`;
     const img = a.seo.image || draft.avatarUrl;

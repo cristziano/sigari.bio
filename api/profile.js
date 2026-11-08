@@ -54,6 +54,9 @@ module.exports = async (req, res) => {
         }
       } else if (!(f.private && f.private.booleanValue)) {
         const a = fields(f.appearance), seo = fields(a.seo), colors = fields(a.colors), title = fields(a.title);
+        // The chosen 18k prefix is only a label in the preview (Discord, WhatsApp…): the real link stays 18k.bio/name
+        const ln = fields(a.link), dom = str(ln.domain), fmt = str(ln.format) === "/@" ? "/@" : "/";
+        const shown = /^[a-z0-9]{2,5}\.[a-z]{2,4}$/.test(dom) ? `${dom}${fmt}${handle}` : "18k.bio";
         const name = str(f.displayName) || handle;
         const t = str(title.text) || `${name} · 18k.bio`;
         const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 18k.bio`;
@@ -64,7 +67,7 @@ module.exports = async (req, res) => {
           `<meta name="description" content="${esc(d)}">`,
           `<meta name="theme-color" content="${color}">`,
           `<meta property="og:type" content="profile">`,
-          `<meta property="og:site_name" content="18k.bio">`,
+          `<meta property="og:site_name" content="${esc(shown)}">`,
           `<meta property="og:title" content="${esc(t)}">`,
           `<meta property="og:description" content="${esc(d)}">`,
           `<meta property="og:url" content="${esc(origin + "/" + handle)}">`,
