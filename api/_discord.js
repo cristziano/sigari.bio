@@ -60,10 +60,12 @@ const thumbUrl = (u, w) => { try { const x = new URL(u); if (/discordapp\.(net|c
 
 // Where the dashboard uploads go (photos, audio, fonts): a hidden channel "18k-file" that only the bot sees.
 // Firebase Storage needs a paid plan; Discord keeps the files for free and /api/photo gives links that don't expire.
-let fileCh = null;
+let fileCh = null, fileFailAt = 0;
 async function fileChannel() {
   if (process.env.FILE_CHANNEL && SNOWFLAKE.test(process.env.FILE_CHANNEL)) return process.env.FILE_CHANNEL;
   if (fileCh) return fileCh;
+  // the bot can't make one: don't ask Discord again for 10 minutes (uploads go to Firestore meanwhile)
+  if (Date.now() - fileFailAt < 600e3) throw Object.assign(new Error("Discord ha risposto 403"), { status: 403 });
   fileCh = (async () => {
     const guild = await guildOf(ALBUMS.sets.channel);
     const all = await discord(`/guilds/${guild}/channels`).catch(() => []);
@@ -96,7 +98,7 @@ async function fileChannel() {
       permission_overwrites: [{ id: guild, type: 0, deny: "1024" }, { id: me.id, type: 1, allow: String(1024 + 2048 + 32768 + 65536) }]
     }) });
     return c.id;
-  })().catch(e => { fileCh = null; throw e; });
+  })().catch(e => { fileCh = null; fileFailAt = Date.now(); throw e; });
   return fileCh;
 }
 

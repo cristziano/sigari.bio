@@ -7,6 +7,35 @@ const { ALBUMS, SNOWFLAKE, discord, mediaOf, fileChannel } = require("./_discord
 const { verifyUser } = require("./_auth");
 
 const MAX = 4.3 * 1024 * 1024; // Vercel takes at most 4.5 MB per request
+// When the bot can't keep the file on Discord, it goes to Firestore in pieces (free): /files/{id} + /files/{id}/parts/{n}
+const FS = "https://firestore.googleapis.com/v1/projects/kbio-c6126/databases/(default)/documents";
+const PART = 900 * 1024;
+async function saveToFirestore(buf, type, uid, token) {
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const parts = Math.ceil(buf.length / PART);
+  const post = (path, docId, fields) => fetch(`${FS}/${path}?documentId=${docId}`, { method: "POST", headers: { Authorization: token, "Content-Type": "application/json" }, body: JSON.stringify({ fields }), signal: AbortSignal.timeout(20000) });
+  const r = await post("files", id, { uid: { stringValue: uid }, type: { stringValue: type }, parts: { integerValue: String(parts) }, size: { integerValue: String(buf.length) }, createdAt: { timestampValue: new Date().toISOString() } });
+  if (!r.ok) throw Object.assign(new Error(r.status === 403 ? "Le regole di Firestore vanno aggiornate per caricare file (pubblica il file regole-firestore.txt)." : "Caricamento non riuscito, riprova."), { status: r.status });
+  for (let n = 0; n < parts; n++) {
+    const p = await post(`files/${id}/parts`, String(n), { d: { bytesValue: buf.subarray(n * PART, (n + 1) * PART).toString("base64") } });
+    if (!p.ok) throw new Error("Caricamento non riuscito a metà, riprova.");
+  }
+  return id;
+}
+async function sendFromFirestore(res, id) {
+  if (!/^[a-z0-9]{6,24}$/.test(id)) { res.statusCode = 400; return res.end("File sconosciuto."); }
+  const get = path => fetch(`${FS}/${path}`, { signal: AbortSignal.timeout(10000) }).then(r => r.ok ? r.json() : null);
+  const doc = await get(`files/${id}`);
+  if (!doc) { res.statusCode = 404; return res.end("File non trovato."); }
+  const n = Math.min(8, parseInt(doc.fields.parts.integerValue, 10) || 0);
+  const parts = await Promise.all(Array.from({ length: n }, (_, k) => get(`files/${id}/parts/${k}`)));
+  if (parts.some(p => !p)) { res.statusCode = 502; return res.end("File incompleto."); }
+  const buf = Buffer.concat(parts.map(p => Buffer.from(p.fields.d.bytesValue, "base64")));
+  res.setHeader("Content-Type", doc.fields.type.stringValue || "application/octet-stream");
+  res.setHeader("Cache-Control", "public, max-age=31536000, s-maxage=31536000, immutable");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.end(buf);
+}
 const TYPES = /^(image\/(png|jpeg|webp|gif|apng)|audio\/(mpeg|mp3|ogg|wav|x-wav|mp4|aac|x-m4a)|video\/mp4|font\/(ttf|otf|woff2?)|application\/(font-woff|x-font-ttf|octet-stream))$/;
 async function upload(req, res, url) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -20,15 +49,22 @@ async function upload(req, res, url) {
   for await (const c of req) { size += c.length; if (size > MAX) return fail(413, "Il file è troppo grande: massimo 4 MB."); chunks.push(c); }
   if (!size) return fail(400, "File vuoto.");
   const name = String(url.searchParams.get("name") || "file").replace(/[^a-z0-9._-]/gi, "").slice(-60) || "file";
+  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host);
+  let ch = "";
+  try { ch = await fileChannel(); } catch (_) { ch = ""; }
+  if (!ch) {
+    try {
+      const id = await saveToFirestore(Buffer.concat(chunks), type, uid, String(req.headers.authorization));
+      return res.end(JSON.stringify({ url: `${origin}/api/photo?file=${id}` }));
+    } catch (e) { return fail(e.status === 403 ? 403 : 502, e.message); }
+  }
   try {
-    const ch = await fileChannel();
     const fd = new FormData();
     fd.append("payload_json", JSON.stringify({ content: `uid:${uid}`, attachments: [{ id: 0, filename: name }], allowed_mentions: { parse: [] } }));
     fd.append("files[0]", new Blob([Buffer.concat(chunks)], { type }), name);
     const r = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, { method: "POST", headers: { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN }, body: fd, signal: AbortSignal.timeout(25000) });
     if (!r.ok) return fail(502, r.status === 403 ? "Il bot non può creare o usare il canale 18k-file: dagli il permesso Gestisci canali." : "Discord non ha preso il file, riprova.");
     const m = await r.json();
-    const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host);
     res.end(JSON.stringify({ url: `${origin}/api/photo?album=file&m=${m.id}&i=0` }));
   } catch (e) {
     fail(e.status === 403 ? 403 : 502, e.status === 403 ? "Il bot non può creare il canale 18k-file: dagli il permesso Gestisci canali, oppure crea tu un canale chiamato 18k-file dove solo il bot può scrivere." : "Caricamento non riuscito, riprova.");
@@ -38,6 +74,7 @@ async function upload(req, res, url) {
 module.exports = async (req, res) => {
   const url = new URL(req.url, "https://18k.bio");
   if (req.method === "POST" && url.searchParams.get("upload") === "1") return upload(req, res, url);
+  if (url.searchParams.get("file")) { try { return await sendFromFirestore(res, url.searchParams.get("file")); } catch (_) { res.statusCode = 502; return res.end("File non raggiungibile."); } }
   const isFile = url.searchParams.get("album") === "file";
   const album = isFile ? { channel: await fileChannel().catch(() => "") } : ALBUMS[url.searchParams.get("album") || ""];
   const m = url.searchParams.get("m") || "", i = Math.max(0, Math.min(20, parseInt(url.searchParams.get("i") || "0", 10) || 0));
