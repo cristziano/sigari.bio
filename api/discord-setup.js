@@ -13,6 +13,9 @@ const COMMANDS = [{
   dm_permission: false,
   options: [
     { type: 11, name: "pfp", description: "La foto profilo", required: true },
+    { type: 11, name: "pfp2", description: "Un'altra pfp (facoltativa)", required: false },
+    { type: 11, name: "pfp3", description: "Un'altra pfp (facoltativa)", required: false },
+    { type: 11, name: "pfp4", description: "Un'altra pfp (facoltativa)", required: false },
     { type: 11, name: "banner", description: "Il banner (facoltativo)", required: false },
     { type: 3, name: "canale", description: "Dove postarla (di base #pfps)", required: false, choices: [{ name: "pfps", value: "pfps" }, { name: "sets", value: "sets" }, { name: "replies", value: "replies" }] },
     { type: 3, name: "crediti", description: "Scritta sotto, es. by dede", required: false, max_length: 60 }

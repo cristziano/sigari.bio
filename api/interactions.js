@@ -79,17 +79,17 @@ async function getFile(a) {
 }
 async function doPosta(i, opt) {
   const att = (i.data.resolved && i.data.resolved.attachments) || {};
-  const pfpA = att[opt.pfp], banA = opt.banner ? att[opt.banner] : null;
+  const pfpAs = ["pfp", "pfp2", "pfp3", "pfp4"].map(k => opt[k] && att[opt[k]]).filter(Boolean), pfpA = pfpAs[0], banA = opt.banner ? att[opt.banner] : null;
   const album = ALBUMS[opt.canale] ? opt.canale : "pfps";
   const me = (i.member && i.member.user) || i.user || {};
   const edit = content => fetch(`${API}/webhooks/${i.application_id}/${i.token}/messages/@original`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) }).catch(() => {});
   try {
-    if (!pfpA || !/^image\//.test(pfpA.content_type || "image/")) return edit("Allega un'immagine come pfp.");
+    if (!pfpA || pfpAs.some(x => !/^image\//.test(x.content_type || "image/"))) return edit("Le pfp devono essere immagini (PNG, JPG, GIF, WebP).");
     if (banA && !/^image\//.test(banA.content_type || "image/")) return edit("Il banner deve essere un'immagine.");
-    const [pfp, ban] = await Promise.all([getFile(pfpA), banA ? getFile(banA) : null]);
+    const [ban, ...pfps] = await Promise.all([banA ? getFile(banA) : null, ...pfpAs.map(getFile)]);
     const { preview } = require("./_preview");
-    const prev = await preview(pfp, ban);
-    const files = [["18k-preview.png", prev, "image/png"], [`pfp.${extOf(pfpA)}`, pfp, pfpA.content_type || "image/png"]];
+    const prev = await preview(pfps[0], ban);
+    const files = [["18k-preview.png", prev, "image/png"], ...pfps.map((buf, k) => [`pfp${pfps.length > 1 ? k + 1 : ""}.${extOf(pfpAs[k])}`, buf, pfpAs[k].content_type || "image/png"])];
     if (ban) files.push([`banner.${extOf(banA)}`, ban, banA.content_type || "image/png"]);
     const credit = String(opt.crediti || "").trim().slice(0, 60) || `by ${me.global_name || me.username || "18k"}`;
     const link = `${SITE}/#${Date.now().toString(36)}`;
@@ -98,7 +98,7 @@ async function doPosta(i, opt) {
     files.slice(1).forEach(([name]) => embeds.push({ url: link, image: { url: `attachment://${name}` } }));
     const payload = {
       embeds, attachments: files.map(([name], id) => ({ id, filename: name })),
-      components: [{ type: 1, components: [{ type: 2, style: 2, custom_id: "18k:dl", emoji: { name: "⬇️" }, label: ban ? "pfp e banner" : "pfp" }] }],
+      components: [{ type: 1, components: [{ type: 2, style: 2, custom_id: "18k:dl", emoji: { name: "⬇️" }, label: (pfps.length > 1 ? `${pfps.length} pfp` : "pfp") + (ban ? " e banner" : "") }] }],
       allowed_mentions: { parse: [] }
     };
     const fd = new FormData();
@@ -115,13 +115,12 @@ async function doPosta(i, opt) {
 // ⬇ button: sends the pfp and banner of that post only to who pressed it
 function sendFiles(res, i) {
   const at = (i.message && i.message.attachments) || [];
-  const pick = n => at.find(a => new RegExp("^" + n + "\\.", "i").test(a.filename || ""));
-  const out = [pick("pfp"), pick("banner")].filter(Boolean);
+  const out = [...at.filter(a => /^pfp\d?\./i.test(a.filename || "")), ...at.filter(a => /^banner\./i.test(a.filename || ""))];
   if (!out.length) return secret(res, "Non trovo i file di questo post.");
   return reply(res, {
     flags: 64,
     embeds: out.map(a => ({ url: SITE, image: { url: a.url } })),
-    components: [{ type: 1, components: out.map(a => ({ type: 2, style: 5, label: /^pfp/i.test(a.filename) ? "Scarica la pfp" : "Scarica il banner", url: a.url })) }]
+    components: [{ type: 1, components: out.slice(0, 5).map(a => ({ type: 2, style: 5, label: /^pfp/i.test(a.filename) ? "Scarica " + a.filename.replace(/\..*$/, "") : "Scarica il banner", url: a.url })) }]
   });
 }
 
