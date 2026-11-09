@@ -25,20 +25,32 @@ function customToken(uid, claims) {
   return head + "." + body + "." + b64u(sig);
 }
 
-const back = (res, hash) => { res.statusCode = 302; res.setHeader("Location", "/login.html#" + hash); res.end(); };
+// Discord only accepts the return address saved in its app: always come back through this one,
+// then send the person to the site address they started from (only our own addresses).
+const HOME = "18kbio.vercel.app";
+const SITES = ["18kbio.xyz", "www.18kbio.xyz", "18kbio.vercel.app"];
+const back = (res, hash, site) => { res.statusCode = 302; res.setHeader("Location", (site && SITES.includes(site) ? `https://${site}` : "") + "/login.html#" + hash); res.end(); };
 
 module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   const url = new URL(req.url, "https://" + req.headers.host);
-  const redirect = `https://${req.headers.host}/api/discord-login`;
+  const redirect = `https://${HOME}/api/discord-login`;
+  const host = String(req.headers["x-forwarded-host"] || req.headers.host || "");
+  // started on 18kbio.xyz: hop to the address Discord knows, remembering where to go back
+  if (host !== HOME && !url.searchParams.get("code") && !url.searchParams.get("error")) {
+    res.statusCode = 302;
+    res.setHeader("Location", `https://${HOME}/api/discord-login?site=${encodeURIComponent(SITES.includes(host) ? host : "18kbio.xyz")}`);
+    return res.end();
+  }
+  const site = SITES.includes(url.searchParams.get("site")) ? url.searchParams.get("site") : (cookie(req, "dlsite") || HOME);
   if (!process.env.DISCORD_CLIENT_SECRET || !process.env.FIREBASE_SERVICE_ACCOUNT) return back(res, "derr=" + encodeURIComponent("L'accesso con Discord non è ancora attivo."));
 
   const code = url.searchParams.get("code");
   if (!code) {
-    if (url.searchParams.get("error")) return back(res, "derr=" + encodeURIComponent("Accesso con Discord annullato."));
+    if (url.searchParams.get("error")) return back(res, "derr=" + encodeURIComponent("Accesso con Discord annullato."), site);
     // Step 1: off to Discord, with a random "state" kept in a short cookie against forged returns
     const state = crypto.randomBytes(16).toString("hex");
-    res.setHeader("Set-Cookie", `dlstate=${state}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`);
+    res.setHeader("Set-Cookie", [`dlstate=${state}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`, `dlsite=${encodeURIComponent(site)}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`]);
     res.statusCode = 302;
     res.setHeader("Location", "https://discord.com/oauth2/authorize?" + new URLSearchParams({ client_id: CLIENT_ID, response_type: "code", scope: "identify email", redirect_uri: redirect, state, prompt: "none" }));
     return res.end();
@@ -46,7 +58,7 @@ module.exports = async (req, res) => {
 
   try {
     if (!url.searchParams.get("state") || url.searchParams.get("state") !== cookie(req, "dlstate")) throw new Error("Accesso scaduto, riprova.");
-    res.setHeader("Set-Cookie", "dlstate=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax");
+    res.setHeader("Set-Cookie", ["dlstate=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax", "dlsite=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax"]);
     const t = await fetch("https://discord.com/api/v10/oauth2/token", {
       method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ client_id: CLIENT_ID, client_secret: process.env.DISCORD_CLIENT_SECRET, grant_type: "authorization_code", code, redirect_uri: redirect })
@@ -57,8 +69,8 @@ module.exports = async (req, res) => {
     const token = customToken("discord:" + me.id, { discord: me.id });
     const name = me.global_name || me.username || "";
     const email = me.verified && me.email ? me.email : "";
-    return back(res, new URLSearchParams({ dt: token, dn: name, de: email, di: me.id }).toString());
+    return back(res, new URLSearchParams({ dt: token, dn: name, de: email, di: me.id }).toString(), site);
   } catch (e) {
-    return back(res, "derr=" + encodeURIComponent(e.message || "Accesso con Discord non riuscito."));
+    return back(res, "derr=" + encodeURIComponent(e.message || "Accesso con Discord non riuscito."), site);
   }
 };
