@@ -4,6 +4,18 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function ownsHandle(h) { return signedIn() && get(/databases/$(database)/documents/usernames/$(h)).data.uid == request.auth.uid; }
+    // Staff: the founder's @ plus whoever the staff adds (a document in /staff with their account id)
+    function isStaff() {
+      return signedIn() && (exists(/databases/$(database)/documents/staff/$(request.auth.uid))
+        || (exists(/databases/$(database)/documents/users/$(request.auth.uid))
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('handle', '') in ['god']));
+    }
+
+    match /staff/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isStaff());
+      allow create: if isStaff() && request.resource.data.keys().hasOnly(['handle', 'addedBy', 'createdAt']);
+      allow delete: if isStaff();
+    }
 
     // @handle reservations. Extra names (aliases) live here too, with aliasOf pointing to the main handle.
     match /usernames/{handle} {
@@ -46,13 +58,19 @@ service cloud.firestore {
       // The owner of the handle writes everything except the view counter
       // and the badges, which only staff assign from the Firebase console
       allow create: if ownsHandle(handle)
+                    && !('staffHidden' in request.resource.data)
                     && !('views' in request.resource.data)
                     && !('likes' in request.resource.data)
                     && request.resource.data.get('badges', []).hasOnly(['beta']);
       allow update: if ownsHandle(handle)
                     && request.resource.data.get('views', 0) == resource.data.get('views', 0)
                     && request.resource.data.get('likes', 0) == resource.data.get('likes', 0)
-                    && request.resource.data.get('badges', []) == resource.data.get('badges', []);
+                    && request.resource.data.get('badges', []) == resource.data.get('badges', [])
+                    && request.resource.data.get('staffHidden', false) == resource.data.get('staffHidden', false);
+
+      // Staff: badges and hiding a profile, nothing else
+      allow update: if isStaff()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['badges', 'private', 'staffHidden']);
 
       // Visitors can only add one view at a time
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
@@ -87,7 +105,8 @@ service cloud.firestore {
                     && request.resource.data.reason in ['spam', 'falso', 'offensivo', 'illegale', 'minori', 'altro']
                     && request.resource.data.text is string && request.resource.data.text.size() <= 500
                     && request.resource.data.createdAt == request.time;
-      allow read, update, delete: if false;
+      allow read, delete: if isStaff();
+      allow update: if false;
     }
 
     // Daily statistics written by the public page. Each write adds exactly 1 to up to
@@ -219,7 +238,7 @@ service cloud.firestore {
                         && request.resource.data.uses == resource.data.uses)
                     || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uses'])
                         && request.resource.data.uses == resource.data.uses + 1);
-      allow delete: if signedIn() && resource.data.authorUid == request.auth.uid;
+      allow delete: if (signedIn() && resource.data.authorUid == request.auth.uid) || isStaff();
     }
   }
 }

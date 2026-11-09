@@ -115,6 +115,17 @@
   .logo span { color:#666; }
   .nav-group { margin-bottom:4px; }
   .nav-top { margin-bottom:10px; }
+  .st-prof { display:grid; gap:12px; margin-top:14px; padding:14px; border:1px solid var(--b); border-radius:14px; background:var(--bg); }
+  .st-head { display:flex; align-items:center; gap:12px; }
+  .st-head img, .st-head .st-ph { width:52px; height:52px; border-radius:50%; object-fit:cover; background:var(--s3); flex:none; }
+  .st-head b { display:block; font-size:16px; } .st-head span { font-size:12.5px; color:var(--m); }
+  .st-badges { display:flex; flex-wrap:wrap; gap:6px; }
+  .st-badges label { display:flex; align-items:center; gap:6px; padding:7px 11px; border:1px solid var(--b); border-radius:999px; font-size:13px; cursor:pointer; }
+  .st-badges label:has(input:checked) { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+  .st-badges input { display:none; }
+  .st-list { display:grid; gap:8px; }
+  .st-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 12px; border:1px solid var(--b); border-radius:12px; font-size:13.5px; }
+  .st-row b { font-family:"Geist Mono",monospace; } .st-row span { color:var(--m); flex:1; min-width:140px; }
   .soontag { margin-left:auto; position:relative; font:600 9.5px "Geist Mono",monospace; letter-spacing:.12em; color:var(--d); padding:2px 6px; border:1px dashed var(--b); border-radius:6px; }
   #nav button:has(.soontag) > span:not(.soontag), #nav button:has(.soontag) svg { opacity:.45; }
   .view.soon { position:relative; }
@@ -1061,6 +1072,24 @@
 
 
     <!-- LINKS (guns.lol: Links) -->
+    <section class="view hidden" id="view-staff">
+      <h2>Pannello staff</h2>
+      <p class="desc">Solo per lo staff di 18k. Dai e togli i badge, nascondi i profili che non rispettano le regole, guarda le segnalazioni.</p>
+      <div class="label section-label">cerca un profilo</div>
+      <div class="card">
+        <div class="row"><div class="prefix-field" style="flex:1;min-width:200px"><span class="prefix">18k.bio/</span><input id="stQuery" maxlength="20" autocomplete="off" placeholder="nome"></div><button class="save-btn sm" id="stOpen" type="button">Apri</button></div>
+        <div class="st-prof hidden" id="stProf"></div>
+      </div>
+      <div class="label section-label">segnalazioni <span class="val" id="stRepN"></span></div>
+      <div class="card"><div class="st-list" id="stReports"><p class="hint">Carico…</p></div></div>
+      <div class="label section-label">membri dello staff</div>
+      <div class="card">
+        <div class="st-list" id="stStaff"></div>
+        <div class="row" style="margin-top:10px"><div class="prefix-field" style="flex:1;min-width:200px"><span class="prefix">@</span><input id="stAdd" maxlength="20" autocomplete="off" placeholder="nome da aggiungere"></div><button class="ghost-btn sm" id="stAddBtn" type="button">Aggiungi allo staff</button></div>
+        <p class="hint">Chi è nello staff vede questa pagina e riceve il badge staff.</p>
+      </div>
+    </section>
+
     <section class="view hidden" id="view-publish">
       <h2>Pubblica</h2>
       <p class="desc">Quando il profilo ti piace, lo metti online da qui. Il tasto Salva tiene le modifiche nel tuo account; se sei già online le vedono subito anche gli altri.</p>
@@ -1866,6 +1895,7 @@
       ["overview", "Panoramica", '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'],
       ["analytics", "Statistiche", '<path d="M3 17l6-6 4 4 8-8"/>'],
       ["badges", "Badge", '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>'],
+      ["staff", "Staff", '<path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>', "staff"],
       ["settings", "Impostazioni", '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>']]],
     ["profilo", [
       ["customize", "Personalizza", '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "inizia qui"],
@@ -1894,7 +1924,7 @@
     let closed = [];
     // First visit: only the essentials open, the rest one tap away
     try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["avanzate", "community", "image host"]; } catch (_) { closed = []; }
-    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag === "soon" ? '<span class="soontag" data-text="SOON">SOON</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
+    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag === "soon" ? '<span class="soontag" data-text="SOON">SOON</span>' : tag === "staff" ? '<span class="newtag">staff</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
     $("nav").innerHTML = NAV.map(([group, items]) => !group ? `<div class="nav-top">${items.map(item).join("")}</div>` : `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
       + `<div class="nav-foot">${FOOT.map(item).join("")}</div>`;
     $("mnav").innerHTML = NAV.map(([group, items]) => `<optgroup label="${group}">${items.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`).join("") + `<optgroup label="altro">${FOOT.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`;
@@ -1942,6 +1972,7 @@
     if (name === "gallery") renderGallery();
     if (name === "clans") renderClans();
     if (name === "publish") renderPublish();
+    if (name === "staff") renderStaff();
     if (name === "music") { renderSources(); renderLastfm(); }
     if (name === "widgets") renderWidgetPics();
     if (name === "page") renderLinkPage();
@@ -3232,6 +3263,22 @@
       } catch (_) { st.textContent = ""; }
     }, 500);
   }
+  // Pasting a Pinterest page link (pinterest.com/pin/… or pin.it/…) in an image field: the picture is found by itself
+  document.addEventListener("change", async e => {
+    const el = e.target;
+    if (!(el instanceof HTMLInputElement) || !el.dataset.k || !/(^|\.)(image|url|decoUrl|cover)$/.test(el.dataset.k.split(".").pop()) && !/image|banner|bg/i.test(el.dataset.k)) return;
+    const v = el.value.trim();
+    if (!/^https?:\/\/([a-z]+\.)?(pinterest\.[a-z.]+|pin\.it)\//i.test(v)) return;
+    setStatus("Cerco l'immagine dentro il link di Pinterest…");
+    try {
+      const j = await (await fetch("/api/lookup?pin=" + encodeURIComponent(v))).json();
+      if (!j.image) throw new Error(j.error || "Non trovo l'immagine.");
+      el.value = j.image;
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      setPath(draft, el.dataset.k, j.image); changed(); syncControls();
+      setStatus("Immagine presa da Pinterest.", "ok");
+    } catch (err) { setStatus(err.message + " Apri il pin, tasto destro sull'immagine, Copia indirizzo immagine.", "err"); }
+  }, true);
   // Alias: a space becomes "/" while typing
   $("akaInput").addEventListener("input", e => {
     const el = e.target, pos = el.selectionStart, v = el.value.replace(/\s+/g, "/").replace(/\/{2,}/g, "/");
@@ -3290,22 +3337,18 @@
     if (kind === "deco") {
       if (mode === "guest") { if (file.size > 900 * 1024) throw new Error("Per provarla senza account la decorazione deve pesare meno di 900 KB."); return blobToDataUrl(file); }
       if (file.size > 3 * 1024 * 1024) throw new Error("La decorazione deve pesare al massimo 3 MB.");
-      const { S, storage } = await firebase();
-      const r = S.ref(storage, `media/${uid}/deco-${Date.now()}`);
-      await S.uploadBytes(r, file, { contentType: file.type, cacheControl: "public, max-age=31536000" });
-      return S.getDownloadURL(r);
+      return uploadFile(file, `deco-${Date.now()}.${file.type.split("/")[1] || "png"}`, file.type);
     }
     if (mode === "guest") {
       const blob = await shrink(file, Math.min(max, kind === "bg" ? 1280 : max), "image/webp", .8);
       return blobToDataUrl(blob);
     }
-    if (file.size > 5 * 1024 * 1024) throw new Error("L'immagine deve pesare al massimo 5 MB.");
-    const { S, storage } = await firebase();
-    const path = kind === "avatar" ? `avatars/${uid}` : `media/${uid}/${kind}-${Date.now()}`;
-    const r = S.ref(storage, path);
-    const body = file.type === "image/gif" ? file : await shrink(file, max, "image/webp", .88);
-    await S.uploadBytes(r, body, { contentType: file.type === "image/gif" ? "image/gif" : "image/webp", cacheControl: "public, max-age=31536000" });
-    return S.getDownloadURL(r);
+    if (file.size > 12 * 1024 * 1024) throw new Error("L'immagine deve pesare al massimo 12 MB.");
+    // GIFs stay as they are (animated, max 4 MB); everything else becomes a light WebP first
+    const gif = file.type === "image/gif";
+    if (gif && file.size > 4.3 * 1024 * 1024) throw new Error("La GIF deve pesare al massimo 4 MB.");
+    const body = gif ? file : await shrink(file, max, "image/webp", .88);
+    return uploadFile(body, `${kind}-${Date.now()}.${gif ? "gif" : "webp"}`, gif ? "image/gif" : "image/webp");
   }
   function uploadFlow(btnId, inputId, kind, max, apply) {
     $(btnId).addEventListener("click", () => $(inputId).click());
@@ -3331,11 +3374,16 @@
   uploadFlow("bannerPick", "bannerInput", "banner", 1500, url => { draft.appearance.banner.url = url; draft.appearance.banner.type = "image"; });
   $("badgeColorReset").addEventListener("click", () => { draft.appearance.badges.color = ""; syncControls(); changed(); });
 
+  // Uploads go to /api/photo (the bot keeps them in the hidden 18k-file channel): Firebase Storage would need a paid plan
   async function uploadFile(file, path, type) {
-    const { S, storage } = await firebase();
-    const r = S.ref(storage, path);
-    await S.uploadBytes(r, file, { contentType: type || file.type, cacheControl: "public, max-age=31536000" });
-    return S.getDownloadURL(r);
+    const { auth } = await firebase();
+    if (!auth.currentUser) throw new Error("Accedi per caricare file.");
+    if (file.size > 4.3 * 1024 * 1024) throw new Error("Il file è troppo grande: massimo 4 MB.");
+    const name = String(path || "file").split("/").pop().replace(/[^a-z0-9._-]/gi, "") || "file";
+    const r = await fetch("/api/photo?upload=1&name=" + encodeURIComponent(name), { method: "POST", headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken(), "Content-Type": type || file.type || "application/octet-stream" }, body: file });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.url) throw new Error(j.error || "Caricamento non riuscito, riprova.");
+    return j.url;
   }
   const FONT_TYPES = { ttf: "font/ttf", otf: "font/otf", woff: "font/woff", woff2: "font/woff2" };
   $("fontUpload").addEventListener("click", () => $("fontInput").click());
@@ -3384,17 +3432,15 @@
     e.target.value = "";
     if (!f) return;
     if (!/^audio\//.test(f.type)) return setStatus("Usa un file audio MP3, OGG o WAV.", "err");
-    if (f.size > 8 * 1024 * 1024) return setStatus("Il file audio deve pesare al massimo 8 MB.", "err");
+    if (f.size > 4.3 * 1024 * 1024) return setStatus("Il file audio deve pesare al massimo 4 MB (circa 4 minuti di MP3).", "err");
     setStatus("Carico l'audio…");
     try {
-      const { S, storage } = await firebase();
-      const r = S.ref(storage, `media/${uid}/audio-${Date.now()}`);
-      await S.uploadBytes(r, f, { contentType: f.type, cacheControl: "public, max-age=31536000" });
+      const audioUrl = await uploadFile(f, `audio-${Date.now()}.${(f.name.split(".").pop() || "mp3").toLowerCase()}`, f.type);
       const m = draft.appearance.music;
       if (m.tracks.length >= 20) throw new Error("Massimo 20 brani.");
       // the song chosen with the search gives its name and cover to the uploaded file
       const pk = typeof msPick !== "undefined" && msPick && !m.tracks.length ? msPick : null;
-      m.tracks.push({ url: await S.getDownloadURL(r), title: pk ? pk.title.slice(0, 60) : f.name.replace(/\.[^.]+$/, "").slice(0, 60), artist: pk ? pk.artist.slice(0, 60) : "", cover: pk ? pk.cover : "", lrc: "" });
+      m.tracks.push({ url: audioUrl, title: pk ? pk.title.slice(0, 60) : f.name.replace(/\.[^.]+$/, "").slice(0, 60), artist: pk ? pk.artist.slice(0, 60) : "", cover: pk ? pk.cover : "", lrc: "" });
       m.type = "audio"; m.url = "";
       renderTracks(); syncControls(); changed();
       setStatus("Audio caricato. Ricordati di salvare.", "ok");
@@ -3452,7 +3498,7 @@
         ? { handle, private: true, updatedAt: F.serverTimestamp() }
         : { ...publicFields({ ...data, links: locked, handle, badges }), private: false, unlisted: data.appearance.privacy.unlisted, updatedAt: F.serverTimestamp() };
       // Views and badges live on the public document: keep them exactly as they are
-      if (snap.exists()) { out.views = snap.data().views || 0; liveViews = out.views; out.likes = snap.data().likes || 0; liveLikes = out.likes; out.badges = snap.data().badges || []; badges = out.badges; }
+      if (snap.exists()) { out.views = snap.data().views || 0; liveViews = out.views; out.likes = snap.data().likes || 0; liveLikes = out.likes; out.badges = snap.data().badges || []; badges = out.badges; if (snap.data().staffHidden) { out.staffHidden = true; out.private = true; } }
       else out.badges = badges.filter(b => b === "beta");
       tx.set(ref, out);
     });
@@ -3777,6 +3823,88 @@
       pub.status = before; pub.error = "Non sono riuscito a pubblicare: " + friendly(err);
     } finally { pub.busy = false; updateSaveBar(); renderPublish(); }
   }
+  /* =========================================================
+     Staff (only for the staff: the rules check it again on every write)
+     ========================================================= */
+  const STAFF_HANDLES = ["god"];
+  let isStaff = false, stCur = null;
+  async function checkStaff() {
+    if (mode !== "user") return;
+    try {
+      const { F, db } = await firebase();
+      isStaff = STAFF_HANDLES.includes(handle) || (await F.getDoc(F.doc(db, "staff", uid))).exists();
+    } catch (_) { isStaff = STAFF_HANDLES.includes(handle); }
+    $$('[data-view="staff"]').forEach(b => { b.hidden = !isStaff; });
+    $$('#mnav option[value="staff"]').forEach(o => { o.hidden = !isStaff; o.disabled = !isStaff; });
+  }
+  async function renderStaff() {
+    if (!isStaff) { $("stReports").innerHTML = '<p class="hint">Questa pagina è solo per lo staff.</p>'; return; }
+    const { F, db } = await firebase();
+    try {
+      const snap = await F.getDocs(F.query(F.collection(db, "reports"), F.orderBy("createdAt", "desc"), F.limit(50)));
+      $("stRepN").textContent = snap.docs.length;
+      $("stReports").innerHTML = snap.docs.length ? snap.docs.map(d => { const r = d.data(); return `<div class="st-row" data-id="${d.id}"><b>@${escTxt(r.handle)}</b><span>${escTxt(r.reason)}${r.text ? " · " + escTxt(r.text) : ""}</span><button type="button" class="ghost-btn sm" data-open="${escTxt(r.handle)}">Apri</button><button type="button" class="ghost-btn sm" data-done="${d.id}">Fatto</button></div>`; }).join("") : '<p class="hint">Nessuna segnalazione.</p>';
+    } catch (err) { $("stReports").innerHTML = `<p class="hint">Non riesco a leggere le segnalazioni: ${escTxt(friendly(err))}. Pubblica le regole nuove di Firestore.</p>`; }
+    try {
+      const snap = await F.getDocs(F.collection(db, "staff"));
+      const rows = [...STAFF_HANDLES.map(h => `<div class="st-row"><b>@${h}</b><span>fondatore</span></div>`), ...snap.docs.filter(d => !STAFF_HANDLES.includes(d.data().handle)).map(d => `<div class="st-row"><b>@${escTxt(d.data().handle)}</b><span>aggiunto da @${escTxt(d.data().addedBy || "")}</span><button type="button" class="ghost-btn sm" data-unstaff="${d.id}" data-h="${escTxt(d.data().handle)}">Togli</button></div>`)];
+      $("stStaff").innerHTML = rows.join("");
+    } catch (_) { $("stStaff").innerHTML = STAFF_HANDLES.map(h => `<div class="st-row"><b>@${h}</b><span>fondatore</span></div>`).join(""); }
+  }
+  async function staffOpen(h) {
+    h = String(h || "").toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
+    if (!h) return;
+    $("stQuery").value = h;
+    const { F, db } = await firebase();
+    const snap = await F.getDoc(F.doc(db, "profiles", h)).catch(() => null);
+    const box = $("stProf");
+    box.classList.remove("hidden");
+    if (!snap || !snap.exists()) { stCur = null; box.innerHTML = `<p class="hint">@${escTxt(h)} non ha un profilo pubblicato.</p>`; return; }
+    const p = snap.data(); stCur = { h, badges: Array.isArray(p.badges) ? p.badges.slice() : [], hidden: !!p.staffHidden };
+    box.innerHTML = `<div class="st-head">${p.avatarUrl ? `<img src="${escTxt(p.avatarUrl)}" alt="">` : '<i class="st-ph"></i>'}<div><b>${escTxt(p.displayName || h)}</b><span>@${escTxt(h)} · ${(p.views || 0).toLocaleString("it-IT")} visite · ♥ ${(p.likes || 0).toLocaleString("it-IT")}</span></div><a class="ghost-btn sm" href="/${escTxt(h)}" target="_blank" rel="noopener" style="margin-left:auto">Apri ↗</a></div>
+      <div class="label">badge</div>
+      <div class="st-badges">${Object.entries(BADGES).map(([k, [label]]) => `<label><input type="checkbox" data-b="${k}"${stCur.badges.includes(k) ? " checked" : ""}>${label}</label>`).join("")}</div>
+      <div class="toggle-row"><span>Profilo nascosto dallo staff<small>Chi apre il link vede "profilo privato". Il proprietario non può riaprirlo.</small></span><label class="ios"><input class="sr-only" type="checkbox" id="stHide"${stCur.hidden ? " checked" : ""}><span class="track"><span class="knob"></span></span></label></div>
+      <div class="row"><button class="save-btn sm" id="stSave" type="button">Salva</button><span class="hint" id="stOut"></span></div>`;
+  }
+  $("stOpen").addEventListener("click", () => staffOpen($("stQuery").value));
+  $("stQuery").addEventListener("keydown", e => { if (e.key === "Enter") staffOpen($("stQuery").value); });
+  $("stProf").addEventListener("click", async e => {
+    if (!e.target.closest("#stSave") || !stCur) return;
+    const badges = $$("#stProf [data-b]").filter(x => x.checked).map(x => x.dataset.b);
+    const hide = $("stHide").checked;
+    try {
+      const { F, db } = await firebase();
+      await F.updateDoc(F.doc(db, "profiles", stCur.h), hide ? { badges, staffHidden: true, private: true } : { badges, staffHidden: false, ...(stCur.hidden ? { private: false } : {}) });
+      stCur.badges = badges; stCur.hidden = hide;
+      $("stOut").textContent = "Salvato.";
+    } catch (err) { $("stOut").textContent = "Non salvato: " + friendly(err) + " (servono le regole nuove di Firestore)."; }
+  });
+  $("stReports").addEventListener("click", async e => {
+    const o = e.target.closest("[data-open]"); if (o) { staffOpen(o.dataset.open); $("stQuery").scrollIntoView({ block: "center" }); return; }
+    const d = e.target.closest("[data-done]"); if (!d) return;
+    try { const { F, db } = await firebase(); await F.deleteDoc(F.doc(db, "reports", d.dataset.done)); d.closest(".st-row").remove(); } catch (err) { setStatus(friendly(err), "err"); }
+  });
+  $("stAddBtn").addEventListener("click", async () => {
+    const h = $("stAdd").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
+    if (!h) return;
+    try {
+      const { F, db } = await firebase();
+      const u = await F.getDoc(F.doc(db, "usernames", h));
+      if (!u.exists() || u.data().aliasOf) throw new Error(`@${h} non esiste.`);
+      await F.setDoc(F.doc(db, "staff", u.data().uid), { handle: h, addedBy: handle, createdAt: F.serverTimestamp() });
+      // the staff badge goes on their profile too
+      const pr = await F.getDoc(F.doc(db, "profiles", h));
+      if (pr.exists() && !(pr.data().badges || []).includes("staff")) await F.updateDoc(F.doc(db, "profiles", h), { badges: [...(pr.data().badges || []), "staff"] });
+      $("stAdd").value = ""; setStatus(`@${h} è nello staff.`, "ok"); renderStaff();
+    } catch (err) { setStatus(err.message || friendly(err), "err"); }
+  });
+  $("stStaff").addEventListener("click", async e => {
+    const b = e.target.closest("[data-unstaff]"); if (!b) return;
+    if (!confirm(`Togliere @${b.dataset.h} dallo staff?`)) return;
+    try { const { F, db } = await firebase(); await F.deleteDoc(F.doc(db, "staff", b.dataset.unstaff)); renderStaff(); } catch (err) { setStatus(friendly(err), "err"); }
+  });
+
   function renderPublish() {
     const props = {
       status: mode === "guest" ? "guest" : pub.status, url: `${location.origin}/${handle}`, shownUrl: shownLink(),
@@ -4540,6 +4668,8 @@
     $("loading").classList.add("hidden");
     $("dash").classList.remove("hidden");
     buildNav();
+    $$('[data-view="staff"]').forEach(b => { b.hidden = true; });
+    $$('#mnav option[value="staff"]').forEach(o => { o.hidden = true; o.disabled = true; });
     buildPickers();
     $$("[data-seg]").forEach(renderSeg);
     const pubHref = `${location.origin}/${handle}`;
@@ -4604,6 +4734,7 @@
         renderPreview(); renderOverview();
       } else pub.status = "never";
       renderDisable();
+      checkStaff();
     } catch (_) { /* public mirror not readable yet */ }
     // Guest images carried over at sign up are still inline: move them to Storage
     migrateInlineImages().catch(() => {});

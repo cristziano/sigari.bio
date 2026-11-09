@@ -34,9 +34,28 @@ const LOOKUP = {
   }
 };
 
+// GET /api/lookup?pin=<pinterest link>: the picture inside a Pinterest pin page (pinterest.com/pin/… or pin.it/…)
+async function pinImage(link) {
+  let u;
+  try { u = new URL(link); } catch (_) { return null; }
+  if (!/(^|\.)pinterest\.[a-z.]+$|^pin\.it$/i.test(u.hostname)) return null;
+  const r = await fetch(u.href, { headers: { "User-Agent": "Mozilla/5.0 (compatible; 18kbio/1.0)", Accept: "text/html" }, redirect: "follow", signal: AbortSignal.timeout(7000) });
+  const html = await r.text();
+  const img = ogOf(html, "image") || (/"(https:\/\/i\.pinimg\.com\/(?:originals|736x)\/[^"]+\.(?:jpg|png|gif|webp))"/.exec(html) || [])[1] || "";
+  return /^https:\/\/i\.pinimg\.com\//.test(img) ? img.replace(/\/(236x|474x|564x)\//, "/736x/") : null;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const q = new URL(req.url, "https://x").searchParams;
+  if (q.get("pin")) {
+    try {
+      const image = await pinImage(q.get("pin"));
+      res.setHeader("Cache-Control", image ? "public, s-maxage=86400" : "no-store");
+      res.statusCode = image ? 200 : 404;
+      return res.end(JSON.stringify(image ? { image } : { error: "Non trovo l'immagine in questo link di Pinterest." }));
+    } catch (_) { res.statusCode = 502; return res.end(JSON.stringify({ error: "Pinterest non risponde, riprova." })); }
+  }
   const p = q.get("p"), u = clean(q.get("u"));
   if (!LOOKUP[p] || !/^[\w.\-]{1,60}$/.test(u)) { res.statusCode = 400; return res.end(JSON.stringify({ error: "Piattaforma o nome non validi." })); }
   try {

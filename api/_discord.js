@@ -58,4 +58,25 @@ function mediaOf(m) {
 const avatarOf = a => a && a.avatar ? `https://cdn.discordapp.com/avatars/${a.id}/${a.avatar}.${a.avatar.startsWith("a_") ? "gif" : "png"}?size=64` : "";
 const thumbUrl = (u, w) => { try { const x = new URL(u); if (/discordapp\.(net|com)$/.test(x.hostname)) { x.searchParams.set("width", String(w)); if (!x.searchParams.has("format")) x.searchParams.set("format", "webp"); } return x.href; } catch (_) { return u; } };
 
-module.exports = { ALBUMS, REQUEST_CHANNEL, SNOWFLAKE, discord, guildOf, mediaOf, avatarOf, thumbUrl };
+// Where the dashboard uploads go (photos, audio, fonts): a hidden channel "18k-file" that only the bot sees.
+// Firebase Storage needs a paid plan; Discord keeps the files for free and /api/photo gives links that don't expire.
+let fileCh = null;
+async function fileChannel() {
+  if (process.env.FILE_CHANNEL && SNOWFLAKE.test(process.env.FILE_CHANNEL)) return process.env.FILE_CHANNEL;
+  if (fileCh) return fileCh;
+  fileCh = (async () => {
+    const guild = await guildOf(ALBUMS.sets.channel);
+    const all = await discord(`/guilds/${guild}/channels`);
+    const hit = all.find(c => c.type === 0 && c.name === "18k-file");
+    if (hit) return hit.id;
+    const me = await discord("/users/@me");
+    const c = await discord(`/guilds/${guild}/channels`, { method: "POST", body: JSON.stringify({
+      name: "18k-file", type: 0, topic: "File caricati dal sito 18k.bio. Non cancellare: i profili li usano.",
+      permission_overwrites: [{ id: guild, type: 0, deny: "1024" }, { id: me.id, type: 1, allow: String(1024 + 2048 + 32768 + 65536) }]
+    }) });
+    return c.id;
+  })().catch(e => { fileCh = null; throw e; });
+  return fileCh;
+}
+
+module.exports = { ALBUMS, REQUEST_CHANNEL, SNOWFLAKE, discord, guildOf, mediaOf, avatarOf, thumbUrl, fileChannel };

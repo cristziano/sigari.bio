@@ -473,6 +473,7 @@ function cardPublic(c) {
 }
 
 export const BADGES = {
+  staff: ["staff 18k", '<path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'],
   beta: ["beta", '<path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/>'],
   early: ["della prima ora", '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>'],
   verified: ["verificato", '<path d="M20 6L9 17l-5-5"/>'],
