@@ -23,6 +23,7 @@ service cloud.firestore {
         allow read: if true;
         allow create: if signedIn() && get(/databases/$(database)/documents/files/$(id)).data.uid == request.auth.uid
                       && request.resource.data.keys().hasOnly(['d']) && request.resource.data.d is bytes;
+        allow delete: if signedIn() && get(/databases/$(database)/documents/files/$(id)).data.uid == request.auth.uid;
       }
     }
 

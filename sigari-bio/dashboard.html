@@ -3962,6 +3962,15 @@
       const del = r => S.deleteObject(r).catch(() => {});
       await del(S.ref(storage, `avatars/${uid}`));
       try { const all = await S.listAll(S.ref(storage, `media/${uid}`)); await Promise.all(all.items.map(del)); } catch (_) { /* nothing uploaded */ }
+      // files kept in Firestore (photos, audio uploaded from the dashboard)
+      try {
+        const fs = await F.getDocs(F.query(F.collection(db, "files"), F.where("uid", "==", uid)));
+        for (const d of fs.docs) {
+          const n = d.data().parts || 0;
+          for (let k = 0; k < n; k++) await F.deleteDoc(F.doc(db, "files", d.id, "parts", String(k))).catch(() => {});
+          await F.deleteDoc(d.ref).catch(() => {});
+        }
+      } catch (_) { /* nothing uploaded */ }
       // extra names, public profile, the @, the private profile
       // Each step is best effort: whatever older rules refuse, the account itself (with the email) is always deleted
       try {
