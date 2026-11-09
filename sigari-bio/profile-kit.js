@@ -1,3 +1,4 @@
+import { DECO, DECO_LIST, DECO_GROUPS, DECO_GROUP_OF } from "./decos.js";
 /*
   18k.bio profile kit.
   One renderer for every place a profile is drawn: the public page (profile.html),
@@ -123,7 +124,7 @@ export const NAME_FX = [["none", "Nessuno"], ["glow", "Glow"], ["gradient", "Gra
   ["wave", "Onda"], ["bounce", "Rimbalzo"], ["neon", "Neon"], ["float", "Fluttua"], ["shake", "Trema"], ["chrome", "Cromo"], ["fire", "Fuoco"], ["ice", "Diamante"], ["3d", "3D"], ["blur", "Sfocato"]];
 export const BIO_FX = [["none", "Statica"], ["typewriter", "Macchina da scrivere"], ["cycle", "Frasi che cambiano"], ["glitch", "Glitch"], ["rainbow", "Arcobaleno"], ["wave", "Onda"]];
 export const ENTRANCES = [["none", "Nessuna"], ["pixel", "Pixel"], ["fade", "Dissolvenza"], ["glitch", "Glitch"], ["pop", "Pop"]];
-export const AVATAR_DECOS = [["none", "Nessuna"], ["custom", "La mia (caricata)"], ["neon", "Anello neon"], ["rainbow", "Arcobaleno"], ["cyber", "Cyber"], ["firering", "Anello di fuoco"], ["thorns", "Spine"], ["sakura", "Sakura"], ["bolts", "Fulmini"], ["starring", "Stelle in orbita"], ["bubbles", "Bolle"], ["saturn", "Saturno"], ["smoke", "Fumo"], ["butterflies", "Farfalle"], ["halo", "Aureola"], ["horns", "Corna"], ["cat", "Orecchie"], ["crown", "Corona"], ["sparkles", "Scintille"], ["orbit", "Orbita"], ["flames", "Fiamme"], ["hearts", "Cuori"], ["headphones", "Cuffie"], ["glitch", "Glitch"]];
+export const AVATAR_DECOS = [["none", "Nessuna"], ["custom", "La mia (caricata)"], ...DECO_LIST];
 export const SFX = [["none", "Nessuno"], ["tick", "Tick"], ["pop", "Pop"], ["blip", "Blip"], ["8bit", "8-bit"], ["glass", "Vetro"], ["bass", "Basso"]];
 // Icons a user can pick for their own badge (24px stroke paths)
 export const BADGE_ICONS = {
@@ -289,7 +290,9 @@ export function normalizeAppearance(raw) {
   a.avatar.size = clamp(a.avatar.size, 56, 150, 92);
   a.avatar.ring = ["none", "solid", "glow", "spin"].includes(a.avatar.ring) ? a.avatar.ring : "none";
   a.avatar.show = a.avatar.show !== false;
-  a.avatar.deco = pickOne(a.avatar.deco, AVATAR_DECOS, "none");
+  // the old simple decorations become the closest new one
+  const OLD_DECO = { neon: "holoheart", rainbow: "holoheart", cyber: "storm", firering: "fire", flames: "fire", bolts: "storm", starring: "cosmos", sparkles: "cosmos", orbit: "cosmos", saturn: "cosmos", smoke: "cosmos", bubbles: "ice", butterflies: "sakura", halo: "angel", horns: "demon", cat: "blackcat", crown: "gold", hearts: "holoheart", headphones: "phones", glitch: "storm" };
+  a.avatar.deco = pickOne(OLD_DECO[a.avatar.deco] || a.avatar.deco, AVATAR_DECOS, "none");
   a.avatar.decoUrl = safeUrl(a.avatar.decoUrl, true) || "";
   if (a.avatar.deco === "custom" && !a.avatar.decoUrl) a.avatar.deco = "none";
   a.avatar.discord = !!a.avatar.discord;
@@ -1334,30 +1337,8 @@ function splitChars(node, text) {
 /* ---------- Avatar decorations (drawn around the avatar, 100x100 box, avatar in the middle) ---------- */
 
 const RING = (n, f) => Array.from({ length: n }, (_, i) => f(i, i * 360 / n)).join("");
-const DECO = {
-  neon: '<defs><linearGradient id="pkng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="currentColor"/><stop offset=".55" stop-color="currentColor" stop-opacity=".05"/><stop offset="1" stop-color="currentColor"/></linearGradient></defs><g class="spin" style="animation-duration:3.5s"><circle cx="50" cy="50" r="33" fill="none" stroke="url(#pkng)" stroke-width="3" style="filter:drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)"/></g>',
-  rainbow: '<defs><linearGradient id="pkrb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3b3b"/><stop offset=".2" stop-color="#ffb13b"/><stop offset=".4" stop-color="#f7ff3b"/><stop offset=".6" stop-color="#3bff8a"/><stop offset=".8" stop-color="#3bb7ff"/><stop offset="1" stop-color="#c13bff"/></linearGradient></defs><g class="spin" style="animation-duration:4s"><circle cx="50" cy="50" r="33" fill="none" stroke="url(#pkrb)" stroke-width="3.2" style="filter:drop-shadow(0 0 4px rgba(255,255,255,.45))"/></g>',
-  cyber: '<g class="spin" style="animation-duration:7s"><circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="18 6 4 6"/></g><g class="spin rev" style="animation-duration:11s"><circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width=".9" stroke-dasharray="1 3" opacity=".8"/></g>' + RING(4, (i, a) => `<path transform="rotate(${a + 45} 50 50)" d="M50 9v6M47 11h6" stroke="currentColor" stroke-width="1.4" class="flk" style="animation-delay:${i * .3}s"/>`),
-  firering: '<defs><linearGradient id="pkfr" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff2d00"/><stop offset=".55" stop-color="#ff9a00"/><stop offset="1" stop-color="#fff07a"/></linearGradient></defs><circle cx="50" cy="50" r="31.5" fill="none" stroke="#ff5a00" stroke-width="2" style="filter:drop-shadow(0 0 4px #ff6a00)"/>' + RING(14, (i, a) => `<g transform="rotate(${a} 50 50)"><path class="flick" style="animation-delay:${(i % 5) * .12}s;transform-box:fill-box" d="M50 22c-3.4-2.6-3.2-6.6-.6-9.6.2 2 1.2 3 2.4 3.4-.4-2.4.6-4.6 2.4-6 .2 3.6 2.6 5.6 2 8.8-.6 2.4-3 4-6.2 3.4z" fill="url(#pkfr)"/></g>`),
-  thorns: '<circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="2.2"/>' + RING(18, (i, a) => `<path transform="rotate(${a} 50 50)" d="M48.6 18.4L50 ${i % 2 ? 11.5 : 13.5}l1.4 4.9z" fill="currentColor"/>`),
-  sakura: '<g class="spin" style="animation-duration:24s">' + RING(10, (i, a) => `<g transform="rotate(${a} 50 50)"><path d="M50 ${i % 2 ? 13 : 15}c-3 1.6-3.4 5-1.4 7 .8.8 2 .8 2.8 0 2-2 1.6-5.4-1.4-7z" fill="${i % 3 ? "#ffb7d5" : "#ff8fbf"}" class="bob" style="animation-delay:${i * .25}s"/></g>`) + '</g>',
-  bolts: RING(4, (i, a) => `<path transform="rotate(${a + 45} 50 50)" class="flk" style="animation-delay:${i * .37}s" d="M52 8l-6 10h4l-3 9 8-12h-4.5z" fill="#fff36b" stroke="#ffd000" stroke-width=".6" filter="drop-shadow(0 0 2px #ffe600)"/>`) + '<circle cx="50" cy="50" r="32" fill="none" stroke="#ffe600" stroke-width=".8" stroke-dasharray="3 5" opacity=".7"/>',
-  starring: '<g class="spin" style="animation-duration:9s">' + RING(5, (i, a) => `<path transform="rotate(${a} 50 50)" d="M50 12.5l1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3-3.3-1.2 3.3-1.2z" fill="currentColor"/>`) + '</g><g class="spin rev" style="animation-duration:15s">' + RING(7, (i, a) => `<circle transform="rotate(${a} 50 50)" cx="50" cy="9.5" r="${i % 2 ? .9 : 1.4}" fill="currentColor" opacity=".8"/>`) + '</g>',
-  bubbles: RING(7, (i, a) => `<circle class="rise" style="animation-delay:${i * .55}s;animation-duration:${3 + (i % 3)}s" cx="${18 + i * 10.5}" cy="${84 - (i % 2) * 6}" r="${2 + (i % 3)}" fill="none" stroke="#bfefff" stroke-width=".9" opacity=".9"/>`) + '<circle cx="50" cy="50" r="32" fill="none" stroke="#bfefff" stroke-width="1" opacity=".55"/>',
-  saturn: '<g transform="rotate(-18 50 50)"><ellipse cx="50" cy="50" rx="46" ry="11" fill="none" stroke="currentColor" stroke-width="2.4" opacity=".9" stroke-dasharray="120 18" class="dash"/><ellipse cx="50" cy="50" rx="41" ry="8.5" fill="none" stroke="currentColor" stroke-width=".8" opacity=".5"/></g>',
-  smoke: '<defs><filter id="pksm" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/></filter></defs><g filter="url(#pksm)" class="spin" style="animation-duration:18s">' + RING(8, (i, a) => `<circle transform="rotate(${a} 50 50)" cx="50" cy="${15 + (i % 3)}" r="${6 + (i % 3) * 1.5}" fill="rgba(220,220,220,${.35 + (i % 2) * .15})"/>`) + '</g>',
-  butterflies: '<g class="spin" style="animation-duration:12s">' + RING(2, (i, a) => `<g transform="rotate(${a} 50 50) translate(50 12)"><g class="flap" style="animation-delay:${i * .2}s"><path d="M0 0c-2-4-8-5-8-1 0 3 4 4 8 1zM0 0c2-4 8-5 8-1 0 3-4 4-8 1zM0 0c-1.6 2-5 4-5 6 0 1.6 3.4.4 5-6zM0 0c1.6 2 5 4 5 6 0 1.6-3.4.4-5-6z" fill="#9fe7ff" stroke="#e8fbff" stroke-width=".4"/></g></g>`) + '</g>',
-  halo: '<g class="bob"><ellipse cx="50" cy="13" rx="19" ry="5.5" fill="none" stroke="currentColor" stroke-width="3" style="filter:drop-shadow(0 0 3px currentColor)"/></g>',
-  horns: '<path d="M33 26C25 20 21 12 23 3c5 8 11 13 18 17z" fill="currentColor"/><path d="M67 26c8-6 12-14 10-23-5 8-11 13-18 17z" fill="currentColor"/>',
-  cat: '<path d="M27 31L24 5l20 17z" fill="currentColor"/><path d="M73 31l3-26-20 17z" fill="currentColor"/><path d="M30 25l-1.5-12 10 9z" fill="rgba(255,255,255,.35)"/><path d="M70 25l1.5-12-10 9z" fill="rgba(255,255,255,.35)"/>',
-  crown: '<g class="bob"><path d="M32 23l3-15 8 8 7-12 7 12 8-8 3 15z" fill="currentColor" stroke="rgba(0,0,0,.35)" stroke-width=".8"/><circle cx="50" cy="15" r="1.8" fill="#fff"/><circle cx="40" cy="18" r="1.3" fill="#fff"/><circle cx="60" cy="18" r="1.3" fill="#fff"/></g>',
-  sparkles: [[16, 22, 0], [84, 30, .5], [12, 74, 1], [86, 80, 1.4], [50, 6, .8]].map(([x, y, d]) => `<path class="tw" style="animation-delay:${d}s" d="M${x} ${y - 5}l1.3 3.7 3.7 1.3-3.7 1.3-1.3 3.7-1.3-3.7-3.7-1.3 3.7-1.3z" fill="currentColor"/>`).join(""),
-  orbit: '<g class="spin"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/><circle cx="50" cy="10" r="3" fill="currentColor"/><circle cx="90" cy="50" r="1.8" fill="currentColor"/></g>',
-  flames: '<defs><linearGradient id="pkfl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset=".6" stop-color="#ffae00"/><stop offset="1" stop-color="#fff3a0"/></linearGradient></defs>' +
-    [[24, 84, 1, 0], [36, 92, 1.3, .15], [50, 95, 1.5, .05], [64, 92, 1.3, .25], [76, 84, 1, .1]].map(([x, y, s, d]) => `<path class="flick" style="animation-delay:${d}s;transform-box:fill-box" d="M${x} ${y}c-${5 * s} 0-${7 * s}-${5 * s}-${5 * s}-${10 * s} ${1 * s} ${3 * s} ${3 * s} ${3 * s} ${3 * s} 0 0-${5 * s} ${2 * s}-${8 * s} ${5 * s}-${10 * s} 0 ${5 * s} ${5 * s} ${7 * s} ${5 * s} ${12 * s} 0 ${5 * s}-${3 * s} ${8 * s}-${8 * s} ${8 * s}z" fill="url(#pkfl)" opacity=".95"/>`).join(""),
-  hearts: '<g class="spin" style="animation-duration:14s">' + [0, 120, 240].map(r => `<path transform="rotate(${r} 50 50)" d="M50 16c-2-3-7-2-7 2 0 4 7 8 7 8s7-4 7-8c0-4-5-5-7-2z" fill="currentColor"/>`).join("") + "</g>",
-  headphones: '<path d="M21 54a29 29 0 0 1 58 0" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><rect x="14" y="48" width="11" height="20" rx="5" fill="currentColor"/><rect x="75" y="48" width="11" height="20" rx="5" fill="currentColor"/>'
-};
+export const decoSvg = kind => DECO[kind] || "";
+export { DECO_GROUPS, DECO_GROUP_OF };
 function decoNode(kind) {
   if (!DECO[kind]) return null;
   const n = document.createElementNS("http://www.w3.org/2000/svg", "svg");

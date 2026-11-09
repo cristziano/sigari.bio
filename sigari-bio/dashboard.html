@@ -369,7 +369,14 @@
   /* Icon picker */
   .iconpick { display:grid; grid-template-columns:repeat(auto-fill,minmax(44px,1fr)); gap:6px; }
   .iconpick .pick { display:grid; place-items:center; min-height:44px; padding:0; }
-  .decogrid .pick { text-align:center; }
+  .decogrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:8px; margin-top:10px; max-height:460px; overflow-y:auto; padding:4px; }
+  .decogrid .pick { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 6px 9px; border:1px solid var(--b); border-radius:12px; background:#111214; color:#fff; cursor:pointer; text-align:center; }
+  .decogrid .pick[hidden] { display:none; }
+  .decogrid .pick.on { border-color:var(--fg); box-shadow:0 0 0 1px var(--fg) inset; }
+  .decogrid .pick small { font-size:11.5px; color:#b9bbbe; }
+  .dk-prev { position:relative; width:46px; height:46px; color:#fff; margin:8px 0 6px; }
+  .dk-av { position:absolute; inset:0; border-radius:50%; background:#3a3c42; }
+  .dk-up { position:absolute; inset:0; display:grid; place-items:center; font-size:18px; }
   /* Playlist */
   .tracks { display:flex; flex-direction:column; gap:8px; }
   .track { border:1px solid var(--b); border-radius:12px; background:var(--s1); padding:10px; display:flex; flex-direction:column; gap:10px; }
@@ -1239,8 +1246,9 @@
           <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.avatar.ring" data-o="avRing"></div></div>
           <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
         </div>
-        <div class="label">decorazione</div>
-        <div class="chipgrid decogrid" id="decoPick"></div>
+        <div class="label">decorazione <span class="val" id="decoCount"></span></div>
+        <div class="tag-chips" id="decoGroups"></div>
+        <div class="decogrid" id="decoPick"></div>
         <div class="field">
           <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(come su Discord: un'immagine trasparente sopra la pfp)</small></div>
           <div class="row"><button class="save-btn sm" id="decoUpload" type="button">Carica PNG, GIF o APNG</button><input class="text" type="url" data-k="appearance.avatar.decoUrl" placeholder="oppure il link dell'immagine" style="flex:1;min-width:160px"></div>
@@ -1775,7 +1783,7 @@
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
-    BIO_FX, AVATAR_DECOS, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS, MUSIC_POS, PLAYER_STYLES
+    BIO_FX, AVATAR_DECOS, DECO_GROUPS, DECO_GROUP_OF, decoSvg, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS, MUSIC_POS, PLAYER_STYLES
   } from "./profile-kit.js";
   import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, ensureOpenKeyframes, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
@@ -2821,7 +2829,16 @@
     pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "404").slice(0, 9)}</span><small>${l}</small>`);
     ensureFonts(FONTS.map(f => f[0]));
     $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("") + '<option value="custom">Il tuo font</option>';
-    pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS);
+    // Decorations as tiles with their preview (like a shop), filtered by group
+    pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS, (v, l) => `<span class="dk-prev"><i class="dk-av"></i>${v === "none" ? "" : v === "custom" ? '<span class="dk-up">↑</span>' : `<svg viewBox="0 0 100 100" class="pk-av-deco" aria-hidden="true">${decoSvg(v)}</svg>`}</span><small>${l}</small>`);
+    $$("#decoPick .pick").forEach(b => { b.dataset.grp = ["none", "custom"].includes(b.dataset.v) ? "base" : DECO_GROUP_OF[b.dataset.v] || "ring"; });
+    $("decoCount").textContent = AVATAR_DECOS.length - 2;
+    $("decoGroups").innerHTML = DECO_GROUPS.map(([g, l], i) => `<button type="button" data-g="${g}" class="${i ? "" : "on"}">${l}</button>`).join("");
+    $("decoGroups").addEventListener("click", e => {
+      const b = e.target.closest("[data-g]"); if (!b) return;
+      $$("#decoGroups button").forEach(x => x.classList.toggle("on", x === b));
+      $$("#decoPick .pick").forEach(q => { q.hidden = b.dataset.g !== "all" && q.dataset.grp !== b.dataset.g && q.dataset.grp !== "base"; });
+    });
     pickGrid($("badgeIconPick"), "appearance.badges.custom.icon", Object.keys(BADGE_ICONS).map(k => [k, k]), v => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${BADGE_ICONS[v]}</svg>`);
     pickGrid($("btnPalette"), "appearance.buttons.palette", [["white", "Bianco"], ["silver", "Argento"], ["graphite", "Grafite"], ["accent", "Accento"], ["custom", "Personalizzato"]], (v, l) => `<span class="sw" data-sw="${v}"></span>${l}`);
 
