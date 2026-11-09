@@ -8,7 +8,7 @@ service cloud.firestore {
     function isStaff() {
       return signedIn() && (exists(/databases/$(database)/documents/staff/$(request.auth.uid))
         || (exists(/databases/$(database)/documents/users/$(request.auth.uid))
-            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('handle', '') in ['god']));
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('handle', '') in ['1']));
     }
 
     match /staff/{uid} {
