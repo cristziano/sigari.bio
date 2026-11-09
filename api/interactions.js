@@ -8,7 +8,8 @@ const crypto = require("crypto");
 const { discord } = require("./_discord");
 const { profileByDiscord, profileByName } = require("./_firestore");
 
-const SITE = "https://18k.bio";
+// The real address until the 18k.bio domain is live (set SITE_URL in Vercel to change it)
+const SITE = process.env.SITE_URL || "https://18kbio.vercel.app";
 let keyP = null;
 const publicKey = () => keyP || (keyP = discord("/applications/@me").then(a => crypto.createPublicKey({
   key: Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(a.verify_key, "hex")]), format: "der", type: "spki"

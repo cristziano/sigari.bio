@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
     const search = "https://www.pinterest.com/search/pins/?q=" + encodeURIComponent(q);
     const embeds = [{
       title: `Nuova richiesta · ${TYPES[type]}`, url: search, description: text, color: 0xffffff,
-      fields: [{ name: "Da", value: `[@${handle}](https://18k.bio/${handle})`, inline: true }, ...(link ? [{ name: "Riferimento", value: link, inline: true }] : [])],
+      fields: [{ name: "Da", value: `[@${handle}](${process.env.SITE_URL || "https://18kbio.vercel.app"}/${handle})`, inline: true }, ...(link ? [{ name: "Riferimento", value: link, inline: true }] : [])],
       ...(found[0] ? { image: { url: found[0] } } : {}),
       footer: { text: `dall'app 18k.bio · ${found.length ? "3 foto trovate dal bot" : "nessuna foto trovata"} · #${code}` },
       timestamp: new Date().toISOString()
