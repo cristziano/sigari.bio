@@ -552,6 +552,16 @@
   .gp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin:12px 0; max-height:60vh; overflow:auto; }
   .gp-grid button { aspect-ratio:1; border:1px solid var(--b); border-radius:10px; background:var(--s3) center/cover; cursor:pointer; padding:0; }
   .gp-grid button:hover { outline:2px solid var(--fg); }
+  .section-label:has(.step-n) { justify-content:flex-start; align-items:center; gap:2px; }
+  #msSrcNote:empty { display:none; }
+  .step-n { display:inline-grid; place-items:center; width:18px; height:18px; margin-right:6px; border-radius:50%; background:var(--fg); color:var(--bg); font:700 11px "Geist",sans-serif; letter-spacing:0; }
+  .src-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+  .src-tile { display:flex; flex-direction:column; gap:4px; text-align:left; padding:12px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--fg); font:inherit; cursor:pointer; }
+  .src-tile b { font-size:14px; } .src-tile span { font-size:12px; color:var(--m); line-height:1.35; }
+  .src-tile.on { border-color:var(--fg); box-shadow:0 0 0 1px var(--fg) inset; }
+  .src-tile:disabled { opacity:.4; cursor:not-allowed; }
+  .ms-yt { display:grid; gap:8px; margin-top:10px; }
+  @media (max-width:900px) { .src-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   .bg-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-top:14px; }
   .bg-tabs button { padding:12px 6px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--m); font:500 13px inherit; cursor:pointer; }
   .bg-tabs button.on { background:var(--fg); color:var(--bg); border-color:var(--fg); }
@@ -1298,21 +1308,26 @@
 
     <section class="view hidden" id="view-music">
       <h2>Musica</h2>
-      <p class="desc">Cerca una canzone o carica i tuoi file, scegli dove sta e come appare il player. Più Last.fm per mostrare cosa stai ascoltando.</p>
-      <div class="card" style="margin-top:12px">
-        <div class="field"><div class="label">dove sta sul profilo</div><div class="seg seg-wrap" data-seg="appearance.music.pos" data-o="musicPos"></div></div>
-        <div class="toggle-row"><span>Parte da sola<small>Appena si apre il profilo; se il browser la blocca, parte al primo tocco o scroll del visitatore. Con "clicca per entrare" parte sempre subito.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row"><span>Mostra il player<small>Spento: la musica suona lo stesso ma il player non si vede.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
-        <p class="hint">Funziona con i tuoi file audio, con le canzoni trovate con la ricerca (anteprima di 30 secondi), con YouTube e SoundCloud. Solo Spotify non lo permette: il suo player va toccato.</p>
-      </div>
-      <div class="card ms-card" style="margin-top:12px">
-        <div class="label">cerca una canzone</div>
+      <p class="desc">Quattro passi: scegli la canzone, da dove suona, quando parte e se si vede il player.</p>
+
+      <div class="label section-label"><span class="step-n">1</span> scegli la canzone</div>
+      <div class="card ms-card">
         <div class="search-field ms-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="msQuery" type="search" placeholder="Titolo o artista, es. nettspend" autocomplete="off" maxlength="80"></div>
         <div class="ms-now hidden" id="msNow"></div>
         <div class="ms-list" id="msList"></div>
         <p class="hint" id="msNote">Scrivi e scegli: il brano finisce sul profilo con il suo player.</p>
       </div>
-      <div class="card" style="margin-top:12px">
+
+      <div class="label section-label"><span class="step-n">2</span> da dove suona</div>
+      <div class="card">
+        <div class="src-grid" id="msSources"></div>
+        <div class="ms-yt hidden" id="msYt">
+          <div class="row"><a class="ghost-btn sm" id="msYtSearch" target="_blank" rel="noopener" href="https://www.youtube.com">Cerca su YouTube ↗</a><span class="hint">copia il link del video e incollalo qui</span></div>
+          <input class="text" type="url" id="msYtUrl" placeholder="https://youtube.com/watch?v=…">
+        </div>
+        <p class="hint" id="msSrcNote"></p>
+        <details class="quiet-box">
+          <summary>Senza ricerca: incolla un link o fai una playlist <span>avanzate</span></summary>
         <div class="field"><div class="label">oppure scegli la sorgente</div><div class="seg" data-seg="appearance.music.type" data-o="music"></div></div>
         <div class="field" data-when="appearance.music.type=spotify|deezer|soundcloud|youtube">
           <input class="text" type="url" data-k="appearance.music.url" id="musicUrl" placeholder="link">
@@ -1328,9 +1343,22 @@
           <div class="field"><div class="label">ripeti</div><div class="seg" data-seg="appearance.music.loop" data-o="loop"></div></div>
           <div class="toggle-row"><span>Ordine casuale</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.shuffle"><span class="track"><span class="knob"></span></span></label></div>
         </div>
+        </details>
       </div>
-      <div class="label section-label" data-when="appearance.music.type=audio|deezer">il player</div>
-      <div class="card" data-when="appearance.music.type=audio|deezer">
+
+      <div class="label section-label"><span class="step-n">3</span> quando parte</div>
+      <div class="card">
+        <div class="toggle-row"><span>Parte appena si apre il profilo<small>I browser non fanno partire l'audio senza un tocco: per questo sul profilo compare "clicca per entrare", e al tocco la musica parte subito. Nell'anteprima qui non parte da sola: usa Prova.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="row" style="margin-top:8px"><button class="ghost-btn sm" id="msTry" type="button">▶ Prova</button><button class="ghost-btn sm" type="button" data-go="effects">Cambia la scritta "clicca per entrare"</button></div>
+      </div>
+
+      <div class="label section-label"><span class="step-n">4</span> il player</div>
+      <div class="card">
+        <div class="toggle-row"><span>Mostra il player<small>Spento: la musica suona lo stesso ma il player non si vede.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
+        <div data-when="appearance.music.showPlayer=true">
+          <div class="field" style="margin-top:12px"><div class="label">dove sta sul profilo</div><div class="seg seg-wrap" data-seg="appearance.music.pos" data-o="musicPos"></div></div>
+          <p class="hint" data-when="appearance.music.type=spotify|youtube|soundcloud">Con questa fonte il player è il loro: puoi scegliere solo dove sta. Per personalizzarlo tutto scegli "Player 18k" o "Il tuo MP3".</p>
+          <div data-when="appearance.music.type=audio|deezer">
         <div class="field"><div class="label">stile</div><div class="seg seg-wrap" data-seg="appearance.music.player.style" data-o="playerStyle"></div></div>
         <div class="field-grid">
           <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.music.player.size" data-o="playerSize"></div></div>
@@ -1356,7 +1384,11 @@
           <div class="toggle-row"><span>Titolo che scorre</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.marquee"><span class="track"><span class="knob"></span></span></label></div>
           <div class="toggle-row"><span>Entra piano (volume che sale)</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.player.fadeIn"><span class="track"><span class="knob"></span></span></label></div>
         </div>
+          </div>
+        </div>
+        <p class="hint" data-when="appearance.music.showPlayer=false">Il player è nascosto: la canzone si sente ma non si vede niente.</p>
       </div>
+
       <div class="label section-label">last.fm</div>
       <div class="card lf-card">
         <div class="lf-row">
@@ -1902,7 +1934,7 @@
     if (name === "gallery") renderGallery();
     if (name === "clans") renderClans();
     if (name === "publish") renderPublish();
-    if (name === "music") { renderMsNow(); renderLastfm(); }
+    if (name === "music") { renderSources(); renderLastfm(); }
     if (name === "widgets") renderWidgetPics();
     if (name === "page") renderLinkPage();
     if (name === "inbox") renderInbox();
@@ -2861,15 +2893,58 @@
       } catch (err) { if (seq === msSeq) { $("msList").replaceChildren(); $("msNote").textContent = err.message; } }
     }, 350);
   });
-  $("msList").addEventListener("click", async e => {
+  // 1. the chosen song (kept while the dashboard is open), 2. where it plays
+  let msPick = null;
+  $("msList").addEventListener("click", e => {
     const b = e.target.closest(".ms-it"); if (!b) return;
-    const s = $("msList").items[+b.dataset.i];
-    b.querySelector("em").textContent = "un attimo…";
-    const sp = s.spotify;
-    Object.assign(draft.appearance.music, sp ? { type: "spotify", url: sp } : { type: "deezer", url: s.deezer }, { title: `${s.title} — ${s.artist}`, cover: s.cover, showPlayer: true });
-    changed(); syncControls(); renderMsNow();
+    msPick = $("msList").items[+b.dataset.i];
     $("msList").replaceChildren(); $("msQuery").value = "";
-    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Fatto: suona nel player 18k (anteprima di 30 secondi), che puoi personalizzare qui sotto.";
+    const m = draft.appearance.music;
+    Object.assign(m, { title: `${msPick.title} — ${msPick.artist}`, cover: msPick.cover });
+    // the source most people want: the 18k player (or Spotify when the site has the Spotify keys)
+    useSource(msPick.spotify ? "spotify" : "deezer");
+    $("msNote").textContent = "Canzone scelta. Ora scegli da dove suona.";
+  });
+  const SOURCES = [
+    ["deezer", "Player 18k", "anteprima di 30 secondi · tutto personalizzabile"],
+    ["mp3", "Il tuo MP3", "canzone intera · tutto personalizzabile"],
+    ["youtube", "YouTube", "canzone intera · player di YouTube"],
+    ["spotify", "Spotify", "player di Spotify · non parte da solo"]
+  ];
+  function renderSources() {
+    const m = draft.appearance.music, cur = m.type === "audio" ? "mp3" : m.type;
+    $("msSources").innerHTML = SOURCES.map(([k, name, sub]) => {
+      const off = (k === "deezer" && !msPick && m.type !== "deezer") || (k === "spotify" && !(msPick && msPick.spotify) && m.type !== "spotify");
+      return `<button type="button" class="src-tile${cur === k ? " on" : ""}" data-src="${k}"${off ? " disabled" : ""}><b>${name}</b><span>${sub}</span></button>`;
+    }).join("");
+    $("msYt").classList.toggle("hidden", cur !== "youtube");
+    if (cur === "youtube") { const q = msPick ? `${msPick.title} ${msPick.artist}` : (m.title || "").replace(" — ", " "); $("msYtSearch").href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q); $("msYtUrl").value = m.type === "youtube" ? m.url : ""; }
+    $("msSrcNote").textContent = !msPick && m.type === "none" ? "Prima cerca una canzone qui sopra." : cur === "spotify" ? "Spotify non si può nascondere né far partire da solo: è una loro regola." : "";
+    renderMsNow();
+  }
+  function useSource(k) {
+    const m = draft.appearance.music;
+    if (k === "deezer" && msPick) Object.assign(m, { type: "deezer", url: msPick.deezer });
+    if (k === "spotify" && msPick && msPick.spotify) Object.assign(m, { type: "spotify", url: msPick.spotify });
+    if (k === "youtube") { m.type = "youtube"; if (!/youtu/.test(m.url || "")) m.url = ""; }
+    if (k === "mp3") {
+      m.type = "audio";
+      if (!m.tracks.length) { $("audioPick").click(); setStatus("Scegli il file MP3 della canzone."); }
+    }
+    changed(); syncControls(); renderSources();
+  }
+  $("msSources").addEventListener("click", e => { const b = e.target.closest("[data-src]"); if (b && !b.disabled) useSource(b.dataset.src); });
+  $("msYtUrl").addEventListener("input", () => {
+    const v = $("msYtUrl").value.trim();
+    if (!/youtu\.?be/.test(v)) return;
+    Object.assign(draft.appearance.music, { type: "youtube", url: v });
+    changed(); syncControls(); renderMsNow();
+  });
+  // ▶ Prova: plays in the preview (where nothing starts by itself)
+  $("msTry").addEventListener("click", () => {
+    const b = document.querySelector("#preview .pk-mp .mp-play");
+    if (b) { b.click(); return; }
+    setStatus(draft.appearance.music.type === "none" ? "Prima scegli una canzone." : "Con questa fonte premi play direttamente nel player dell'anteprima.", "warn");
   });
 
   /* ---------- Last.fm: real connection (api/lastfm.js?connect=1) ---------- */
@@ -3300,7 +3375,9 @@
       await S.uploadBytes(r, f, { contentType: f.type, cacheControl: "public, max-age=31536000" });
       const m = draft.appearance.music;
       if (m.tracks.length >= 20) throw new Error("Massimo 20 brani.");
-      m.tracks.push({ url: await S.getDownloadURL(r), title: f.name.replace(/\.[^.]+$/, "").slice(0, 60), artist: "", cover: "", lrc: "" });
+      // the song chosen with the search gives its name and cover to the uploaded file
+      const pk = typeof msPick !== "undefined" && msPick && !m.tracks.length ? msPick : null;
+      m.tracks.push({ url: await S.getDownloadURL(r), title: pk ? pk.title.slice(0, 60) : f.name.replace(/\.[^.]+$/, "").slice(0, 60), artist: pk ? pk.artist.slice(0, 60) : "", cover: pk ? pk.cover : "", lrc: "" });
       m.type = "audio"; m.url = "";
       renderTracks(); syncControls(); changed();
       setStatus("Audio caricato. Ricordati di salvare.", "ok");

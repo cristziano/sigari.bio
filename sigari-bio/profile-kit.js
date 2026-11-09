@@ -186,6 +186,8 @@ export const clamp = (n, a, b, f) => Number.isFinite(+n) && n !== "" && n !== nu
 export const safeColor = (c, f) => HEX.test(String(c || "")) ? String(c).toLowerCase() : f;
 const pickOne = (v, list, f) => list.some(x => x[0] === v) ? v : f;
 
+// Music that starts by itself needs one tap (browsers never play sound before it): the "clicca per entrare" screen gives it
+const needsEnter = a => a.enter.on || (a.music.autoplay && ["audio", "deezer", "youtube", "soundcloud"].includes(a.music.type) && (a.music.type !== "audio" || a.music.tracks.length > 0) && (a.music.type === "audio" || !!a.music.url));
 export function safeUrl(u, allowData = false) {
   const s = String(u || "").trim();
   if (!s) return null;
@@ -2016,7 +2018,7 @@ export function mountProfile(root, input, opts = {}) {
       else if (ref && ref !== ms && ms.nextSibling !== ref) card.insertBefore(ms, ref);
     }
     // Starts by itself: right away if the browser lets it, otherwise at the first touch, click, key or scroll
-    if (!opts.preview && m.autoplay && !st.autoArmed && (!a.enter.on || st.entered)) {
+    if (!opts.preview && m.autoplay && !st.autoArmed && (!needsEnter(a) || st.entered)) {
       const au = st.audio, frame = slot.music.querySelector(".pk-embed[data-kind] iframe");
       if (au || frame) {
         st.autoArmed = true;
@@ -2118,7 +2120,7 @@ export function mountProfile(root, input, opts = {}) {
       later(() => card.classList.remove(cls), 1200);
     }
     st.first = false;
-    if (a.enter.on && !st.entered) showEnter(a);
+    if (needsEnter(a) && !st.entered) showEnter(a);
     else hideEnter(true);
     setupTrail(a);
   }
