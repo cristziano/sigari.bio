@@ -16,7 +16,8 @@ module.exports = async (req, res) => {
   try {
     const app = await discord("/applications/@me");
     const out = await discord(`/applications/${app.id}/commands`, { method: "PUT", body: JSON.stringify(COMMANDS) });
-    res.end(JSON.stringify({ ok: true, commands: out.map(c => "/" + c.name), interactions_url: "https://" + req.headers.host + "/api/interactions" }));
+    const want = "https://" + req.headers.host + "/api/interactions";
+    res.end(JSON.stringify({ ok: true, commands: out.map(c => "/" + c.name), interactions_url: want, portal_url: app.interactions_endpoint_url || "", connected: app.interactions_endpoint_url === want }));
   } catch (e) {
     res.statusCode = e.status || 500;
     res.end(JSON.stringify({ error: e.message }));
