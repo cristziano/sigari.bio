@@ -726,7 +726,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-name-wrap{margin-top:14px;max-width:100%}
 .pk-name{position:relative;display:inline-block;font:700 calc(26px*var(--pk-name-scale))/1.08 var(--pk-name-font);letter-spacing:var(--pk-name-ls);overflow-wrap:anywhere}
 .pk[data-upper="1"] .pk-name{text-transform:uppercase}
-.pk-name.fx-glow,.pk[data-gname="1"] .pk-name{text-shadow:0 0 18px color-mix(in srgb,var(--pk-accent) 80%,transparent),0 0 2px var(--pk-text)}
+.pk-name.fx-glow,.pk[data-gname="1"] .pk-name{text-shadow:0 0 6px var(--pk-accent),0 0 16px var(--pk-accent),0 0 36px color-mix(in srgb,var(--pk-accent) 70%,transparent),0 0 70px color-mix(in srgb,var(--pk-accent) 40%,transparent)}
 .pk-name.fx-gradient{background:linear-gradient(90deg,var(--pk-g1),var(--pk-g2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .pk-name.fx-rainbow{background:linear-gradient(90deg,#ff5f6d,#ffc371,#47e891,#3bb3ff,#b56bff,#ff5f6d);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:pk-rb 4s linear infinite}
 @keyframes pk-rb{to{background-position:200% 0}}
@@ -744,7 +744,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-aka{margin-top:2px;font-size:11px;color:var(--pk-muted);opacity:.6;letter-spacing:.02em}
 .pk-badges{display:flex;gap:6px;justify-content:center;margin-top:9px}
 .pk-badge{position:relative;width:24px;height:24px;display:grid;place-items:center;border-radius:7px;background:var(--pk-surface);border:1px solid var(--pk-border);color:var(--pk-accent)}
-.pk[data-gbadges="1"] .pk-badge{box-shadow:0 0 12px color-mix(in srgb,var(--pk-accent) 50%,transparent)}
+.pk[data-gbadges="1"] .pk-badge{box-shadow:0 0 10px var(--pk-accent),0 0 22px color-mix(in srgb,var(--pk-accent) 60%,transparent);filter:drop-shadow(0 0 4px var(--pk-accent))}
 .pk-badge:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;padding:4px 8px;border-radius:6px;background:var(--pk-text);color:#000}
 .pk-bio{margin-top:12px;font-size:14px;opacity:.88;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.4em}
 .pk-meta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px;font-size:12px;color:var(--pk-muted)}
@@ -756,13 +756,13 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk[data-soc=brand] .pk-soc i{background:var(--brand)}
 .pk[data-soc=outline] .pk-soc a{border:1px solid var(--pk-border)}
 .pk[data-soc=filled] .pk-soc a{background:var(--pk-surface);border:1px solid var(--pk-border)}
-.pk[data-soc=glow] .pk-soc i,.pk[data-gsoc="1"] .pk-soc i{filter:drop-shadow(0 0 6px var(--pk-icon))}
+.pk[data-soc=glow] .pk-soc i,.pk[data-gsoc="1"] .pk-soc i{filter:drop-shadow(0 0 3px var(--pk-icon)) drop-shadow(0 0 8px var(--pk-icon)) drop-shadow(0 0 16px color-mix(in srgb,var(--pk-icon) 60%,transparent))}
 .pk-links{display:flex;flex-direction:column;gap:10px;margin-top:18px}
 .pk-link{position:relative;overflow:hidden;min-height:50px;display:flex;align-items:center;justify-content:var(--pk-link-align,center);gap:10px;padding:10px 16px;font-size:14px;font-weight:500;text-decoration:none;background:var(--btn-bg);color:var(--btn-fg)!important;border:var(--btn-border);border-radius:var(--btn-radius);box-shadow:var(--btn-shadow);-webkit-backdrop-filter:var(--btn-blur,none);backdrop-filter:var(--btn-blur,none);transition:transform .2s,box-shadow .2s,filter .2s}
 .pk-link img{width:18px;height:18px;border-radius:4px;flex-shrink:0}
 .pk[data-hover=lift] .pk-link:hover{transform:translateY(-2px)}
 .pk[data-hover=grow] .pk-link:hover{transform:scale(1.025)}
-.pk[data-hover=glow] .pk-link:hover,.pk[data-glinks="1"] .pk-link{box-shadow:0 0 22px color-mix(in srgb,var(--pk-accent) 45%,transparent)}
+.pk[data-hover=glow] .pk-link:hover,.pk[data-glinks="1"] .pk-link{box-shadow:0 0 0 1px color-mix(in srgb,var(--pk-accent) 70%,transparent),0 0 16px color-mix(in srgb,var(--pk-accent) 75%,transparent),0 0 40px color-mix(in srgb,var(--pk-accent) 40%,transparent)}
 .pk[data-hover=shine] .pk-link::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transition:left .6s}
 .pk[data-hover=shine] .pk-link:hover::after{left:120%}
 .pk-w{display:flex;align-items:center;gap:12px;margin-top:12px;padding:11px 12px;border-radius:var(--pk-w-radius,14px);background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left;font-size:13px;text-decoration:none}
