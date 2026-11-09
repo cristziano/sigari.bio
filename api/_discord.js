@@ -66,7 +66,7 @@ async function fileChannel() {
   if (fileCh) return fileCh;
   fileCh = (async () => {
     const guild = await guildOf(ALBUMS.sets.channel);
-    const all = await discord(`/guilds/${guild}/channels`);
+    const all = await discord(`/guilds/${guild}/channels`).catch(() => []);
     const hit = all.find(c => c.type === 0 && c.name === "18k-file");
     if (hit) return hit.id;
     // No channel: a private thread "18k-file" in the requests channel (needs no special permission)

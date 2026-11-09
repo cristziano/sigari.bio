@@ -32,6 +32,14 @@ module.exports = async (req, res) => {
     // the hidden channel for the dashboard uploads: created here if the bot can
     let files = "";
     try { files = "ok " + await fileChannel(); } catch (e) { files = "errore: " + e.message; }
+    // what the bot may do in the requests channel (for the uploads fallback)
+    try {
+      const me = await discord("/users/@me");
+      const ch = await discord("/channels/1544837625213489253");
+      files += ` | bot ${me.id} | canale richieste ok, guild ${ch.guild_id}`;
+      const gch = await discord(`/guilds/${ch.guild_id}/channels`).then(x => x.length + " canali").catch(e => "lista canali: " + e.message);
+      files += " | " + gch;
+    } catch (e) { files += " | diag: " + e.message; }
     res.end(JSON.stringify({ ok: true, commands: out.map(c => "/" + c.name), interactions_url: want, portal_url: app.interactions_endpoint_url || "", connected: app.interactions_endpoint_url === want, file_channel: files }));
   } catch (e) {
     res.statusCode = e.status || 500;
