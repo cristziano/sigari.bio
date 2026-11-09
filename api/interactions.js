@@ -88,14 +88,15 @@ async function doPosta(i, opt) {
     if (banA && !/^image\//.test(banA.content_type || "image/")) return edit("Il banner deve essere un'immagine.");
     const [ban, ...pfps] = await Promise.all([banA ? getFile(banA) : null, ...pfpAs.map(getFile)]);
     const { preview } = require("./_preview");
-    const prev = await preview(pfps[0], ban);
-    const files = [["18k-preview.png", prev, "image/png"], ...pfps.map((buf, k) => [`pfp${pfps.length > 1 ? k + 1 : ""}.${extOf(pfpAs[k])}`, buf, pfpAs[k].content_type || "image/png"])];
+    // the "profile" preview only with a banner, and only if everything still fits in Discord's 4-picture card
+    const withPreview = !!ban && pfps.length + 2 <= 4;
+    const prev = withPreview ? await preview(pfps[0], ban) : null;
+    const files = [...(withPreview ? [["18k-preview.png", prev, "image/png"]] : []), ...pfps.map((buf, k) => [`pfp${pfps.length > 1 ? k + 1 : ""}.${extOf(pfpAs[k])}`, buf, pfpAs[k].content_type || "image/png"])];
     if (ban) files.push([`banner.${extOf(banA)}`, ban, banA.content_type || "image/png"]);
     const credit = String(opt.crediti || "").trim().slice(0, 60) || `by ${me.global_name || me.username || "18k"}`;
     const link = `${SITE}/#${Date.now().toString(36)}`;
     // same link on every embed: Discord shows them as one card with a gallery
-    const embeds = [{ url: link, color: 0x111214, image: { url: "attachment://18k-preview.png" }, description: `*${credit.replace(/[*_~`|]/g, "")}*`, footer: { text: "18k.bio" } }];
-    files.slice(1).forEach(([name]) => embeds.push({ url: link, image: { url: `attachment://${name}` } }));
+    const embeds = files.map(([name], k) => ({ url: link, image: { url: `attachment://${name}` }, ...(k ? {} : { color: 0x111214, description: `*${credit.replace(/[*_~`|]/g, "")}*`, footer: { text: "18k.bio" } }) }));
     const payload = {
       embeds, attachments: files.map(([name], id) => ({ id, filename: name })),
       components: [{ type: 1, components: [{ type: 2, style: 2, custom_id: "18k:dl", emoji: { name: "⬇️" }, label: (pfps.length > 1 ? `${pfps.length} pfp` : "pfp") + (ban ? " e banner" : "") }] }],
