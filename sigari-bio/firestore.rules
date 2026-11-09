@@ -4,11 +4,12 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function ownsHandle(h) { return signedIn() && get(/databases/$(database)/documents/usernames/$(h)).data.uid == request.auth.uid; }
-    // Staff: the founder's @ plus whoever the staff adds (a document in /staff with their account id)
+    // Staff: the account that owns @1 at the moment of the check, plus whoever the staff adds
+    // (a document in /staff keyed by the account id, so it follows the account, not a name)
     function isStaff() {
       return signedIn() && (exists(/databases/$(database)/documents/staff/$(request.auth.uid))
-        || (exists(/databases/$(database)/documents/users/$(request.auth.uid))
-            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('handle', '') in ['1']));
+        || (exists(/databases/$(database)/documents/usernames/1)
+            && get(/databases/$(database)/documents/usernames/1).data.uid == request.auth.uid));
     }
 
     // Files uploaded from the dashboard (photos, audio, fonts), in pieces of at most 1 MB

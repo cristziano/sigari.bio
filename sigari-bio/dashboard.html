@@ -115,6 +115,7 @@
   .logo span { color:#666; }
   .nav-group { margin-bottom:4px; }
   .nav-top { margin-bottom:10px; }
+  #nav button[hidden], #msheetList button[hidden], .view [hidden], [hidden].pick { display:none !important; }
   .st-prof { display:grid; gap:12px; margin-top:14px; padding:14px; border:1px solid var(--b); border-radius:14px; background:var(--bg); }
   .st-head { display:flex; align-items:center; gap:12px; }
   .st-head img, .st-head .st-ph { width:52px; height:52px; border-radius:50%; object-fit:cover; background:var(--s3); flex:none; }
@@ -358,6 +359,11 @@
   /* Welcome back */
   .welcome { position:fixed; inset:0; z-index:100; background:#000; display:grid; place-items:center; transition:opacity .6s; }
   .welcome.leaving { opacity:0; }
+  .wl-grid { position:absolute; inset:0; display:grid; grid-auto-rows:1fr; }
+  .wl-grid i { background:#000; animation:wl-out .42s steps(3,end) forwards; }
+  @keyframes wl-out { 0% { opacity:1; transform:scale(1); } 60% { opacity:1; transform:scale(.6); background:#151515; } 100% { opacity:0; transform:scale(0); } }
+  .wl-sweep { position:absolute; inset:0; background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%); background-size:250% 100%; animation:wl-sweep .9s ease-out forwards; pointer-events:none; }
+  @keyframes wl-sweep { from { background-position:120% 0; } to { background-position:-20% 0; opacity:0; } }
   .welcome-inner { text-align:center; padding:24px; max-width:92vw; }
   .welcome-kicker { font:500 12px "Geist Mono",monospace; letter-spacing:.4em; color:#9a9a9a; min-height:1.4em; }
   .welcome-name { margin-top:16px; min-height:1.1em; font-size:clamp(30px,7.5vw,72px); font-weight:700; letter-spacing:.04em; text-transform:uppercase; line-height:1.08; color:#fff; word-break:break-word; text-shadow:0 0 28px rgba(255,255,255,.22); }
@@ -3836,8 +3842,10 @@
     if (mode !== "user") return;
     try {
       const { F, db } = await firebase();
-      isStaff = STAFF_HANDLES.includes(handle) || (await F.getDoc(F.doc(db, "staff", uid))).exists();
-    } catch (_) { isStaff = STAFF_HANDLES.includes(handle); }
+      // the founder is whoever owns @1 at this moment (the account, not the written name)
+      const owners = await Promise.all(STAFF_HANDLES.map(h => F.getDoc(F.doc(db, "usernames", h)).then(s => s.exists() && !s.data().aliasOf ? s.data().uid : "").catch(() => "")));
+      isStaff = owners.includes(uid) || (await F.getDoc(F.doc(db, "staff", uid))).exists();
+    } catch (_) { isStaff = false; }
     $$('[data-view="staff"]').forEach(b => { b.hidden = !isStaff; });
     $$('#mnav option[value="staff"]').forEach(o => { o.hidden = !isStaff; o.disabled = !isStaff; });
   }
@@ -4663,15 +4671,26 @@
       step();
     });
   }
-  async function playWelcome(name) {
+  // Entrance without words: the screen breaks into black pixels that fall away, with a light sweep
+  async function playWelcome() {
     const w = $("welcome");
+    if (reduce) { w.classList.add("hidden"); return; }
+    w.querySelector(".welcome-inner")?.remove();
+    const cols = innerWidth < 700 ? 8 : 16, rows = Math.max(5, Math.round(cols * innerHeight / innerWidth));
+    const grid = document.createElement("div");
+    grid.className = "wl-grid";
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    const cx = (cols - 1) / 2, cy = (rows - 1) / 2, maxD = Math.hypot(cx, cy);
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const i = document.createElement("i");
+      // from the centre outwards, with a little randomness
+      i.style.animationDelay = (Math.hypot(c - cx, r - cy) / maxD * 520 + Math.random() * 180).toFixed(0) + "ms";
+      grid.appendChild(i);
+    }
+    w.replaceChildren(grid, Object.assign(document.createElement("div"), { className: "wl-sweep" }));
     w.classList.remove("hidden", "leaving");
-    setTimeout(() => w.classList.add("leaving"), reduce ? 500 : 3600);
-    setTimeout(() => w.classList.add("hidden"), reduce ? 900 : 4200);
-    if (reduce) { $("welcomeKicker").textContent = "CIAO DI NUOVO,"; $("welcomeName").textContent = name.toUpperCase(); return; }
-    const c = await typeText($("welcomeKicker"), "CIAO DI NUOVO,", 55);
-    c.remove();
-    await typeText($("welcomeName"), name.toUpperCase(), Math.max(40, Math.min(90, Math.floor(1600 / Math.max(1, name.length)))));
+    w.style.background = "transparent";
+    setTimeout(() => w.classList.add("hidden"), 1300);
   }
 
   /* =========================================================
