@@ -13,13 +13,13 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 ## 1. Identità e @
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
-| Prendi la tua @ (18k.bio/nome) | FUNZIONA |  | tutti |
+| Prendi la tua @ (18kbio.xyz/nome) | FUNZIONA |  | tutti |
 | Controllo dal vivo se il nome è libero | FUNZIONA |  | guns, feds |
 | Rarità del nome (3 / 4 / 5 / 6+ lettere) | FUNZIONA | solo sulla landing | haunt |
 | Una @ per account, bloccata | FUNZIONA |  | — |
 | Badge dello staff (beta, prima ora, verificato, partner, vincitore) | DA ATTIVARE | regole Firebase; si assegnano dalla console | guns |
 | Nomi extra: fino a 3 @ che portano a te | DA ATTIVARE | regole Firebase (provata con Firebase simulato) | guns |
-| Dominio personale | SOSPESO | sarà sempre prefisso/nome (18k.bio/nome o un prefisso 18k): manca collegare i domini |  | haunt, lnk.bio, Carrd |
+| Dominio personale | SOSPESO | sarà sempre prefisso/nome (18kbio.xyz/nome o un prefisso 18k): manca collegare i domini |  | haunt, lnk.bio, Carrd |
 | Badge personalizzato (14 icone, nome, colore) | FUNZIONA |  | guns |
 | Colore e forma dei badge | FUNZIONA |  | guns |
 | Mercato dei nomi rari | MANCA |  | haunt |
@@ -116,15 +116,15 @@ La landing mostra solo le feature principali; la lista completa sta qui.
 | Feature | Stato | Nota | Chi ce l'ha |
 |---|---|---|---|
 | Anteprima dal vivo mentre modifichi (desktop e telefono) | FUNZIONA |  | feds |
-| Pagina pubblica 18k.bio/nome | DA ATTIVARE | regole Firebase | tutti |
+| Pagina pubblica 18kbio.xyz/nome | DA ATTIVARE | regole Firebase | tutti |
 | Carta d'identità personale (editor a schermo pieno: opzioni a sinistra, solo la carta al centro) | FUNZIONA |  | idea 18k.bio |
 | Carta: 10 stili pronti, gradienti a 2-5 colori, foto di sfondo con zoom/posizione/sfocatura/b&n | FUNZIONA |  | idea 18k.bio |
 | Carta: raggi di luce (colore, numero, posizione, rotazione), riflesso olografico, punto di luce, bagliore | FUNZIONA |  | idea 18k.bio |
 | Carta: texture (grana, puntini, griglia, righe, scanline, dither, stelle, scacchi), 5 bordi, angoli | FUNZIONA |  | idea 18k.bio |
 | Carta: foto trasformata in sticker (sfondo tolto da solo, ritaglio, bordo bianco), simboli e testi, trascina/ruota/ingrandisci | FUNZIONA |  | idea 18k.bio |
 | Bottone "la mia carta" sul profilo, carta a schermo intero che si inclina col mouse | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 18k.bio |
-| Schermo intero e link 18k.bio/nome cliccabile nell'anteprima | FUNZIONA |  | idea 18k.bio |
-| Indirizzo corto 18k.bio/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 18k.bio |
+| Schermo intero e link 18kbio.xyz/nome cliccabile nell'anteprima | FUNZIONA |  | idea 18k.bio |
+| Indirizzo corto 18kbio.xyz/nome (resta valido anche /@nome) | DA ATTIVARE | regole Firebase (pagina pubblica) | idea 18k.bio |
 | Password dimenticata (link via email) | DA ATTIVARE | regole Firebase già ok; l'email la manda Firebase | tutti |
 | Verifica email all'iscrizione | FUNZIONA |  | tutti |
 | Elimina account (profilo, @, nomi extra, file, account) | DA ATTIVARE | pubblicare le nuove regole Firebase | GDPR |

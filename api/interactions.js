@@ -1,7 +1,7 @@
 // Discord slash commands for the 18k bot. Discord calls this address
 // (Developer Portal > General Information > Interactions Endpoint URL).
 //   /pfp            -> your 18k.bio profile (the one with your Discord id in "presenza discord")
-//   /pfp nome:xyz   -> the profile 18k.bio/xyz
+//   /pfp nome:xyz   -> the profile 18kbio.xyz/xyz
 //   /pfp utente:@x  -> the profile of that Discord user
 //   /posta pfp:<file> banner:<file> canale crediti
 //                   -> (admins and the "pfps" role) the bot posts pfp + banner in the channel, with a
@@ -12,7 +12,7 @@ const { discord, ALBUMS } = require("./_discord");
 const { profileByDiscord, profileByName } = require("./_firestore");
 
 // The real address until the 18k.bio domain is live (set SITE_URL in Vercel to change it)
-const SITE = process.env.SITE_URL || "https://18kbio.vercel.app";
+const SITE = process.env.SITE_URL || "https://18kbio.xyz";
 let keyP = null;
 const publicKey = () => keyP || (keyP = discord("/applications/@me").then(a => crypto.createPublicKey({
   key: Buffer.concat([Buffer.from("302a300506032b6570032100", "hex"), Buffer.from(a.verify_key, "hex")]), format: "der", type: "spki"
@@ -48,7 +48,7 @@ function card(p) {
     thumbnail: avatar ? { url: avatar } : undefined,
     image: banner || bgImage ? { url: banner || bgImage } : undefined,
     fields: badges.length ? [{ name: "badge", value: badges.join(" · "), inline: true }] : undefined,
-    footer: { text: `18k.bio/${p.handle} · ${stats.join(" · ")}` }
+    footer: { text: `18kbio.xyz/${p.handle} · ${stats.join(" · ")}` }
   };
   const buttons = [{ type: 2, style: 5, label: "Apri il profilo", url }];
   if (avatar) buttons.push({ type: 2, style: 5, label: "Scarica la pfp", url: avatar });
@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
     else p = await profileByDiscord(String(opt.utente || me.id || ""));
     if (!p) {
       return secret(res, opt.nome
-        ? `Nessun profilo **18k.bio/${String(opt.nome).toLowerCase().replace(/[^a-z0-9_@]/g, "").replace(/^@/, "")}**.`
+        ? `Nessun profilo **18kbio.xyz/${String(opt.nome).toLowerCase().replace(/[^a-z0-9_@]/g, "").replace(/^@/, "")}**.`
         : (opt.utente ? "Questa persona non ha collegato Discord al suo profilo 18k.bio." : "Non trovo il tuo profilo. Entra su 18k.bio con Discord (il collegamento è automatico), oppure in Widget > Stato Discord metti il tuo ID e salva. Oppure usa `/pfp nome:tuonome`."));
     }
     if (p.private) return secret(res, "Questo profilo è privato.");

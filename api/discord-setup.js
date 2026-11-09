@@ -5,7 +5,7 @@ const { discord, fileChannel } = require("./_discord");
 const COMMANDS = [{
   name: "pfp", type: 1, description: "Mostra un profilo 18k.bio: pfp, banner, badge e link",
   options: [
-    { type: 3, name: "nome", description: "Il nome su 18k.bio (18k.bio/nome)", required: false, max_length: 21 },
+    { type: 3, name: "nome", description: "Il nome su 18k.bio (18kbio.xyz/nome)", required: false, max_length: 21 },
     { type: 6, name: "utente", description: "Una persona del server", required: false }
   ]
 }, {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://18kbio.vercel.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://18kbio.vercel.app/explore.html</loc><changefreq>daily</changefreq></url>
-  <url><loc>https://18kbio.vercel.app/login.html</loc></url>
-  <url><loc>https://18kbio.vercel.app/privacy.html</loc></url>
-  <url><loc>https://18kbio.vercel.app/termini.html</loc></url>
+  <url><loc>https://18kbio.xyz/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://18kbio.xyz/explore.html</loc><changefreq>daily</changefreq></url>
+  <url><loc>https://18kbio.xyz/login.html</loc></url>
+  <url><loc>https://18kbio.xyz/privacy.html</loc></url>
+  <url><loc>https://18kbio.xyz/termini.html</loc></url>
 </urlset>

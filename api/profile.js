@@ -1,4 +1,4 @@
-// 18k.bio/handle (and the old /@handle): serves profile.html with the link preview filled in
+// 18kbio.xyz/handle (and the old /@handle): serves profile.html with the link preview filled in
 // (title, description, picture, accent colour), so Discord, WhatsApp and
 // Telegram show the profile instead of a generic card. Everything else still
 // happens in the browser; if anything here fails, the plain page is served.
@@ -32,7 +32,7 @@ async function readPage(origin) {
 module.exports = async (req, res) => {
   const url = new URL(req.url, "https://18k.bio");
   const handle = String(url.searchParams.get("h") || "").replace(/^@/, "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
-  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18k.bio");
+  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18kbio.xyz");
   let html;
   try { html = await readPage(origin); }
   catch (_) {
@@ -54,9 +54,9 @@ module.exports = async (req, res) => {
         }
       } else if (!(f.private && f.private.booleanValue)) {
         const a = fields(f.appearance), seo = fields(a.seo), colors = fields(a.colors), title = fields(a.title);
-        // The chosen 18k prefix is only a label in the preview (Discord, WhatsApp…): the real link stays 18k.bio/name
+        // The chosen 18k prefix is only a label in the preview (Discord, WhatsApp…): the real link stays 18kbio.xyz/name
         const ln = fields(a.link), dom = str(ln.domain), fmt = str(ln.format) === "/@" ? "/@" : "/";
-        const shown = /^[a-z0-9]{2,5}\.[a-z]{2,4}$/.test(dom) ? `${dom}${fmt}${handle}` : "18k.bio";
+        const shown = /^[a-z0-9]{2,10}\.[a-z]{2,4}$/.test(dom) ? `${dom}${fmt}${handle}` : `18kbio.xyz/${handle}`;
         const name = str(f.displayName) || handle;
         const t = str(title.text) || `${name} · 18k.bio`;
         const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 18k.bio`;

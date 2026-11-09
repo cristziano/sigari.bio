@@ -9,8 +9,8 @@
 const crypto = require("crypto");
 
 async function connect(req, res) {
-  const url = new URL(req.url, "https://" + (req.headers.host || "18k.bio"));
-  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18k.bio");
+  const url = new URL(req.url, "https://" + (req.headers.host || "18kbio.xyz"));
+  const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18kbio.xyz");
   const key = process.env.LASTFM_API_KEY, secret = process.env.LASTFM_SHARED_SECRET;
   const back = (q) => { res.statusCode = 302; res.setHeader("Location", origin + "/dashboard.html#" + q); res.end(); };
   if (!key || !secret) return back("lastfm-error=" + encodeURIComponent("Last.fm non è ancora collegato al sito."));

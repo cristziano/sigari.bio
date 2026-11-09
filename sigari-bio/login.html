@@ -116,7 +116,7 @@
     <div class="divider">OPPURE CON EMAIL</div>
 
     <form id="authForm" novalidate>
-      <div class="field" id="usernameWrap"><span class="pre">18k.bio/</span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
+      <div class="field" id="usernameWrap"><span class="pre">18kbio.xyz/</span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
       <div class="hint" id="usernameHint">La prendi adesso. Si sblocca quando entri.</div>
 
       <div class="field">
@@ -152,9 +152,9 @@
   <div class="wrap">
     <a class="logo" href="index.html">18k<span>.bio</span></a>
     <h1>Scegli la tua @.</h1>
-    <p class="sub">Ultimo passo: sarà il tuo link <b id="pickUrl">18k.bio/…</b></p>
+    <p class="sub">Ultimo passo: sarà il tuo link <b id="pickUrl">18kbio.xyz/…</b></p>
     <form id="pickForm" novalidate>
-      <div class="field"><span class="pre">18k.bio/</span><input id="pickHandle" type="text" placeholder="iltuonome" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="La tua @"></div>
+      <div class="field"><span class="pre">18kbio.xyz/</span><input id="pickHandle" type="text" placeholder="iltuonome" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="La tua @"></div>
       <div class="hint" id="pickHint">Da 1 a 20 tra lettere, numeri o _.</div>
       <label class="consent"><input type="checkbox" id="pickConsent"> <span>Ho almeno 14 anni (o il permesso dei miei genitori) e accetto i <a href="termini.html" target="_blank">termini</a> e la <a href="privacy.html" target="_blank">privacy</a>.</span></label>
       <button class="primary" id="pickBtn" type="submit">Entra &rarr;</button>
@@ -191,7 +191,7 @@
     { title: "Contatti", url: "#" }
   ];
   const HANDLE_RE = /^[a-z0-9_]{1,20}$/;
-  // 18k.bio/<name> is the profile address, so the names of the site's own pages are reserved
+  // 18kbio.xyz/<name> is the profile address, so the names of the site's own pages are reserved
   // ?next=/path brings the user back after login (e.g. to like a profile); only paths on this site
   const NEXT = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(?!\/)[\w\-./?=&%@]*$/.test(n) ? n : "dashboard.html"; })();
   const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
@@ -427,7 +427,7 @@
   let pickTimer = 0, pickFree = null;
   function checkPick() {
     const h = $("pickHandle").value;
-    $("pickUrl").textContent = "18k.bio/" + (h || "…");
+    $("pickUrl").textContent = "18kbio.xyz/" + (h || "…");
     pickFree = null;
     clearTimeout(pickTimer);
     if (!h) { $("pickHint").textContent = "Da 1 a 20 tra lettere, numeri o _."; return; }

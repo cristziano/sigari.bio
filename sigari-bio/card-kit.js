@@ -270,7 +270,7 @@ export function mountCard(root, card, data, opts = {}) {
     const meta = h("div", "k4-meta"); meta.dataset.part = "meta";
     const lines = [];
     if (cur.line) lines.push(cur.line);
-    if (cur.showDate) lines.push("18k.bio/" + handle);
+    if (cur.showDate) lines.push("18kbio.xyz/" + handle);
     meta.textContent = lines.join("\n"); meta.style.whiteSpace = "pre-line";
     if (lines.length) txt.appendChild(meta);
     txt.querySelectorAll("[data-part]").forEach(placePart);
@@ -560,7 +560,7 @@ export async function cardImage(card, data, { story = false } = {}) {
   x.drawImage(img, -w / 2, -hh / 2, w, hh); x.restore();
   x.textAlign = "center";
   x.fillStyle = c.accent === "#000000" ? "#ffffff" : "#ffffff";
-  x.font = "700 66px Geist, Arial, sans-serif"; x.fillText("18k.bio/" + (data.handle || "tuonome"), 540, 1420);
+  x.font = "700 66px Geist, Arial, sans-serif"; x.fillText("18kbio.xyz/" + (data.handle || "tuonome"), 540, 1420);
   x.fillStyle = "#8a8a8a"; x.font = "500 34px 'Geist Mono', monospace"; x.fillText("prendi la tua @", 540, 1490);
   return cv.toDataURL("image/png");
 }

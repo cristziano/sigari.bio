@@ -9,7 +9,7 @@ sigari-bio/
 ├── index.html        Landing: hero con profilo da personalizzare dal vivo, statistiche, template, topic, clan, partner, FAQ
 ├── login.html        Login e registrazione (?handle=nome, ?mode=login, ?from=ospite porta il profilo dell'ospite nell'account)
 ├── dashboard.html    Dashboard: anche senza account (modalità ospite, salva nel browser)
-├── profile.html      Pagina pubblica, servita su 18k.bio/nome (in locale: profile.html?u=nome)
+├── profile.html      Pagina pubblica, servita su 18kbio.xyz/nome (in locale: profile.html?u=nome)
 ├── explore.html      Esplora i profili: nuovi, più visti, cerca una @
 ├── clan.html         Pagina di un clan (?tag=18K) o classifica dei clan
 ├── paste.html        Un testo condiviso con un link (?id=…)
@@ -29,7 +29,7 @@ sigari-bio/
 4. **Discord (opzionale)**: provider OpenID Connect con ID `oidc.discord`, issuer `https://discord.com`, scope `identify email`; poi `DISCORD_ENABLED = true` in `login.html`.
 5. **Google Cloud Console > Credenziali**: limita la API key ai domini del sito.
 
-Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qualcuno apre 18k.bio/nome, mette nella pagina titolo, descrizione, foto e colore del profilo, così l'anteprima del link su Discord, WhatsApp e Telegram mostra il profilo. Se qualcosa non va, serve la pagina normale.
+Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qualcuno apre 18kbio.xyz/nome, mette nella pagina titolo, descrizione, foto e colore del profilo, così l'anteprima del link su Discord, WhatsApp e Telegram mostra il profilo. Se qualcosa non va, serve la pagina normale.
 
 ## Come funziona
 
@@ -37,7 +37,7 @@ Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qua
 - **Modalità ospite.** Senza account la dashboard salva nel browser (`localStorage`, chiave `sigari-draft`). Alla registrazione `login.html` copia quella bozza nel nuovo account; le immagini dell'ospite vengono poi spostate su Storage al primo accesso.
 - **Template.** Collezione `templates`: pubblici, non in elenco (solo con il link `dashboard.html?template=ID`) o privati. I template già pronti sono in `profile-kit.js` (`TEMPLATES`).
 - **Topic della settimana.** La lista è `TOPICS` in `profile-kit.js` e cambia ogni lunedì. I vincitori si premiano con il badge `winner`.
-- **Last.fm.** Crea un'app gratuita su https://www.last.fm/api/account/create e metti in Vercel `LASTFM_API_KEY` e `LASTFM_SHARED_SECRET`. Nell'app di Last.fm il "Callback URL" è `https://18kbio.vercel.app/api/lastfm?connect=1`. Così funziona il tasto "Collega Last.fm" e il widget mostra foto, ascolti e la canzone di adesso.
+- **Last.fm.** Crea un'app gratuita su https://www.last.fm/api/account/create e metti in Vercel `LASTFM_API_KEY` e `LASTFM_SHARED_SECRET`. Nell'app di Last.fm il "Callback URL" è `https://18kbio.xyz/api/lastfm?connect=1`. Così funziona il tasto "Collega Last.fm" e il widget mostra foto, ascolti e la canzone di adesso.
 - **Ricerca canzoni (Musica).** Funziona subito con Deezer (sul profilo il player Deezer). Con `SPOTIFY_CLIENT_ID` e `SPOTIFY_CLIENT_SECRET` in Vercel (app gratuita su developer.spotify.com) cerca su Spotify e mette il player Spotify.
 - **Pagina Pubblica.** È un componente React: il sorgente è `src/publish-panel.jsx`, il file usato dal sito è `publish-panel.js`. Per rigenerarlo: `npm i react@18.3.1 react-dom@18.3.1 esbuild` in una cartella a parte, poi `esbuild src/publish-panel.jsx --bundle --minify --format=esm --jsx=automatic --define:process.env.NODE_ENV='"production"' --outfile=publish-panel.js`.
 - **Discord e Spotify in diretta.** Il widget Discord usa Lanyard: l'utente entra in discord.gg/lanyard e incolla il suo ID nella dashboard.
@@ -57,7 +57,7 @@ Apri la cartella in VS Code e avvia **Live Server** su `index.html`. La pagina p
 
 Il sito si chiama **18k.bio** ed è il dominio principale. Ogni profilo è sempre **prefisso/nomeutente**:
 
-- predefinito: `18k.bio/nomeutente` (anche `18k.bio/@nomeutente`);
+- predefinito: `18kbio.xyz/nomeutente` (anche `18k.bio/@nomeutente`);
 - prefissi 18k: `18k.gin`, `18k.gg`, `18k.lol`, `18k.wtf`, `18k.rip`, `18k.fm`, `18k.vip`, `18k.ink`, `18k.cc`, `18kt.bio`, `x18k.bio`, sempre con `/nomeutente` dopo.
 
 Niente domini esterni (tipo il dominio di un server) e niente sottodomini (nome.18k.bio).

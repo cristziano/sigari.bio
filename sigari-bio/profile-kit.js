@@ -70,7 +70,7 @@ export function socialHref(sd, value) {
   return safeLinkUrl(`https://www.google.com/search?q=${enc(sd.label + ' "' + v + '"')}`);
 }
 
-export const LINK_DOMAINS = [["18k.bio", "predefinito"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
+export const LINK_DOMAINS = [["18kbio.xyz", "il tuo link vero"], ["18k.bio", "classico"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
   ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
 
 export const MUSIC_POS = [["top", "In cima"], ["name", "Sotto il nome"], ["bio", "Sotto la descrizione"], ["bottom", "In fondo"], ["float-r", "Fluttuante a destra"], ["float-l", "Fluttuante a sinistra"]];
@@ -176,7 +176,7 @@ export const DEFAULT_APPEARANCE = {
   seo: { description: "", image: "" },
   privacy: { hideViews: false, unlisted: false, hideBadges: false, private: false, disabled: false },
   // Your link: which 18k prefix and /name or /@name (the prefixes go live when the domains are bought)
-  link: { domain: "18k.bio", format: "/" },
+  link: { domain: "18kbio.xyz", format: "/" },
   glow: { username: false, socials: false, badges: false, links: false },
   entrance: "pixel"
 };
@@ -400,7 +400,7 @@ export function normalizeAppearance(raw) {
   a.title.animated = !!a.title.animated;
   a.seo.description = String(a.seo.description || "").slice(0, 160);
   a.seo.image = safeUrl(a.seo.image) || "";
-  a.link.domain = LINK_DOMAINS.some(x => x[0] === a.link.domain) ? a.link.domain : "18k.bio";
+  a.link.domain = LINK_DOMAINS.some(x => x[0] === a.link.domain) ? a.link.domain : "18kbio.xyz";
   a.link.format = a.link.format === "/@" ? "/@" : "/";
   for (const k of Object.keys(d.privacy)) a.privacy[k] = !!a.privacy[k];
   for (const k of Object.keys(d.glow)) a.glow[k] = !!a.glow[k];
@@ -1976,7 +1976,7 @@ export function mountProfile(root, input, opts = {}) {
     }
     // Deezer songs (from the search) play in the 18k player: their 30-second preview, through a stable link
     const dz = m.type === "deezer" && String(m.url).match(/deezer\.com\/(?:[a-z]{2}\/)?track\/(\d{1,15})/i);
-    const am = dz ? { ...m, tracks: [{ url: `${typeof location !== "undefined" ? location.origin : "https://18kbio.vercel.app"}/api/music-search?preview=${dz[1]}`, title: (m.title || "").split(" — ")[0], artist: (m.title || "").split(" — ")[1] || "", cover: m.cover || "", lrc: "" }] } : m;
+    const am = dz ? { ...m, tracks: [{ url: `${typeof location !== "undefined" ? location.origin : "https://18kbio.xyz"}/api/music-search?preview=${dz[1]}`, title: (m.title || "").split(" — ")[0], artist: (m.title || "").split(" — ")[1] || "", cover: m.cover || "", lrc: "" }] } : m;
     if (m.type === "deezer" && !dz && deezerEmbed(m.url)) music.push(keyedNode("dz:" + m.url, () => embed(deezerEmbed(m.url), "Deezer")));
     if ((m.type === "audio" || dz) && am.tracks.length) {
       const node = keyedNode("mp", () => { const x = playlistPlayer(track); x.node.player = x; return x.node; });
