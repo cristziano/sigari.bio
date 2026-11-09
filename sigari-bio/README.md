@@ -79,3 +79,8 @@ Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre
 ## Richieste dall'app
 
 - Serve un account, una richiesta a settimana per account. Il bot cerca 3 foto su Pinterest dal testo della richiesta e le mette nel messaggio del canale richieste.
+
+## Bot Discord: /posta
+- `/posta pfp:<file> banner:<file> canale crediti` lo usano solo gli admin e chi ha un ruolo con "pfp" nel nome.
+- Il bot posta nel canale (di base #pfps) l'anteprima stile profilo Discord, la pfp e il banner, "by …" e il bottone ⬇ che manda pfp e banner solo a chi lo preme.
+- Dopo il deploy apri una volta `/api/discord-setup` per registrare il comando.

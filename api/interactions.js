@@ -3,9 +3,12 @@
 //   /pfp            -> your 18k.bio profile (the one with your Discord id in "presenza discord")
 //   /pfp nome:xyz   -> the profile 18k.bio/xyz
 //   /pfp utente:@x  -> the profile of that Discord user
+//   /posta pfp:<file> banner:<file> canale crediti
+//                   -> (admins and the "pfps" role) the bot posts pfp + banner in the channel, with a
+//                      Discord-profile style preview, "by …" and a ⬇ button that sends you both files
 // Every request is checked with the application's public key, fetched with the bot token.
 const crypto = require("crypto");
-const { discord } = require("./_discord");
+const { discord, ALBUMS } = require("./_discord");
 const { profileByDiscord, profileByName } = require("./_firestore");
 
 // The real address until the 18k.bio domain is live (set SITE_URL in Vercel to change it)
@@ -53,6 +56,75 @@ function card(p) {
   return { embeds: [embed], components: [{ type: 1, components: buttons }] };
 }
 
+/* ---------- /posta ---------- */
+const API = "https://discord.com/api/v10";
+let waitUntil = null;
+try { ({ waitUntil } = require("@vercel/functions")); } catch (_) { waitUntil = null; }
+const roleCache = {};
+async function canPost(i) {
+  const perms = BigInt((i.member && i.member.permissions) || "0");
+  // Administrator, Manage server, Manage messages
+  if (perms & (1n << 3n) || perms & (1n << 5n) || perms & (1n << 13n)) return true;
+  const mine = (i.member && i.member.roles) || [];
+  if (!mine.length || !i.guild_id) return false;
+  if (!roleCache[i.guild_id]) roleCache[i.guild_id] = discord(`/guilds/${i.guild_id}/roles`).catch(() => []);
+  const roles = await roleCache[i.guild_id];
+  return roles.some(r => mine.includes(r.id) && /pfp/i.test(r.name));
+}
+const extOf = a => (String(a.filename || "").match(/\.(png|jpe?g|gif|webp)$/i) || [, "png"])[1].toLowerCase().replace("jpeg", "jpg");
+async function getFile(a) {
+  const r = await fetch(a.url, { signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw new Error("file");
+  return Buffer.from(await r.arrayBuffer());
+}
+async function doPosta(i, opt) {
+  const att = (i.data.resolved && i.data.resolved.attachments) || {};
+  const pfpA = att[opt.pfp], banA = opt.banner ? att[opt.banner] : null;
+  const album = ALBUMS[opt.canale] ? opt.canale : "pfps";
+  const me = (i.member && i.member.user) || i.user || {};
+  const edit = content => fetch(`${API}/webhooks/${i.application_id}/${i.token}/messages/@original`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) }).catch(() => {});
+  try {
+    if (!pfpA || !/^image\//.test(pfpA.content_type || "image/")) return edit("Allega un'immagine come pfp.");
+    if (banA && !/^image\//.test(banA.content_type || "image/")) return edit("Il banner deve essere un'immagine.");
+    const [pfp, ban] = await Promise.all([getFile(pfpA), banA ? getFile(banA) : null]);
+    const { preview } = require("./_preview");
+    const prev = await preview(pfp, ban);
+    const files = [["18k-preview.png", prev, "image/png"], [`pfp.${extOf(pfpA)}`, pfp, pfpA.content_type || "image/png"]];
+    if (ban) files.push([`banner.${extOf(banA)}`, ban, banA.content_type || "image/png"]);
+    const credit = String(opt.crediti || "").trim().slice(0, 60) || `by ${me.global_name || me.username || "18k"}`;
+    const link = `${SITE}/#${Date.now().toString(36)}`;
+    // same link on every embed: Discord shows them as one card with a gallery
+    const embeds = [{ url: link, color: 0x111214, image: { url: "attachment://18k-preview.png" }, description: `*${credit.replace(/[*_~`|]/g, "")}*`, footer: { text: "18k.bio" } }];
+    files.slice(1).forEach(([name]) => embeds.push({ url: link, image: { url: `attachment://${name}` } }));
+    const payload = {
+      embeds, attachments: files.map(([name], id) => ({ id, filename: name })),
+      components: [{ type: 1, components: [{ type: 2, style: 2, custom_id: "18k:dl", emoji: { name: "⬇️" }, label: ban ? "pfp e banner" : "pfp" }] }],
+      allowed_mentions: { parse: [] }
+    };
+    const fd = new FormData();
+    fd.append("payload_json", JSON.stringify(payload));
+    files.forEach(([name, buf, type], id) => fd.append(`files[${id}]`, new Blob([buf], { type }), name));
+    const r = await fetch(`${API}/channels/${ALBUMS[album].channel}/messages`, { method: "POST", headers: { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN }, body: fd, signal: AbortSignal.timeout(20000) });
+    if (!r.ok) return edit(r.status === 403 ? "Il bot non può scrivere in quel canale: dagli il permesso di inviare messaggi e allegare file." : `Discord ha risposto ${r.status}. Riprova.`);
+    const m = await r.json();
+    return edit(`Fatto ✓ postato in <#${ALBUMS[album].channel}> — https://discord.com/channels/${i.guild_id}/${m.channel_id}/${m.id}`);
+  } catch (_) {
+    return edit("Non sono riuscito a postare: riprova (file sotto 10 MB, PNG/JPG/GIF/WebP).");
+  }
+}
+// ⬇ button: sends the pfp and banner of that post only to who pressed it
+function sendFiles(res, i) {
+  const at = (i.message && i.message.attachments) || [];
+  const pick = n => at.find(a => new RegExp("^" + n + "\\.", "i").test(a.filename || ""));
+  const out = [pick("pfp"), pick("banner")].filter(Boolean);
+  if (!out.length) return secret(res, "Non trovo i file di questo post.");
+  return reply(res, {
+    flags: 64,
+    embeds: out.map(a => ({ url: SITE, image: { url: a.url } })),
+    components: [{ type: 1, components: out.map(a => ({ type: 2, style: 5, label: /^pfp/i.test(a.filename) ? "Scarica la pfp" : "Scarica il banner", url: a.url })) }]
+  });
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") { res.statusCode = 405; return res.end("Usa POST."); }
   const body = await rawBody(req);
@@ -63,6 +135,19 @@ module.exports = async (req, res) => {
 
   let i; try { i = JSON.parse(body); } catch (_) { res.statusCode = 400; return res.end("json"); }
   if (i.type === 1) { res.setHeader("Content-Type", "application/json"); return res.end('{"type":1}'); }
+  if (i.type === 3 && i.data && i.data.custom_id === "18k:dl") return sendFiles(res, i);
+  if (i.type === 2 && i.data && i.data.name === "posta") {
+    const opt = Object.fromEntries((i.data.options || []).map(o => [o.name, o.value]));
+    let ok = false;
+    try { ok = await canPost(i); } catch (_) { ok = false; }
+    if (!ok) return secret(res, "Questo comando è solo per gli admin e per chi ha il ruolo pfps.");
+    // answer now ("sto postando…"), do the work right after: Discord waits only 3 seconds
+    res.setHeader("Content-Type", "application/json");
+    const work = doPosta(i, opt);
+    if (waitUntil) { waitUntil(work); return res.end(JSON.stringify({ type: 5, data: { flags: 64 } })); }
+    res.end(JSON.stringify({ type: 5, data: { flags: 64 } }));
+    return work;
+  }
   if (i.type !== 2 || !i.data || i.data.name !== "pfp") return secret(res, "Comando sconosciuto.");
 
   const opt = Object.fromEntries((i.data.options || []).map(o => [o.name, o.value]));
@@ -82,3 +167,5 @@ module.exports = async (req, res) => {
     return secret(res, "18k.bio non risponde adesso, riprova tra poco.");
   }
 };
+
+module.exports._doPosta = doPosta; // for tests

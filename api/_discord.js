@@ -42,6 +42,7 @@ function mediaOf(m) {
   const out = [];
   (m.attachments || []).forEach(a => {
     if (!isMedia(a.content_type) && !/\.(png|jpe?g|gif|webp|mp4|webm|mov)(\?|$)/i.test(a.filename || "")) return;
+    if (/^18k-preview\./.test(a.filename || "")) return; // the /posta preview: the site shows the real pfp and banner
     out.push({ kind: kindOf(a.content_type, a.filename), video: kindOf(a.content_type, a.filename) === "video", url: a.url, thumb: a.proxy_url || a.url, w: a.width || 0, h: a.height || 0, size: a.size || 0, name: a.filename || "" });
   });
   (m.embeds || []).forEach(e => {

@@ -8,6 +8,15 @@ const COMMANDS = [{
     { type: 3, name: "nome", description: "Il nome su 18k.bio (18k.bio/nome)", required: false, max_length: 21 },
     { type: 6, name: "utente", description: "Una persona del server", required: false }
   ]
+}, {
+  name: "posta", type: 1, description: "Posta pfp e banner nel canale, con anteprima e bottone per scaricarli (admin e ruolo pfps)",
+  dm_permission: false,
+  options: [
+    { type: 11, name: "pfp", description: "La foto profilo", required: true },
+    { type: 11, name: "banner", description: "Il banner (facoltativo)", required: false },
+    { type: 3, name: "canale", description: "Dove postarla (di base #pfps)", required: false, choices: [{ name: "pfps", value: "pfps" }, { name: "sets", value: "sets" }, { name: "replies", value: "replies" }] },
+    { type: 3, name: "crediti", description: "Scritta sotto, es. by dede", required: false, max_length: 60 }
+  ]
 }];
 
 module.exports = async (req, res) => {

@@ -1,0 +1,9 @@
+{
+  "name": "18k-bio",
+  "private": true,
+  "description": "18k.bio: le funzioni in api/ usano sharp (anteprima di /posta) e @vercel/functions.",
+  "dependencies": {
+    "@vercel/functions": "1.5.0",
+    "sharp": "0.33.5"
+  }
+}
