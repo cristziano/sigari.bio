@@ -114,7 +114,10 @@ async function doPosta(i, opt) {
 }
 // ⬇ button: sends the pfp and banner of that post only to who pressed it
 function sendFiles(res, i) {
-  const at = (i.message && i.message.attachments) || [];
+  // the files are inside the card (embeds) once Discord shows them; older posts may list them as attachments
+  const nameOf = u => { try { return decodeURIComponent(new URL(u).pathname.split("/").pop()); } catch (_) { return ""; } };
+  const fromEmbeds = ((i.message && i.message.embeds) || []).map(e => e.image && e.image.url).filter(Boolean).map(url => ({ url, filename: nameOf(url) }));
+  const at = [...((i.message && i.message.attachments) || []), ...fromEmbeds].filter((a, k, all) => all.findIndex(b => b.filename === a.filename) === k);
   const out = [...at.filter(a => /^pfp\d?\./i.test(a.filename || "")), ...at.filter(a => /^banner\./i.test(a.filename || ""))];
   if (!out.length) return secret(res, "Non trovo i file di questo post.");
   return reply(res, {

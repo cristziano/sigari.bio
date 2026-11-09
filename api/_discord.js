@@ -49,6 +49,7 @@ function mediaOf(m) {
     const v = e.video && (e.type === "gifv" || e.type === "video") ? e.video : null;
     const img = e.image || (e.type === "image" || e.type === "gifv" ? e.thumbnail : null);
     if (v && v.url) out.push({ kind: e.type === "gifv" ? "gif" : "video", video: true, url: v.proxy_url || v.url, thumb: (e.thumbnail && (e.thumbnail.proxy_url || e.thumbnail.url)) || v.proxy_url || v.url, w: v.width || 0, h: v.height || 0, size: 0, name: "" });
+    else if (img && img.url && /\/18k-preview\.png/i.test(img.url)) return; // the /posta preview
     else if (img && img.url) out.push({ kind: kindOf("", img.url), url: img.proxy_url || img.url, thumb: img.proxy_url || img.url, w: img.width || 0, h: img.height || 0, size: 0, name: "" });
   });
   return out;
