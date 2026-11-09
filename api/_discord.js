@@ -69,6 +69,18 @@ async function fileChannel() {
     const all = await discord(`/guilds/${guild}/channels`);
     const hit = all.find(c => c.type === 0 && c.name === "18k-file");
     if (hit) return hit.id;
+    // No channel: a private thread "18k-file" in the requests channel (needs no special permission)
+    const isOurs = th => th && th.name === "18k-file" && th.parent_id === REQUEST_CHANNEL;
+    const active = await discord(`/guilds/${guild}/threads/active`).catch(() => ({ threads: [] }));
+    const a = (active.threads || []).find(isOurs);
+    if (a) return a.id;
+    const arch = await discord(`/channels/${REQUEST_CHANNEL}/users/@me/threads/archived/private?limit=50`).catch(() => ({ threads: [] }));
+    const b = (arch.threads || []).find(isOurs);
+    if (b) return b.id;
+    try {
+      const th = await discord(`/channels/${REQUEST_CHANNEL}/threads`, { method: "POST", body: JSON.stringify({ name: "18k-file", type: 12, invitable: false, auto_archive_duration: 10080 }) });
+      return th.id;
+    } catch (_) { /* threads not allowed either: try a channel */ }
     const me = await discord("/users/@me");
     const c = await discord(`/guilds/${guild}/channels`, { method: "POST", body: JSON.stringify({
       name: "18k-file", type: 0, topic: "File caricati dal sito 18k.bio. Non cancellare: i profili li usano.",
