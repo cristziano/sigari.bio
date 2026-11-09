@@ -988,6 +988,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-s-music.mp-float.r{right:16px}.pk-s-music.mp-float.l{left:16px}
 .pk-s-music.mp-float .pk-mp{margin:0;box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
 .pk-s-music.mp-float .pk-embed{margin:0}
+.pk-embed.pk-embed-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden;opacity:0;pointer-events:none;margin:0!important;clip-path:inset(50%)}
 .pk-form{display:grid;gap:7px;margin-top:12px;padding:12px;border-radius:14px;background:var(--pk-surface);border:1px solid var(--pk-border);text-align:left}
 .pk-form .tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--pk-accent)}
 .pk-form input,.pk-form textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--pk-border);background:rgba(var(--pk-card-rgb),.6);color:var(--pk-text);font:inherit;font-size:13px;outline:0;resize:vertical}
@@ -1979,13 +1980,24 @@ export function mountProfile(root, input, opts = {}) {
 
     const m = a.music, music = [];
     if (m.type === "spotify" && spotifyEmbed(m.url)) music.push(keyedNode("sp:" + m.url, () => embed(spotifyEmbed(m.url), "Spotify")));
-    if (m.type === "deezer" && deezerEmbed(m.url)) music.push(keyedNode("dz:" + m.url, () => embed(deezerEmbed(m.url), "Deezer")));
-    if (m.type === "soundcloud" && soundcloudEmbed(m.url)) music.push(keyedNode("sc:" + m.url, () => embed(soundcloudEmbed(m.url), "SoundCloud")));
-    if (m.type === "youtube" && youtubeEmbed(m.url)) music.push(keyedNode("yt:" + m.url, () => embed(youtubeEmbed(m.url), "YouTube")));
-    if (m.type === "audio" && m.tracks.length) {
+    // SoundCloud and YouTube: their player, hidden when asked (it keeps playing), controlled with their own API
+    const sc = m.type === "soundcloud" && soundcloudEmbed(m.url), yt = m.type === "youtube" && youtubeEmbed(m.url);
+    if (sc || yt) {
+      const info = sc ? { ...sc } : { ...yt, src: yt.src + "?enablejsapi=1&playsinline=1&rel=0" + (typeof location !== "undefined" ? "&origin=" + encodeURIComponent(location.origin) : "") };
+      const node = keyedNode((sc ? "sc:" : "yt:") + m.url, () => embed(info, sc ? "SoundCloud" : "YouTube"));
+      node.classList.toggle("pk-embed-hidden", !m.showPlayer);
+      const fr = node.querySelector("iframe"); if (fr) fr.loading = "eager";
+      node.dataset.kind = sc ? "sc" : "yt";
+      music.push(node);
+    }
+    // Deezer songs (from the search) play in the 18k player: their 30-second preview, through a stable link
+    const dz = m.type === "deezer" && String(m.url).match(/deezer\.com\/(?:[a-z]{2}\/)?track\/(\d{1,15})/i);
+    const am = dz ? { ...m, tracks: [{ url: `${typeof location !== "undefined" ? location.origin : "https://18kbio.vercel.app"}/api/music-search?preview=${dz[1]}`, title: (m.title || "").split(" — ")[0], artist: (m.title || "").split(" — ")[1] || "", cover: m.cover || "", lrc: "" }] } : m;
+    if (m.type === "deezer" && !dz && deezerEmbed(m.url)) music.push(keyedNode("dz:" + m.url, () => embed(deezerEmbed(m.url), "Deezer")));
+    if ((m.type === "audio" || dz) && am.tracks.length) {
       const node = keyedNode("mp", () => { const x = playlistPlayer(track); x.node.player = x; return x.node; });
       const pl = node.player;
-      pl.update(m);
+      pl.update(am);
       st.audio = pl.audio;
       node.style.display = m.showPlayer ? "" : "none";
       music.push(node);
@@ -2004,13 +2016,17 @@ export function mountProfile(root, input, opts = {}) {
       else if (ref && ref !== ms && ms.nextSibling !== ref) card.insertBefore(ms, ref);
     }
     // Starts by itself: right away if the browser lets it, otherwise at the first touch, click, key or scroll
-    if (!opts.preview && m.type === "audio" && m.autoplay && st.audio && !st.autoArmed && (!a.enter.on || st.entered)) {
-      st.autoArmed = true;
-      const au = st.audio;
-      const go = () => { off(); if (au.paused) au.play().catch(() => {}); };
-      const evs = ["pointerdown", "keydown", "touchstart", "wheel"];
-      const off = () => evs.forEach(e => removeEventListener(e, go, true));
-      au.play().then(off).catch(() => evs.forEach(e => addEventListener(e, go, { capture: true, passive: true })));
+    if (!opts.preview && m.autoplay && !st.autoArmed && (!a.enter.on || st.entered)) {
+      const au = st.audio, frame = slot.music.querySelector(".pk-embed[data-kind] iframe");
+      if (au || frame) {
+        st.autoArmed = true;
+        const evs = ["pointerdown", "keydown", "touchstart", "wheel"];
+        const off = () => evs.forEach(e => removeEventListener(e, go, true));
+        const go = () => { off(); startMusic(); };
+        const arm = () => evs.forEach(e => addEventListener(e, go, { capture: true, passive: true }));
+        if (au) au.play().then(off).catch(arm);
+        else { startMusic(); arm(); }
+      }
     }
 
     const embeds = [];
@@ -2188,15 +2204,29 @@ export function mountProfile(root, input, opts = {}) {
       st.enterEl.addEventListener("click", () => {
         st.entered = true;
         st.enterEl.classList.add("out");
-        if (st.audio && !o.preview && st.lastAutoplay) st.audio.play().catch(() => {});
+        if (!o.preview && st.lastAutoplay) startMusic();
         o.onEnter && o.onEnter();
       });
       root.appendChild(st.enterEl);
     }
-    st.lastAutoplay = a.music.type === "audio" && a.music.autoplay;
+    st.lastAutoplay = ["audio", "deezer", "youtube", "soundcloud"].includes(a.music.type) && a.music.autoplay;
     st.enterEl.dataset.style = a.enter.style;
     st.enterEl.firstChild.textContent = a.enter.text;
     st.enterEl.classList.remove("out");
+  }
+  // Starts whatever music the profile has: the 18k player, or YouTube / SoundCloud through their player API
+  function startMusic() {
+    if (st.audio) { if (st.audio.paused) st.audio.play().catch(() => {}); return; }
+    const box = slot.music.querySelector(".pk-embed[data-kind]"), f = box && box.querySelector("iframe");
+    if (!f || !f.contentWindow) return;
+    const vol = (st.last && st.last.appearance && st.last.appearance.music && st.last.appearance.music.volume) || 60;
+    if (box.dataset.kind === "yt") {
+      ["unMute", "playVideo"].forEach(func => f.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*"));
+      f.contentWindow.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [vol] }), "*");
+    } else {
+      f.contentWindow.postMessage(JSON.stringify({ method: "setVolume", value: vol }), "*");
+      f.contentWindow.postMessage(JSON.stringify({ method: "play" }), "*");
+    }
   }
   function hideEnter(instant) {
     if (!st.enterEl) return;

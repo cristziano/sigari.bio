@@ -552,6 +552,12 @@
   .gp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin:12px 0; max-height:60vh; overflow:auto; }
   .gp-grid button { aspect-ratio:1; border:1px solid var(--b); border-radius:10px; background:var(--s3) center/cover; cursor:pointer; padding:0; }
   .gp-grid button:hover { outline:2px solid var(--fg); }
+  .bg-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-top:14px; }
+  .bg-tabs button { padding:12px 6px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--m); font:500 13px inherit; cursor:pointer; }
+  .bg-tabs button.on { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+  .bg-panel { margin-top:10px; padding:14px; border:1px solid var(--b); border-radius:14px; background:var(--bg); display:grid; gap:10px; }
+  .bg-panel > .label:first-child { margin:0; }
+  @media (max-width:520px) { .bg-tabs { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   .open-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin-top:12px; }
   .open-grid.sm { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .open-tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 8px 9px; border:1px solid var(--b); border-radius:12px; background:var(--bg); color:var(--fg); font:inherit; cursor:pointer; }
@@ -928,18 +934,23 @@
       </div>
       <div class="card pz" id="c-bg">
         <div class="pz-h"><b>Sfondo</b><span>quello che c'è dietro il profilo</span></div>
-        <div class="field"><div class="label">tipo di sfondo</div><div class="seg" data-seg="appearance.bg.type" data-o="bgType"></div></div>
-        <div class="field"><div class="label">colore dello sfondo <small style="text-transform:none;letter-spacing:0">(solo lo sfondo, non il profilo)</small></div>
+        <div class="bg-tabs" data-seg="appearance.bg.type" data-o="bgType" role="tablist" aria-label="Tipo di sfondo"></div>
+        <div class="bg-panel" data-when="appearance.bg.type=color">
+          <div class="label">colore dello sfondo <small style="text-transform:none;letter-spacing:0">(solo lo sfondo, non il profilo)</small></div>
           <div class="hex-row"><input type="color" data-k="appearance.bg.color"><input class="hex-input" data-hex="appearance.bg.color" maxlength="7"></div>
           <div class="bg-sw" id="bgSwatches"><button type="button" data-bgc="#000000" style="background:#000000" aria-label="Sfondo #000000"></button><button type="button" data-bgc="#0b0b14" style="background:#0b0b14" aria-label="Sfondo #0b0b14"></button><button type="button" data-bgc="#1a0414" style="background:#1a0414" aria-label="Sfondo #1a0414"></button><button type="button" data-bgc="#140a0a" style="background:#140a0a" aria-label="Sfondo #140a0a"></button><button type="button" data-bgc="#06140d" style="background:#06140d" aria-label="Sfondo #06140d"></button><button type="button" data-bgc="#0a1020" style="background:#0a1020" aria-label="Sfondo #0a1020"></button><button type="button" data-bgc="#1f1f1f" style="background:#1f1f1f" aria-label="Sfondo #1f1f1f"></button><button type="button" data-bgc="#2b1d3a" style="background:#2b1d3a" aria-label="Sfondo #2b1d3a"></button><button type="button" data-bgc="#3a0d1e" style="background:#3a0d1e" aria-label="Sfondo #3a0d1e"></button><button type="button" data-bgc="#0d2b2b" style="background:#0d2b2b" aria-label="Sfondo #0d2b2b"></button><button type="button" data-bgc="#f2f2f2" style="background:#f2f2f2" aria-label="Sfondo #f2f2f2"></button><button type="button" data-bgc="#ffd6e8" style="background:#ffd6e8" aria-label="Sfondo #ffd6e8"></button></div>
         </div>
-        <div class="field" data-when="appearance.bg.type=gradient">
+        <div class="bg-panel" data-when="appearance.bg.type=gradient">
+          <div class="label">gradiente</div>
         <div class="chipgrid" id="gradPresets"></div>
         <div class="seg" data-seg="appearance.bg.gradient.kind" data-o="gradKind"></div>
         <div class="stops" id="gradStops"></div>
         <div class="field" data-when="appearance.bg.gradient.kind!=radial"><div class="label">angolo <span class="val" data-show="appearance.bg.gradient.angle" data-unit="°"></span></div><input type="range" min="0" max="360" data-k="appearance.bg.gradient.angle"></div>
         </div>
-        <div class="field" data-when="appearance.bg.type=image">
+        <div class="bg-panel" data-when="appearance.bg.type=image">
+          <div class="label">foto o gif</div>
+          <div class="row"><button class="save-btn sm" type="button" data-click="bgPick">Carica dal telefono</button><button class="ghost-btn sm" type="button" data-go="photos">Libreria 18k</button></div>
+
         <input class="text" type="url" data-k="appearance.bg.image" placeholder="link di un'immagine (anche da Pinterest)">
         <div class="row">
         <input class="text" id="imgSearch" style="flex:1;min-width:160px" placeholder="cerca ispirazione: fumo, città di notte, anime…">
@@ -949,11 +960,14 @@
         <p class="hint">Su Pinterest apri l'immagine, tasto destro, "Copia indirizzo immagine", poi incolla il link qui sopra.</p>
         <div class="field"><div class="label">adattamento</div><div class="seg" data-seg="appearance.bg.fit" data-o="fit"></div></div>
         </div>
-        <div class="field" data-when="appearance.bg.type=video">
+        <div class="bg-panel" data-when="appearance.bg.type=video">
+          <div class="label">video</div>
+
         <input class="text" type="url" data-k="appearance.bg.video" placeholder="link diretto a un file .mp4 o .webm">
         <p class="hint">Il video parte senza audio e in loop. Per la musica usa Audio.</p>
         </div>
-        <div class="bg-adjust" data-when="appearance.bg.type=image|video">
+        <div class="bg-panel bg-adjust" data-when="appearance.bg.type=image|video">
+
         <div class="label">sistema la foto</div>
         <div class="field-grid">
         <div class="field"><div class="label">scurisci <span class="val" data-show="appearance.bg.dim" data-unit="%"></span></div><input type="range" min="0" max="90" data-k="appearance.bg.dim"></div>
@@ -967,7 +981,6 @@
         </div>
         <div class="field"><div class="label">colore sopra la foto <span class="val" data-show="appearance.bg.tintA" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.bg.tint"><input type="range" min="0" max="90" data-k="appearance.bg.tintA" style="flex:1"></div></div>
         </div>
-      
       </div>
       <div class="card pz" id="c-general">
         <div class="pz-h"><b>Generale</b><span>descrizione, nome, posizione, effetti di sfondo e sul nome, glow, tag</span></div>
@@ -1290,7 +1303,7 @@
         <div class="field"><div class="label">dove sta sul profilo</div><div class="seg seg-wrap" data-seg="appearance.music.pos" data-o="musicPos"></div></div>
         <div class="toggle-row"><span>Parte da sola<small>Appena si apre il profilo; se il browser la blocca, parte al primo tocco o scroll del visitatore. Con "clicca per entrare" parte sempre subito.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.autoplay"><span class="track"><span class="knob"></span></span></label></div>
         <div class="toggle-row"><span>Mostra il player<small>Spento: la musica suona lo stesso ma il player non si vede.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.showPlayer"><span class="track"><span class="knob"></span></span></label></div>
-        <p class="hint">Partire da sola e nascondere il player funziona con i tuoi file audio (sorgente "File audio"). Spotify, Deezer, SoundCloud e YouTube non lo permettono: i loro player vanno toccati.</p>
+        <p class="hint">Funziona con i tuoi file audio, con le canzoni trovate con la ricerca (anteprima di 30 secondi), con YouTube e SoundCloud. Solo Spotify non lo permette: il suo player va toccato.</p>
       </div>
       <div class="card ms-card" style="margin-top:12px">
         <div class="label">cerca una canzone</div>
@@ -1316,8 +1329,8 @@
           <div class="toggle-row"><span>Ordine casuale</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.music.shuffle"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
-      <div class="label section-label" data-when="appearance.music.type=audio">il player</div>
-      <div class="card" data-when="appearance.music.type=audio">
+      <div class="label section-label" data-when="appearance.music.type=audio|deezer">il player</div>
+      <div class="card" data-when="appearance.music.type=audio|deezer">
         <div class="field"><div class="label">stile</div><div class="seg seg-wrap" data-seg="appearance.music.player.style" data-o="playerStyle"></div></div>
         <div class="field-grid">
           <div class="field"><div class="label">grandezza</div><div class="seg" data-seg="appearance.music.player.size" data-o="playerSize"></div></div>
@@ -2074,7 +2087,7 @@
     btnAnim: [["none", "Nessuna"], ["shine", "Riflesso"], ["pulse", "Battito"], ["border", "Bordo che gira"]],
     wStyle: [["card", "Scheda"], ["glass", "Vetro"], ["outline", "Contorno"], ["minimal", "Minimal"], ["neon", "Neon"]],
     wSize: [["compact", "Compatti"], ["normal", "Normali"], ["large", "Grandi"]],
-    bgType: [["color", "Colore"], ["gradient", "Gradiente"], ["image", "Foto / GIF"], ["video", "Video"]],
+    bgType: [["color", "◼ Colore"], ["gradient", "◐ Gradiente"], ["image", "▣ Foto / GIF"], ["video", "▶ Video"]],
     gradKind: [["linear", "Lineare"], ["radial", "Radiale"], ["conic", "Conico"]],
     fit: [["cover", "Riempi"], ["contain", "Intera"], ["tile", "Ripeti"]],
     border: [["none", "Nessuno"], ["solid", "Linea"], ["glow", "Glow"], ["animated", "Animato"]],
@@ -2823,7 +2836,7 @@
   function renderMsNow() {
     const m = draft.appearance.music, on = (m.type === "spotify" || m.type === "deezer") && m.url;
     $("msNow").classList.toggle("hidden", !on);
-    if (on) $("msNow").innerHTML = `${m.cover ? `<img src="${escTxt(m.cover)}" alt="">` : ""}<div><span class="kick">sul profilo · ${m.type === "spotify" ? "Spotify" : "Deezer"}</span><b>${escTxt(m.title || "Brano scelto")}</b></div><button type="button" class="ghost-btn sm" id="msRemove">Togli</button>`;
+    if (on) $("msNow").innerHTML = `${m.cover ? `<img src="${escTxt(m.cover)}" alt="">` : ""}<div><span class="kick">sul profilo · ${m.type === "spotify" ? "player Spotify" : "player 18k · anteprima di 30 secondi"}</span><b>${escTxt(m.title || "Brano scelto")}</b></div><button type="button" class="ghost-btn sm" id="msRemove">Togli</button>`;
   }
   $("msNow").addEventListener("click", e => {
     if (!e.target.closest("#msRemove")) return;
@@ -2856,7 +2869,7 @@
     Object.assign(draft.appearance.music, sp ? { type: "spotify", url: sp } : { type: "deezer", url: s.deezer }, { title: `${s.title} — ${s.artist}`, cover: s.cover, showPlayer: true });
     changed(); syncControls(); renderMsNow();
     $("msList").replaceChildren(); $("msQuery").value = "";
-    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Fatto: sul profilo c'è il player di Deezer.";
+    $("msNote").textContent = sp ? "Fatto: sul profilo c'è il player di Spotify." : "Fatto: suona nel player 18k (anteprima di 30 secondi), che puoi personalizzare qui sotto.";
   });
 
   /* ---------- Last.fm: real connection (api/lastfm.js?connect=1) ---------- */
@@ -3132,6 +3145,7 @@
     const el = e.target, pos = el.selectionStart, v = el.value.replace(/\s+/g, "/").replace(/\/{2,}/g, "/");
     if (v !== el.value) { el.value = v; try { el.setSelectionRange(pos, pos); } catch (_) {} }
   }, true);
+  document.addEventListener("click", e => { const b = e.target.closest("[data-click]"); if (b && $(b.dataset.click)) $(b.dataset.click).click(); });
   $("playerColorAuto").addEventListener("click", () => { draft.appearance.music.player.color = ""; syncControls(); changed(); });
   // Profile box: back to the automatic border colour / gradient colour
   $("borderAuto").addEventListener("click", () => { draft.appearance.card.borderColor = ""; syncControls(); changed(); });
