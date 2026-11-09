@@ -80,7 +80,16 @@ async function fileChannel() {
     try {
       const th = await discord(`/channels/${REQUEST_CHANNEL}/threads`, { method: "POST", body: JSON.stringify({ name: "18k-file", type: 12, invitable: false, auto_archive_duration: 10080 }) });
       return th.id;
-    } catch (_) { /* threads not allowed either: try a channel */ }
+    } catch (_) { /* no private threads: a public one (archived, it stays out of the way) */ }
+    const pub = (active.threads || []).find(th => th.name === "18k-file");
+    if (pub) return pub.id;
+    const archPub = await discord(`/channels/${REQUEST_CHANNEL}/threads/archived/public?limit=50`).catch(() => ({ threads: [] }));
+    const c2 = (archPub.threads || []).find(isOurs);
+    if (c2) return c2.id;
+    try {
+      const th = await discord(`/channels/${REQUEST_CHANNEL}/threads`, { method: "POST", body: JSON.stringify({ name: "18k-file", type: 11, auto_archive_duration: 60 }) });
+      return th.id;
+    } catch (_) { /* no threads at all: try a channel */ }
     const me = await discord("/users/@me");
     const c = await discord(`/guilds/${guild}/channels`, { method: "POST", body: JSON.stringify({
       name: "18k-file", type: 0, topic: "File caricati dal sito 18k.bio. Non cancellare: i profili li usano.",
