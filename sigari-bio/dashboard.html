@@ -518,7 +518,8 @@
   .gc.span-2 { grid-column:1 / -1; }
   .marks { display:flex; justify-content:space-between; font:400 10.5px "Geist Mono",monospace; color:var(--d); margin-top:-4px; }
   .chips-toggle { display:flex; gap:6px; flex-wrap:wrap; }
-  .chips-toggle label { cursor:pointer; }
+  .chips-toggle label { cursor:pointer; position:relative; }
+  html { overflow:hidden; }
   .chips-toggle input { position:absolute; opacity:0; pointer-events:none; }
   .chips-toggle span { display:inline-block; padding:7px 14px; border:1px solid var(--b); border-radius:999px; font-size:12.5px; color:var(--m); background:var(--s1); }
   .chips-toggle input:checked + span { background:var(--inv-bg); color:var(--inv-fg); border-color:var(--inv-bg); font-weight:600; }
@@ -3284,6 +3285,8 @@
     const el = e.target, pos = el.selectionStart, v = el.value.replace(/\s+/g, "/").replace(/\/{2,}/g, "/");
     if (v !== el.value) { el.value = v; try { el.setSelectionRange(pos, pos); } catch (_) {} }
   }, true);
+  // The dashboard never scrolls as a whole page (only its panels do): if something pushes it, put it back
+  addEventListener("scroll", () => { if (scrollY || scrollX) scrollTo(0, 0); }, { passive: true });
   document.addEventListener("click", e => { const b = e.target.closest("[data-click]"); if (b && $(b.dataset.click)) $(b.dataset.click).click(); });
   $("playerColorAuto").addEventListener("click", () => { draft.appearance.music.player.color = ""; syncControls(); changed(); });
   // Profile box: back to the automatic border colour / gradient colour
