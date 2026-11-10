@@ -709,7 +709,8 @@
   #fx, .fx-fallback { display:none !important; }
 
   /* ===== PLANS: two cards, Premium coming soon ===== */
-  .pc-h { margin:0 auto 32px; max-width:none; text-align:center; }
+  .pc-h { margin:0 auto 14px; max-width:none; text-align:center; }
+  .pc-lead { max-width:560px; margin:0 auto 36px; text-align:center; font-size:15.5px; line-height:1.55; color:var(--ui-muted); }
   .pc-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px; max-width:880px; margin:0 auto; }
   .pc-card { display:flex; flex-direction:column; padding:32px 30px; border:1px solid var(--ui-line); border-radius:var(--ui-r-l); background:#0a0a0a; }
   .pc-pro { background:#000; border-color:rgba(255,255,255,.22); }
@@ -724,8 +725,12 @@
   .pc-btn:active { transform:scale(.97); }
   @media (hover:hover){ a.pc-btn:hover { background:#151515; } }
   .pc-btn-on { background:#fff; color:#000; border-color:#fff; cursor:default; }
-  .pc-list { list-style:none; margin-top:26px; padding-top:22px; border-top:1px solid var(--ui-line); display:grid; gap:14px; }
-  .pc-list li { display:flex; gap:12px; align-items:center; font-size:14.5px; }
+  .pc-list { list-style:none; margin-top:26px; padding-top:22px; border-top:1px solid var(--ui-line); display:grid; gap:16px; }
+  .pc-list li { display:flex; gap:12px; align-items:flex-start; font-size:14.5px; }
+  .pc-list li > span { display:flex; flex-direction:column; gap:3px; }
+  .pc-list b { font-weight:500; }
+  .pc-list small { font-size:13px; line-height:1.45; color:var(--ui-muted); }
+  .pc-list .pc-ck { margin-top:2px; }
   .pc-ck { width:16px; height:16px; flex:none; fill:none; stroke:var(--ui-muted); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
   .pc-pro .pc-ck { stroke:#fff; }
   @media (max-width:760px){ .pc-grid { grid-template-columns:1fr; } .pc-card { padding:26px 22px; } }
@@ -1139,33 +1144,40 @@
   <section class="s pc" id="plans" aria-label="Piani">
     <div class="wrap">
       <h2 class="h2 pc-h">Piani</h2>
+      <p class="pc-lead">Il piano Gratis ha già tutto per una pagina completa e resta gratis per sempre. Premium arriverà presto per chi vuole qualcosa in più: chi è già iscritto lo saprà per primo.</p>
       <div class="pc-grid">
         <div class="pc-card">
           <b class="pc-name">Gratis</b>
-          <p class="pc-sub">Tutto quello che serve per la tua pagina. Niente carta, niente prova che scade.</p>
+          <p class="pc-sub">Tutto quello che serve per una pagina che parla di te: stile, musica, link e statistiche. Niente carta di credito, niente prova che scade.</p>
           <div class="pc-price">0€ <small>/ per sempre</small></div>
           <a class="pc-btn" href="#top" data-focus-claim>Prendi la tua @</a>
           <ul class="pc-list">
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>La tua @ su 18kbio.xyz</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Colori, gradienti, foto e video</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>13 effetti, 20 font, 5 layout</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Musica e widget</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>La tua carta e le statistiche</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Prova senza account</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>La tua @ su 18kbio.xyz</b><small>Un indirizzo corto e tuo, più gli alias per i nomi vecchi.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Sfondo come vuoi</b><small>Colori, gradienti, foto, GIF o video fino a 40 MB.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>13 effetti, 20 font, 5 layout</b><small>Animazioni del testo, cursore personalizzato e il tuo font caricato.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Link e social senza limiti</b><small>Sezioni, link programmati e link con password.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Musica sul profilo</b><small>Playlist, testi sincronizzati e quello che ascolti su Last.fm.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Widget</b><small>Discord, Twitch, YouTube e altri, con la grafica che scegli tu.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>La tua carta</b><small>Una carta da condividere, con 10 animazioni di apertura.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Statistiche vere</b><small>Visite, clic, da dove arrivano e da che dispositivo, più QR e link tracciati.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Template e community</b><small>Tanti stili pronti da usare, clan, guestbook ed esplora.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Prova senza account</b><small>Costruisci tutto prima di registrarti: lo salvi quando ti piace.</small></span></li>
           </ul>
         </div>
         <div class="pc-card pc-pro">
           <div class="pc-top"><b class="pc-name">Premium</b><span class="pc-tag">In arrivo</span></div>
-          <p class="pc-sub">Per chi vuole un profilo che non ha nessun altro.</p>
+          <p class="pc-sub">Per chi vuole un profilo che non ha nessun altro: più effetti, più dettagli, più spazio. Il prezzo lo diciamo appena è pronto.</p>
           <div class="pc-price">Soon</div>
           <span class="pc-btn pc-btn-on" aria-disabled="true">Presto disponibile</span>
           <ul class="pc-list">
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Tutto quello del piano Gratis</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Effetti e font in più</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Decorazioni esclusive</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Badge esclusivi</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Statistiche complete</li>
-            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Chi entra prima lo sa per primo</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Tutto quello del piano Gratis</b><small>Niente di quello che hai oggi diventa a pagamento.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Effetti e font esclusivi</b><small>Animazioni e caratteri che nel piano Gratis non ci sono.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Decorazioni e badge esclusivi</b><small>Cornici per la foto profilo e badge che si notano.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Statistiche complete</b><small>Più storico e più dettagli su chi visita e cosa clicca.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Il tuo dominio</b><small>Il profilo anche su un indirizzo tutto tuo.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Caricamenti più grandi</b><small>Più spazio per video, foto e musica.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Novità in anteprima</b><small>Le funzioni nuove arrivano prima a te.</small></span></li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Supporto prioritario</b><small>Le tue richieste su Discord passano davanti.</small></span></li>
           </ul>
         </div>
       </div>

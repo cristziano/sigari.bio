@@ -64,8 +64,12 @@ async function upload(req, res, url) {
   if (!size) return fail(400, "File vuoto.");
   const name = String(url.searchParams.get("name") || "file").replace(/[^a-z0-9._-]/gi, "").slice(-60) || "file";
   const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host);
+  // big videos arrive in pieces of VCHUNK bytes: each piece is one Discord message, the page joins them (see sendVideo)
+  const chunk = url.searchParams.get("chunk") === "1";
+  if (chunk && !/^video\//.test(type)) return fail(415, "Solo i video si caricano a pezzi.");
   let ch = "";
   try { ch = await fileChannel(); } catch (_) { ch = ""; }
+  if (!ch && chunk) return fail(503, "I video sopra i 4 MB per ora non si possono caricare. Usa un video più leggero.");
   if (!ch) {
     try {
       const id = await saveToFirestore(Buffer.concat(chunks), type, uid);
@@ -83,6 +87,7 @@ async function upload(req, res, url) {
     const r = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, { method: "POST", headers: { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN }, body: fd, signal: AbortSignal.timeout(25000) });
     if (!r.ok) { await reportSystem("caricamento", "Discord ha rifiutato il file: " + r.status, { uid, type }); return fail(502, "Caricamento non riuscito, riprova tra poco."); }
     const m = await r.json();
+    if (chunk) return res.end(JSON.stringify({ m: m.id }));
     res.end(JSON.stringify({ url: `${origin}/api/photo?album=file&m=${m.id}&i=0` }));
   } catch (e) {
     await reportSystem("caricamento", "Errore nel salvare su Discord: " + e.message, { uid, type });
@@ -90,9 +95,52 @@ async function upload(req, res, url) {
   }
 }
 
+// /api/photo?vid=<id>-<id>-...&n=<total bytes>&t=mp4|webm : a big video kept in pieces.
+// The video player asks for byte ranges; each answer is at most one piece (Vercel answers max 4.5 MB).
+const VCHUNK = 4000000;
+const vidUrls = new Map(); // message id -> { url, at }: Discord links last about a day
+async function pieceUrl(ch, id) {
+  const c = vidUrls.get(id);
+  if (c && Date.now() - c.at < 3600e3) return c.url;
+  const msg = await discord(`/channels/${ch}/messages/${id}`);
+  const a = (msg.attachments || [])[0];
+  if (!a) throw Object.assign(new Error("Pezzo del video non trovato."), { status: 404 });
+  vidUrls.set(id, { url: a.url, at: Date.now() });
+  return a.url;
+}
+async function sendVideo(req, res, url) {
+  const ids = String(url.searchParams.get("vid") || "").split("-"), n = parseInt(url.searchParams.get("n") || "0", 10);
+  const type = url.searchParams.get("t") === "webm" ? "video/webm" : "video/mp4";
+  if (!ids.length || ids.length > 12 || !ids.every(i => SNOWFLAKE.test(i)) || !(n > 0) || Math.ceil(n / VCHUNK) !== ids.length) { res.statusCode = 400; return res.end("Video sconosciuto."); }
+  const m = /^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range || "bytes=0-").trim());
+  let start = m && m[1] ? parseInt(m[1], 10) : 0, end = m && m[2] ? parseInt(m[2], 10) : n - 1;
+  if (m && !m[1] && m[2]) { start = Math.max(0, n - parseInt(m[2], 10)); end = n - 1; } // "bytes=-500": the last 500
+  if (!m || start >= n || end < start) { res.statusCode = 416; res.setHeader("Content-Range", `bytes */${n}`); return res.end(); }
+  const k = Math.floor(start / VCHUNK);
+  end = Math.min(end, n - 1, (k + 1) * VCHUNK - 1);
+  const ch = await fileChannel();
+  let r = await fetch(await pieceUrl(ch, ids[k]), { headers: { Range: `bytes=${start - k * VCHUNK}-${end - k * VCHUNK}` } });
+  if (r.status === 403 || r.status === 404) { vidUrls.delete(ids[k]); r = await fetch(await pieceUrl(ch, ids[k]), { headers: { Range: `bytes=${start - k * VCHUNK}-${end - k * VCHUNK}` } }); }
+  if (!r.ok) { res.statusCode = 502; return res.end("Discord non ha dato il video."); }
+  let buf = Buffer.from(await r.arrayBuffer());
+  if (r.status === 200) buf = buf.subarray(start - k * VCHUNK, end - k * VCHUNK + 1); // Discord sent the whole piece
+  end = start + buf.length - 1;
+  res.statusCode = 206;
+  safeHeaders(res, type);
+  res.setHeader("Accept-Ranges", "bytes");
+  res.setHeader("Content-Range", `bytes ${start}-${end}/${n}`);
+  res.setHeader("Content-Length", String(buf.length));
+  res.setHeader("Cache-Control", "private, max-age=86400");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.end(buf);
+}
+
 module.exports = async (req, res) => {
-  if (limited(req, res, (req.method === "POST" ? "upload" : "photo"), req.method === "POST" ? 15 : 240, req.method === "POST" ? 600 : 60)) return; // traffic guard (see _limit.js)
   const url = new URL(req.url, "https://18k.bio");
+  // traffic guard (see _limit.js): a big video is up to 10 pieces, so pieces have their own, larger allowance
+  const piece = req.method === "POST" && url.searchParams.get("chunk") === "1";
+  if (limited(req, res, piece ? "upload-piece" : req.method === "POST" ? "upload" : "photo", piece ? 40 : req.method === "POST" ? 15 : 240, req.method === "POST" ? 600 : 60)) return;
+  if (url.searchParams.get("vid")) { try { return await sendVideo(req, res, url); } catch (e) { res.statusCode = e.status || 502; return res.end("Video non raggiungibile."); } }
   if (req.method === "POST" && url.searchParams.get("upload") === "1") return upload(req, res, url);
   if (url.searchParams.get("file")) { try { return await sendFromFirestore(res, url.searchParams.get("file")); } catch (_) { res.statusCode = 502; return res.end("File non raggiungibile."); } }
   const isFile = url.searchParams.get("album") === "file";

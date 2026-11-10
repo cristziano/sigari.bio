@@ -942,7 +942,7 @@
           <div class="asset-h"><b>Sfondo</b><span class="hint">foto, GIF, video</span></div>
           <div class="asset-pv"><div class="bg-thumb" id="bgThumb"></div></div>
           <div class="row"><button class="save-btn sm" id="bgPick" type="button">Carica</button><button class="ghost-btn sm" type="button" data-go="photos">Libreria 18k</button></div>
-          <input type="file" id="bgInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm" hidden>
+          <input type="file" id="bgInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,.mp4,.m4v,.mov,.webm" hidden>
           </div>
           <div class="asset">
           <div class="asset-h"><b>Audio</b><span class="hint">MP3 fino a 8 MB</span></div>
@@ -1328,7 +1328,7 @@
         <div class="label">altezza <span class="val" data-show="appearance.banner.height" data-unit="px"></span></div>
         <input type="range" min="70" max="240" data-k="appearance.banner.height">
         </div>
-        <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm" hidden>
+        <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,.mp4,.m4v,.mov,.webm" hidden>
         </div>
       
       </div>
@@ -3540,10 +3540,12 @@
 
   async function storeImage(file, kind, max) {
     // background and banner can also be a video (MP4 or WebM), uploaded as it is
-    if ((kind === "bg" || kind === "banner") && /^video\/(mp4|webm)$/.test(file.type)) {
+    if ((kind === "bg" || kind === "banner") && videoType(file)) {
+      const vt = videoType(file);
       if (mode === "guest") throw new Error("Per caricare un video serve un account (è gratis). Senza account puoi usare una foto o una GIF.");
-      if (file.size > 4.3 * 1024 * 1024) throw new Error("Il video deve pesare al massimo 4 MB. Accorcialo o comprimilo, oppure incolla il link di un video .mp4.");
-      return uploadFile(file, `${kind}-${Date.now()}.${file.type === "video/webm" ? "webm" : "mp4"}`, file.type);
+      if (file.size > VIDEO_MAX) throw new Error(`Video troppo grande: pesa ${mb(file.size)} MB, il massimo è ${mb(VIDEO_MAX)} MB. Accorcialo o comprimilo (per esempio con un'app di compressione video), oppure incolla il link di un video .mp4.`);
+      const name = `${kind}-${Date.now()}.${vt === "video/webm" ? "webm" : "mp4"}`;
+      return file.size > 4.3 * 1024 * 1024 ? uploadBigVideo(file, name, vt) : uploadFile(file, name, vt);
     }
     if (!/^image\/(png|jpeg|webp|gif|apng)$/.test(file.type)) throw new Error(kind === "bg" || kind === "banner" ? "Usa un'immagine PNG, JPG, WebP o GIF, oppure un video MP4 o WebM." : "Usa un'immagine PNG, JPG, WebP o GIF.");
     // Avatar decorations keep the original file, so animated PNG/GIF/WebP stay animated
@@ -3563,13 +3565,39 @@
     const body = gif ? file : await shrink(file, max, "image/webp", .88);
     return uploadFile(body, `${kind}-${Date.now()}.${gif ? "gif" : "webp"}`, gif ? "image/gif" : "image/webp");
   }
+  // a video can arrive with an empty type (Windows) or as .mov from an iPhone: both play as MP4
+  const videoType = f => /^video\/(mp4|webm)$/.test(f.type) ? f.type : /^video\/(quicktime|x-m4v)$/.test(f.type) || (!f.type && /\.(mp4|m4v|mov)$/i.test(f.name || "")) ? "video/mp4" : !f.type && /\.webm$/i.test(f.name || "") ? "video/webm" : "";
+  const VIDEO_MAX = 40 * 1024 * 1024, VCHUNK = 4000000;
+  const mb = b => (b / 1024 / 1024).toFixed(b < 10 * 1024 * 1024 ? 1 : 0).replace(".", ",");
+  // videos over 4 MB go up in 4 MB pieces (the server takes at most 4.5 MB per request); the site joins them back
+  async function uploadBigVideo(file, path, type) {
+    const { auth } = await firebase();
+    if (!auth.currentUser) throw new Error("Accedi per caricare file.");
+    const name = String(path).split("/").pop().replace(/[^a-z0-9._-]/gi, "") || "video.mp4";
+    const n = Math.ceil(file.size / VCHUNK), ids = [];
+    for (let i = 0; i < n; i++) {
+      setStatus(`Carico il video… ${Math.round(i / n * 100)}%`, "ok");
+      const body = file.slice(i * VCHUNK, (i + 1) * VCHUNK);
+      let r, j = {};
+      for (let tryN = 0; tryN < 3; tryN++) {
+        r = await fetch(`/api/photo?upload=1&chunk=1&name=${encodeURIComponent(i + "-" + name)}`, { method: "POST", headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken(), "Content-Type": type }, body });
+        j = await r.json().catch(() => ({}));
+        if (r.ok && j.m) break;
+        if (r.status !== 502) break;
+        await new Promise(ok => setTimeout(ok, 1500 * (tryN + 1)));
+      }
+      if (!r.ok || !j.m) throw new Error(j.error || "Caricamento del video non riuscito, riprova.");
+      ids.push(j.m);
+    }
+    return `${location.origin}/api/photo?vid=${ids.join("-")}&n=${file.size}&t=${type === "video/webm" ? "webm" : "mp4"}`;
+  }
   function uploadFlow(btnId, inputId, kind, max, apply) {
     $(btnId).addEventListener("click", () => $(inputId).click());
     $(inputId).addEventListener("change", async e => {
       const f = e.target.files[0];
       e.target.value = "";
       if (!f) return;
-      const isVid = /^video\//.test(f.type);
+      const isVid = !!videoType(f);
       setStatus(isVid ? "Carico il video…" : "Carico l'immagine…");
       try {
         const url = await storeImage(f, kind, max);
