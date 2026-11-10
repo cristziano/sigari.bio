@@ -328,8 +328,11 @@
   .toggle button { border:0; background:none; padding:6px 13px; border-radius:999px; color:var(--m); cursor:pointer; font-size:12.5px; }
   .toggle button.on { background:var(--inv-bg); color:var(--inv-fg); font-weight:600; }
   .frame { position:relative; width:100%; max-width:360px; flex:1; min-height:0; max-height:720px; border:1px solid var(--b); border-radius:34px; overflow:hidden; background:#000; transition:max-width .35s ease, border-radius .35s ease; }
-  .frame.desktop { max-width:100%; border-radius:14px; }
+  .frame.desktop { max-width:100%; border-radius:14px; flex:none; aspect-ratio:16/10; max-height:none; }
   .frame > .pv-root { position:absolute; inset:0; }
+  /* "computer" preview: the profile is drawn on a real 1280px screen and shrunk to fit,
+     so width, layout and big cards look like they will on a PC */
+  .frame.desktop > .pv-root { inset:auto; left:0; top:0; width:1280px; height:calc(var(--fh, 720px) / var(--fs, 1)); transform:scale(var(--fs, 1)); transform-origin:0 0; }
   .pv-close { display:none; }
 
   /* Modal */
@@ -941,7 +944,7 @@
         </div>
       </div>
       <div class="card pz" id="c-box">
-        <div class="pz-h"><b>Profilo</b><span>il riquadro intorno alla foto: colore, trasparenza, bordo, forma</span></div>
+        <div class="pz-h"><b>Profilo</b><span>il riquadro intorno alla foto: grandezza, colore, trasparenza, bordo, forma</span></div>
         <div class="label">colore e trasparenza</div>
         <div class="field-grid">
           <label class="color-field"><span class="cname">Colore del riquadro</span><span class="hex-row"><input type="color" data-k="appearance.colors.primary"><input class="hex-input" data-hex="appearance.colors.primary" maxlength="7"></span></label>
@@ -952,7 +955,15 @@
         <div class="label">forma</div>
         <div class="field-grid">
           <div class="field"><div class="label">angoli <span class="val" data-show="appearance.card.radius" data-unit="px"></span></div><input type="range" min="0" max="40" data-k="appearance.card.radius"></div>
-          <div class="field"><div class="label">larghezza <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="620" step="10" data-k="appearance.card.width"></div>
+          <div class="field" id="cardSize"><div class="label">larghezza · allunga di lato <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="900" step="10" data-k="appearance.card.width"></div>
+          <div class="field"><div class="label">altezza · allunga in giù <span class="val" data-show="appearance.card.minH" data-unit="px"></span></div><input type="range" min="0" max="1200" step="10" data-k="appearance.card.minH"><p class="hint" style="margin:6px 0 0">0 = alto quanto serve. Sul telefono si ferma all'altezza dello schermo.</p></div>
+          <div class="field" id="cardMove"><div class="label">sposta e ruota · come una foto</div>
+            <div class="label" style="margin-top:8px">orizzontale <span class="val" data-show="appearance.card.x" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.x">
+            <div class="label" style="margin-top:8px">verticale <span class="val" data-show="appearance.card.y" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.y">
+            <div class="label" style="margin-top:8px">zoom <span class="val" data-show="appearance.card.zoom" data-unit="%"></span></div><input type="range" min="50" max="160" step="1" data-k="appearance.card.zoom">
+            <div class="label" style="margin-top:8px">rotazione <span class="val" data-show="appearance.card.rot" data-unit="°"></span></div><input type="range" min="-30" max="30" step="1" data-k="appearance.card.rot">
+            <button type="button" class="ghost-btn sm" id="cardMoveReset" style="margin-top:10px">Rimetti al centro</button>
+          </div>
           <div class="field"><div class="label">testo</div><div class="seg" data-seg="appearance.card.align" data-o="cAlign"></div></div>
           <div class="field"><div class="label">posizione</div><div class="seg" data-seg="appearance.card.pos" data-o="cPos"></div></div>
         </div>
@@ -1304,6 +1315,7 @@
           <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
         </div>
         <div class="label">decorazione <span class="val" id="decoCount"></span></div>
+        <div class="field"><div class="label">grandezza della decorazione <span class="val" data-show="appearance.avatar.decoSize" data-unit="%"></span></div><input type="range" min="50" max="200" step="5" data-k="appearance.avatar.decoSize"></div>
         <div class="tag-chips" id="decoGroups"></div>
         <div class="decogrid" id="decoPick"></div>
         <div class="field">
@@ -2337,7 +2349,7 @@
     meta: "customize#locInput", tags: "customize#tagsInput", banner: "layout#bannerPick", bg: "customize#c-bg",
     badges: "badges", soctop: "links#socialGrid", socbot: "links#socialGrid", links: "links#linksList",
     widgets: "widgets", embeds: "widgets", music: "music", topic: "topic", gallery: "gallery", forms: "inbox",
-    card: "card", box: "customize#c-box"
+    card: "card", box: "customize#cardSize"
   };
   // Tapping a part of the preview: straight to the exact control, with a flash on it
   const WIDGET_FIELD = { gh: "appearance.widgets.github", ds: "appearance.widgets.discordServer", rb: "appearance.widgets.roblox", wx: "appearance.widgets.weather", cd: "appearance.widgets.countdown.date", md: "appearance.widgets.mood", nt: "appearance.widgets.note", lf: "appearance.lastfm.show", dc: "appearance.widgets.discordPresence" };
@@ -2378,6 +2390,12 @@
     $("linkBadge").textContent = (draft.links || []).length;
     renderCards();
   }
+  // keeps the shrink factor of the computer preview right when the panel changes size
+  new ResizeObserver(() => { const f = $("frame"); f.style.setProperty("--fs", (f.clientWidth / 1280).toFixed(4)); f.style.setProperty("--fh", f.clientHeight + "px"); }).observe($("frame"));
+  // back to the middle: every slider of "sposta e ruota" to its starting value
+  $("cardMoveReset").addEventListener("click", () => {
+    $$('#cardMove input[type="range"]').forEach(i => { i.value = i.dataset.k.endsWith("zoom") ? 100 : 0; i.dispatchEvent(new Event("input", { bubbles: true })); });
+  });
   $("btnDesktop").addEventListener("click", () => { $("frame").classList.add("desktop"); $("btnDesktop").classList.add("on"); $("btnMobile").classList.remove("on"); });
   $("btnMobile").addEventListener("click", () => { $("frame").classList.remove("desktop"); $("btnMobile").classList.add("on"); $("btnDesktop").classList.remove("on"); });
   $("openPreview").addEventListener("click", () => $("preview").classList.add("open"));

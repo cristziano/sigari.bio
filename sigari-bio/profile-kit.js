@@ -151,13 +151,13 @@ export const DEFAULT_APPEARANCE = {
   layout: "classic",
   bg: { type: "color", color: "#000000", gradient: { kind: "linear", angle: 160, stops: ["#1a1a1a", "#000000", "#2b2b2b"] }, image: "", video: "", poster: "", fit: "cover", dim: 30, blur: 0, x: 50, y: 50, zoom: 100, gray: 0, sat: 100, tint: "#000000", tintA: 0, vignette: 0 },
   effect: "lava", effectColor: "#ffffff", intensity: 80,
-  card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, gradient: false, borderColor: "", borderWidth: 1, shadow: "none", padding: 24, align: "center", pos: "center", grad2: "", gradAngle: 160, tilt: false },
+  card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, minH: 0, x: 0, y: 0, zoom: 100, rot: 0, gradient: false, borderColor: "", borderWidth: 1, shadow: "none", padding: 24, align: "center", pos: "center", grad2: "", gradAngle: 160, tilt: false },
   colors: { accent: "#ffffff", text: "#ffffff", muted: "#9a9a9a", icon: "#ffffff", primary: "#0d0d0d", secondary: "#141414", border: "#2a2a2a" },
   font: { name: "geist", body: "geist", nameSize: 100, upper: false, spacing: 0, custom: "" },
   nameFx: "none", nameGradient: ["#ffffff", "#8a8a8a"],
   bioFx: "none", bioLines: [], typeSpeed: 70,
   banner: { type: "none", url: "", height: 120 },
-  avatar: { show: true, shape: "circle", size: 92, ring: "none", deco: "none", decoUrl: "", discord: false, discordDeco: false },
+  avatar: { show: true, shape: "circle", size: 92, ring: "none", deco: "none", decoUrl: "", discord: false, discordDeco: false, decoSize: 100 },
   badges: { show: true, color: "", style: "box", custom: { on: false, icon: "star", label: "", color: "" } },
   socialsStyle: { style: "plain", size: 40, position: "top", align: "center" },
   buttons: { variant: "solid", palette: "white", custom: "#ffffff", shape: "rounded", shadow: "none", hover: "lift", align: "center", icons: true, size: "m", font: "body", upper: false, border: 1, gradient: false, anim: "none" },
@@ -261,7 +261,11 @@ export function normalizeAppearance(raw) {
   a.card.opacity = clamp(a.card.opacity, 0, 100, 55);
   a.card.blur = clamp(a.card.blur, 0, 30, 14);
   a.card.radius = clamp(a.card.radius, 0, 40, 22);
-  a.card.width = clamp(a.card.width, 320, 620, 420);
+  a.card.width = clamp(a.card.width, 320, 900, 420);
+  a.card.minH = clamp(a.card.minH, 0, 1200, 0); // 0 = as tall as what is inside
+  // move / zoom / turn the whole profile, like a photo
+  a.card.x = clamp(a.card.x, -50, 50, 0); a.card.y = clamp(a.card.y, -50, 50, 0);
+  a.card.zoom = clamp(a.card.zoom, 50, 160, 100); a.card.rot = clamp(a.card.rot, -30, 30, 0);
   a.card.border = ["none", "solid", "glow", "animated"].includes(a.card.border) ? a.card.border : "solid";
   a.card.gradient = !!a.card.gradient;
   // Full control of the profile box (the frame around the photo)
@@ -288,6 +292,7 @@ export function normalizeAppearance(raw) {
   a.typeSpeed = clamp(a.typeSpeed, 20, 200, 70);
   a.avatar.shape = ["circle", "rounded", "square", "hex"].includes(a.avatar.shape) ? a.avatar.shape : "circle";
   a.avatar.size = clamp(a.avatar.size, 56, 150, 92);
+  a.avatar.decoSize = clamp(a.avatar.decoSize, 50, 200, 100); // % of the normal decoration size
   a.avatar.ring = ["none", "solid", "glow", "spin"].includes(a.avatar.ring) ? a.avatar.ring : "none";
   a.avatar.show = a.avatar.show !== false;
   // the old simple decorations become the closest new one
@@ -728,7 +733,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-scroll{position:absolute;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;padding:52px 16px 40px;scrollbar-width:none}
 .pk-scroll::-webkit-scrollbar{display:none}
 .pk-s:empty{display:none}
-.pk-card{position:relative;width:100%;max-width:var(--pk-w);margin:auto 0;padding:28px 20px 22px;border-radius:var(--pk-radius);background:rgba(var(--pk-card-rgb),var(--pk-card-a));-webkit-backdrop-filter:var(--pk-card-bf,none);backdrop-filter:var(--pk-card-bf,none);border:1px solid transparent}
+.pk-card{position:relative;width:100%;max-width:var(--pk-w);min-height:min(var(--pk-minh,0px),92vh);translate:var(--pk-cx,0) var(--pk-cy,0);scale:var(--pk-cz,1);rotate:var(--pk-cr,0deg);margin:auto 0;padding:28px 20px 22px;border-radius:var(--pk-radius);background:rgba(var(--pk-card-rgb),var(--pk-card-a));-webkit-backdrop-filter:var(--pk-card-bf,none);backdrop-filter:var(--pk-card-bf,none);border:1px solid transparent}
 .pk[data-border=solid] .pk-card{border-color:var(--pk-border)}
 .pk[data-border=glow] .pk-card{border-color:color-mix(in srgb,var(--pk-accent) 60%,transparent);box-shadow:0 0 34px color-mix(in srgb,var(--pk-accent) 30%,transparent)}
 .pk[data-border=animated] .pk-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:conic-gradient(from var(--pk-a,0deg),transparent 0 62%,var(--pk-accent) 82%,transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pk-spin-a 4s linear infinite}
@@ -882,8 +887,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-s-banner:not(:empty)+.pk-s-head .pk-av{box-shadow:0 0 0 4px rgba(var(--pk-card-rgb),1)}
 .pk[data-layout=terminal] .pk-s-banner:not(:empty)+.pk-s-head .pk-head,.pk[data-layout=minimal] .pk-s-banner:not(:empty)+.pk-s-head .pk-head{margin-top:16px}
 .pk[data-layout=minimal] .pk-ban{margin:0 0 4px;border-radius:14px}
-.pk-av-deco{position:absolute;inset:-34%;width:168%;height:168%;pointer-events:none;overflow:visible;color:var(--pk-accent);z-index:2}
-.pk-dc-deco{position:absolute;inset:-12%;width:124%!important;height:124%!important;border-radius:0!important;pointer-events:none;z-index:2}
+.pk-av-deco{scale:var(--pk-dsz,1);position:absolute;inset:-34%;width:168%;height:168%;pointer-events:none;overflow:visible;color:var(--pk-accent);z-index:2}
+.pk-dc-deco{scale:var(--pk-dsz,1);position:absolute;inset:-12%;width:124%!important;height:124%!important;border-radius:0!important;pointer-events:none;z-index:2}
 .pk-av-deco .spin{transform-origin:50% 50%;animation:pk-spin 9s linear infinite}
 .pk-av-deco .rev{animation-direction:reverse}
 .pk-av-deco .flk{animation:pk-flk 1.6s steps(2) infinite}
@@ -894,7 +899,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 @keyframes pk-flap{to{transform:scaleX(.35)}}
 .pk-av-deco .dash{animation:pk-dash 3s linear infinite}
 @keyframes pk-dash{to{stroke-dashoffset:-276}}
-.pk-av-cdeco{position:absolute;inset:-10%;width:120%!important;height:120%!important;border-radius:0!important;object-fit:contain;pointer-events:none;z-index:2}
+.pk-av-cdeco{scale:var(--pk-dsz,1);position:absolute;inset:-10%;width:120%!important;height:120%!important;border-radius:0!important;object-fit:contain;pointer-events:none;z-index:2}
 @media (prefers-reduced-motion:reduce){.pk-av-deco *{animation:none!important}}
 .pk-av-deco .flick{transform-origin:50% 100%;animation:pk-flick .5s ease-in-out infinite alternate}
 @keyframes pk-flick{from{transform:scaleY(.86) skewX(-3deg)}to{transform:scaleY(1.08) skewX(3deg)}}
@@ -1806,11 +1811,12 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-accent", c.accent); s.setProperty("--pk-text", c.text); s.setProperty("--pk-muted", c.muted);
     s.setProperty("--pk-icon", c.icon); s.setProperty("--pk-surface", c.secondary); s.setProperty("--pk-border", c.border);
     s.setProperty("--pk-card-rgb", hexRgb(c.primary)); s.setProperty("--pk-card-a", (a.card.opacity / 100).toFixed(2));
-    s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-card-bf", a.card.blur > 0 ? `blur(${Math.min(a.card.blur, 16)}px)` : "none"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px");
+    s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-card-bf", a.card.blur > 0 ? `blur(${Math.min(a.card.blur, 16)}px)` : "none"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px"); s.setProperty("--pk-minh", a.card.minH ? a.card.minH + "px" : "0px");
     s.setProperty("--pk-name-font", fontStack(a.font.name, a)); s.setProperty("--pk-body-font", fontStack(a.font.body, a));
     s.setProperty("--pk-on-accent", readableOn(c.accent)); s.setProperty("--pk-badge", a.badges.color || c.accent); s.setProperty("--pk-banh", a.banner.height + "px");
     s.setProperty("--pk-name-scale", (a.font.nameSize / 100).toFixed(2)); s.setProperty("--pk-name-ls", (a.font.spacing / 100) + "em");
-    s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-soc", a.socialsStyle.size + "px");
+    s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-dsz", String(a.avatar.decoSize / 100));
+    s.setProperty("--pk-cx", `calc(${a.card.x / 100} * var(--pk-rw, 100vw))`); s.setProperty("--pk-cy", `calc(${a.card.y / 100} * var(--pk-rh, 100vh))`); s.setProperty("--pk-cz", String(a.card.zoom / 100)); s.setProperty("--pk-cr", a.card.rot + "deg"); s.setProperty("--pk-soc", a.socialsStyle.size + "px");
     s.setProperty("--pk-soc-align", { left: "flex-start", center: "center", right: "flex-end" }[a.socialsStyle.align]);
     s.setProperty("--pk-link-align", a.buttons.align === "left" ? "flex-start" : "center");
     s.setProperty("--pk-w-radius", a.widgetStyle.radius + "px");
@@ -2287,6 +2293,12 @@ export function mountProfile(root, input, opts = {}) {
   }
 
   render(input);
+  // the size of the profile area itself (not the browser window): "sposta" moves by a % of it,
+  // so the dashboard preview and the real page move the same way
+  if (typeof ResizeObserver === "function") {
+    const sizeVars = () => { root.style.setProperty("--pk-rw", root.clientWidth + "px"); root.style.setProperty("--pk-rh", root.clientHeight + "px"); };
+    sizeVars(); new ResizeObserver(sizeVars).observe(root);
+  }
   return {
     update: render,
     // Replays the entrance on the card, used for live transitions between looks
