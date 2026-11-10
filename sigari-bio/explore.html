@@ -128,7 +128,7 @@
       io.observe(box);
       return a;
     }));
-    $("note").textContent = rows.length ? "" : tab === "likes" && !$("q").value.trim() ? "Ancora nessun like: apri un profilo e lascia il primo ♥" : $("q").value.trim() ? "Nessun profilo con questo nome. Magari è ancora libero: prendilo tu." : "Ancora pochi profili: il tuo può essere tra i primi.";
+    $("note").textContent = rows.length ? "" : tab === "likes" && !$("q").value.trim() ? "Ancora nessun like: apri un profilo e lascia il primo ♥" : $("q").value.trim() ? "Nessun profilo con questo nome. Magari è ancora libero: prendilo tu." : "Ancora pochi profili: il tuo può essere tra i primi. Il tuo non c'è? Nella dashboard, Impostazioni, spegni \"non mostrarmi in Esplora\".";
   }
   async function load() {
     $("note").textContent = "Carico i profili…";

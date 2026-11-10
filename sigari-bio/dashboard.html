@@ -490,6 +490,9 @@
   .topbar .guestbar { order:2; }
   .m-search { display:none; }
   .flash { animation:flash 1.4s ease; }
+  .pick-flash { position:relative; animation:pickflash 1.6s cubic-bezier(.2,.8,.2,1); border-radius:12px; }
+  @keyframes pickflash { 0% { box-shadow:0 0 0 0 rgba(255,255,255,0), 0 0 0 0 rgba(255,255,255,0); background-color:rgba(255,255,255,.14); } 18% { box-shadow:0 0 0 3px var(--fg), 0 0 34px 6px rgba(255,255,255,.35); } 55% { box-shadow:0 0 0 2px var(--fg), 0 0 18px 2px rgba(255,255,255,.18); background-color:rgba(255,255,255,.05); } 100% { box-shadow:0 0 0 2px transparent, 0 0 0 0 transparent; background-color:transparent; } }
+  @media (prefers-reduced-motion: reduce) { .pick-flash { animation:none; outline:2px solid var(--fg); } }
   @keyframes flash { 0%, 30% { box-shadow:0 0 0 2px var(--fg); } 100% { box-shadow:0 0 0 2px transparent; } }
   /* Overview */
   .acc-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; max-width:820px; margin-top:22px; }
@@ -932,6 +935,7 @@
           <div class="asset-pv"><div class="cur-thumb" id="curThumb"></div></div>
           <div class="seg" data-seg="appearance.cursor.type" data-o="cursor"></div>
           <div class="row" data-when="appearance.cursor.type=custom"><button class="save-btn sm" id="cursorPick" type="button">Carica</button><input class="text" type="url" data-k="appearance.cursor.url" placeholder="oppure un link" style="flex:1;min-width:120px"></div>
+          <div class="field" data-when="appearance.cursor.type=custom"><div class="label">dove clicca</div><div class="seg" data-seg="appearance.cursor.hot" data-o="cursorHot"></div></div>
           <input type="file" id="cursorInput" accept="image/png,image/gif,image/webp" hidden>
           </div>
         </div>
@@ -2213,6 +2217,7 @@
     socPos: [["top", "Sopra i link"], ["bottom", "Sotto i link"]],
     socAlign: [["left", "Sinistra"], ["center", "Centro"], ["right", "Destra"]],
     cursor: [["default", "Normale"], ["crosshair", "Mirino"], ["custom", "Personalizzato"]],
+    cursorHot: [["auto", "Punta (freccia)"], ["center", "Centro (mirino)"]],
     trail: [["none", "Nessuna"], ["dots", "Puntini"], ["sparkle", "Scintille"], ["ghost", "Anelli"]],
     enterStyle: [["blur", "Sfocato"], ["fade", "Nero"], ["pixel", "Pixel"]],
     music: [["none", "Nessuna"], ["spotify", "Spotify"], ["deezer", "Deezer"], ["audio", "File audio"], ["soundcloud", "SoundCloud"], ["youtube", "YouTube"]]
@@ -2334,10 +2339,34 @@
     widgets: "widgets", embeds: "widgets", music: "music", topic: "topic", gallery: "gallery", forms: "inbox",
     card: "card", box: "customize#c-box"
   };
+  // Tapping a part of the preview: straight to the exact control, with a flash on it
+  const WIDGET_FIELD = { gh: "appearance.widgets.github", ds: "appearance.widgets.discordServer", rb: "appearance.widgets.roblox", wx: "appearance.widgets.weather", cd: "appearance.widgets.countdown.date", md: "appearance.widgets.mood", nt: "appearance.widgets.note", lf: "appearance.lastfm.show", dc: "appearance.widgets.discordPresence" };
+  function flashEl(el) {
+    if (!el) return;
+    const d = el.closest("details"); if (d && !d.open) d.open = true;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    const box = el.closest(".gc, .asset, .toggle-row, .field, .link-item, .active-card, .card") || el;
+    box.classList.remove("pick-flash"); void box.offsetWidth; box.classList.add("pick-flash");
+    setTimeout(() => box.classList.remove("pick-flash"), 1700);
+    // text fields: the cursor goes in (not on phones, to keep the keyboard closed)
+    if (/^(INPUT|TEXTAREA)$/.test(el.tagName) && matchMedia("(pointer:fine)").matches) setTimeout(() => el.focus({ preventScroll: true }), 350);
+  }
   function pickToEdit(part) {
-    const target = PICK_TARGET[part] || "customize";
-    showView(target);
     $("preview").classList.remove("open"); // on phones the preview covers the editor
+    const [kind, key] = String(part).split(":");
+    let view = "", find = null;
+    if (kind === "handle") { view = "page"; find = () => $("lnShow"); }
+    else if (kind === "aka") { view = "customize"; find = () => $("akaInput"); }
+    else if (kind === "name" || kind === "head") { view = "customize"; find = () => $("dnInput"); }
+    else if (kind === "link") { view = "links"; find = () => $("linksList").children[+key] || $("linksList"); }
+    else if (kind === "social") { view = "links"; find = () => [...$("socialActive").querySelectorAll(".active-card")].find(c => (c.querySelector("strong") || {}).textContent === key) || $("socialActive"); }
+    else if (kind === "widget") { view = key === "lf" ? "music" : "widgets"; find = () => (WIDGET_FIELD[key] && document.querySelector(`[data-k="${WIDGET_FIELD[key]}"]`)) || $("wpList"); }
+    else if (kind === "music") { view = "music"; find = () => $("msQuery"); }
+    if (view) { showView(view); setTimeout(() => flashEl(find()), 90); return; }
+    const target = PICK_TARGET[part] || "customize";
+    const [v, anchor] = target.split("#");
+    showView(v);
+    if (anchor) setTimeout(() => flashEl($(anchor)), 90);
   }
   const previewData = () => ({ ...draft, handle, badges, views: liveViews });
   function renderPreview() {

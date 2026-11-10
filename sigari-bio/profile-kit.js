@@ -334,6 +334,7 @@ export function normalizeAppearance(raw) {
   a.cursor.type = ["default", "crosshair", "custom"].includes(a.cursor.type) ? a.cursor.type : "default";
   a.cursor.url = safeUrl(a.cursor.url, true) || "";
   a.cursor.trail = ["none", "dots", "sparkle", "ghost"].includes(a.cursor.trail) ? a.cursor.trail : "none";
+  a.cursor.hot = ["auto", "center"].includes(a.cursor.hot) ? a.cursor.hot : "auto";
   a.enter.on = !!a.enter.on;
   a.enter.text = String(a.enter.text || "clicca per entrare").slice(0, 40);
   a.enter.style = ["blur", "pixel", "fade"].includes(a.enter.style) ? a.enter.style : "blur";
@@ -661,6 +662,32 @@ export function ensureFonts(ids) {
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(",");
 const R = (a, b) => a + Math.random() * (b - a);
 const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Where a cursor image points: "center" = middle, "auto" = its first visible pixel from the top-left
+// (the tip of an arrow). Cursor images bigger than 128px are ignored by browsers, so they are made smaller.
+const HOT = {};
+function cursorHot(url, mode) {
+  return new Promise(res => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const w = img.naturalWidth || 32, h = img.naturalHeight || 32;
+      if (mode === "center") return res([Math.floor(w / 2), Math.floor(h / 2)]);
+      try {
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        const x = c.getContext("2d"); x.drawImage(img, 0, 0);
+        const d = x.getImageData(0, 0, w, h).data;
+        let best = null;
+        for (let y = 0; y < h && !best; y++) for (let i = 0; i < w; i++) if (d[(y * w + i) * 4 + 3] > 100) { best = [i, y]; break; }
+        // pick the visible pixel nearest to the top-left corner (the arrow tip)
+        let bd = 1e9;
+        for (let y = 0; y < h; y++) for (let i = 0; i < w; i++) if (d[(y * w + i) * 4 + 3] > 100) { const dd = i + y; if (dd < bd) { bd = dd; best = [i, y]; } }
+        res(best || [0, 0]);
+      } catch (_) { res([0, 0]); }
+    };
+    img.onerror = () => res([0, 0]);
+    img.src = url;
+  });
+}
 const finePointer = () => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 const svg = (paths, size = 14, fill = false) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" ${fill ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'}>${paths}</svg>`;
@@ -1148,6 +1175,7 @@ function widgetShell(href, kind) {
   if (href) { w.href = href; w.target = "_blank"; w.rel = "noopener noreferrer"; }
   const pic = el("div", "pic"), txt = el("div", "txt");
   w.append(pic, txt);
+  if (kind) w.dataset.wk = kind;
   const o = kind && PIC_OVER[kind];
   if (o && o.mode === "none") pic.hidden = true;
   if (o && o.mode === "custom" && o.url) pic.dataset.fixed = o.url;
@@ -1681,6 +1709,13 @@ export function mountProfile(root, input, opts = {}) {
       if (t.closest("button, input, textarea, select, audio, video, iframe, label")) return null;
       const av = t.closest(".pk-av"); if (av) return ["avatar", av];
       const nm = t.closest(".pk-name"); if (nm) return ["name", nm];
+      const hd = t.closest(".pk-handle"); if (hd) return ["handle", hd];
+      const ak = t.closest(".pk-aka"); if (ak) return ["aka", ak];
+      const lk = t.closest(".pk-link"); if (lk && lk.dataset.li) return ["link:" + lk.dataset.li, lk];
+      const so = t.closest(".pk-soc a, .pk-soc span"); if (so) return ["social:" + (so.getAttribute("aria-label") || ""), so];
+      const wd = t.closest(".pk-w"); if (wd) return ["widget:" + (wd.dataset.wk || ""), wd];
+      const bd = t.closest(".pk-badge"); if (bd) return ["badges", bd];
+      const mp = t.closest(".pk-mp, .pk-s-music"); if (mp) return ["music", mp];
       const sl = t.closest(".pk-s"); if (sl) return [[...sl.classList].find(c => c.startsWith("pk-s-")).slice(5), sl];
       if (t.closest(".pk-card")) return ["box", card];
       return ["bg", null];
@@ -1798,7 +1833,7 @@ export function mountProfile(root, input, opts = {}) {
     ds.upper = a.font.upper ? "1" : "0"; ds.soc = a.socialsStyle.style; ds.hover = a.buttons.hover; ds.bstyle = a.badges.style;
     ds.gname = a.glow.username ? "1" : "0"; ds.gsoc = a.glow.socials ? "1" : "0"; ds.gbadges = a.glow.badges ? "1" : "0"; ds.glinks = a.glow.links ? "1" : "0";
     applyButtons(s, a);
-    root.style.cursor = a.cursor.type === "crosshair" ? "crosshair" : a.cursor.type === "custom" && a.cursor.url ? `url("${a.cursor.url.replace(/"/g, "%22")}") 4 4, auto` : "";
+    setCursor(a);
 
     // Background (rebuilt only when it changes)
     // Only what changes the media rebuilds it; sliders (position, zoom, filters, tint) are CSS variables
@@ -2043,6 +2078,7 @@ export function mountProfile(root, input, opts = {}) {
         const locked = !!(l.lock || l.password);
         const url = locked ? null : safeLinkUrl(l.url);
         const n = el("a", "pk-link" + (l.featured ? " featured" : "") + (linkLive(l, now) ? "" : " soon"));
+        n.dataset.li = p.links.indexOf(l);
         if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; }
         else n.href = "#";
         const iconUrl = url || (l.password && safeLinkUrl(l.url));
@@ -2217,6 +2253,19 @@ export function mountProfile(root, input, opts = {}) {
     if (instant) { st.enterEl.remove(); st.enterEl = null; }
   }
 
+  // Custom cursor: the click point ("hotspot") must be where the image really points,
+  // otherwise the arrow you see and the real mouse don't match.
+  function setCursor(a) {
+    if (a.cursor.type === "crosshair") { root.style.cursor = "crosshair"; return; }
+    if (a.cursor.type !== "custom" || !a.cursor.url) { root.style.cursor = ""; return; }
+    const url = a.cursor.url, mode = a.cursor.hot, key = mode + "|" + url;
+    const apply = h => { root.style.cursor = `url("${url.replace(/"/g, "%22")}") ${h[0]} ${h[1]}, auto`; };
+    if (HOT[key]) { apply(HOT[key]); return; }
+    apply([0, 0]);
+    st.curKey = key;
+    cursorHot(url, mode).then(h => { HOT[key] = h; if (st.curKey === key) apply(h); });
+  }
+
   function setupTrail(a) {
     const want = a.cursor.trail !== "none" && finePointer() && !reduceMotion() ? a.cursor.trail : "none";
     if (st.trail && st.trail.kind === want) return;
@@ -2225,7 +2274,7 @@ export function mountProfile(root, input, opts = {}) {
     const dots = Array.from({ length: want === "ghost" ? 5 : 10 }, () => { const d = el("span", "pk-trail " + want); d.style.opacity = "0"; root.appendChild(d); return d; });
     const pts = dots.map(() => ({ x: 0, y: 0 }));
     let tx = -99, ty = -99, raf = 0, active = false;
-    const move = e => { const r = root.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top; if (!active) { active = true; raf = requestAnimationFrame(tick); } };
+    const move = e => { const r = root.getBoundingClientRect(); const sx = r.width / (root.offsetWidth || r.width) || 1, sy = r.height / (root.offsetHeight || r.height) || 1; tx = (e.clientX - r.left) / sx; ty = (e.clientY - r.top) / sy; if (!active) { active = true; raf = requestAnimationFrame(tick); } };
     const leave = () => { dots.forEach(d => { d.style.opacity = "0"; }); active = false; cancelAnimationFrame(raf); };
     function tick() {
       let x = tx, y = ty;
