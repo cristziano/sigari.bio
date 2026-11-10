@@ -25,6 +25,9 @@
   "functions": {
     "api/profile.js": {
       "includeFiles": "sigari-bio/profile.html"
+    },
+    "api/discord-setup.js": {
+      "includeFiles": "sigari-bio/firestore.rules"
     }
   },
   "headers": [

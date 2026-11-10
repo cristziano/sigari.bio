@@ -1,6 +1,8 @@
 // GET /api/discord-setup: tells Discord which slash commands the 18k bot has.
 // Safe to open more than once: it always writes the same fixed list.
 const { discord, fileChannel } = require("./_discord");
+const { deployRules } = require("./_admin");
+const fs = require("fs"), path = require("path");
 
 const COMMANDS = [{
   name: "pfp", type: 1, description: "Mostra un profilo 18k.bio: pfp, banner, badge e link",
@@ -25,6 +27,14 @@ const COMMANDS = [{
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
+  // ?rules=1 publishes the Firestore rules that are in the repository (always the same file: safe to open)
+  if (/[?&]rules=1/.test(req.url || "")) {
+    try {
+      const src = fs.readFileSync(path.join(process.cwd(), "sigari-bio", "firestore.rules"), "utf8");
+      const name = await deployRules(src);
+      return res.end(JSON.stringify({ ok: true, rules: "pubblicate", ruleset: name }));
+    } catch (e) { res.statusCode = 500; return res.end(JSON.stringify({ error: e.message })); }
+  }
   try {
     const app = await discord("/applications/@me");
     const out = await discord(`/applications/${app.id}/commands`, { method: "PUT", body: JSON.stringify(COMMANDS) });

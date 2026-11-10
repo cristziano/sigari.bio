@@ -5,26 +5,30 @@
 // The dashboard's uploads: saved by the bot in the hidden "18k-file" channel. Answers { url } with a lasting link.
 const { ALBUMS, SNOWFLAKE, discord, mediaOf, fileChannel } = require("./_discord");
 const { verifyUser } = require("./_auth");
+const { adminToken, reportSystem } = require("./_admin");
 
 const MAX = 4.3 * 1024 * 1024; // Vercel takes at most 4.5 MB per request
 // When the bot can't keep the file on Discord, it goes to Firestore in pieces (free): /files/{id} + /files/{id}/parts/{n}
 const FS = "https://firestore.googleapis.com/v1/projects/kbio-c6126/databases/(default)/documents";
 const PART = 900 * 1024;
-async function saveToFirestore(buf, type, uid, token) {
+async function saveToFirestore(buf, type, uid) {
+  // written with the service account: works whatever the Firestore rules say
+  const token = "Bearer " + await adminToken();
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const parts = Math.ceil(buf.length / PART);
   const post = (path, docId, fields) => fetch(`${FS}/${path}?documentId=${docId}`, { method: "POST", headers: { Authorization: token, "Content-Type": "application/json" }, body: JSON.stringify({ fields }), signal: AbortSignal.timeout(20000) });
   const r = await post("files", id, { uid: { stringValue: uid }, type: { stringValue: type }, parts: { integerValue: String(parts) }, size: { integerValue: String(buf.length) }, createdAt: { timestampValue: new Date().toISOString() } });
-  if (!r.ok) throw Object.assign(new Error(r.status === 403 ? "Le regole di Firestore vanno aggiornate per caricare file (pubblica il file regole-firestore.txt)." : "Caricamento non riuscito, riprova."), { status: r.status });
+  if (!r.ok) throw Object.assign(new Error("firestore " + r.status + " " + (await r.text()).slice(0, 200)), { status: r.status });
   for (let n = 0; n < parts; n++) {
     const p = await post(`files/${id}/parts`, String(n), { d: { bytesValue: buf.subarray(n * PART, (n + 1) * PART).toString("base64") } });
-    if (!p.ok) throw new Error("Caricamento non riuscito a metà, riprova.");
+    if (!p.ok) throw new Error("firestore parte " + n + ": " + p.status);
   }
   return id;
 }
 async function sendFromFirestore(res, id) {
   if (!/^[a-z0-9]{6,24}$/.test(id)) { res.statusCode = 400; return res.end("File sconosciuto."); }
-  const get = path => fetch(`${FS}/${path}`, { signal: AbortSignal.timeout(10000) }).then(r => r.ok ? r.json() : null);
+  const auth = { Authorization: "Bearer " + await adminToken() };
+  const get = path => fetch(`${FS}/${path}`, { headers: auth, signal: AbortSignal.timeout(10000) }).then(r => r.ok ? r.json() : null);
   const doc = await get(`files/${id}`);
   if (!doc) { res.statusCode = 404; return res.end("File non trovato."); }
   const n = Math.min(8, parseInt(doc.fields.parts.integerValue, 10) || 0);
@@ -54,20 +58,25 @@ async function upload(req, res, url) {
   try { ch = await fileChannel(); } catch (_) { ch = ""; }
   if (!ch) {
     try {
-      const id = await saveToFirestore(Buffer.concat(chunks), type, uid, String(req.headers.authorization));
+      const id = await saveToFirestore(Buffer.concat(chunks), type, uid);
       return res.end(JSON.stringify({ url: `${origin}/api/photo?file=${id}` }));
-    } catch (e) { return fail(e.status === 403 ? 403 : 502, e.message); }
+    } catch (e) {
+      // the person gets a simple message; the real reason goes to the staff (segnalazioni di sistema)
+      await reportSystem("caricamento", e.message, { uid, type });
+      return fail(502, "Caricamento non riuscito, riprova tra poco.");
+    }
   }
   try {
     const fd = new FormData();
     fd.append("payload_json", JSON.stringify({ content: `uid:${uid}`, attachments: [{ id: 0, filename: name }], allowed_mentions: { parse: [] } }));
     fd.append("files[0]", new Blob([Buffer.concat(chunks)], { type }), name);
     const r = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, { method: "POST", headers: { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN }, body: fd, signal: AbortSignal.timeout(25000) });
-    if (!r.ok) return fail(502, r.status === 403 ? "Il bot non può creare o usare il canale 18k-file: dagli il permesso Gestisci canali." : "Discord non ha preso il file, riprova.");
+    if (!r.ok) { await reportSystem("caricamento", "Discord ha rifiutato il file: " + r.status, { uid, type }); return fail(502, "Caricamento non riuscito, riprova tra poco."); }
     const m = await r.json();
     res.end(JSON.stringify({ url: `${origin}/api/photo?album=file&m=${m.id}&i=0` }));
   } catch (e) {
-    fail(e.status === 403 ? 403 : 502, e.status === 403 ? "Il bot non può creare il canale 18k-file: dagli il permesso Gestisci canali, oppure crea tu un canale chiamato 18k-file dove solo il bot può scrivere." : "Caricamento non riuscito, riprova.");
+    await reportSystem("caricamento", "Errore nel salvare su Discord: " + e.message, { uid, type });
+    fail(502, "Caricamento non riuscito, riprova tra poco.");
   }
 }
 

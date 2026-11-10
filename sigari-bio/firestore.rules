@@ -28,6 +28,16 @@ service cloud.firestore {
       }
     }
 
+    // Problems of the site, seen only by the staff (the server writes them too, with its own key)
+    match /sysreports/{id} {
+      allow create: if signedIn()
+                    && request.resource.data.keys().hasOnly(['kind', 'message', 'handle', 'page', 'createdAt'])
+                    && request.resource.data.message is string && request.resource.data.message.size() <= 500
+                    && request.resource.data.kind is string && request.resource.data.kind.size() <= 40
+                    && request.resource.data.createdAt == request.time;
+      allow read, delete: if isStaff();
+    }
+
     match /staff/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isStaff());
       allow create: if isStaff() && request.resource.data.keys().hasOnly(['handle', 'addedBy', 'createdAt']);

@@ -1090,6 +1090,8 @@
       </div>
       <div class="label section-label">segnalazioni <span class="val" id="stRepN"></span></div>
       <div class="card"><div class="st-list" id="stReports"><p class="hint">Carico…</p></div></div>
+      <div class="label section-label">segnalazioni di sistema <span class="val" id="stSysN"></span></div>
+      <div class="card"><p class="hint" style="margin-top:0">Errori del sito (caricamenti, permessi, salvataggi). Gli utenti vedono solo "riprova tra poco": il motivo vero è qui.</p><div class="st-list" id="stSys"></div></div>
       <div class="label section-label">membri dello staff</div>
       <div class="card">
         <div class="st-list" id="stStaff"></div>
@@ -2779,7 +2781,7 @@
         const i = +dl.dataset.slotDel; if (!slots[i] || !confirm(`Eliminare "${slots[i].name}"?`)) return;
         slots.splice(i, 1); await saveSlots(); renderSlots();
       }
-    } catch (_) { setStatus("Non riuscito: le regole di Firebase vanno aggiornate (vedi README).", "warn"); }
+    } catch (err) { sysReport("look salvati", err); setStatus("Non riuscito, riprova tra poco.", "warn"); }
   });
 
   // One request a week per account: the server checks it, this only shows the date
@@ -3457,10 +3459,21 @@
     } catch (err) { setStatus(friendly(err), "err"); }
   });
 
+  // Problems of the site itself (not of the person): they see a simple message, the staff gets a system report
+  const sysSent = new Set();
+  function sysReport(kind, err) {
+    const msg = String((err && (err.code ? err.code + " " : "") + (err.message || err)) || "").slice(0, 400);
+    if (!msg || sysSent.has(kind + msg) || mode !== "user") return;
+    sysSent.add(kind + msg);
+    firebase().then(({ F, db }) => F.addDoc(F.collection(db, "sysreports"), { kind: String(kind).slice(0, 40), message: msg, handle, page: (document.querySelector(".view:not(.hidden)") || {}).id || "", createdAt: F.serverTimestamp() })).catch(() => {});
+  }
   function friendly(err) {
+    const code = err && err.code;
+    if (code === "storage/unauthorized" || code === "permission-denied" || code === "storage/unknown" || code === "unavailable") {
+      sysReport("permessi", err);
+      return "Non riuscito, riprova tra poco.";
+    }
     const map = {
-      "storage/unauthorized": "Caricamento non permesso: le regole di Storage vanno aggiornate (vedi README).",
-      "permission-denied": "Permesso negato: le regole di Firestore vanno aggiornate (vedi README).",
       "auth/wrong-password": "La password attuale è sbagliata.",
       "auth/invalid-credential": "La password attuale è sbagliata.",
       "auth/requires-recent-login": "Per sicurezza, accedi di nuovo e riprova.",
@@ -3493,7 +3506,8 @@
       return pub.status === "live" ? "Salvato. Il tuo profilo pubblico è aggiornato." : "Salvato. Il profilo non è online: lo pubblichi da Pubblica.";
     } catch (err) {
       console.warn(err);
-      return { warn: "Salvato nel tuo account, ma la pagina pubblica non si è aggiornata: le regole di Firestore vanno aggiornate (vedi README)." };
+      sysReport("pagina pubblica", err);
+      return { warn: "Salvato nel tuo account. La pagina pubblica si aggiorna appena possibile: riprova a salvare tra poco." };
     }
   }
   async function publishMirror(data) {
@@ -3858,6 +3872,11 @@
       $("stReports").innerHTML = snap.docs.length ? snap.docs.map(d => { const r = d.data(); return `<div class="st-row" data-id="${d.id}"><b>@${escTxt(r.handle)}</b><span>${escTxt(r.reason)}${r.text ? " · " + escTxt(r.text) : ""}</span><button type="button" class="ghost-btn sm" data-open="${escTxt(r.handle)}">Apri</button><button type="button" class="ghost-btn sm" data-done="${d.id}">Fatto</button></div>`; }).join("") : '<p class="hint">Nessuna segnalazione.</p>';
     } catch (err) { $("stReports").innerHTML = `<p class="hint">Non riesco a leggere le segnalazioni: ${escTxt(friendly(err))}. Pubblica le regole nuove di Firestore.</p>`; }
     try {
+      const ss = await F.getDocs(F.query(F.collection(db, "sysreports"), F.orderBy("createdAt", "desc"), F.limit(50)));
+      $("stSysN").textContent = ss.docs.length;
+      $("stSys").innerHTML = ss.docs.length ? ss.docs.map(d => { const r = d.data(); const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""; return `<div class="st-row"><b>${escTxt(r.kind || "")}</b><span>${escTxt(r.message || "")}${r.handle ? " · @" + escTxt(r.handle) : ""}${when ? " · " + when : ""}</span><button type="button" class="ghost-btn sm" data-sysdone="${d.id}">Fatto</button></div>`; }).join("") : '<p class="hint">Nessun errore. Tutto ok.</p>';
+    } catch (_) { $("stSys").innerHTML = '<p class="hint">Non riesco a leggerle adesso.</p>'; }
+    try {
       const snap = await F.getDocs(F.collection(db, "staff"));
       const rows = [...STAFF_HANDLES.map(h => `<div class="st-row"><b>@${h}</b><span>fondatore</span></div>`), ...snap.docs.filter(d => !STAFF_HANDLES.includes(d.data().handle)).map(d => `<div class="st-row"><b>@${escTxt(d.data().handle)}</b><span>aggiunto da @${escTxt(d.data().addedBy || "")}</span><button type="button" class="ghost-btn sm" data-unstaff="${d.id}" data-h="${escTxt(d.data().handle)}">Togli</button></div>`)];
       $("stStaff").innerHTML = rows.join("");
@@ -3896,6 +3915,10 @@
     const o = e.target.closest("[data-open]"); if (o) { staffOpen(o.dataset.open); $("stQuery").scrollIntoView({ block: "center" }); return; }
     const d = e.target.closest("[data-done]"); if (!d) return;
     try { const { F, db } = await firebase(); await F.deleteDoc(F.doc(db, "reports", d.dataset.done)); d.closest(".st-row").remove(); } catch (err) { setStatus(friendly(err), "err"); }
+  });
+  $("stSys").addEventListener("click", async e => {
+    const d = e.target.closest("[data-sysdone]"); if (!d) return;
+    try { const { F, db } = await firebase(); await F.deleteDoc(F.doc(db, "sysreports", d.dataset.sysdone)); d.closest(".st-row").remove(); } catch (err) { setStatus(friendly(err), "err"); }
   });
   $("stAddBtn").addEventListener("click", async () => {
     const h = $("stAdd").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
