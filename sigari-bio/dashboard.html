@@ -2292,6 +2292,15 @@
   $("audioQuick").addEventListener("click", () => $("audioPick").click());
   // Shown as chosen when the value is not set yet
   const SEG_DEFAULT = { "card.open.anim": "flip", "card.open.speed": 1 };
+  // Tapping again the option that is already chosen takes it away:
+  // back to "none"/"off" when the list has it, otherwise back to the starting value.
+  const OFF_VALUES = ["none", "off", "default", "normal", "nessuno"];
+  function offValue(path, values, cur) {
+    const off = values.find(v => OFF_VALUES.includes(String(v)));
+    if (off !== undefined) return off;
+    const def = path.startsWith("appearance.") ? getPath(DEFAULT_APPEARANCE, path.slice(11)) : SEG_DEFAULT[path];
+    return def !== undefined && String(def) !== String(cur) ? def : undefined;
+  }
   function renderSeg(box) {
     if (box.childElementCount) return;
     const opts = OPTS[box.dataset.o] || [];
@@ -2300,7 +2309,9 @@
       const b = e.target.closest("button");
       if (!b) return;
       const cur = getPath(draft, box.dataset.seg);
-      setPath(draft, box.dataset.seg, typeof (cur ?? SEG_DEFAULT[box.dataset.seg]) === "number" ? Number(b.dataset.v) : b.dataset.v);
+      let v = b.dataset.v;
+      if (box.getAttribute("role") !== "tablist" && String(cur ?? SEG_DEFAULT[box.dataset.seg]) === v) { const off = offValue(box.dataset.seg, opts.map(o => o[0]), cur); if (off === undefined) return; v = off; }
+      setPath(draft, box.dataset.seg, typeof (cur ?? SEG_DEFAULT[box.dataset.seg]) === "number" ? Number(v) : v);
       if (box.dataset.o === "sfx") playSfx(b.dataset.v, draft.appearance.sfx.volume);
       changed();
     });
@@ -2910,7 +2921,10 @@
     box.addEventListener("click", e => {
       const b = e.target.closest(".pick");
       if (!b) return;
-      setPath(draft, path, b.dataset.v);
+      let v = b.dataset.v;
+      const cur = getPath(draft, path);
+      if (String(cur) === v) { const off = offValue(path, items.map(i => i[0]), cur); if (off === undefined) return; v = off; } // tap again = take it away
+      setPath(draft, path, v);
       changed();
     });
   }
