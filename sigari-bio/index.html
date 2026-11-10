@@ -66,8 +66,8 @@
   .nav { position:fixed; inset:0 0 auto 0; z-index:100; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; height:60px; padding:0 var(--gut);
     transition:background .4s, border-color .4s; border-bottom:1px solid transparent; }
   .nav.solid { background:rgba(0,0,0,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-color:var(--line); }
-  .logo { font-weight:600; font-size:16px; letter-spacing:-.03em; justify-self:start; display:flex; align-items:center; gap:8px; }
-  .logo span { color:#8a8a8a; }
+  .logo { font:400 22px/1 "UnifrakturMaguntia", serif; letter-spacing:0; justify-self:start; display:flex; align-items:center; gap:8px; }
+  .logo span { color:#8a8a8a; margin-left:-8px; }
   .logo i { width:7px; height:7px; background:#fff; border-radius:1px; animation:tick 2.4s steps(1) infinite; }
   @keyframes tick { 50% { opacity:.2; } }
   .links { display:flex; gap:2px; font:500 12px var(--mono); }
@@ -84,8 +84,8 @@
   /* ---------- Hero ---------- */
   .hero { position:relative; height:100svh; min-height:640px; overflow:hidden; isolation:isolate; }
   /* the real smoke (WebGL) stays behind the WHOLE page, not only the hero: no edges anywhere */
-  #fx { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0; pointer-events:none; transition:opacity 1.2s ease; }
-  html.past-hero #fx { opacity:.42; }
+  #fx { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0; pointer-events:none; transition:opacity 1.2s ease; opacity:.62; }
+  html.past-hero #fx { opacity:.2; }
   html[data-mood="dither"] #fx, html[data-mood="ascii"] #fx { image-rendering:pixelated; }
   /* ---------- Identity cards (hero) ---------- */
   .deck { position:absolute; right:clamp(24px, 6vw, 110px); top:50%; width:clamp(280px, 32vw, 500px); aspect-ratio:1.586; transform:translateY(-62%); perspective:1400px; z-index:0; }
@@ -150,7 +150,7 @@
   /* no blur filter (it left square edges): a gradient that fades out slowly is already soft */
   .haze i { position:absolute; width:62vmax; height:62vmax; border-radius:50%; opacity:.9;
     background:radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,.075) 30%, rgba(255,255,255,.035) 58%, rgba(255,255,255,.01) 82%, transparent 100%);
-    animation:haze 52s ease-in-out infinite alternate; mix-blend-mode:screen; opacity:.55; }
+    animation:haze 52s ease-in-out infinite alternate; mix-blend-mode:screen; opacity:.25; }
   .haze i:nth-child(1){ left:-26vmax; top:4vh; }
   .haze i:nth-child(2){ right:-30vmax; top:30vh; animation-duration:61s; animation-delay:-14s; }
   .haze i:nth-child(3){ left:14vw; top:68vh; width:54vmax; height:54vmax; animation-duration:70s; animation-delay:-30s; }
@@ -162,12 +162,23 @@
   @media (prefers-reduced-motion:reduce){ .haze i { animation:none; } }
   @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
   main, footer { position:relative; z-index:1; }
+  /* "18k.bio" in gothic letters, running across the page */
+  .brandband { position:relative; z-index:1; overflow:hidden; padding:18px 0; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.55); }
+  .brandband > div { display:flex; align-items:center; gap:34px; width:max-content; animation:bband 40s linear infinite; }
+  .brandband.rev > div { animation-direction:reverse; }
+  .brandband span { font:400 clamp(40px, 6vw, 78px)/1 "UnifrakturMaguntia", serif; color:#fff; white-space:nowrap; }
+  .brandband span:nth-child(4n+3) { color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.55); }
+  .brandband i { font-style:normal; font-size:18px; color:#5a5a5a; }
+  @keyframes bband { to { transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce){ .brandband > div { animation:none; } }
   /* template pile: still pictures, nothing moves inside (only the card hover) */
   .tg-pv *, .tg-pv *::before, .tg-pv *::after { animation:none !important; transition:none !important; }
   /* cleaner: no corner texts in the hero, hidden sections really hidden */
   .hud, .hud-r { display:none !important; }
   section[hidden] { display:none !important; }
-  .soon-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
+  .soon-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:44px; }
+  /* hero: without the corner texts the top was empty; on big screens the text sits in the middle, next to the cards */
+  @media (min-width:861px){ .hero .hero-c { bottom:clamp(84px, calc(50svh - 190px), 440px); } }
   .soon-c { position:relative; display:grid; gap:8px; align-content:start; padding:22px; border:1px dashed rgba(255,255,255,.18); border-radius:16px; background:rgba(10,10,10,.6); }
   .soon-c .k { justify-self:start; font:500 10.5px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:#8a8a8a; padding:4px 9px; border:1px solid rgba(255,255,255,.14); border-radius:99px; }
   .soon-c b { font-size:20px; letter-spacing:-.03em; margin-top:6px; }
@@ -305,7 +316,7 @@
   .sh .no { font:400 11px var(--mono); color:#8a8a8a; }
   .h2 { font-family:var(--display); font-weight:var(--display-w); letter-spacing:var(--display-ls); font-size:clamp(32px, 4.6vw, 64px); line-height:.95; max-width:20ch; }
   html[data-mood="ascii"] .h2 { font-size:clamp(24px, 3.4vw, 48px); line-height:1.05; }
-  .h2 .g { color:#575757; }
+  .h2 .g { color:#3b3b3b; }
   .sub { margin-top:16px; color:var(--m); max-width:520px; }
   @media (max-width:760px){ .sh { grid-template-columns:1fr; gap:10px; } section.s { padding:72px var(--gut); } }
 
@@ -535,7 +546,7 @@
   footer { border-top:1px solid var(--line); padding:26px var(--gut) 40px; overflow:hidden; }
   .foot { max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font:400 12px var(--mono); color:#8a8a8a; }
   .foot nav { display:flex; gap:18px; } .foot a:hover { color:#fff; }
-  .word { margin-top:36px; font:800 clamp(56px, 17.5vw, 280px)/.8 var(--sans); letter-spacing:-.07em; text-align:center; color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.16); user-select:none; white-space:nowrap; }
+  .word { margin-top:36px; font:400 clamp(56px, 17.5vw, 280px)/.9 "UnifrakturMaguntia", serif; letter-spacing:0; text-align:center; color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.16); user-select:none; white-space:nowrap; }
 
   /* Mobile sticky claim */
   .dock { position:fixed; left:12px; right:12px; bottom:max(12px, env(safe-area-inset-bottom)); z-index:95; display:none; }
@@ -762,6 +773,8 @@
   </section>
 
   <!-- TEMPLATES -->
+  <div class="brandband" aria-hidden="true"><div><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i></div></div>
+
   <section class="s" id="template">
     <div class="wrap">
       <div class="sh rv"><span class="no">03 / template</span><div>
@@ -880,6 +893,8 @@
       </div>
     </div>
   </section>
+
+  <div class="brandband rev" aria-hidden="true"><div><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i></div></div>
 
   <section class="s" id="plans">
     <div class="wrap">
