@@ -50,15 +50,42 @@ async function alertStaff(kind, text) {
   } catch (_) { /* never break the request */ }
 }
 
+// The bot writes to the staff ONLY when many reports arrive together: at least ALERT_MIN
+// (bugs + system errors) in the last hour, and then at most one message every 3 hours.
+const ALERT_MIN = 5, ALERT_GAP = 3 * 3600e3;
+async function alertIfMany() {
+  try {
+    if (!process.env.DISCORD_BOT_TOKEN) return;
+    const token = await adminToken();
+    const H = { Authorization: "Bearer " + token, "Content-Type": "application/json" };
+    const base = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
+    const since = new Date(Date.now() - 3600e3).toISOString();
+    const count = async coll => {
+      const r = await fetch(`${base}:runAggregationQuery`, { method: "POST", headers: H, body: JSON.stringify({ structuredAggregationQuery: { structuredQuery: { from: [{ collectionId: coll }], where: { fieldFilter: { field: { fieldPath: "createdAt" }, op: "GREATER_THAN_OR_EQUAL", value: { timestampValue: since } } } }, aggregations: [{ alias: "n", count: {} }] } }), signal: AbortSignal.timeout(6000) }).then(r => r.json()).catch(() => null);
+      const v = r && r[0] && r[0].result && r[0].result.aggregateFields && r[0].result.aggregateFields.n;
+      return v ? +v.integerValue || 0 : 0;
+    };
+    const [bugs, sys] = await Promise.all([count("bugs"), count("sysreports")]);
+    if (bugs + sys < ALERT_MIN) return;
+    // remember when we last wrote, so different servers don't all send it
+    const meta = await fetch(`${base}/staffmeta/alert`, { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null);
+    const last = meta && meta.fields && meta.fields.lastAt ? Date.parse(meta.fields.lastAt.timestampValue) : 0;
+    if (Date.now() - last < ALERT_GAP) return;
+    await fetch(`${base}/staffmeta/alert?updateMask.fieldPaths=lastAt`, { method: "PATCH", headers: H, body: JSON.stringify({ fields: { lastAt: { timestampValue: new Date().toISOString() } } }) }).catch(() => {});
+    lastDm.many = 0;
+    await alertStaff("many", `🚨 **Tante segnalazioni nell'ultima ora**: ${bugs} bug segnalati dagli utenti, ${sys} errori di sistema.\nGuarda: 18kbio.xyz/dashboard.html → Staff`);
+  } catch (_) { /* never break the request */ }
+}
+
 // Never throws: a failed report must not break what the user is doing
 async function reportSystem(kind, message, extra = {}) {
-  alertStaff("sys:" + kind, `⚠️ **Errore di sistema** (${kind})\n${String(message).slice(0, 600)}\nDettagli: 18kbio.xyz/dashboard.html → Staff`);
   try {
     const token = await adminToken();
     const fields = { kind: { stringValue: String(kind).slice(0, 40) }, message: { stringValue: String(message).slice(0, 500) }, createdAt: { timestampValue: new Date().toISOString() } };
     for (const [k, v] of Object.entries(extra)) fields[k] = { stringValue: String(v).slice(0, 200) };
     await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/sysreports`, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ fields }), signal: AbortSignal.timeout(6000) });
   } catch (_) { /* nothing else to do */ }
+  await alertIfMany();
 }
 
 async function deployRules(source) {
@@ -75,4 +102,4 @@ async function deployRules(source) {
   return rs.name;
 }
 
-module.exports = { adminToken, reportSystem, deployRules, alertStaff, PROJECT };
+module.exports = { adminToken, reportSystem, deployRules, alertStaff, alertIfMany, PROJECT };

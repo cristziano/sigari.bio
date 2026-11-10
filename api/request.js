@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const { REQUEST_CHANNEL, discord } = require("./_discord");
 const { verifyUser } = require("./_auth");
 const { pinterest, shuffle } = require("./_pinterest");
-const { adminToken, alertStaff, reportSystem } = require("./_admin");
+const { adminToken, alertIfMany, reportSystem } = require("./_admin");
 
 // POST /api/request?sys=1 { kind, message, page, handle }: an error of the site seen in the dashboard
 const SYS_KINDS = ["permessi", "pagina pubblica", "look salvati", "errore pagina"];
@@ -41,7 +41,7 @@ async function bugReport(req, res) {
     const r = await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/bugs`, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ fields }) });
     if (!r.ok) throw new Error("save " + r.status);
   } catch (_) { res.statusCode = 502; return res.end(JSON.stringify({ error: "Non sono riuscito a mandarla, riprova tra poco." })); }
-  await alertStaff("bug:" + (uid || handle || "ospite"), `🐞 **Bug segnalato**${handle ? " da @" + handle : ""}${page ? " (" + page + ")" : ""}\n${text.slice(0, 900)}\nTutte le segnalazioni: 18kbio.xyz/dashboard.html → Staff`);
+  await alertIfMany(); // the bot writes to the staff only when there are many reports together
   res.end(JSON.stringify({ ok: true }));
 }
 
