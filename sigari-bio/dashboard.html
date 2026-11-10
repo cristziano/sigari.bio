@@ -942,7 +942,7 @@
           <div class="asset-h"><b>Sfondo</b><span class="hint">foto, GIF, video</span></div>
           <div class="asset-pv"><div class="bg-thumb" id="bgThumb"></div></div>
           <div class="row"><button class="save-btn sm" id="bgPick" type="button">Carica</button><button class="ghost-btn sm" type="button" data-go="photos">Libreria 18k</button></div>
-          <input type="file" id="bgInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <input type="file" id="bgInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm" hidden>
           </div>
           <div class="asset">
           <div class="asset-h"><b>Audio</b><span class="hint">MP3 fino a 8 MB</span></div>
@@ -1328,7 +1328,7 @@
         <div class="label">altezza <span class="val" data-show="appearance.banner.height" data-unit="px"></span></div>
         <input type="range" min="70" max="240" data-k="appearance.banner.height">
         </div>
-        <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        <input type="file" id="bannerInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm" hidden>
         </div>
       
       </div>
@@ -3539,7 +3539,13 @@
   const blobToDataUrl = b => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
 
   async function storeImage(file, kind, max) {
-    if (!/^image\/(png|jpeg|webp|gif|apng)$/.test(file.type)) throw new Error("Usa un'immagine PNG, JPG, WebP o GIF.");
+    // background and banner can also be a video (MP4 or WebM), uploaded as it is
+    if ((kind === "bg" || kind === "banner") && /^video\/(mp4|webm)$/.test(file.type)) {
+      if (mode === "guest") throw new Error("Per caricare un video serve un account (è gratis). Senza account puoi usare una foto o una GIF.");
+      if (file.size > 4.3 * 1024 * 1024) throw new Error("Il video deve pesare al massimo 4 MB. Accorcialo o comprimilo, oppure incolla il link di un video .mp4.");
+      return uploadFile(file, `${kind}-${Date.now()}.${file.type === "video/webm" ? "webm" : "mp4"}`, file.type);
+    }
+    if (!/^image\/(png|jpeg|webp|gif|apng)$/.test(file.type)) throw new Error(kind === "bg" || kind === "banner" ? "Usa un'immagine PNG, JPG, WebP o GIF, oppure un video MP4 o WebM." : "Usa un'immagine PNG, JPG, WebP o GIF.");
     // Avatar decorations keep the original file, so animated PNG/GIF/WebP stay animated
     if (kind === "deco") {
       if (mode === "guest") { if (file.size > 900 * 1024) throw new Error("Per provarla senza account la decorazione deve pesare meno di 900 KB."); return blobToDataUrl(file); }
@@ -3563,22 +3569,23 @@
       const f = e.target.files[0];
       e.target.value = "";
       if (!f) return;
-      setStatus("Carico l'immagine…");
+      const isVid = /^video\//.test(f.type);
+      setStatus(isVid ? "Carico il video…" : "Carico l'immagine…");
       try {
         const url = await storeImage(f, kind, max);
-        apply(url);
+        apply(url, isVid);
         syncControls(); changed();
-        setStatus(mode === "guest" ? "Immagine pronta. Si salva su questo dispositivo." : "Immagine caricata. Ricordati di salvare.", "ok");
+        setStatus(mode === "guest" ? "Immagine pronta. Si salva su questo dispositivo." : (isVid ? "Video caricato." : "Immagine caricata.") + " Ricordati di salvare.", "ok");
       } catch (err) {
         setStatus(friendly(err), "err");
       }
     });
   }
   uploadFlow("avatarPick", "avatarInput", "avatar", 512, url => { draft.avatarUrl = url; renderAvatarBox(); });
-  uploadFlow("bgPick", "bgInput", "bg", 1920, url => { draft.appearance.bg.image = url; draft.appearance.bg.type = "image"; });
+  uploadFlow("bgPick", "bgInput", "bg", 1920, (url, vid) => { const bg = draft.appearance.bg; if (vid) { bg.video = url; bg.poster = ""; bg.type = "video"; } else { bg.image = url; bg.type = "image"; } });
   uploadFlow("cursorPick", "cursorInput", "cursor", 48, url => { draft.appearance.cursor.url = url; draft.appearance.cursor.type = "custom"; });
   uploadFlow("decoUpload", "decoInput", "deco", 512, url => { draft.appearance.avatar.decoUrl = url; draft.appearance.avatar.deco = "custom"; });
-  uploadFlow("bannerPick", "bannerInput", "banner", 1500, url => { draft.appearance.banner.url = url; draft.appearance.banner.type = "image"; });
+  uploadFlow("bannerPick", "bannerInput", "banner", 1500, (url, vid) => { draft.appearance.banner.url = url; draft.appearance.banner.type = vid ? "video" : "image"; });
   $("badgeColorReset").addEventListener("click", () => { draft.appearance.badges.color = ""; syncControls(); changed(); });
 
   // Uploads go to /api/photo (the bot keeps them in the hidden 18k-file channel): Firebase Storage would need a paid plan

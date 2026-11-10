@@ -50,7 +50,7 @@ function safeHeaders(res, type) {
   res.setHeader("Content-Security-Policy", "default-src 'none'; sandbox");
   if (!TYPES.test(t)) res.setHeader("Content-Disposition", "attachment");
 }
-const TYPES = /^(image\/(png|jpeg|webp|gif|apng)|audio\/(mpeg|mp3|ogg|wav|x-wav|mp4|aac|x-m4a)|video\/mp4|font\/(ttf|otf|woff2?)|application\/(font-woff|x-font-ttf|octet-stream))$/;
+const TYPES = /^(image\/(png|jpeg|webp|gif|apng)|audio\/(mpeg|mp3|ogg|wav|x-wav|mp4|aac|x-m4a)|video\/(mp4|webm)|font\/(ttf|otf|woff2?)|application\/(font-woff|x-font-ttf|octet-stream))$/;
 async function upload(req, res, url) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
