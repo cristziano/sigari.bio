@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Unbounded:wght@400;600;700&family=Syncopate:wght@400;700&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Unbounded:wght@400;600;700&family=Syncopate:wght@400;700&family=Geist+Mono:wght@400;500;600&family=Silkscreen&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Pirata+One&family=Permanent+Marker&family=VT323&family=Rubik+Mono+One&family=Space+Mono&family=Bodoni+Moda:ital,wght@1,400;1,700&family=Rubik+Glitch&family=Major+Mono+Display&family=Monoton&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Metal+Mania&family=Anton&family=Bebas+Neue&family=Black+Ops+One&family=Rubik+Wet+Paint&family=UnifrakturMaguntia&family=Audiowide&family=Permanent+Marker&family=Pinyon+Script&family=VT323&family=Bodoni+Moda:ital,wght@1,400;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
@@ -591,7 +591,8 @@
   .board .row { display:flex; gap:3px; justify-content:center; }
   .board span { width:clamp(15px, 3vw, 34px); height:clamp(24px, 4.4vw, 50px); font-size:clamp(12px, 2.4vw, 28px); border-radius:3px; }
   .board .row.s span { background:#0b0b0b; color:#9a9a9a; }
-  .final .h2 { margin:40px auto 0; }
+  .final .h2 { margin:0 auto; }
+  .final .fin-name { font-size:1.15em; text-shadow:0 0 18px rgba(255,255,255,.3), 0 0 48px rgba(255,106,43,.2); }
   .final .claim { margin:26px auto 0; }
 
   footer { border-top:1px solid var(--line); padding:26px var(--gut) 40px; overflow:hidden; }
@@ -737,18 +738,22 @@
   .hero .hero-c.hx { align-items:flex-start; text-align:left; padding:120px clamp(16px, 6vw, 96px) 96px; }
   .hx-t { align-items:flex-start; font:700 clamp(40px, 6.4vw, 92px)/1.02 var(--ui-sans); letter-spacing:-.045em; max-width:none; }
   .hx-l2 { color:var(--ui-quiet); }
-  /* the name in the brand font, white, with a slow light passing over it */
-  .hx-name { font:800 .92em/1 "Unbounded", var(--ui-sans); letter-spacing:-.04em; padding:.06em .02em .04em 0;
-    color:transparent; background:linear-gradient(105deg, #f4f4f4 0%, #f4f4f4 42%, #ffffff 48%, #9a9a9a 52%, #f4f4f4 58%, #f4f4f4 100%) 0 0 / 300% 100%;
-    -webkit-background-clip:text; background-clip:text; animation:hxshine 7s cubic-bezier(.77,0,.175,1) infinite; }
-  @keyframes hxshine { 0%, 55% { background-position:100% 0; } 85%, 100% { background-position:0 0; } }
+  /* the name: italic serif, white with a soft glow; letters come in one by one, then a slow wave of light runs through them */
+  .hx-l2 { color:var(--ui-fg, #fff); }
+  .hx-name { display:inline-block; font:400 italic 1.2em/.9 "Instrument Serif", Georgia, serif; letter-spacing:-.01em; color:#fff; padding:0 .08em 0 .02em; white-space:nowrap; }
+  .hx-name i { display:inline-block; font-style:inherit; text-shadow:0 0 18px rgba(255,255,255,.35), 0 0 48px rgba(255,106,43,.22);
+    opacity:0; transform:translateY(.35em) rotate(6deg); filter:blur(10px); }
+  .hx-t.in .hx-name i { animation:hxin .9s var(--ui-ease-out, cubic-bezier(.23,1,.32,1)) var(--d) both, hxwave 5s ease-in-out calc(var(--d) + 1.4s) infinite; }
+  @keyframes hxin { to { opacity:1; transform:none; filter:none; } }
+  @keyframes hxwave { 0%, 22%, 100% { opacity:1; filter:none; transform:none; text-shadow:0 0 18px rgba(255,255,255,.35), 0 0 48px rgba(255,106,43,.22); }
+    10% { opacity:1; filter:none; transform:translateY(-.07em); text-shadow:0 0 22px rgba(255,255,255,.75), 0 0 70px rgba(255,106,43,.6); } }
   .hx-d { margin-left:0; }
   .hx-globe { position:absolute; top:0; right:0; width:62%; height:100%; z-index:1; pointer-events:none; }
   @media (max-width:860px){ .hx-globe { top:auto; bottom:-22%; width:100%; height:62%; opacity:.55; } }
   .hx-claim .meta { justify-content:flex-start; }
   .hx-alt { align-self:flex-start; }
   @media (max-width:760px){ .hero .hero-c.hx { padding:110px 16px 72px; } .hx-light { background:radial-gradient(80% 50% at 30% 25%, rgba(255,255,255,.07), transparent 70%); } }
-  @media (prefers-reduced-motion:reduce){ .hx-name { animation:none; background-position:100% 0; } }
+  @media (prefers-reduced-motion:reduce){ .hx-name i, .hx-t.in .hx-name i { animation:none; opacity:1; transform:none; filter:none; } }
 
   /* ===== LIVE EDIT DEMO (replaces the feature list) ===== */
   .demo { min-height:100svh; display:flex; align-items:center; }
@@ -1169,12 +1174,12 @@
 
   <!-- FINAL -->
   <section class="final" id="final">
-    <div class="board rv" id="board" aria-hidden="true">
+    <div class="board rv" id="board" aria-hidden="true" hidden>
       <div class="row" data-row="0"></div>
       <div class="row" data-row="1"></div>
       <div class="row s" data-row="2"></div>
     </div>
-    <h2 class="h2 rv" id="finalTitle">Qualcun altro vuole la tua @.</h2>
+    <h2 class="h2 rv" id="finalTitle">La tua identità, su <b class="hx-name fin-name">18kbio</b></h2>
     <form class="claim rv" data-claim novalidate>
       <label class="sr-only" for="h2in">Scegli la tua @</label>
       <div class="bar">
@@ -1195,7 +1200,6 @@
     <span>Fatto da 18k, tutti i diritti riservati. · <a href="privacy.html" style="color:inherit">Privacy</a> · <a href="termini.html" style="color:inherit">Termini</a></span>
     <nav aria-label="Piè di pagina"><a href="login.html?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
   </div>
-  <div class="word" aria-hidden="true">18k.bio</div>
 </footer>
 
 <div class="dock" id="dock"><a href="#top" data-focus-claim><span data-url>18kbio.xyz/tuonome</span><span class="btn">Prendila</span></a></div>
@@ -1395,7 +1399,6 @@
     $$("[data-url]").forEach(el => el.textContent = "18kbio.xyz/" + h);
     $$("[data-url-full]").forEach(el => el.textContent = "https://18kbio.xyz/" + h);
     $$("[data-initial]").forEach(el => el.textContent = h[0].toUpperCase());
-    $("#finalTitle").textContent = state.handle ? `Qualcun altro vuole @${h}.` : "Qualcun altro vuole la tua @.";
     $("#hudTarget").textContent = "@" + state.handle;
     const [name, n] = rarity(state.handle);
     $$("[data-rarity]").forEach(el => {
@@ -2032,7 +2035,11 @@
       const out = [];
       line.childNodes.forEach(n => {
         if (n.nodeType === 3) n.textContent.split(/(\s+)/).forEach(p => { if (!p) return; out.push(/^\s+$/.test(p) ? " " : wrap(p)); });
-        else out.push(wrap(n.outerHTML));
+        else if (n.classList && n.classList.contains("hx-name")) {
+          const base = 0.08 + out.filter(x => x !== " ").length * 0.06 + 0.15;
+          n.innerHTML = [...n.textContent].map((ch, i) => `<i style="--d:${(base + i * 0.07).toFixed(2)}s">${ch}</i>`).join("");
+          out.push(n.outerHTML);
+        } else out.push(wrap(n.outerHTML));
       });
       line.innerHTML = out.join("");
     });
