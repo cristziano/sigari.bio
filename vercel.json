@@ -74,18 +74,5 @@
         }
       ]
     }
-  ],
-  "redirects": [
-    {
-      "source": "/:path(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.18kbio.xyz"
-        }
-      ],
-      "destination": "https://18kbio.xyz/:path",
-      "permanent": true
-    }
   ]
 }
