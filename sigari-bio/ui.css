@@ -1,0 +1,68 @@
+/* =====================================================================
+   18k.bio — design system (shared by every page)
+   Rules from the Taste, Impeccable and Emil Kowalski skills, summed up in DESIGN.md.
+   Loaded AFTER each page's own <style>, so these values win.
+   ===================================================================== */
+:root {
+  /* colour: black and white, one grey scale. Every text colour passes contrast on #000 */
+  --ui-bg: #000;
+  --ui-s1: #0a0a0a;            /* raised surface (cards, inputs) */
+  --ui-s2: #141414;            /* hover of a surface */
+  --ui-fg: #f4f4f4;            /* main text            15.9:1 */
+  --ui-muted: #9a9a9a;         /* secondary text        7.4:1 */
+  --ui-quiet: #5f5f5f;         /* grey half of titles   3.3:1 (large text only) */
+  --ui-line: rgba(255,255,255,.10);
+  --ui-line-2: rgba(255,255,255,.20);
+  /* one radius scale */
+  --ui-r-s: 8px; --ui-r-m: 12px; --ui-r-l: 18px; --ui-r-pill: 999px;
+  /* spacing: tight inside groups, generous between them */
+  --ui-gap-1: 8px; --ui-gap-2: 16px; --ui-gap-3: 24px; --ui-gap-4: 40px; --ui-gap-5: 72px; --ui-gap-6: 120px;
+  /* motion (Emil): strong custom curves, UI under 300ms, never ease-in */
+  --ui-ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ui-ease-in-out: cubic-bezier(.77, 0, .175, 1);
+  --ui-ease-drawer: cubic-bezier(.32, .72, 0, 1);
+  --ui-t-press: 140ms; --ui-t-ui: 200ms; --ui-t-panel: 320ms;
+  /* type */
+  --ui-sans: "Geist", system-ui, -apple-system, sans-serif;
+  --ui-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace; /* only for @, links, numbers, code */
+  --ui-brand: "Unbounded", var(--ui-sans);
+}
+
+/* ---------- browser surfaces in the site's style ---------- */
+html { scrollbar-color: #2a2a2a #000; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; border: 2px solid #000; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+::selection { background: #fff; color: #000; }
+input, textarea { caret-color: #fff; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+a { text-underline-offset: 3px; }
+.ui-num { font-variant-numeric: tabular-nums; }
+
+/* ---------- one button pair ---------- */
+.ui-btn, .ui-btn-2 {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: var(--ui-r-pill);
+  font: 600 14px/1 var(--ui-sans); letter-spacing: -.01em; cursor: pointer; text-decoration: none;
+  transition: transform var(--ui-t-press) var(--ui-ease-out), background-color var(--ui-t-ui) ease, border-color var(--ui-t-ui) ease, color var(--ui-t-ui) ease;
+}
+.ui-btn { background: #fff; color: #000; border: 1px solid #fff; }
+.ui-btn-2 { background: transparent; color: var(--ui-fg); border: 1px solid var(--ui-line-2); }
+.ui-btn:active, .ui-btn-2:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .ui-btn:hover { background: #dedede; border-color: #dedede; }
+  .ui-btn-2:hover { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.4); }
+}
+
+/* ---------- one card style ---------- */
+.ui-card { background: var(--ui-s1); border: 1px solid var(--ui-line); border-radius: var(--ui-r-l); }
+@media (hover: hover) and (pointer: fine) {
+  a.ui-card, .ui-card.is-link { transition: transform var(--ui-t-ui) var(--ui-ease-out), border-color var(--ui-t-ui) ease; }
+  a.ui-card:hover, .ui-card.is-link:hover { transform: translateY(-2px); border-color: var(--ui-line-2); }
+}
+
+/* ---------- reduced motion: everything rests, nothing stays hidden ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

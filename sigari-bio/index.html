@@ -627,7 +627,39 @@
     .rv, .intro { opacity:1; transform:none; }
     .rv.in { animation:none; }
   }
+  /* ===== CLEAN PASS (2026-11-10) — rules: DESIGN.md =====
+     no labels above titles, no section numbers, no fade-in on every section, no glow/glass,
+     mono only for @ / links / numbers, one card style, readable grey, fast press feedback */
+  .eyebrow-row, .sh .no, .hl-c .k, .soon-c .k, .tc-k, .tc-meta, .eb-k, .ticker, .ring { display:none !important; }
+  .logo i { animation:none; }
+  .sh { grid-template-columns:1fr; border-top:0; padding-top:0; }
+  .h2 { max-width:22ch; }
+  .h2 .g { color:var(--ui-quiet); }
+  .sub { color:var(--ui-muted); }
+  .rv, .rv.in { opacity:1 !important; transform:none !important; filter:none !important; clip-path:none !important; -webkit-mask:none !important; mask:none !important; transition:none !important; animation:none !important; }
+  .explore-pill { font:500 13.5px var(--ui-sans) !important; letter-spacing:-.01em; }
+  .plans { align-items:start; }
+  .plan { min-height:0; }
+  .links, .nav-r .ghost { font:500 13.5px var(--ui-sans); letter-spacing:-.01em; }
+  .btn { transition:transform var(--ui-t-press) var(--ui-ease-out), background-color var(--ui-t-ui) ease; }
+  .btn:hover { box-shadow:none !important; background:#dedede; }
+  /* features: an editorial list, not a grid of identical cards */
+  .hl { grid-template-columns:repeat(2, minmax(0, 1fr)); column-gap:clamp(24px, 5vw, 72px); row-gap:0; margin-top:var(--ui-gap-4); }
+  .hl-c, .hl-c.big, .hl-c.wide { grid-column:auto; min-height:0; padding:26px 0 30px; background:none !important; border:0; border-top:1px solid var(--ui-line); border-radius:0;
+    -webkit-backdrop-filter:none; backdrop-filter:none; transform:none !important; box-shadow:none !important; }
+  .hl-c, .hl-c.big, .hl-c.wide { grid-row:auto !important; display:block !important; }
+  .hl-c h3, .hl-c.big h3, .hl-c.wide h3 { font-size:clamp(20px, 2vw, 26px) !important; letter-spacing:-.03em; line-height:1.15; }
+  .hl-c p, .hl-c.wide p { margin-top:8px !important; color:var(--ui-muted); max-width:46ch; }
+  .hl-c.wide { padding:26px 0 30px !important; }
+  .hl-at { display:none; }
+  @media (max-width:760px){ .hl { grid-template-columns:1fr; } }
+  /* no shiny decorative edges on boxes: one plain card style */
+  .hl-c::after, .cl-card::after, .led::after, .tp::after, .pt-builder::after, .plan::after, .shot::after { display:none !important; }
+  .led, .pt-builder, .plan, .shot, .soon-c { border:1px solid var(--ui-line) !important; border-radius:var(--ui-r-l); background:var(--ui-s1); }
+  .soon-c, .plan.pro { border-style:solid !important; }
+  .soon-c b { margin-top:0; }
 </style>
+<link rel="stylesheet" href="ui.css">
 </head>
 <body>
 <a class="skip" href="#main">Vai al contenuto</a>
@@ -1412,7 +1444,6 @@
   const io = new IntersectionObserver(entries => entries.forEach(en => {
     if (!en.isIntersecting) return;
     en.target.classList.add("in");
-    if (en.target.classList.contains("sh")) en.target.querySelectorAll(".h2, .no").forEach(decode);
     if (en.target.id === "board") { boardSeen = true; renderBoard(); }
     io.unobserve(en.target);
   }), { threshold: .15 });
