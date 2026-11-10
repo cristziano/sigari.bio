@@ -15,6 +15,9 @@ async function sysError(req, res) {
   let b = {};
   try { b = await readBody(req); } catch (_) { b = {}; }
   const kind = SYS_KINDS.includes(b.kind) ? b.kind : "";
+  const msg = String(b.message || "");
+  // errors from browser extensions (crypto wallets etc.) or injected at line 1 of the page: not ours
+  if (/ethereum|web3|solana|phantom|metamask|tronweb|__gCrWeb|extension:\/\/|webkit-masked-url|\.html:1$/i.test(msg)) return res.end('{"ok":true}');
   if (kind) await reportSystem(kind, String(b.message || "").slice(0, 400), { handle: String(b.handle || "").replace(/[^a-z0-9_]/g, "").slice(0, 20), page: String(b.page || "").slice(0, 60) });
   res.end('{"ok":true}');
 }

@@ -1108,7 +1108,7 @@
       <div class="card"><div class="st-list" id="stReports"><p class="hint">Carico…</p></div></div>
       <div class="label section-label">bug segnalati dagli utenti <span class="val" id="stBugN"></span></div>
       <div class="card"><div class="st-list" id="stBugs"></div></div>
-      <div class="label section-label">segnalazioni di sistema <span class="val" id="stSysN"></span></div>
+      <div class="label section-label" style="display:flex;align-items:center;gap:8px">segnalazioni di sistema <span class="val" id="stSysN"></span> <button type="button" class="ghost-btn sm" id="stSysAll" style="margin-left:auto">Segna tutte come fatte</button></div>
       <div class="card"><p class="hint" style="margin-top:0">Errori del sito (caricamenti, permessi, salvataggi). Gli utenti vedono solo "riprova tra poco": il motivo vero è qui.</p><div class="st-list" id="stSys"></div></div>
       <div class="label section-label">membri dello staff</div>
       <div class="card">
@@ -3510,6 +3510,8 @@
     const msg = String((err && (err.code ? err.code + " " : "") + (err.message || err)) || "").slice(0, 400);
     if (!msg || sysSent.has(kind + msg) || mode !== "user") return;
     sysSent.add(kind + msg);
+    // the same error from the same browser: at most once a day (not at every page)
+    try { const k = "sys:" + kind + msg.slice(0, 120), seen = JSON.parse(localStorage.getItem("sigari-sys") || "{}"); if (seen[k] && Date.now() - seen[k] < 864e5) return; seen[k] = Date.now(); localStorage.setItem("sigari-sys", JSON.stringify(Object.fromEntries(Object.entries(seen).slice(-40)))); } catch (_) {}
     // through the server: it saves it for the staff and writes to them on Discord
     fetch("/api/request?sys=1", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind, message: msg, handle, page: (document.querySelector(".view:not(.hidden)") || {}).id || "" }), keepalive: true }).catch(() => {});
   }
@@ -3529,8 +3531,16 @@
     finally { $("bugSend").disabled = false; }
   });
   // Errors of the page itself: reported to the staff on their own (once each)
-  addEventListener("error", e => { if (e.message && !/ResizeObserver|Script error/i.test(e.message)) sysReport("errore pagina", (e.message + " @" + (e.filename || "").split("/").pop() + ":" + e.lineno)); });
-  addEventListener("unhandledrejection", e => { const r = e.reason; if (r && !/abort|network|Failed to fetch|Load failed/i.test(String(r.message || r))) sysReport("errore pagina", r); });
+  // Only errors of OUR code: browser extensions (crypto wallets, translators, ad blockers) inject
+  // their scripts in the page and their errors are not ours (e.g. "window.ethereum...")
+  const NOT_OURS = /ResizeObserver|Script error|ethereum|web3|solana|phantom|metamask|tronweb|__gCrWeb|webkit-masked-url|extension:\/\/|chrome-extension|moz-extension|safari-(web-)?extension/i;
+  const ourFile = f => { try { const u = new URL(f, location.href); return u.origin === location.origin && /\.(js|html)$/.test(u.pathname); } catch (_) { return false; } };
+  addEventListener("error", e => {
+    if (!e.message || NOT_OURS.test(e.message + " " + (e.filename || "") + " " + ((e.error && e.error.stack) || ""))) return;
+    if (!ourFile(e.filename) || (/\.html$/.test(e.filename) && e.lineno <= 1)) return; // line 1 of the page = injected from outside
+    sysReport("errore pagina", (e.message + " @" + (e.filename || "").split("/").pop() + ":" + e.lineno));
+  });
+  addEventListener("unhandledrejection", e => { const r = e.reason; const s = String((r && (r.message || r)) || "") + " " + String((r && r.stack) || ""); if (r && !/abort|network|Failed to fetch|Load failed/i.test(s) && !NOT_OURS.test(s)) sysReport("errore pagina", r); });
   function friendly(err) {
     const code = err && err.code;
     if (code === "storage/unauthorized" || code === "permission-denied" || code === "storage/unknown" || code === "unavailable") {
@@ -4011,6 +4021,11 @@
       if (n) setStatus(`Staff: ${n} ${n === 1 ? "segnalazione nuova" : "segnalazioni nuove"}. Apri la pagina Staff.`, "warn");
     } catch (_) { /* not important */ }
   }
+  $("stSysAll").addEventListener("click", async () => {
+    const ids = [...$("stSys").querySelectorAll("[data-sysdone]")].map(b => b.dataset.sysdone);
+    if (!ids.length) return;
+    try { const { F, db } = await firebase(); await Promise.all(ids.map(id => F.deleteDoc(F.doc(db, "sysreports", id)))); $("stSys").innerHTML = '<p class="hint">Nessun errore. Tutto ok.</p>'; $("stSysN").textContent = "0"; } catch (err) { setStatus(friendly(err), "err"); }
+  });
   $("stSys").addEventListener("click", async e => {
     const d = e.target.closest("[data-sysdone]"); if (!d) return;
     try { const { F, db } = await firebase(); await F.deleteDoc(F.doc(db, "sysreports", d.dataset.sysdone)); d.closest(".st-row").remove(); } catch (err) { setStatus(friendly(err), "err"); }
