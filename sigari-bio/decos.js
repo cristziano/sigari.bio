@@ -139,6 +139,37 @@ export const DECO = {
     ${[[8, 30, 1.25], [20, 18, 1.1], [33, 10, 1.2], [15, 13, .8], [42, 8, .85], [4, 44, .8]].map(([x, y, s], k) => `<g transform="translate(${x} ${y}) scale(${s}) rotate(${k * 37})">${P(5, (i, a) => `<path transform="rotate(${a})" d="M0 0C-2.4 -1.6 -2.8 -4.6 -1 -6C-.4 -5.2 .4 -5.2 1 -6C2.8 -4.6 2.4 -1.6 0 0Z" fill="url(#kxsp)" stroke="#f58ab2" stroke-width=".25"/>`)}${P(6, (i, a) => `<path transform="rotate(${a})" d="M0 0V-2.2" stroke="#d9466f" stroke-width=".3"/><circle transform="rotate(${a})" cy="-2.4" r=".35" fill="#ffe08a"/>`)}</g>`).join("")}
     ${[[70, 20, 0], [88, 46, 1.1], [76, 80, 2.2], [56, 92, .6]].map(([x, y, d]) => `<path class="bob" style="animation-delay:${d}s" d="M${x} ${y}C${x - 2} ${y - 2} ${x - 1} ${y - 4} ${x + 1} ${y - 3}C${x + 3} ${y - 2} ${x + 2} ${y} ${x} ${y}Z" fill="#ffc2d8"/>`).join("")}`
 };
-export const DECO_LIST = [["moon", "Luna"], ["thorns", "Corona di spine"], ["fire", "Fuoco"], ["blackcat", "Gatto nero"], ["fox", "Volpe"], ["angel", "Ali d'angelo"], ["demon", "Demone"], ["roses", "Rose"], ["autumn", "Autunno"], ["pearls", "Perle"], ["gold", "Oro e gemme"], ["cosmos", "Cosmo"], ["ice", "Ghiaccio"], ["holoheart", "Cuore olografico"], ["shark", "Squalo"], ["phones", "Cuffie"], ["skull", "Teschio"], ["ribbon", "Fiocco"], ["storm", "Tempesta"], ["sakura", "Sakura"]];
-export const DECO_GROUP_OF = { moon: "magic", cosmos: "magic", ice: "magic", holoheart: "magic", storm: "magic", gold: "magic", pearls: "magic", blackcat: "animal", fox: "animal", shark: "animal", roses: "nature", autumn: "nature", sakura: "nature", fire: "nature", thorns: "dark", demon: "dark", skull: "dark", angel: "cute", ribbon: "cute", phones: "cute" };
-export const DECO_GROUPS = [["all", "Tutte"], ["magic", "Luci e magia"], ["animal", "Animali"], ["nature", "Natura"], ["dark", "Dark"], ["cute", "Altro"]];
+
+/* ---------- New decorations made as images (premium look, like Discord's) ----------
+   File: /decos/<id>.webp (or .png), square, transparent, empty circle in the middle (72% of the width).
+   They appear in the list only when ready is true. anim = the motion added by the site:
+   float, breathe, sway, spin, flicker, shine, sparkle, hue, steps. */
+export const DECO_IMG = [
+  { id: "sakura-night", name: "Sakura di notte", group: "nature", anim: "sway", ready: false },
+  { id: "hellfire", name: "Fiamme", group: "dark", anim: "flicker", ready: false },
+  { id: "chrome-thorns", name: "Spine cromate", group: "dark", anim: "shine", ready: false },
+  { id: "neon-city", name: "Neon city", group: "magic", anim: "flicker", ready: false },
+  { id: "angel-halo", name: "Aureola", group: "magic", anim: "float", ready: false },
+  { id: "devil", name: "Diavoletto", group: "dark", anim: "breathe", ready: false },
+  { id: "cat-ears", name: "Orecchie da gatto", group: "animal", anim: "float", ready: false },
+  { id: "kitsune", name: "Kitsune", group: "animal", anim: "breathe", ready: false },
+  { id: "koi", name: "Koi", group: "animal", anim: "spin", ready: false },
+  { id: "butterflies", name: "Farfalle", group: "nature", anim: "sway", ready: false },
+  { id: "gold-crown", name: "Corona d'oro", group: "luxury", anim: "shine", ready: false },
+  { id: "iced-chain", name: "Catena ghiacciata", group: "luxury", anim: "sparkle", ready: false },
+  { id: "cash", name: "Soldi", group: "luxury", anim: "float", ready: false },
+  { id: "skull-roses", name: "Teschio e rose", group: "dark", anim: "breathe", ready: false },
+  { id: "bats", name: "Pipistrelli", group: "dark", anim: "float", ready: false },
+  { id: "rgb-gamer", name: "Gamer RGB", group: "gaming", anim: "hue", ready: false },
+  { id: "pixel-8bit", name: "Pixel 8-bit", group: "gaming", anim: "steps", ready: false },
+  { id: "y2k-chrome", name: "Y2K", group: "magic", anim: "shine", ready: false },
+  { id: "storm", name: "Tempesta", group: "magic", anim: "flicker", ready: false },
+  { id: "galaxy", name: "Galassia", group: "magic", anim: "spin", ready: false },
+];
+export const DECO_IMG_BY = Object.fromEntries(DECO_IMG.map(d => [d.id, d]));
+export const decoImgSrc = d => `decos/${d.id}.${d.ext || "webp"}`;
+
+export const DECO_LIST_SVG = [["moon", "Luna"], ["thorns", "Corona di spine"], ["fire", "Fuoco"], ["blackcat", "Gatto nero"], ["fox", "Volpe"], ["angel", "Ali d'angelo"], ["demon", "Demone"], ["roses", "Rose"], ["autumn", "Autunno"], ["pearls", "Perle"], ["gold", "Oro e gemme"], ["cosmos", "Cosmo"], ["ice", "Ghiaccio"], ["holoheart", "Cuore olografico"], ["shark", "Squalo"], ["phones", "Cuffie"], ["skull", "Teschio"], ["ribbon", "Fiocco"], ["storm", "Tempesta"], ["sakura", "Sakura"]];
+export const DECO_LIST = [...DECO_IMG.filter(d => d.ready).map(d => [d.id, d.name]), ...DECO_LIST_SVG];
+export const DECO_GROUP_OF = { ...Object.fromEntries(DECO_IMG.map(d => [d.id, d.group])), moon: "magic", cosmos: "magic", ice: "magic", holoheart: "magic", storm: "magic", gold: "magic", pearls: "magic", blackcat: "animal", fox: "animal", shark: "animal", roses: "nature", autumn: "nature", sakura: "nature", fire: "nature", thorns: "dark", demon: "dark", skull: "dark", angel: "cute", ribbon: "cute", phones: "cute" };
+export const DECO_GROUPS = [["all", "Tutte"], ...(DECO_IMG.some(d => d.ready) ? [["luxury", "Lusso"], ["gaming", "Gaming"]] : []), ["magic", "Luci e magia"], ["animal", "Animali"], ["nature", "Natura"], ["dark", "Dark"], ["cute", "Altro"]];

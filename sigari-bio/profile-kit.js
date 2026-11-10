@@ -1,4 +1,4 @@
-import { DECO, DECO_LIST, DECO_GROUPS, DECO_GROUP_OF } from "./decos.js";
+import { DECO, DECO_LIST, DECO_GROUPS, DECO_GROUP_OF, DECO_IMG_BY, decoImgSrc } from "./decos.js";
 /*
   18k.bio profile kit.
   One renderer for every place a profile is drawn: the public page (profile.html),
@@ -899,6 +899,26 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 @keyframes pk-flap{to{transform:scaleX(.35)}}
 .pk-av-deco .dash{animation:pk-dash 3s linear infinite}
 @keyframes pk-dash{to{stroke-dashoffset:-276}}
+.pk-av-ideco{scale:var(--pk-dsz,1);position:absolute;inset:-17%;width:134%!important;height:134%!important;border-radius:0!important;object-fit:contain;pointer-events:none;z-index:2}
+.ideco-float{animation:idFloat 4s ease-in-out infinite}
+.ideco-breathe{animation:idBreathe 3.2s ease-in-out infinite}
+.ideco-sway{animation:idSway 5s ease-in-out infinite;transform-origin:50% 50%}
+.ideco-spin{animation:idSpin 40s linear infinite}
+.ideco-flicker{animation:idFlicker 1.6s steps(1,end) infinite}
+.ideco-shine{-webkit-mask:linear-gradient(110deg,#000 40%,rgba(0,0,0,.65) 50%,#000 60%) 0 0/300% 100%;mask:linear-gradient(110deg,#000 40%,rgba(0,0,0,.65) 50%,#000 60%) 0 0/300% 100%;animation:idShine 3.5s ease-in-out infinite}
+.ideco-sparkle{animation:idSparkle 2.4s ease-in-out infinite}
+.ideco-hue{animation:idHue 6s linear infinite}
+.ideco-steps{animation:idSteps 1.2s steps(2,end) infinite}
+@keyframes idFloat{50%{transform:translateY(-2.5%)}}
+@keyframes idBreathe{50%{transform:scale(1.03)}}
+@keyframes idSway{25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+@keyframes idSpin{to{transform:rotate(360deg)}}
+@keyframes idFlicker{0%,100%{filter:brightness(1)}20%{filter:brightness(1.18)}45%{filter:brightness(.92)}70%{filter:brightness(1.1)}}
+@keyframes idShine{0%{-webkit-mask-position:100% 0;mask-position:100% 0}60%,100%{-webkit-mask-position:0 0;mask-position:0 0}}
+@keyframes idSparkle{50%{filter:brightness(1.25) saturate(1.15)}}
+@keyframes idHue{to{filter:hue-rotate(360deg)}}
+@keyframes idSteps{50%{transform:translateY(-1.5%)}}
+@media (prefers-reduced-motion:reduce){.pk-av-ideco{animation:none!important}}
 .pk-av-cdeco{scale:var(--pk-dsz,1);position:absolute;inset:-10%;width:120%!important;height:120%!important;border-radius:0!important;object-fit:contain;pointer-events:none;z-index:2}
 @media (prefers-reduced-motion:reduce){.pk-av-deco *{animation:none!important}}
 .pk-av-deco .flick{transform-origin:50% 100%;animation:pk-flick .5s ease-in-out infinite alternate}
@@ -1371,9 +1391,15 @@ function splitChars(node, text) {
 /* ---------- Avatar decorations (drawn around the avatar, 100x100 box, avatar in the middle) ---------- */
 
 const RING = (n, f) => Array.from({ length: n }, (_, i) => f(i, i * 360 / n)).join("");
-export const decoSvg = kind => DECO[kind] || "";
+export const decoSvg = kind => DECO[kind] || (DECO_IMG_BY[kind] ? `<image href="${decoImgSrc(DECO_IMG_BY[kind])}" x="-17" y="-17" width="134" height="134"/>` : "");
 export { DECO_GROUPS, DECO_GROUP_OF };
 function decoNode(kind) {
+  const im = DECO_IMG_BY[kind];
+  if (im && im.ready) {
+    const d = el("img", "pk-av-ideco ideco-" + (im.anim || "float"));
+    d.src = decoImgSrc(im); d.alt = ""; d.decoding = "async"; d.setAttribute("aria-hidden", "true");
+    return d;
+  }
   if (!DECO[kind]) return null;
   const n = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   n.setAttribute("viewBox", "0 0 100 100");
