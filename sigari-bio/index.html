@@ -710,22 +710,28 @@
 
   /* ===== PLANS: two cards, Premium coming soon ===== */
   .pc-h { margin:0 auto 14px; max-width:none; text-align:center; }
-  .pc-lead { max-width:560px; margin:0 auto 36px; text-align:center; font-size:15.5px; line-height:1.55; color:var(--ui-muted); }
-  .pc-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px; max-width:880px; margin:0 auto; }
-  .pc-card { display:flex; flex-direction:column; padding:32px 30px; border:1px solid var(--ui-line); border-radius:var(--ui-r-l); background:#0a0a0a; }
+  .pc-lead { max-width:640px; margin:0 auto 22px; text-align:center; font-size:15.5px; line-height:1.55; color:var(--ui-muted); }
+  .pc-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px; max-width:1240px; margin:0 auto; }
+  /* the whole section fits one screen on a computer: features in two columns, tighter spacing */
+  #plans.pc { padding-top:clamp(64px, 9vh, 100px); padding-bottom:clamp(40px, 6vh, 80px); }
+  #plans .pc-h { font-size:clamp(34px, 3.6vw, 56px); }
+  .pc-card { display:flex; flex-direction:column; padding:26px 28px; border:1px solid var(--ui-line); border-radius:var(--ui-r-l); background:#0a0a0a; }
   .pc-pro { background:#000; border-color:rgba(255,255,255,.22); }
   .pc-top { display:flex; justify-content:space-between; align-items:center; gap:12px; }
   .pc-name { font-size:19px; font-weight:600; letter-spacing:-.01em; }
   .pc-tag { font:600 11px/1 var(--ui-sans); padding:6px 10px; border-radius:var(--ui-r-s); background:#fff; color:#000; }
-  .pc-sub { margin-top:10px; font-size:14.5px; line-height:1.5; color:var(--ui-muted); min-height:3em; }
-  .pc-price { margin-top:22px; font:700 44px/1 var(--ui-sans); letter-spacing:-.04em; }
+  .pc-sub { margin-top:8px; font-size:14px; line-height:1.5; color:var(--ui-muted); min-height:3em; }
+  .pc-price { margin-top:16px; font:700 44px/1 var(--ui-sans); letter-spacing:-.04em; }
   .pc-price small { font-size:14px; font-weight:400; letter-spacing:0; color:var(--ui-muted); }
-  .pc-btn { margin-top:24px; display:flex; align-items:center; justify-content:center; min-height:44px; border-radius:var(--ui-r-m); border:1px solid var(--ui-line); font-size:14.5px; font-weight:600; color:#fff; text-decoration:none;
+  .pc-row { margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .pc-row .pc-price { margin-top:0; }
+  .pc-row .pc-btn { margin-top:0; flex:0 1 240px; }
+  .pc-btn { margin-top:18px; display:flex; align-items:center; justify-content:center; min-height:44px; border-radius:var(--ui-r-m); border:1px solid var(--ui-line); font-size:14.5px; font-weight:600; color:#fff; text-decoration:none;
     transition:transform var(--ui-t-press) var(--ui-ease-out), background 160ms var(--ui-ease-out); }
   .pc-btn:active { transform:scale(.97); }
   @media (hover:hover){ a.pc-btn:hover { background:#151515; } }
   .pc-btn-on { background:#fff; color:#000; border-color:#fff; cursor:default; }
-  .pc-list { list-style:none; margin-top:26px; padding-top:22px; border-top:1px solid var(--ui-line); display:grid; gap:16px; }
+  .pc-list { list-style:none; margin-top:18px; padding-top:16px; border-top:1px solid var(--ui-line); display:grid; grid-template-columns:1fr 1fr; gap:12px 18px; }
   .pc-list li { display:flex; gap:12px; align-items:flex-start; font-size:14.5px; }
   .pc-list li > span { display:flex; flex-direction:column; gap:3px; }
   .pc-list b { font-weight:500; }
@@ -733,6 +739,7 @@
   .pc-list .pc-ck { margin-top:2px; }
   .pc-ck { width:16px; height:16px; flex:none; fill:none; stroke:var(--ui-muted); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
   .pc-pro .pc-ck { stroke:#fff; }
+  @media (max-width:1000px){ .pc-list { grid-template-columns:1fr; } }
   @media (max-width:760px){ .pc-grid { grid-template-columns:1fr; } .pc-card { padding:26px 22px; } }
 
   /* ===== HERO v4: all black, a soft light, text on the left, 18kbio inside the title ===== */
@@ -1149,8 +1156,7 @@
         <div class="pc-card">
           <b class="pc-name">Gratis</b>
           <p class="pc-sub">Tutto quello che serve per una pagina che parla di te: stile, musica, link e statistiche. Niente carta di credito, niente prova che scade.</p>
-          <div class="pc-price">0€ <small>/ per sempre</small></div>
-          <a class="pc-btn" href="#top" data-focus-claim>Prendi la tua @</a>
+          <div class="pc-row"><div class="pc-price">0€ <small>/ per sempre</small></div><a class="pc-btn" href="#top" data-focus-claim>Prendi la tua @</a></div>
           <ul class="pc-list">
             <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>La tua @ su 18kbio.xyz</b><small>Un indirizzo corto e tuo, più gli alias per i nomi vecchi.</small></span></li>
             <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Sfondo come vuoi</b><small>Colori, gradienti, foto, GIF o video fino a 40 MB.</small></span></li>
@@ -1167,8 +1173,7 @@
         <div class="pc-card pc-pro">
           <div class="pc-top"><b class="pc-name">Premium</b><span class="pc-tag">In arrivo</span></div>
           <p class="pc-sub">Per chi vuole un profilo che non ha nessun altro: più effetti, più dettagli, più spazio. Il prezzo lo diciamo appena è pronto.</p>
-          <div class="pc-price">Soon</div>
-          <span class="pc-btn pc-btn-on" aria-disabled="true">Presto disponibile</span>
+          <div class="pc-row"><div class="pc-price">Soon</div><span class="pc-btn pc-btn-on" aria-disabled="true">Presto disponibile</span></div>
           <ul class="pc-list">
             <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Tutto quello del piano Gratis</b><small>Niente di quello che hai oggi diventa a pagamento.</small></span></li>
             <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span><b>Effetti e font esclusivi</b><small>Animazioni e caratteri che nel piano Gratis non ci sono.</small></span></li>
