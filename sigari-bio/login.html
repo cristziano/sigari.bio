@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root { --s1:#0d0d0d; --b:#333; --m:#9a9a9a; --d:#5c5c5c; --int:0.08; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -78,12 +78,85 @@
 
   .footer { position:relative; z-index:1; text-align:center; font-size:12px; color:var(--d); margin-top:48px; padding-bottom:8px; }
   .loading { position:fixed; inset:0; display:grid; place-items:center; color:var(--d); font-size:14px; z-index:2; background:#000; }
+
+  /* ===== Mercury login ===== */
+  body { background:#050505; }
+  .svg-hidden { position:absolute; width:0; height:0; }
+  .stage { position:fixed; inset:0; z-index:0; filter:url(#gooey); opacity:.3; pointer-events:none; overflow:hidden; }
+  @media (max-width:700px){ .stage { opacity:.18; } }
+  .mblob { position:absolute; border-radius:50%; background:linear-gradient(135deg, #e0e0e0, #888); filter:blur(20px);
+    animation:mfloat 20s infinite alternate ease-in-out; box-shadow:inset -10px -10px 20px rgba(0,0,0,.5); transition:margin .1s ease-out; }
+  @keyframes mfloat { 0% { transform:translate(0,0) scale(1); } 33% { transform:translate(10vw,20vh) scale(1.2); } 66% { transform:translate(-5vw,10vh) scale(.8); } 100% { transform:translate(5vw,-10vh) scale(1.1); } }
+  @media (prefers-reduced-motion:reduce){ .mblob { animation:none; } }
+
+  .wrap { max-width:440px; }
+  .auth { align-items:center; }
+  .logo { margin:0; text-align:left; }
+  .back { margin-top:14px; font:400 11px "Geist Mono", monospace; letter-spacing:.06em; text-transform:uppercase; }
+  .brand-id { display:block; margin-top:48px; font:400 10px "Geist Mono", monospace; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,.5); }
+  h1 { margin-top:8px; margin-left:-3px; font-size:clamp(40px, 11vw, 56px); font-weight:800; line-height:.9; letter-spacing:-2px; text-transform:uppercase; }
+  .sub { margin-top:16px; font-size:14px; }
+
+  /* Discord / Google: square, mono, outlined */
+  .social { margin-top:36px; }
+  .btn-ghost { height:48px; border-radius:0; background:transparent; border:1px solid rgba(255,255,255,.18); font:400 12px "Geist Mono", monospace; letter-spacing:.1em; text-transform:uppercase; }
+  .btn-ghost:hover { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.4); }
+  .divider { font:400 10px "Geist Mono", monospace; letter-spacing:4px; margin:34px 0 10px; }
+
+  /* fields: just a line under, a mono label above, they slide a little when you type */
+  form { gap:6px; }
+  .field { position:relative; height:auto; padding:26px 0 0; background:transparent; border:0; border-radius:0; border-bottom:1px solid rgba(255,255,255,.12); transition:transform .4s cubic-bezier(.2,1,.3,1); }
+  .field::before { content:attr(data-label); position:absolute; left:0; top:4px; font:400 11px "Geist Mono", monospace; text-transform:uppercase; letter-spacing:.06em; color:rgba(255,255,255,.5); }
+  .field::after { content:""; position:absolute; left:0; bottom:-1px; width:0; height:2px; background:#e0e0e0; transition:width .6s cubic-bezier(.2,1,.3,1); }
+  .field:focus-within { transform:translateX(10px); border-color:rgba(255,255,255,.12); }
+  .field:focus-within::after { width:100%; }
+  .field input { height:auto; padding:12px 0; font-size:18px; }
+  .field svg { display:none; }
+  .field .eye svg { display:block; }
+  .hint { margin:6px 0 8px; font-family:"Geist Mono", monospace; font-size:11px; }
+  input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 1000px #050505 inset !important; }
+
+  /* the button: white, square, wide letters; behind it a drop of mercury that swells */
+  .submit-wrap { position:relative; margin-top:34px; filter:url(#gooey); }
+  .mercury-drop { position:absolute; top:50%; left:50%; width:100%; height:100%; background:#e0e0e0; transform:translate(-50%,-50%); z-index:1; border-radius:50px; transition:transform .5s cubic-bezier(.175,.885,.32,1.275), filter .5s; }
+  .submit-wrap:hover .mercury-drop { transform:translate(-50%,-50%) scale(1.05, 1.2); filter:brightness(1.2); }
+  .primary { position:relative; z-index:2; margin:0; height:auto; padding:20px 40px; border-radius:0; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:2px; transition:letter-spacing .3s, opacity .2s; }
+  .primary:hover { opacity:1; letter-spacing:4px; }
+  .linkbtn { font:400 11px "Geist Mono", monospace; text-transform:uppercase; letter-spacing:.06em; text-decoration:none; color:rgba(255,255,255,.5); margin-top:22px; }
+  .linkbtn:hover { color:#fff; }
+  .consent { margin-top:18px; }
+  .status { border-radius:0; }
+  .footer { font:400 10px "Geist Mono", monospace; letter-spacing:.06em; text-transform:uppercase; }
+  .footer a { color:rgba(255,255,255,.5); text-decoration:none; }
+  .footer a:hover { color:#fff; }
 </style>
 <script src="alert.js"></script>
 </head>
 <body>
 
-<div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
+<svg class="svg-hidden" aria-hidden="true"><defs><filter id="gooey">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+  <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
+  <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+</filter></defs></svg>
+<div class="stage" id="stage" aria-hidden="true"></div>
+<script>
+  // Mercury: 6 drops with random size/place, they float and follow the mouse a little
+  (function () {
+    var st = document.getElementById("stage"), blobs = [];
+    for (var i = 0; i < 6; i++) {
+      var b = document.createElement("div"), s = Math.random() * 200 + 150;
+      b.className = "mblob";
+      b.style.cssText = "width:" + s + "px;height:" + s + "px;left:" + (Math.random() * 80 + 10) + "%;top:" + (Math.random() * 80 + 10) + "%;animation-delay:" + (Math.random() * -20) + "s;animation-duration:" + (Math.random() * 15 + 15) + "s";
+      st.appendChild(b); blobs.push(b);
+    }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.addEventListener("mousemove", function (e) {
+      var x = e.clientX / innerWidth, y = e.clientY / innerHeight;
+      blobs.forEach(function (b, i) { var sp = (i + 1) * 20; b.style.marginLeft = x * sp + "px"; b.style.marginTop = y * sp + "px"; });
+    });
+  })();
+</script>
 <div class="loading" id="loading">Caricamento…</div>
 <script>
   // If the login service doesn't answer (slow network, blocker), don't leave people on "Caricamento…" forever
@@ -99,6 +172,7 @@
   <div class="wrap">
     <a class="logo" href="index.html">18k<span>.bio</span></a>
     <a class="back" href="index.html">&larr; Torna alla home</a>
+    <span class="brand-id">18K.BIO / ACCESSO</span>
     <h1 id="authTitle">Prendi la tua @.</h1>
     <p class="sub" id="authSub">Hai già un account? <a id="toggleMode">Accedi</a></p>
 
@@ -116,28 +190,28 @@
     <div class="divider">OPPURE CON EMAIL</div>
 
     <form id="authForm" novalidate>
-      <div class="field" id="usernameWrap"><span class="pre">18kbio.xyz/</span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
+      <div class="field" id="usernameWrap" data-label="la tua @"><span class="pre">18kbio.xyz/</span><input id="username" type="text" placeholder="iltuonome" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Nome utente"></div>
       <div class="hint" id="usernameHint">La prendi adesso. Si sblocca quando entri.</div>
 
-      <div class="field">
+      <div class="field" data-label="email">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
         <input id="email" type="email" placeholder="tu@email.com" autocomplete="email">
       </div>
 
-      <div class="field">
+      <div class="field" data-label="password">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         <input id="password" type="password" placeholder="Password" autocomplete="new-password">
         <button class="eye" type="button" data-target="password" aria-label="Mostra password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
 
-      <div class="field" id="confirmWrap">
+      <div class="field" id="confirmWrap" data-label="conferma password">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         <input id="confirm" type="password" placeholder="Conferma password" autocomplete="new-password">
         <button class="eye" type="button" data-target="confirm" aria-label="Mostra password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
 
       <label class="consent" id="consentWrap"><input type="checkbox" id="consent"> <span>Ho almeno 14 anni (o il permesso dei miei genitori) e accetto i <a href="termini.html" target="_blank">termini</a> e la <a href="privacy.html" target="_blank">privacy</a>.</span></label>
-      <button class="primary" id="submitBtn" type="submit">Iscriviti &rarr;</button>
+      <div class="submit-wrap"><div class="mercury-drop"></div><button class="primary" id="submitBtn" type="submit">Iscriviti &rarr;</button></div>
       <button class="linkbtn hidden" id="forgotBtn" type="button">Password dimenticata?</button>
     </form>
 
@@ -151,13 +225,14 @@
 <section class="auth hidden" id="pick">
   <div class="wrap">
     <a class="logo" href="index.html">18k<span>.bio</span></a>
+    <span class="brand-id">18K.BIO / ULTIMO PASSO</span>
     <h1>Scegli la tua @.</h1>
     <p class="sub">Ultimo passo: sarà il tuo link <b id="pickUrl">18kbio.xyz/…</b></p>
     <form id="pickForm" novalidate>
-      <div class="field"><span class="pre">18kbio.xyz/</span><input id="pickHandle" type="text" placeholder="iltuonome" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="La tua @"></div>
+      <div class="field" data-label="la tua @"><span class="pre">18kbio.xyz/</span><input id="pickHandle" type="text" placeholder="iltuonome" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="La tua @"></div>
       <div class="hint" id="pickHint">Da 1 a 20 tra lettere, numeri o _.</div>
       <label class="consent"><input type="checkbox" id="pickConsent"> <span>Ho almeno 14 anni (o il permesso dei miei genitori) e accetto i <a href="termini.html" target="_blank">termini</a> e la <a href="privacy.html" target="_blank">privacy</a>.</span></label>
-      <button class="primary" id="pickBtn" type="submit">Entra &rarr;</button>
+      <div class="submit-wrap"><div class="mercury-drop"></div><button class="primary" id="pickBtn" type="submit">Entra &rarr;</button></div>
       <button class="linkbtn" id="pickOut" type="button">Non sei tu? Esci</button>
     </form>
   </div>
