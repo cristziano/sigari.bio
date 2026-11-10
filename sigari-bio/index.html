@@ -167,19 +167,16 @@
   .tc { position:relative; height:100svh; min-height:640px; overflow:hidden; background:#0a0a0a; color:#e0e0e0; font-family:"Syncopate", var(--sans); isolation:isolate; }
   .tc-grain { position:absolute; inset:0; z-index:20; pointer-events:none; opacity:.15;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
-  .tc-view { position:absolute; inset:0; perspective:2000px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .tc-fit { transform:scale(var(--tc-s, 1)); }
-  .tc-3d { position:relative; width:800px; height:500px; transform-style:preserve-3d; opacity:0; transform:rotateX(90deg) rotateZ(0deg) scale(.8); }
-  .tc-3d.in { opacity:1; transform:rotateX(55deg) rotateZ(-25deg) scale(1); transition:opacity 2.5s cubic-bezier(.16,1,.3,1), transform 2.5s cubic-bezier(.16,1,.3,1); }
+  .tc-view { position:absolute; inset:0; perspective:1600px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  /* the card is the star: big, tilted in 3D, comes up from flat */
+  .tc-3d { position:relative; width:clamp(300px, 64vw, 920px); transform-style:preserve-3d; opacity:0; transform:rotateX(80deg) rotateZ(0deg) scale(.85); }
+  .tc-3d.in { opacity:1; transform:rotateX(24deg) rotateZ(-10deg) scale(1); transition:opacity 2s cubic-bezier(.16,1,.3,1), transform 2.2s cubic-bezier(.16,1,.3,1); }
   .tc-3d.live { transition:transform .8s cubic-bezier(.16,1,.3,1); }
-  .tc-layer { position:absolute; inset:0; border:1px solid rgba(224,224,224,.1); background-size:cover; background-position:center; transition:transform .5s ease; transform-style:preserve-3d; }
-  .tc-l1 { background-image:url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=70"); filter:grayscale(1) contrast(1.2) brightness(.5); }
-  .tc-l2 { background-image:url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=70"); filter:grayscale(1) contrast(1.1) brightness(.7); opacity:.6; mix-blend-mode:screen; }
-  .tc-l3 { border-color:transparent; display:grid; place-items:center; }
-  .tc-card { width:440px; aspect-ratio:1.586; container-type:inline-size; filter:drop-shadow(0 30px 40px rgba(0,0,0,.6)); }
+  .tc-card { width:100%; aspect-ratio:1.586; container-type:inline-size; filter:drop-shadow(0 50px 60px rgba(0,0,0,.7)); }
   .tc-card > * { width:100%; height:100%; }
-  .tc-contours { position:absolute; width:200%; height:200%; top:-50%; left:-50%; pointer-events:none; transform:translateZ(120px);
-    background-image:repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 40px, rgba(255,255,255,.05) 41px, transparent 42px); }
+  /* topographic lines behind, flat and soft */
+  .tc-contours { position:absolute; inset:-20%; pointer-events:none; opacity:.9;
+    background-image:repeating-radial-gradient(circle at 60% 55%, transparent 0, transparent 40px, rgba(255,255,255,.05) 41px, transparent 42px); }
   .tc-ui { position:absolute; inset:0; z-index:10; padding:clamp(24px, 5vw, 64px); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto 1fr auto; pointer-events:none; }
   .tc-k { font-weight:700; letter-spacing:.04em; font-size:13px; }
   .tc-meta { text-align:right; font:400 11px/1.6 var(--mono); color:#9a9a9a; }
@@ -195,7 +192,8 @@
   .tc-scroll { position:absolute; bottom:2rem; left:50%; z-index:10; width:1px; height:60px; background:linear-gradient(to bottom, #e0e0e0, transparent); animation:tcflow 2s infinite ease-in-out; }
   @keyframes tcflow { 0%, 100% { transform:scaleY(0); transform-origin:top; } 50% { transform:scaleY(1); transform-origin:top; } 51% { transform:scaleY(1); transform-origin:bottom; } }
   @media (max-width:760px){ .tc-foot { flex-direction:column; align-items:flex-start; } .tc-scroll { display:none; } .tc-ui { padding-bottom:110px; } }
-  @media (prefers-reduced-motion:reduce){ .tc-3d, .tc-3d.in { transition:none; opacity:1; transform:rotateX(55deg) rotateZ(-25deg); } .tc-scroll { animation:none; } }
+  @media (max-width:760px){ .tc-3d { width:80vw; margin-top:-14vh; } }
+  @media (prefers-reduced-motion:reduce){ .tc-3d, .tc-3d.in { transition:none; opacity:1; transform:rotateX(24deg) rotateZ(-10deg); } .tc-scroll { animation:none; } }
   /* NO GLOW anywhere on the site (Cristiano): no glowing text, no light halos, no light following the mouse */
   *, *::before, *::after { text-shadow:none !important; }
   .hl-c::before, .cl-card::before, .led::before, .tp::before, .pt-builder::before, .plan::before, .shot::before { display:none !important; }
@@ -728,15 +726,9 @@
         <a href="dashboard.html#card" class="tc-cta" data-guest>CREA LA TUA</a>
       </div>
     </div>
+    <div class="tc-contours" aria-hidden="true"></div>
     <div class="tc-view">
-      <div class="tc-fit">
-        <div class="tc-3d" id="tc3d">
-          <div class="tc-layer tc-l1"></div>
-          <div class="tc-layer tc-l2"></div>
-          <div class="tc-layer tc-l3"><div class="tc-card" id="tcCard"></div></div>
-          <div class="tc-contours" aria-hidden="true"></div>
-        </div>
-      </div>
+      <div class="tc-3d" id="tc3d"><div class="tc-card" id="tcCard"></div></div>
     </div>
     <div class="tc-scroll" aria-hidden="true"></div>
   </section>
@@ -1755,9 +1747,6 @@
   // ---------- Cards section: @1's real card on a 3D table that follows the mouse ----------
   (function cardsTable() {
     const sec = $("#cards"), c3 = $("#tc3d"); if (!sec || !c3) return;
-    const layers = [...c3.querySelectorAll(".tc-layer")];
-    const fit = () => sec.style.setProperty("--tc-s", Math.min(1, (sec.clientWidth * 0.95) / 800, (sec.clientHeight * 0.9) / 500).toFixed(3));
-    fit(); addEventListener("resize", fit);
     // the card of @1 (if it can't be read, the standard card with @1 on it)
     let mounted = false;
     async function mountOne() {
@@ -1778,8 +1767,7 @@
       if (!live || !c3.classList.contains("live")) return;
       const r = sec.getBoundingClientRect();
       const x = (r.width / 2 - (e.clientX - r.left)) / 25, y = (r.height / 2 - (e.clientY - r.top)) / 25;
-      c3.style.transform = `rotateX(${55 + y / 2}deg) rotateZ(${-25 + x / 2}deg)`;
-      layers.forEach((l, i) => { l.style.transform = `translateZ(${(i + 1) * 15}px) translate(${x * (i + 1) * .2}px, ${y * (i + 1) * .2}px)`; });
+      c3.style.transform = `rotateX(${24 + y / 2}deg) rotateZ(${-10 + x / 3}deg) rotateY(${-x / 2}deg)`;
     });
   })();
 
