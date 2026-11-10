@@ -76,7 +76,6 @@ function Panel(props) {
       <div className="pp-hero">
         <div className="pp-orb" aria-hidden="true"><i /><i /><i /></div>
         <div className="pp-st">
-          <span className="pp-kick">stato del profilo</span>
           <b>{s.title}</b>
           <span className="pp-sub">{s.sub}</span>
           {lastAt ? <span className="pp-when">ultima pubblicazione {ago(lastAt)}</span> : null}
@@ -84,7 +83,6 @@ function Panel(props) {
       </div>
 
       <div className="pp-link">
-        <span className="pp-kick">il tuo link</span>
         <div className="pp-url">
           <code>{shownUrl}</code>
           <button type="button" onClick={copy} className="pp-mini">{copied ? "copiato ✓" : "copia"}</button>
@@ -108,7 +106,7 @@ function Panel(props) {
       <div className="pp-check">
         <Ring value={value} />
         <div className="pp-list">
-          <span className="pp-kick">prima di pubblicare · {done}/{checks.length}</span>
+          <b className="pp-list-h">Prima di pubblicare <span>{done}/{checks.length}</span></b>
           {checks.map(c => (
             <button type="button" key={c.id} className={"pp-item" + (c.ok ? " ok" : "")} onClick={() => onGo(c.go)}>
               <span className="pp-tick">{c.ok ? "✓" : ""}</span>{c.label}{c.ok ? null : <em>aggiungi →</em>}
@@ -124,14 +122,13 @@ const CSS = `
 .pp{display:grid;gap:14px;margin-top:22px;--pp-tone:#3ddc84}
 .pp-draft{--pp-tone:#f5b544}.pp-off{--pp-tone:#ff6b6b}
 .pp>div{border:1px solid var(--b);border-radius:18px;background:var(--s1);padding:20px}
-.pp-kick{display:block;font:500 11px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--d)}
+.pp-list-h{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:600}.pp-list-h span{font:500 12px "Geist Mono",monospace;color:var(--d)}
 .pp-hero{display:flex;align-items:center;gap:22px;position:relative;overflow:hidden}
 .pp-hero::after{content:"";position:absolute;inset:auto -20% -60% 30%;height:140%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pp-tone) 22%,transparent),transparent);pointer-events:none}
 .pp-orb{position:relative;width:74px;height:74px;flex:none}
-.pp-orb i{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--pp-tone);animation:pp-pulse 2.4s cubic-bezier(.2,.7,.2,1) infinite;opacity:0}
-.pp-orb i:nth-child(2){animation-delay:.8s}.pp-orb i:nth-child(3){animation-delay:1.6s}
-.pp-orb::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--pp-tone);box-shadow:0 0 24px var(--pp-tone)}
-@keyframes pp-pulse{0%{transform:scale(.35);opacity:.9}100%{transform:scale(1);opacity:0}}
+.pp-orb i{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--pp-tone);opacity:.18}
+.pp-orb i:nth-child(2){inset:9%;opacity:.32}.pp-orb i:nth-child(3){inset:18%;opacity:.5}
+.pp-orb::after{content:"";position:absolute;inset:35%;border-radius:50%;background:var(--pp-tone)}
 .pp-st b{display:block;font-size:30px;letter-spacing:-.03em;margin:4px 0 2px}
 .pp-sub{color:var(--m);font-size:14px}.pp-when{display:block;margin-top:6px;font-size:12px;color:var(--d)}
 .pp-url{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
@@ -147,7 +144,7 @@ const CSS = `
 .pp-hold:disabled{opacity:.4;cursor:not-allowed}
 .pp-fill{position:absolute;inset:0;background:var(--pp-tone);transform-origin:0 50%;transform:scaleX(0)}
 .pp-hold-t{position:relative}
-.pp-hold.ok{animation:pp-pop .5s cubic-bezier(.2,1.4,.4,1)}
+.pp-hold.ok{animation:pp-pop 200ms var(--ui-ease-out,cubic-bezier(.23,1,.32,1))}
 @keyframes pp-pop{0%{transform:scale(.97)}100%{transform:scale(1)}}
 .pp-ghost{width:100%;padding:13px;border-radius:14px;border:1px solid var(--b);background:none;color:var(--m);font:500 13.5px inherit;cursor:pointer}
 .pp-check{display:flex;gap:18px;align-items:flex-start;color:var(--pp-tone)}
@@ -157,8 +154,8 @@ const CSS = `
 .pp-item em{margin-left:auto;font-style:normal;font-size:12px;color:var(--d)}
 .pp-tick{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--b);display:grid;place-items:center;font-size:12px;flex:none}
 .pp-item.ok{color:var(--m)}.pp-item.ok .pp-tick{background:var(--pp-tone);border-color:var(--pp-tone);color:#000}
-@media (max-width:520px){.pp-hero{gap:14px}.pp-orb{width:56px;height:56px}.pp-orb::after{inset:19px}.pp-st b{font-size:24px}.pp-check{flex-direction:column}}
-@media (prefers-reduced-motion:reduce){.pp-orb i{animation:none;opacity:.4}}
+@media (max-width:520px){.pp-hero{gap:14px}.pp-orb{width:56px;height:56px}.pp-st b{font-size:24px}.pp-check{flex-direction:column}}
+@media (prefers-reduced-motion:reduce){.pp-hold.ok{animation:none}}
 `;
 
 export function mount(el) {
