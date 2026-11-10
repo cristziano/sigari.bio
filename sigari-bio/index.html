@@ -701,7 +701,18 @@
   .demo-steps button.on span { color:var(--ui-fg); }
   .demo-steps .dbar { position:absolute; left:0; top:-1px; height:1px; width:100%; background:#fff; transform:scaleX(0); transform-origin:left; }
   .demo-steps button.on .dbar { transform:scaleX(1); }
-  .demo-steps button.run .dbar { transform:scaleX(0); animation:demobar 3.2s linear forwards; }
+  /* stop motion: the bar fills in jumps, the phone shakes in a few still frames */
+  .demo-steps button.run .dbar { transform:scaleX(0); animation:demobar 3.2s steps(8, end) forwards; }
+  .demo-phone.snap { animation:snapframes .48s steps(1, end); }
+  @keyframes snapframes {
+    0% { transform:rotate(-2.2deg) translate(-6px, 4px); }
+    17% { transform:rotate(1.6deg) translate(5px, -3px) scale(1.01); }
+    34% { transform:rotate(-1deg) translate(-3px, -2px); }
+    51% { transform:rotate(.8deg) translate(2px, 2px); }
+    68% { transform:rotate(-.3deg) translate(-1px, 0); }
+    85%, 100% { transform:none; }
+  }
+  .demo-pv { transition:none; }
   @keyframes demobar { to { transform:scaleX(1); } }
   @media (hover:hover) and (pointer:fine) { .demo-steps button:hover b { color:var(--ui-fg); } }
   .demo-go { margin-top:var(--ui-gap-3); }
@@ -744,7 +755,6 @@
   <nav class="links" aria-label="Sezioni">
     <a href="#index">funzioni</a>
     <a href="#stats">statistiche</a>
-    <a href="#soon">in arrivo</a>
     <a href="#plans">piani</a>
   </nav>
   <div class="nav-r">
@@ -992,7 +1002,7 @@
   <section class="s" id="share">
     <div class="wrap">
       <div class="sh rv"><span class="no">04 / condividi</span><div>
-        <h2 class="h2">Mettilo ovunque. <span class="g">Si legge come il tuo nome.</span></h2>
+        <h2 class="h2">Il tuo profilo, ovunque.</h2>
         <p class="sub">Usa la stessa @ che hai su ogni app, così ti trovano al primo colpo. Ecco come appare il tuo link quando l'hai presa.</p>
       </div></div>
       <div class="drops">
@@ -1022,7 +1032,7 @@
   </section>
 
   <!-- PLANS + FAQ -->
-  <section class="s" id="soon">
+  <section class="s" id="soon" hidden>
     <div class="wrap">
       <div class="sh rv"><span class="no">05 / in arrivo</span><div>
         <h2 class="h2">Prossimamente. <span class="g">Ci stiamo lavorando.</span></h2>
@@ -1052,7 +1062,7 @@
             <div class="t"><span>premium</span><span>in arrivo</span></div>
             <div class="pr">Presto</div>
             <ul><li>Effetti e font in più</li><li>Badge esclusivi</li><li>Statistiche complete</li><li>Chi entra prima lo sa per primo</li></ul>
-            <a class="go" href="#soon">Cosa arriva</a>
+            <a class="go" href="explore.html">Guarda i profili</a>
           </div>
         </div>
         <div class="faq rv" style="--d:.08s" hidden>
@@ -1835,23 +1845,34 @@
   }
   // the template pile is off on the landing (section hidden): nothing is built
 
-  // ---------- Live demo: the same profile, edited step by step ----------
+  // ---------- Live demo: @1's real profile built piece by piece, in stop motion ----------
   (function editDemo() {
-    const pv = $("#demoPv"), list = $("#demoSteps"); if (!pv || !list) return;
-    const tpl = id => (TEMPLATES.find(x => x.id === id) || {}).a || {};
-    const still = id => String((TEMPLATES.find(x => x.id === id) || {}).thumb || "").replace(/\/200w\.webp$/, "/200w_s.gif");
-    const base = normalizeAppearance({ ...DEFAULT_APPEARANCE, effect: "none" });
-    // each step adds one thing on top of the one before
-    const s0 = applyTemplate(base, tpl("neon-streets"), "colors");
-    const bgSrc = previewAppearance(tpl("neon-streets"), still("neon-streets"));
-    const s1 = normalizeAppearance({ ...s0, bg: bgSrc.bg });
-    const s2 = normalizeAppearance({ ...applyTemplate(s1, tpl("neon-streets"), "fonts"), nameFx: "none" });
-    const looks = [s0, s1, s2, s2];
-    const links = [[{ title: "Ultima uscita", url: "https://18kbio.xyz" }], [{ title: "Ultima uscita", url: "https://18kbio.xyz" }], [{ title: "Ultima uscita", url: "https://18kbio.xyz" }],
-      [{ title: "Ultima uscita", url: "https://18kbio.xyz" }, { title: "Portfolio", url: "https://18kbio.xyz" }, { title: "Discord", url: "https://18kbio.xyz" }]];
-    const socials = [{}, {}, {}, { instagram: "nyx", tiktok: "nyx", discord: "nyx", spotify: "nyx" }];
-    const prof = k => ({ handle: "nyx", displayName: "nyx", bio: "link, musica e tutto il resto", views: 4120, badges: ["beta"], links: links[k], socials: socials[k], appearance: { ...looks[k], enter: { ...looks[k].enter, on: false } } });
-    const view = mountProfile(pv, { ...prof(0), appearance: { ...base, enter: { ...base.enter, on: false } } }, { preview: true, entrance: false });
+    const pv = $("#demoPv"), list = $("#demoSteps"), phone = pv && pv.closest(".demo-phone"); if (!pv || !list) return;
+    const plain = normalizeAppearance({ ...DEFAULT_APPEARANCE, effect: "none" });
+    const noEnter = a => ({ ...a, enter: { ...a.enter, on: false } });
+    let who = { handle: "1", displayName: "1", bio: "", avatarUrl: "", badges: [], links: [{ title: "Il mio link", url: "https://18kbio.xyz" }], socials: {}, views: 0 };
+    let full = plain, frames = [plain, plain, plain, plain];
+    // step by step: colours, then background, then fonts, then everything (links and socials included)
+    const build = () => {
+      const f0 = applyTemplate(plain, full, "colors");
+      const f1 = applyTemplate(f0, full, "bg");
+      const f2 = applyTemplate(f1, full, "fonts");
+      frames = [f0, f1, f2, full];
+    };
+    const prof = k => ({ ...who, links: k < 3 ? who.links.slice(0, 1) : who.links, socials: k < 3 ? {} : who.socials, appearance: noEnter(frames[k]) });
+    const view = mountProfile(pv, { ...who, appearance: noEnter(plain) }, { preview: true, entrance: false });
+    // the real profile of @1 (read only): if it can't be read, a plain "@1" stays
+    firebase().then(async ({ db, fs }) => {
+      const s = await fs.getDoc(fs.doc(db, "profiles", "1"));
+      if (!s.exists()) return;
+      const p = s.data();
+      who = { handle: "1", displayName: p.displayName || "1", bio: p.bio || "", avatarUrl: p.avatarUrl || "", banner: p.banner, badges: p.badges || [], views: p.views || 0,
+        links: (p.links || []).filter(l => l && !l.hidden && l.title).slice(0, 4), socials: p.socials || {}, card: p.card };
+      if (!who.links.length) who.links = [{ title: "Il mio link", url: "https://18kbio.xyz/1" }];
+      const pa = p.appearance || {};
+      full = normalizeAppearance({ ...pa, effect: pa.effect || "none", music: { ...(pa.music || {}), type: "none" }, sfx: { ...(pa.sfx || {}), on: false } });
+      build(); if (k >= 0) view.update(prof(k));
+    }).catch(() => {});
     const btns = [...list.querySelectorAll("button")];
     let k = -1, timer = 0, live = false;
     const STEP = 3200;
@@ -1859,7 +1880,9 @@
       k = n;
       btns.forEach((b, i) => { b.classList.toggle("on", i === n); b.setAttribute("aria-pressed", String(i === n)); b.classList.remove("run"); });
       if (auto && !reduce) { void btns[n].offsetWidth; btns[n].classList.add("run"); }
-      try { view.update(prof(n)); } catch (_) {}
+      // stop motion: the phone jumps a few frames while the profile changes
+      if (phone && !reduce) { phone.classList.remove("snap"); void phone.offsetWidth; phone.classList.add("snap"); }
+      setTimeout(() => { try { view.update(prof(n)); } catch (_) {} }, reduce ? 0 : 120);
       clearTimeout(timer);
       if (auto && live && !reduce) timer = setTimeout(() => go((k + 1) % btns.length, true), STEP);
     }
