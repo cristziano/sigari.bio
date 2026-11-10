@@ -195,6 +195,9 @@
     -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
   .hl-c > *, .cl-card > *, .led > *, .tp > *, .pt-builder > *, .plan > *, .shot > * { position:relative; z-index:1; }
   .cl-card, .led, .tp, .pt-builder, .plan, .shot { position:relative; }
+  /* the prefix box: a real card (before it had no edge of its own, so the shiny border floated around it) */
+  .pt-builder { display:grid; gap:14px; padding:20px; border:1px solid var(--line); border-radius:18px; background:rgba(10,10,10,.78); overflow:hidden; }
+  .stx-h { display:flex; justify-content:space-between; gap:12px; font:400 11px var(--mono); color:#8a8a8a; text-transform:lowercase; letter-spacing:.02em; }
 
   /* COMING SOON: the part is still there, darker, with a glitchy sign on top */
   .soon-zone { position:relative; }
@@ -574,7 +577,8 @@
   .h1 .ch { position:relative; }
   .h1 .ch.g { color:transparent; }
   .h1 .ch.g::after { content:attr(data-g); position:absolute; left:0; top:0; font-family:var(--pixel); font-weight:400; color:#bdbdbd; }
-  .cur { display:inline-block; width:.36em; height:.72em; margin-left:.06em; margin-right:-.42em; background:#fff; vertical-align:-.02em; animation:tick 1.05s steps(1) infinite; }
+  /* thin blinking bar after "@." (it was a big white block) */
+  .cur { display:inline-block; width:.055em; height:.78em; margin-left:.07em; margin-right:-.125em; border-radius:2px; background:rgba(255,255,255,.85); vertical-align:-.04em; animation:tick 1.05s steps(1) infinite; }
   .typing .cur { animation:none; position:absolute; }
 
   @media (max-width:520px){
