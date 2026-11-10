@@ -126,7 +126,7 @@
   .idc.light { color:#0b0b0b; }
   .idc .glove { position:absolute; z-index:4; right:-4%; top:2%; width:62cqw; transform:rotate(-10deg); overflow:visible; }
   .idc .ice { background:radial-gradient(circle, #fff 0 .6px, transparent 1.3px) 0 0 / 3px 3px, linear-gradient(115deg, #8ea3b6, #fff 20%, #bfe7ff 36%, #fff 50%, #7b92a7 64%, #e9f7ff 80%, #9db2c5) 0 0 / 220% 100%;
-    -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 .7cqw rgba(170,225,255,.6)) drop-shadow(0 .35cqw 0 rgba(0,0,0,.85)); animation:iceShine 3.2s linear infinite; }
+    -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 .35cqw 0 rgba(0,0,0,.85)); animation:iceShine 3.2s linear infinite; }
   @keyframes iceShine { to { background-position:0 0, -220% 0; } }
   .idc .glint { position:absolute; z-index:9; width:4.4cqw; aspect-ratio:1; pointer-events:none; animation:glint 1.9s ease-in-out infinite; }
   .idc .glint svg { display:block; width:100%; height:100%; }
@@ -162,6 +162,12 @@
   @media (prefers-reduced-motion:reduce){ .haze i { animation:none; } }
   @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
   main, footer { position:relative; z-index:1; }
+  /* NO GLOW anywhere on the site (Cristiano): no glowing text, no light halos, no light following the mouse */
+  *, *::before, *::after { text-shadow:none !important; }
+  .hl-c::before, .cl-card::before, .led::before, .tp::before, .pt-builder::before, .plan::before, .shot::before { display:none !important; }
+  .btn:hover, .bar:focus-within, .ctag.prim { box-shadow:none !important; }
+  .hl-c:hover { box-shadow:none !important; }
+  .h1, .h2, .hl-at { filter:none !important; }
   /* template pile: still pictures, nothing moves inside (only the card hover) */
   .tg-pv *, .tg-pv *::before, .tg-pv *::after { animation:none !important; transition:none !important; }
   /* cleaner: no corner texts in the hero, hidden sections really hidden */
