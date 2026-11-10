@@ -767,6 +767,11 @@
   .pl-list { list-style:none; margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:0 28px; }
   .pl-list li { padding:12px 0; border-top:1px solid var(--ui-line); font-size:15px; }
   .pl-go { margin-top:26px; min-height:48px; padding:0 22px; }
+  .pl-prem { margin-top:40px; padding-top:28px; border-top:1px solid var(--ui-line); }
+  .pl-prem-h { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+  .pl-prem-h b { font:700 clamp(24px, 2.6vw, 32px)/1 var(--ui-sans); letter-spacing:-.03em; }
+  .pl-soon { font:500 13px/1 var(--ui-mono, monospace); color:var(--ui-fg); border:1px solid var(--ui-line); border-radius:var(--ui-r-s); padding:7px 10px; }
+  .pl-list-2 { margin-top:14px; } .pl-list-2 li { color:var(--ui-muted); }
   .pl-pro { margin-top:22px; font-size:14px; color:var(--ui-muted); }
   .pl-pro b { color:var(--ui-fg); font-weight:600; margin-right:4px; }
   @media (max-width:900px){ .pl-in { grid-template-columns:1fr; } .pl-art { max-width:520px; margin:0 auto; width:100%; } }
@@ -836,7 +841,7 @@
 
     <div class="hx-light" aria-hidden="true"></div>
     <div class="hero-c hx">
-      <h1 class="hx-t" id="h1t" data-static aria-label="Prendi la tua @ su 18kbio."><span class="hx-l1">Prendi la tua @</span><span class="hx-l2">su <b class="hx-name">18kbio</b>.</span></h1>
+      <h1 class="hx-t" id="h1t" data-static aria-label="Prendi la tua @ su 18kbio"><span class="hx-l1">Prendi la tua @</span><span class="hx-l2">su <b class="hx-name">18kbio</b></span></h1>
       <p class="hx-d">Link, social, musica e il tuo stile su un solo indirizzo: 18kbio.xyz/iltuonome. Gratis.</p>
       <form class="claim hx-claim" data-claim novalidate>
         <label class="sr-only" for="h1in">Scegli la tua @</label>
@@ -1048,7 +1053,7 @@
   </section>
 
   <!-- SHARE -->
-  <section class="s" id="share">
+  <section class="s" id="share" hidden>
     <div class="wrap">
       <div class="sh rv"><span class="no">04 / condividi</span><div>
         <h2 class="h2">Il tuo profilo, ovunque.</h2>
@@ -1115,7 +1120,15 @@
           <li>Prova senza account</li>
         </ul>
         <a class="ui-btn pl-go" href="#top" data-focus-claim>Prendi la tua @</a>
-        <p class="pl-pro"><b>Premium</b> in arrivo: effetti e font in più, badge esclusivi, statistiche complete.</p>
+        <div class="pl-prem">
+          <div class="pl-prem-h"><b>Premium</b><span class="pl-soon">Presto</span></div>
+          <ul class="pl-list pl-list-2">
+            <li>Effetti e font in più</li>
+            <li>Badge esclusivi</li>
+            <li>Statistiche complete</li>
+            <li>Chi entra prima lo sa per primo</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
