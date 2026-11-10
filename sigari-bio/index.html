@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Unbounded:wght@400;600;700&family=Geist+Mono:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Pirata+One&family=Permanent+Marker&family=VT323&family=Rubik+Mono+One&family=Space+Mono&family=Bodoni+Moda:ital,wght@1,400;1,700&family=Rubik+Glitch&family=Major+Mono+Display&family=Monoton&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Metal+Mania&family=Anton&family=Bebas+Neue&family=Black+Ops+One&family=Rubik+Wet+Paint&family=UnifrakturMaguntia&family=Audiowide&family=Permanent+Marker&family=Pinyon+Script&family=VT323&family=Bodoni+Moda:ital,wght@1,400;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
@@ -66,8 +66,8 @@
   .nav { position:fixed; inset:0 0 auto 0; z-index:100; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; height:60px; padding:0 var(--gut);
     transition:background .4s, border-color .4s; border-bottom:1px solid transparent; }
   .nav.solid { background:rgba(0,0,0,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-color:var(--line); }
-  .logo { font:400 22px/1 "UnifrakturMaguntia", serif; letter-spacing:0; justify-self:start; display:flex; align-items:center; gap:8px; }
-  .logo span { color:#8a8a8a; margin-left:-8px; }
+  .logo { font:600 18px/1 "Unbounded", var(--sans); letter-spacing:-.02em; justify-self:start; display:flex; align-items:center; gap:8px; }
+  .logo span { color:#8a8a8a; margin-left:-8px; font-weight:400; }
   .logo i { width:7px; height:7px; background:#fff; border-radius:1px; animation:tick 2.4s steps(1) infinite; }
   @keyframes tick { 50% { opacity:.2; } }
   .links { display:flex; gap:2px; font:500 12px var(--mono); }
@@ -162,15 +162,6 @@
   @media (prefers-reduced-motion:reduce){ .haze i { animation:none; } }
   @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
   main, footer { position:relative; z-index:1; }
-  /* "18k.bio" in gothic letters, running across the page */
-  .brandband { position:relative; z-index:1; overflow:hidden; padding:18px 0; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.55); }
-  .brandband > div { display:flex; align-items:center; gap:34px; width:max-content; animation:bband 40s linear infinite; }
-  .brandband.rev > div { animation-direction:reverse; }
-  .brandband span { font:400 clamp(40px, 6vw, 78px)/1 "UnifrakturMaguntia", serif; color:#fff; white-space:nowrap; }
-  .brandband span:nth-child(4n+3) { color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.55); }
-  .brandband i { font-style:normal; font-size:18px; color:#5a5a5a; }
-  @keyframes bband { to { transform:translateX(-50%); } }
-  @media (prefers-reduced-motion:reduce){ .brandband > div { animation:none; } }
   /* template pile: still pictures, nothing moves inside (only the card hover) */
   .tg-pv *, .tg-pv *::before, .tg-pv *::after { animation:none !important; transition:none !important; }
   /* cleaner: no corner texts in the hero, hidden sections really hidden */
@@ -549,7 +540,7 @@
   footer { border-top:1px solid var(--line); padding:26px var(--gut) 40px; overflow:hidden; }
   .foot { max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font:400 12px var(--mono); color:#8a8a8a; }
   .foot nav { display:flex; gap:18px; } .foot a:hover { color:#fff; }
-  .word { margin-top:36px; font:400 clamp(56px, 17.5vw, 280px)/.9 "UnifrakturMaguntia", serif; letter-spacing:0; text-align:center; color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.16); user-select:none; white-space:nowrap; }
+  .word { margin-top:36px; font:700 clamp(48px, 14vw, 230px)/.9 "Unbounded", var(--sans); letter-spacing:0; text-align:center; color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.16); user-select:none; white-space:nowrap; }
 
   /* Mobile sticky claim */
   .dock { position:fixed; left:12px; right:12px; bottom:max(12px, env(safe-area-inset-bottom)); z-index:95; display:none; }
@@ -612,7 +603,6 @@
   <nav class="links" aria-label="Sezioni">
     <a href="#index">funzioni</a>
     <a href="#stats">statistiche</a>
-    <a href="#template">template</a>
     <a href="#soon">in arrivo</a>
     <a href="#plans">piani</a>
   </nav>
@@ -777,11 +767,9 @@
   </section>
 
   <!-- TEMPLATES -->
-  <div class="brandband" aria-hidden="true"><div><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i></div></div>
-
-  <section class="s" id="template">
+  <section class="s" id="template" hidden>
     <div class="wrap">
-      <div class="sh rv"><span class="no">03 / template</span><div>
+      <div class="sh rv"><span class="no">– / template</span><div>
         <h2 class="h2">Prendi uno stile. <span class="g">Fallo tuo.</span></h2>
         <p class="sub">Prendine uno e cambialo come vuoi: colori, font, sfondo, musica, tutto. Puoi prendere anche solo un pezzo, oppure pubblicare il tuo.</p>
       </div></div>
@@ -822,7 +810,7 @@
   <!-- PARTNERS -->
   <section class="s" id="partners">
     <div class="wrap">
-      <div class="sh rv"><span class="no">04 / partner</span><div>
+      <div class="sh rv"><span class="no">03 / partner</span><div>
         <h2 class="h2">Un nome, tanti prefissi. <span class="g">Sempre 18k.</span></h2>
         <p class="sub">Il tuo link è 18kbio.xyz/tuonome. Oppure scegli un prefisso: 18k.gg, 18k.lol, 18k.rip, 18k.fm e altri, sempre con /tuonome dopo. Stessa pagina, il vibe che vuoi. Poi scegli lo stile dell'anteprima.</p>
       </div></div>
@@ -854,7 +842,7 @@
   <!-- SHARE -->
   <section class="s" id="share">
     <div class="wrap">
-      <div class="sh rv"><span class="no">05 / condividi</span><div>
+      <div class="sh rv"><span class="no">04 / condividi</span><div>
         <h2 class="h2">Mettilo ovunque. <span class="g">Si legge come il tuo nome.</span></h2>
         <p class="sub">Usa la stessa @ che hai su ogni app, così ti trovano al primo colpo. Ecco come appare il tuo link quando l'hai presa.</p>
       </div></div>
@@ -887,7 +875,7 @@
   <!-- PLANS + FAQ -->
   <section class="s" id="soon">
     <div class="wrap">
-      <div class="sh rv"><span class="no">06 / in arrivo</span><div>
+      <div class="sh rv"><span class="no">05 / in arrivo</span><div>
         <h2 class="h2">Prossimamente. <span class="g">Ci stiamo lavorando.</span></h2>
       </div></div>
       <div class="soon-grid rv">
@@ -898,11 +886,9 @@
     </div>
   </section>
 
-  <div class="brandband rev" aria-hidden="true"><div><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i><span>18k.bio</span><i>✦</i></div></div>
-
   <section class="s" id="plans">
     <div class="wrap">
-      <div class="sh rv"><span class="no">07 / piani</span><div>
+      <div class="sh rv"><span class="no">06 / piani</span><div>
         <h2 class="h2">Gratis adesso. <span class="g">Domande e risposte.</span></h2>
       </div></div>
       <div class="pf">
@@ -1698,7 +1684,7 @@
       });
     }, { rootMargin: "200px" }).observe(grid);
   }
-  buildGallery();
+  // the template pile is off on the landing (section hidden): nothing is built
 
   /* ---------- Topic of the week ---------- */
   const topic = currentTopic();
