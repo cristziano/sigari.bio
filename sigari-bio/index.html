@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="z90">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -82,7 +82,7 @@
   @media (max-width:860px){ .links { display:none; } .nav { grid-template-columns:1fr auto; } .nav-r .ghost { display:none; } }
 
   /* ---------- Hero ---------- */
-  .hero { position:relative; height:100svh; min-height:640px; overflow:hidden; isolation:isolate; }
+  .hero { position:relative; height:calc(100svh * var(--vz, 1)); min-height:640px; overflow:hidden; isolation:isolate; }
   /* the real smoke (WebGL) stays behind the WHOLE page, not only the hero: no edges anywhere */
   #fx { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0; pointer-events:none; transition:opacity 1.2s ease; opacity:.62; }
   html.past-hero #fx { opacity:.2; }
@@ -151,20 +151,20 @@
   .haze i { position:absolute; width:62vmax; height:62vmax; border-radius:50%; opacity:.9;
     background:radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,.075) 30%, rgba(255,255,255,.035) 58%, rgba(255,255,255,.01) 82%, transparent 100%);
     animation:haze 52s ease-in-out infinite alternate; mix-blend-mode:screen; opacity:.25; }
-  .haze i:nth-child(1){ left:-26vmax; top:4vh; }
-  .haze i:nth-child(2){ right:-30vmax; top:30vh; animation-duration:61s; animation-delay:-14s; }
-  .haze i:nth-child(3){ left:14vw; top:68vh; width:54vmax; height:54vmax; animation-duration:70s; animation-delay:-30s; }
-  .haze i:nth-child(4){ left:46vw; top:-14vh; width:46vmax; height:46vmax; animation-duration:48s; animation-delay:-8s; opacity:.7; }
-  .haze i:nth-child(5){ left:-12vw; top:56vh; width:40vmax; height:40vmax; animation-duration:57s; animation-delay:-40s; opacity:.6; }
-  .haze i:nth-child(6){ right:-8vw; top:78vh; width:50vmax; height:50vmax; animation-duration:66s; animation-delay:-22s; opacity:.75; }
+  .haze i:nth-child(1){ left:-26vmax; top:calc(4vh * var(--vz, 1)); }
+  .haze i:nth-child(2){ right:-30vmax; top:calc(30vh * var(--vz, 1)); animation-duration:61s; animation-delay:-14s; }
+  .haze i:nth-child(3){ left:14vw; top:calc(68vh * var(--vz, 1)); width:54vmax; height:54vmax; animation-duration:70s; animation-delay:-30s; }
+  .haze i:nth-child(4){ left:46vw; top:calc(-14vh * var(--vz, 1)); width:46vmax; height:46vmax; animation-duration:48s; animation-delay:-8s; opacity:.7; }
+  .haze i:nth-child(5){ left:-12vw; top:calc(56vh * var(--vz, 1)); width:40vmax; height:40vmax; animation-duration:57s; animation-delay:-40s; opacity:.6; }
+  .haze i:nth-child(6){ right:-8vw; top:calc(78vh * var(--vz, 1)); width:50vmax; height:50vmax; animation-duration:66s; animation-delay:-22s; opacity:.75; }
   /* fine smoky texture that slowly slides */
   @keyframes smokeslide { to { transform:translate3d(-900px, -300px, 0); } }
   @media (prefers-reduced-motion:reduce){ .haze i { animation:none; } }
-  @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
+  @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,calc(-10vh * var(--vz, 1)),0) scale(1.15)} 100%{transform:translate3d(-6vw,calc(6vh * var(--vz, 1)),0) scale(.92)} }
   main, footer { position:relative; z-index:1; }
   #deck { display:none !important; }
   /* ---------- Cards section (3D tilted layers, like a topographic table) ---------- */
-  .tc { position:relative; height:82svh; min-height:560px; overflow:hidden; background:#0a0a0a; color:#e0e0e0; font-family:"Syncopate", var(--sans); isolation:isolate; }
+  .tc { position:relative; height:calc(82svh * var(--vz, 1)); min-height:560px; overflow:hidden; background:#0a0a0a; color:#e0e0e0; font-family:"Syncopate", var(--sans); isolation:isolate; }
   .tc-grain { position:absolute; inset:0; z-index:20; pointer-events:none; opacity:.15;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
   .tc-view { position:absolute; inset:0; perspective:1600px; display:flex; align-items:center; justify-content:flex-end; padding-right:clamp(16px, 7vw, 120px); overflow:hidden; }
@@ -210,7 +210,7 @@
   .tc-view { padding-right:clamp(16px, 4vw, 72px); }
   .tc-contours { opacity:.35; }
   .tc-scroll { display:none !important; }
-  .tc-title { margin-top:clamp(28px, 7vh, 80px); }
+  .tc-title { margin-top:clamp(28px, calc(7vh * var(--vz, 1)), 80px); }
   .tc-ui > .tc-box { grid-column:1; align-self:start; margin-top:28px; }
   .tc-foot { justify-content:flex-end; }
   /* NO GLOW anywhere on the site (Cristiano): no glowing text, no light halos, no light following the mouse */
@@ -226,7 +226,7 @@
   section[hidden] { display:none !important; }
   .soon-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:44px; }
   /* hero: without the corner texts the top was empty; on big screens the text sits in the middle, next to the cards */
-  @media (min-width:861px){ .hero .hero-c { bottom:clamp(84px, calc(50svh - 190px), 440px); } }
+  @media (min-width:861px){ .hero .hero-c { bottom:clamp(84px, calc(calc(50svh * var(--vz, 1)) - 190px), 440px); } }
   .soon-c { position:relative; display:grid; gap:8px; align-content:start; padding:22px; border:1px dashed rgba(255,255,255,.18); border-radius:16px; background:rgba(10,10,10,.6); }
   .soon-c .k { justify-self:start; font:500 10.5px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:#8a8a8a; padding:4px 9px; border:1px solid rgba(255,255,255,.14); border-radius:99px; }
   .soon-c b { font-size:20px; letter-spacing:-.03em; margin-top:6px; }
@@ -678,7 +678,7 @@
   .soon-c, .plan.pro { border-style:solid !important; }
   .soon-c b { margin-top:0; }
   /* ===== HERO (idea: Kokonut UI "Background Paths", 21st.dev — rebuilt black and white) ===== */
-  .hero { height:auto; min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
+  .hero { height:auto; min-height:calc(100svh * var(--vz, 1)); display:flex; flex-direction:column; justify-content:center; }
   .hero .hero-c.hx { position:relative; z-index:2; inset:auto; bottom:auto !important; left:auto; right:auto; display:flex; flex-direction:column; align-items:center; text-align:center;
     padding:120px var(--gut) 96px; grid-template-columns:none !important; pointer-events:auto; }
   .hx-paths { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
@@ -756,7 +756,7 @@
   @media (prefers-reduced-motion:reduce){ .hx-name i, .hx-t.in .hx-name i { animation:none; opacity:1; transform:none; filter:none; } }
 
   /* ===== LIVE EDIT DEMO (replaces the feature list) ===== */
-  .demo { min-height:100svh; display:flex; align-items:center; }
+  .demo { min-height:calc(100svh * var(--vz, 1)); display:flex; align-items:center; }
   .demo-in { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 420px); gap:clamp(32px, 6vw, 96px); align-items:center; width:100%; }
   .demo-steps { list-style:none; margin-top:var(--ui-gap-4); display:grid; }
   .demo-steps button { position:relative; display:grid; gap:4px; width:100%; text-align:left; padding:18px 0 20px; background:none; border:0; border-top:1px solid var(--ui-line);

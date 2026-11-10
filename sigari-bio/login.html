@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="z90">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -35,7 +35,7 @@
   @keyframes drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(120px,-80px) scale(1.1)} 100%{transform:translate(-60px,100px) scale(.92)} }
 
   /* Page: content scrolls normally, footer sits at the bottom of the flow */
-  .auth { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 20px 32px; }
+  .auth { position:relative; z-index:1; min-height:calc(100vh * var(--vz, 1)); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 20px 32px; }
   .wrap { width:100%; max-width:525px; }
   .logo { display:block; width:max-content; margin:0 auto; font-size:22px; font-weight:600; letter-spacing:-0.02em; text-align:center; color:#fff; text-decoration:none; }
   .back { display:inline-flex; gap:6px; align-items:center; margin-top:28px; color:var(--d); font-size:13px; text-decoration:none; transition:color .2s; }
@@ -86,7 +86,7 @@
   @media (max-width:700px){ .stage { opacity:.18; } }
   .mblob { position:absolute; border-radius:50%; background:linear-gradient(135deg, #e0e0e0, #888); filter:blur(20px);
     animation:mfloat 20s infinite alternate ease-in-out; box-shadow:inset -10px -10px 20px rgba(0,0,0,.5); transition:margin .1s ease-out; }
-  @keyframes mfloat { 0% { transform:translate(0,0) scale(1); } 33% { transform:translate(10vw,20vh) scale(1.2); } 66% { transform:translate(-5vw,10vh) scale(.8); } 100% { transform:translate(5vw,-10vh) scale(1.1); } }
+  @keyframes mfloat { 0% { transform:translate(0,0) scale(1); } 33% { transform:translate(10vw,calc(20vh * var(--vz, 1))) scale(1.2); } 66% { transform:translate(-5vw,calc(10vh * var(--vz, 1))) scale(.8); } 100% { transform:translate(5vw,calc(-10vh * var(--vz, 1))) scale(1.1); } }
   @media (prefers-reduced-motion:reduce){ .mblob { animation:none; } }
 
   .wrap { max-width:440px; }

@@ -29,6 +29,9 @@
 }
 
 /* ---------- browser surfaces in the site's style ---------- */
+/* the site looks best a bit smaller: on computers every page (not the public profiles) is shown at 90%.
+   --vz keeps "full screen" heights full screen, since zoom shrinks vh too */
+@media (min-width:1100px){ html.z90 { zoom:.9; --vz:1.1112; } }
 html { scrollbar-color: #2a2a2a #000; scrollbar-width: thin; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #000; }
