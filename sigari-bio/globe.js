@@ -56,15 +56,19 @@ export function mountGlobe(canvas) {
   const pulses = [];
   const draw = now => {
     ctx.clearRect(0, 0, W, H);
-    yaw = (24 + Math.sin(now / 9000) * 10) * Math.PI / 180;
+    yaw = (24 + Math.sin(now / 1900) * 38) * Math.PI / 180;
+    // glow: a soft white halo around the globe
+    const halo = ctx.createRadialGradient(cx, cy, R * .85, cx, cy, R * 1.45);
+    halo.addColorStop(0, "rgba(255,255,255,.13)"); halo.addColorStop(.35, "rgba(255,255,255,.05)"); halo.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, R * 1.45, 0, Math.PI * 2); ctx.fill();
     // the sphere: soft white body and a light rim
     const g = ctx.createRadialGradient(cx - R * .35, cy - R * .4, R * .1, cx, cy, R);
     g.addColorStop(0, "rgba(255,255,255,.16)"); g.addColorStop(.6, "rgba(255,255,255,.06)"); g.addColorStop(1, "rgba(255,255,255,.02)");
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,.14)"; ctx.lineWidth = 1; ctx.stroke();
+    ctx.save(); ctx.shadowColor = "rgba(255,255,255,.55)"; ctx.shadowBlur = 18; ctx.strokeStyle = "rgba(255,255,255,.22)"; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
     for (const d of dots) { const [x, y, z] = proj(d); if (z <= 0) continue; ctx.fillStyle = `rgba(255,255,255,${.18 + z * .62})`; ctx.fillRect(x - .9, y - .9, 1.8, 1.8); }
     const [hx, hy] = proj(HOME);
-    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.shadowColor = "#fff"; ctx.shadowBlur = 12; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     if (!reduce && now > next) { spawn(now); next = now + 900; }
     for (let i = arcs.length - 1; i >= 0; i--) {
       const A = arcs[i], t = (now - A.t0) / A.dur;
@@ -75,17 +79,17 @@ export function mountGlobe(canvas) {
       let prev = null;
       for (let j = 0; j <= N; j++) {
         const u = tail + (head - tail) * j / N, p = point(A, u);
-        if (prev && (p[2] > -.05 || Math.hypot(p[0] - cx, p[1] - cy) > R)) { ctx.strokeStyle = `rgba(${ORANGE},${(j / N) * .95})`; ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.stroke(); }
+        if (prev && (p[2] > -.05 || Math.hypot(p[0] - cx, p[1] - cy) > R)) { const a = j / N; ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.strokeStyle = `rgba(${ORANGE},${a * .22})`; ctx.lineWidth = 7; ctx.stroke(); ctx.strokeStyle = `rgba(${ORANGE},${a * .95})`; ctx.lineWidth = 1.6; ctx.stroke(); }
         prev = p;
       }
       // the icon rides on top of the line head, transparent, and fades as it lands
       const ic = icons[A.k];
       if (ic && t < 1) { const p = point(A, head), al = Math.min(1, t * 5) * (1 - Math.max(0, (t - .75) / .25)); ctx.globalAlpha = al * .7; ctx.drawImage(ic, p[0] - 9, p[1] - 26, 18, 18); ctx.globalAlpha = 1; }
-      if (t < 1) { const p = point(A, head); ctx.fillStyle = `rgb(${ORANGE})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.4, 0, Math.PI * 2); ctx.fill(); }
+      if (t < 1) { const p = point(A, head); ctx.save(); ctx.shadowColor = `rgb(${ORANGE})`; ctx.shadowBlur = 16; ctx.fillStyle = `rgb(${ORANGE})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
     }
     for (let i = pulses.length - 1; i >= 0; i--) {
       const k = (now - pulses[i].t0) / 700; if (k >= 1) { pulses.splice(i, 1); continue; }
-      ctx.strokeStyle = `rgba(${ORANGE},${(1 - k) * .8})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 16, 0, Math.PI * 2); ctx.stroke();
+      ctx.save(); ctx.shadowColor = `rgb(${ORANGE})`; ctx.shadowBlur = 14; ctx.strokeStyle = `rgba(${ORANGE},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
   };
   let raf = 0, on = false;
