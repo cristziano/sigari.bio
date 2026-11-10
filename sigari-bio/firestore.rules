@@ -38,6 +38,11 @@ service cloud.firestore {
       allow read, delete: if isStaff();
     }
 
+    // Bugs people report (written by the server); only the staff reads them
+    match /bugs/{id} {
+      allow read, delete: if isStaff();
+    }
+
     match /staff/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isStaff());
       allow create: if isStaff() && request.resource.data.keys().hasOnly(['handle', 'addedBy', 'createdAt']);

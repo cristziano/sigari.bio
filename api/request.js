@@ -6,6 +6,41 @@ const crypto = require("crypto");
 const { REQUEST_CHANNEL, discord } = require("./_discord");
 const { verifyUser } = require("./_auth");
 const { pinterest, shuffle } = require("./_pinterest");
+const { adminToken, alertStaff, reportSystem } = require("./_admin");
+
+// POST /api/request?sys=1 { kind, message, page, handle }: an error of the site seen in the dashboard
+const SYS_KINDS = ["permessi", "pagina pubblica", "look salvati", "errore pagina"];
+async function sysError(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  let b = {};
+  try { b = await readBody(req); } catch (_) { b = {}; }
+  const kind = SYS_KINDS.includes(b.kind) ? b.kind : "";
+  if (kind) await reportSystem(kind, String(b.message || "").slice(0, 400), { handle: String(b.handle || "").replace(/[^a-z0-9_]/g, "").slice(0, 20), page: String(b.page || "").slice(0, 60) });
+  res.end('{"ok":true}');
+}
+
+// POST /api/request?bug=1  { text, page, device, handle }  -> saved for the staff + a Discord message to them
+async function bugReport(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  let b;
+  try { b = await readBody(req); } catch (e) { res.statusCode = 413; return res.end(JSON.stringify({ error: "Testo troppo lungo." })); }
+  const text = String(b.text || "").trim().slice(0, 1000);
+  if (text.length < 4) { res.statusCode = 400; return res.end(JSON.stringify({ error: "Scrivi cosa non va." })); }
+  if (b.website) return res.end(JSON.stringify({ ok: true })); // bots fill the hidden field
+  let uid = "";
+  try { uid = await verifyUser(req); } catch (_) { uid = ""; }
+  const handle = String(b.handle || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+  const page = String(b.page || "").slice(0, 80), device = String(b.device || "").slice(0, 160);
+  try {
+    const token = await adminToken();
+    const fields = { text: { stringValue: text }, page: { stringValue: page }, device: { stringValue: device }, handle: { stringValue: handle }, uid: { stringValue: uid }, createdAt: { timestampValue: new Date().toISOString() } };
+    const r = await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/bugs`, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ fields }) });
+    if (!r.ok) throw new Error("save " + r.status);
+  } catch (_) { res.statusCode = 502; return res.end(JSON.stringify({ error: "Non sono riuscito a mandarla, riprova tra poco." })); }
+  await alertStaff("bug:" + (uid || handle || "ospite"), `🐞 **Bug segnalato**${handle ? " da @" + handle : ""}${page ? " (" + page + ")" : ""}\n${text.slice(0, 900)}\nTutte le segnalazioni: 18kbio.xyz/dashboard.html → Staff`);
+  res.end(JSON.stringify({ ok: true }));
+}
 
 const TYPES = { set: "Set", pfp: "Pfp", edit: "Edit", altro: "Altro" };
 const WEEK = 7 * 864e5;
@@ -38,6 +73,8 @@ async function lastRequest(code) {
 }
 
 module.exports = async (req, res) => {
+  if (/[?&]bug=1/.test(req.url || "")) return bugReport(req, res);
+  if (/[?&]sys=1/.test(req.url || "")) return sysError(req, res);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") { res.statusCode = 405; return res.end(JSON.stringify({ error: "Usa POST." })); }

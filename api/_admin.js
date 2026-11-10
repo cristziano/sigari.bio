@@ -22,8 +22,37 @@ async function adminToken() {
   return cached.token;
 }
 
+// The staff accounts: whoever owns @1 now + the /staff documents. Those who log in with Discord
+// have an account id "discord:<id>": the bot can write to them in private.
+async function staffDiscordIds() {
+  const token = await adminToken();
+  const H = { Authorization: "Bearer " + token };
+  const base = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
+  const uids = new Set();
+  const one = await fetch(`${base}/usernames/1`, { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null);
+  if (one && one.fields && one.fields.uid) uids.add(one.fields.uid.stringValue);
+  const list = await fetch(`${base}/staff?pageSize=50`, { headers: H }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  (list.documents || []).forEach(d => uids.add(d.name.split("/").pop()));
+  return [...uids].filter(u => /^discord:\d{15,22}$/.test(u)).map(u => u.slice(8));
+}
+const lastDm = {};
+// A private message from the bot to every staff member on Discord (at most one per kind every 10 minutes)
+async function alertStaff(kind, text) {
+  try {
+    if (!process.env.DISCORD_BOT_TOKEN) return;
+    if (lastDm[kind] && Date.now() - lastDm[kind] < 600e3) return;
+    lastDm[kind] = Date.now();
+    const H = { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN, "Content-Type": "application/json" };
+    for (const id of await staffDiscordIds()) {
+      const ch = await fetch("https://discord.com/api/v10/users/@me/channels", { method: "POST", headers: H, body: JSON.stringify({ recipient_id: id }) }).then(r => r.json()).catch(() => null);
+      if (ch && ch.id) await fetch(`https://discord.com/api/v10/channels/${ch.id}/messages`, { method: "POST", headers: H, body: JSON.stringify({ content: String(text).slice(0, 1800), allowed_mentions: { parse: [] } }) }).catch(() => {});
+    }
+  } catch (_) { /* never break the request */ }
+}
+
 // Never throws: a failed report must not break what the user is doing
 async function reportSystem(kind, message, extra = {}) {
+  alertStaff("sys:" + kind, `⚠️ **Errore di sistema** (${kind})\n${String(message).slice(0, 600)}\nDettagli: 18kbio.xyz/dashboard.html → Staff`);
   try {
     const token = await adminToken();
     const fields = { kind: { stringValue: String(kind).slice(0, 40) }, message: { stringValue: String(message).slice(0, 500) }, createdAt: { timestampValue: new Date().toISOString() } };
@@ -46,4 +75,4 @@ async function deployRules(source) {
   return rs.name;
 }
 
-module.exports = { adminToken, reportSystem, deployRules, PROJECT };
+module.exports = { adminToken, reportSystem, deployRules, alertStaff, PROJECT };
