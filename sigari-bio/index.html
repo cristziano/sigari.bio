@@ -2160,5 +2160,62 @@
 </script>
 
 <script type="module">import { mountGlobe } from "./globe.js"; const c = document.getElementById("hxGlobe"); if (c) mountGlobe(c);</script>
+<script>
+  // Guided scroll (computer only): one turn of the wheel takes you to the next section.
+  // Sections taller than the screen get extra stops, so nothing is skipped.
+  (function guidedScroll() {
+    if (!matchMedia("(pointer:fine) and (min-width:1100px)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const SEL = "#top, #cards, #index, #stats, #plans, #final";
+    const stops = () => {
+      const vh = innerHeight, max = document.documentElement.scrollHeight - vh, out = [];
+      document.querySelectorAll(SEL).forEach(el => {
+        if (el.hidden || !el.offsetHeight) return;
+        const r = el.getBoundingClientRect(), top = Math.round(r.top + scrollY);
+        out.push(top);
+        for (let y = top + vh * .85; y < top + r.height - vh; y += vh * .85) out.push(Math.round(y));
+        if (r.height > vh + 40) out.push(Math.round(top + r.height - vh));
+      });
+      out.push(max);
+      return [...new Set(out.map(y => Math.max(0, Math.min(max, y))))].sort((a, b) => a - b);
+    };
+    let busy = false, quietT = 0, raf = 0, lastWheel = 0;
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    function go(to) {
+      const from = scrollY, d = to - from, dur = Math.min(900, 450 + Math.abs(d) * .35), t0 = performance.now();
+      busy = true; cancelAnimationFrame(raf);
+      const step = now => {
+        const k = Math.min(1, (now - t0) / dur);
+        scrollTo({ top: from + d * ease(k), behavior: "instant" });
+        if (k < 1) raf = requestAnimationFrame(step); else { busy = "settle"; if (performance.now() - lastWheel > 160) busy = false; }
+      };
+      raf = requestAnimationFrame(step);
+    }
+    function move(dir) {
+      const y = scrollY, list = stops();
+      const next = dir > 0 ? list.find(s => s > y + 4) : [...list].reverse().find(s => s < y - 4);
+      if (next !== undefined) go(next);
+    }
+    addEventListener("wheel", e => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      // let boxes that scroll on their own (lists, menus) keep the wheel
+      for (let el = e.target; el && el !== document.body; el = el.parentElement) {
+        if (el.scrollHeight > el.clientHeight + 2 && /(auto|scroll)/.test(getComputedStyle(el).overflowY)) return;
+      }
+      e.preventDefault();
+      lastWheel = performance.now();
+      clearTimeout(quietT);
+      // after a jump, wait until the wheel (or the touchpad's glide) stops before the next one
+      quietT = setTimeout(() => { if (busy === "settle") busy = false; }, 160);
+      if (busy || Math.abs(e.deltaY) < 4) return;
+      move(Math.sign(e.deltaY));
+    }, { passive: false });
+    addEventListener("keydown", e => {
+      if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+      const k = e.key, dir = k === "PageDown" || k === "ArrowDown" || (k === " " && !e.shiftKey) ? 1 : k === "PageUp" || k === "ArrowUp" || (k === " " && e.shiftKey) ? -1 : 0;
+      if (!dir || busy) return;
+      e.preventDefault(); move(dir);
+    });
+  })();
+</script>
 </body>
 </html>
