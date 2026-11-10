@@ -1850,7 +1850,9 @@
     const pv = $("#demoPv"), list = $("#demoSteps"), phone = pv && pv.closest(".demo-phone"); if (!pv || !list) return;
     const plain = normalizeAppearance({ ...DEFAULT_APPEARANCE, effect: "none" });
     const noEnter = a => ({ ...a, enter: { ...a.enter, on: false } });
-    let who = { handle: "1", displayName: "1", bio: "", avatarUrl: "", badges: [], links: [{ title: "Il mio link", url: "https://18kbio.xyz" }], socials: {}, views: 0 };
+    let who = { handle: "1", displayName: "1", bio: "", avatarUrl: "", badges: [], views: 0,
+      links: [{ title: "Ultima uscita", url: "https://18kbio.xyz/1" }, { title: "Portfolio", url: "https://18kbio.xyz/1" }, { title: "Discord", url: "https://18kbio.xyz/1" }],
+      socials: { instagram: "1", tiktok: "1", discord: "1", spotify: "1" } };
     let full = plain, frames = [plain, plain, plain, plain];
     // step by step: colours, then background, then fonts, then everything (links and socials included)
     const build = () => {
@@ -1868,7 +1870,9 @@
       const p = s.data();
       who = { handle: "1", displayName: p.displayName || "1", bio: p.bio || "", avatarUrl: p.avatarUrl || "", banner: p.banner, badges: p.badges || [], views: p.views || 0,
         links: (p.links || []).filter(l => l && !l.hidden && l.title).slice(0, 4), socials: p.socials || {}, card: p.card };
-      if (!who.links.length) who.links = [{ title: "Il mio link", url: "https://18kbio.xyz/1" }];
+      // @1 has no links yet: the demo shows example ones (the real profile is not touched)
+      who.links = [{ title: "Ultima uscita", url: "https://18kbio.xyz/1" }, { title: "Portfolio", url: "https://18kbio.xyz/1" }, { title: "Discord", url: "https://18kbio.xyz/1" }];
+      if (!Object.keys(who.socials).length) who.socials = { instagram: "1", tiktok: "1", discord: "1", spotify: "1" };
       const pa = p.appearance || {};
       full = normalizeAppearance({ ...pa, effect: pa.effect || "none", music: { ...(pa.music || {}), type: "none" }, sfx: { ...(pa.sfx || {}), on: false } });
       build(); if (k >= 0) view.update(prof(k));
