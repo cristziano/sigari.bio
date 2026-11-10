@@ -2588,6 +2588,8 @@
   const PH = { albums: [["all", "Tutte"], ["sets", "sets"], ["replies", "replies"], ["pfps", "pfps"]], album: "all", items: [], next: null, cur: {}, done: {}, buf: [], loading: false };
   const PH_CH = ["sets", "replies", "pfps"];
   const absUrl = u => /^https?:/.test(u) ? u : location.origin + u;
+  // The address people share: always the real domain (not www., not the old vercel.app one)
+  const PUBLIC = /(^|\.)18kbio\.(xyz|vercel\.app)$/.test(location.hostname) ? "https://18kbio.xyz" : location.origin;
   const escTxt = s => String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   function renderPhTabs() {
     $("phTabs").innerHTML = PH.albums.map(([id, name]) => `<button type="button" data-album="${id}" class="${id === PH.album ? "on" : ""}">${name}</button>`).join("");
@@ -2819,7 +2821,7 @@
 
   // The public address: 18kbio.xyz/<name>. Guests don't have a public page yet.
   function renderPubLinks() {
-    const url = `${location.origin}/${handle}`;
+    const url = `${PUBLIC}/${handle}`;
     $$("[data-publink]").forEach(a => {
       a.textContent = `18kbio.xyz/${handle} ↗`;
       a.href = mode === "guest" ? "#" : url;
@@ -3099,7 +3101,7 @@
     const b = e.target.closest("[data-d]"); if (!b) return;
     draft.appearance.link.domain = b.dataset.d; changed(); renderLinkPage();
   });
-  $("lnCopy").addEventListener("click", () => { navigator.clipboard?.writeText(`${location.origin}/${handle}`).then(() => setStatus("Link copiato.", "ok")).catch(() => {}); });
+  $("lnCopy").addEventListener("click", () => { navigator.clipboard?.writeText(`${PUBLIC}/${handle}`).then(() => setStatus("Link copiato.", "ok")).catch(() => {}); });
   $("ogGallery").addEventListener("click", () => pickFromGallery(url => { draft.appearance.seo.image = url; changed(); syncControls(); renderLinkPage(); }));
   $("ogAvatar").addEventListener("click", () => { draft.appearance.seo.image = /^https:/.test(draft.avatarUrl || "") ? draft.avatarUrl : ""; changed(); syncControls(); renderLinkPage(); });
   $("ogClear").addEventListener("click", () => { draft.appearance.seo.image = ""; changed(); syncControls(); renderLinkPage(); });
@@ -3686,7 +3688,7 @@
           tools.innerHTML = `<select aria-label="Visibilità"><option value="public">Pubblico</option><option value="unlisted">Non in elenco</option><option value="private">Privato</option></select><button type="button" class="ghost-btn sm" data-copy>Link</button><button type="button" class="ghost-btn sm" data-del>Elimina</button>`;
           tools.querySelector("select").value = t.visibility;
           tools.querySelector("select").addEventListener("change", async e => { try { await F.updateDoc(F.doc(db, "templates", t.id), { visibility: e.target.value }); communityCache = null; setStatus("Visibilità aggiornata.", "ok"); } catch (err) { setStatus(friendly(err), "err"); } });
-          tools.querySelector("[data-copy]").addEventListener("click", async () => { const url = `${location.origin}${location.pathname}?template=${t.id}`; try { await navigator.clipboard.writeText(url); setStatus("Link copiato: chi lo apre può usare il template.", "ok"); } catch (_) { setStatus(url); } });
+          tools.querySelector("[data-copy]").addEventListener("click", async () => { const url = `${PUBLIC}/dashboard.html?template=${t.id}`; try { await navigator.clipboard.writeText(url); setStatus("Link copiato: chi lo apre può usare il template.", "ok"); } catch (_) { setStatus(url); } });
           tools.querySelector("[data-del]").addEventListener("click", async () => { if (!confirm(`Eliminare "${t.name}"?`)) return; try { await F.deleteDoc(F.doc(db, "templates", t.id)); communityCache = null; renderTemplates(); } catch (err) { setStatus(friendly(err), "err"); } });
           card.querySelector(".tpl-body").appendChild(tools);
           return card;
@@ -3942,10 +3944,10 @@
 
   function renderPublish() {
     const props = {
-      status: mode === "guest" ? "guest" : pub.status, url: `${location.origin}/${handle}`, shownUrl: shownLink(),
+      status: mode === "guest" ? "guest" : pub.status, url: `${PUBLIC}/${handle}`, shownUrl: shownLink(),
       checks: publishChecks(), dirty: isDirty(), lastAt: pub.at, busy: pub.busy, error: pub.error,
       onPublish: () => doPublish("live"), onDraft: () => doPublish("draft"),
-      onOpen: () => window.open(`${location.origin}/${handle}`, "_blank", "noopener"),
+      onOpen: () => window.open(`${PUBLIC}/${handle}`, "_blank", "noopener"),
       onGo: v => showView(v), onClaim: () => { location.href = "login.html"; }
     };
     if (pubUI) return pubUI.render(props);
@@ -4118,7 +4120,7 @@
   /* =========================================================
      Share: link, Discord preview, per-platform links, QR, extra names
      ========================================================= */
-  const SITE = location.origin;
+  const SITE = PUBLIC;
   const pubUrl = src => `${SITE}/${handle}${src ? "?utm_source=" + encodeURIComponent(src) : ""}`;
   const UTM = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["discord", "Discord"], ["x", "X"], ["youtube", "YouTube"], ["twitch", "Twitch"], ["telegram", "Telegram"], ["whatsapp", "WhatsApp"]];
   async function copyText(text, msg) {
@@ -4727,7 +4729,7 @@
     $$('#mnav option[value="staff"]').forEach(o => { o.hidden = true; o.disabled = true; });
     buildPickers();
     $$("[data-seg]").forEach(renderSeg);
-    const pubHref = `${location.origin}/${handle}`;
+    const pubHref = `${PUBLIC}/${handle}`;
     $("sideHandle").textContent = "@" + handle;
     $("sideUrl").textContent = `18kbio.xyz/${handle}`;
     $("sideUrl").href = mode === "guest" ? "#" : pubHref;

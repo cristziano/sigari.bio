@@ -24,8 +24,10 @@
   .msg h1 { font-size:clamp(34px, 7vw, 64px); letter-spacing:-.05em; line-height:1; }
   .msg p { margin-top:14px; color:#8f8f8f; font-size:15px; }
   .msg a { display:inline-flex; align-items:center; height:44px; padding:0 18px; margin-top:22px; border-radius:10px; background:#fff; color:#000; font-weight:600; text-decoration:none; }
-  .brand { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:30; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.55); text-decoration:none; padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
-  .brand:hover { color:#fff; }
+  .brand { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:30; display:flex; align-items:center; gap:8px; font:600 12.5px "Geist",system-ui,sans-serif; color:#fff; text-decoration:none; padding:8px 14px 8px 12px; border-radius:99px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .2s, background .2s; white-space:nowrap; }
+  .brand:hover { transform:translateX(-50%) translateY(-2px); background:rgba(0,0,0,.75); }
+  .brand i { font-style:normal; font-weight:700; letter-spacing:-.02em; }
+  .brand span { color:rgba(255,255,255,.65); font-weight:500; }
   .hidden { display:none !important; }
   .report-btn { position:fixed; right:12px; bottom:14px; z-index:30; border:0; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.4); padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); cursor:pointer; }
   .report-btn:hover { color:#fff; }
@@ -57,7 +59,7 @@
 <body>
 <div id="root"></div>
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
-<a class="brand" href="/" id="brand">18k.bio</a>
+<a class="brand" href="/" id="brand" aria-label="Vai a 18k.bio e crea il tuo profilo"><i>18k.bio</i><span>· crea il tuo profilo →</span></a>
 <button class="like-btn hidden" id="likeBtn" type="button" aria-pressed="false" aria-label="Metti like"><span class="lh"></span><b id="likeN">0</b></button>
 <div class="like-tip hidden" id="likeTip">Accedi per mettere like. <a id="likeLogin" href="/login.html">Accedi</a></div>
 <button class="report-btn hidden" id="reportBtn" type="button">segnala</button>
