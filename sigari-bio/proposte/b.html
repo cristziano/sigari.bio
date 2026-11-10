@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>18k.bio · Proposta B · Chrome Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* PROPOSTA B — Chrome Night: nero profondo, un accento lime elettrico, metallo liquido, carte in 3D. */
+  :root { --bg:#07080a; --fg:#eef0f2; --dim:#80858c; --acc:#c8ff2e; --line:#1b1e22; --mono:"Geist Mono", monospace; --sans:"Space Grotesk", system-ui, sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:var(--bg); }
+  body { background:var(--bg); color:var(--fg); font:16px/1.5 var(--sans); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  a { color:inherit; text-decoration:none; }
+  .tag { position:fixed; bottom:14px; left:50%; translate:-50% 0; z-index:50; font:500 11px var(--mono); letter-spacing:.12em; text-transform:uppercase; padding:6px 12px; border:1px solid var(--line); border-radius:99px; background:rgba(7,8,10,.8); color:var(--dim); }
+  nav { position:fixed; inset:0 0 auto; z-index:40; display:flex; justify-content:space-between; align-items:center; padding:20px clamp(16px,4vw,48px); }
+  .logo { font:700 19px var(--sans); letter-spacing:-.03em; display:flex; align-items:center; gap:8px; }
+  .logo i { width:10px; height:10px; border-radius:50%; background:var(--acc); }
+  .nav-cta { font:500 13px var(--sans); padding:9px 16px; border-radius:99px; background:var(--acc); color:#07080a; }
+
+  /* HERO: blob di metallo liquido che si deforma (SVG), titolo che entra a strisce */
+  .hero { position:relative; height:100svh; min-height:640px; display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:3vw; padding:0 clamp(16px,4vw,48px); overflow:hidden; }
+  .chrome { position:absolute; right:-6vw; top:50%; width:min(70vw, 760px); aspect-ratio:1; translate:0 -50%; z-index:0; }
+  .chrome svg { width:100%; height:100%; }
+  .h1 { position:relative; z-index:2; font:700 clamp(48px, 8.4vw, 136px)/.9 var(--sans); letter-spacing:-.055em; }
+  .h1 .w { display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.14em; margin-bottom:-.14em; }
+  .h1 .w > span { display:inline-block; transform:translateY(110%) skewY(8deg); }
+  .h1 em { font-style:normal; color:var(--acc); }
+  .lead { position:relative; z-index:2; margin-top:22px; max-width:420px; color:var(--dim); font-size:16px; }
+  .claim { position:relative; z-index:2; margin-top:28px; display:flex; align-items:center; gap:6px; padding:6px; border-radius:16px; background:rgba(255,255,255,.04); border:1px solid #23272c; max-width:480px; }
+  .claim span { padding-left:12px; font:500 15px var(--mono); color:var(--dim); }
+  .claim input { flex:1; min-width:0; background:none; border:0; outline:0; color:var(--fg); font:500 15px var(--mono); }
+  .claim button { border:0; border-radius:11px; background:var(--acc); color:#07080a; font:700 14px var(--sans); padding:13px 18px; cursor:pointer; }
+  .stats { position:relative; z-index:2; display:flex; gap:28px; margin-top:34px; }
+  .stats b { display:block; font:700 30px var(--sans); letter-spacing:-.04em; }
+  .stats small { font:400 11px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em; }
+
+  /* SEZIONE: le carte profilo volano in orbita 3D e si mettono in griglia con lo scroll */
+  .orbit { position:relative; height:260vh; }
+  .o-stage { position:sticky; top:0; height:100svh; perspective:1400px; overflow:hidden; display:grid; place-items:center; }
+  .o-title { position:absolute; top:12vh; left:0; right:0; text-align:center; font:700 clamp(30px, 5vw, 70px)/1 var(--sans); letter-spacing:-.05em; z-index:3; }
+  .o-title em { font-style:normal; color:var(--acc); }
+  .o-ring { position:relative; width:1px; height:1px; transform-style:preserve-3d; }
+  .pc { position:absolute; left:-90px; top:-120px; width:180px; height:240px; border-radius:18px; border:1px solid #2a2f35; background:linear-gradient(160deg, #15181c, #0b0c0f); padding:18px 14px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .pc .av { width:54px; height:54px; border-radius:50%; background:linear-gradient(135deg, #f2f4f6, #6c737b); }
+  .pc b { font:700 15px var(--sans); }
+  .pc i { display:block; width:100%; height:22px; border-radius:7px; background:#1f2328; }
+  .pc i:first-of-type { background:var(--acc); }
+  .end { height:70vh; display:grid; place-items:center; text-align:center; }
+  .end h2 { font:700 clamp(40px, 8vw, 120px)/.92 var(--sans); letter-spacing:-.055em; }
+  .end h2 em { font-style:normal; color:var(--acc); }
+  .end a { display:inline-block; margin-top:24px; font:700 15px var(--sans); background:var(--acc); color:#07080a; padding:15px 24px; border-radius:14px; }
+  @media (max-width:820px){ .hero { grid-template-columns:1fr; align-content:center; } .chrome { opacity:.45; right:-30vw; } .stats { gap:18px; } }
+  @media (prefers-reduced-motion:reduce){ .h1 .w > span { transform:none !important; } }
+</style>
+</head>
+<body>
+<div class="tag">proposta B · chrome night</div>
+<nav><a class="logo" href="#"><i></i>18k.bio</a><a class="nav-cta" href="#">Prendi la tua @</a></nav>
+
+<section class="hero">
+  <div>
+    <h1 class="h1"><span class="w"><span>Una @.</span></span><br><span class="w"><span>Una pagina.</span></span><br><span class="w"><span><em>Tutto</em> tuo.</span></span></h1>
+    <p class="lead">Il link in bio che sembra tuo, non di un template. Colori, foto, musica, effetti.</p>
+    <form class="claim" onsubmit="return false"><span>18kbio.xyz/</span><input placeholder="iltuonome" aria-label="La tua @"><button>Prendila</button></form>
+    <div class="stats"><div><b data-count="40">0</b><small>template</small></div><div><b data-count="20">0</b><small>font</small></div><div><b data-count="13">0</b><small>effetti</small></div></div>
+  </div>
+  <div class="chrome" aria-hidden="true">
+    <svg viewBox="0 0 600 600">
+      <defs>
+        <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#9aa1a9"/><stop offset=".55" stop-color="#2a2e33"/><stop offset=".75" stop-color="#d9dde1"/><stop offset="1" stop-color="#3a3f45"/></linearGradient>
+        <linearGradient id="cg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8ff2e" stop-opacity=".0"/><stop offset=".5" stop-color="#c8ff2e" stop-opacity=".35"/><stop offset="1" stop-color="#c8ff2e" stop-opacity="0"/></linearGradient>
+      </defs>
+      <path id="blob" fill="url(#cg)" d="M300,80 C420,80 520,170 520,300 C520,430 420,520 300,520 C180,520 80,430 80,300 C80,170 180,80 300,80 Z"/>
+      <path id="blob2" fill="url(#cg2)" d="M300,80 C420,80 520,170 520,300 C520,430 420,520 300,520 C180,520 80,430 80,300 C80,170 180,80 300,80 Z"/>
+    </svg>
+  </div>
+</section>
+
+<section class="orbit">
+  <div class="o-stage">
+    <h2 class="o-title">Migliaia di <em>stili</em>.<br>Uno è il tuo.</h2>
+    <div class="o-ring" id="ring"></div>
+  </div>
+</section>
+
+<section class="end"><div><h2>Prendi la tua <em>@</em><br>prima di qualcun altro.</h2><a href="#">Inizia gratis →</a></div></section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const NAMES = ["@1", "@nyx", "@vanta", "@noir", "@ash", "@kai", "@onyx", "@luna", "@zero", "@void", "@mono", "@hex"];
+  const ring = document.getElementById("ring");
+  const cards = NAMES.map((n, i) => { const c = document.createElement("div"); c.className = "pc"; c.innerHTML = `<div class="av"></div><b>${n}</b><i></i><i></i><i></i>`; ring.appendChild(c); return c; });
+  // liquid metal: the blob shape changes all the time
+  const shape = t => { const p = []; for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, r = 200 + Math.sin(t * 1.1 + k * 1.7) * 26 + Math.cos(t * .7 + k * 2.3) * 18; p.push([300 + Math.cos(a) * r, 300 + Math.sin(a) * r]); }
+    let d = `M${p[0][0]},${p[0][1]}`; for (let k = 0; k < 8; k++) { const a = p[k], b = p[(k + 1) % 8], c = p[(k + 2) % 8]; const m1 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], m2 = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2]; d += ` Q${b[0]},${b[1]} ${m2[0]},${m2[1]}`; if (k === 0) d = `M${m1[0]},${m1[1]} Q${b[0]},${b[1]} ${m2[0]},${m2[1]}`; } return d + "Z"; };
+  const b1 = document.getElementById("blob"), b2 = document.getElementById("blob2");
+  if (!reduce) { (function loop(now) { const t = now / 1000; b1.setAttribute("d", shape(t)); b2.setAttribute("d", shape(t + 1.3)); requestAnimationFrame(loop); })(0); }
+  if (!reduce && window.gsap) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to(".h1 .w > span", { y: 0, skewY: 0, duration: 1.1, stagger: .14, ease: "expo.out", delay: .2 });
+    gsap.from([".lead", ".claim", ".stats"], { y: 24, opacity: 0, duration: .9, stagger: .1, ease: "power3.out", delay: .7 });
+    gsap.from(".chrome", { scale: .6, rotate: -40, opacity: 0, duration: 1.8, ease: "expo.out" });
+    document.querySelectorAll("[data-count]").forEach(el => gsap.to({ v: 0 }, { v: +el.dataset.count, duration: 1.6, delay: .8, ease: "power2.out", onUpdate() { el.textContent = Math.round(this.targets()[0].v); } }));
+    gsap.to(".chrome", { yPercent: -30, rotate: 40, scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+    // orbit -> grid
+    const N = cards.length, R = 420;
+    const st = { p: 0 };
+    const place = () => { const p = st.p, cols = innerWidth < 760 ? 3 : 6, gw = innerWidth < 760 ? 120 : 200, gh = innerWidth < 760 ? 170 : 260, sc = innerWidth < 760 ? .62 : 1;
+      cards.forEach((c, i) => { const a = i / N * 360 + p * 140, ox = Math.sin(a * Math.PI / 180) * R, oz = Math.cos(a * Math.PI / 180) * R, gx = ((i % cols) - (cols - 1) / 2) * gw, gy = (Math.floor(i / cols) - .5) * gh + 60;
+        const k = Math.min(1, Math.max(0, (p - .35) / .45)), e = k * k * (3 - 2 * k);
+        c.style.transform = `translate3d(${ox * (1 - e) + gx * e}px, ${gy * e + 40 * (1 - e)}px, ${oz * (1 - e)}px) rotateY(${a * (1 - e)}deg) scale(${sc})`; }); };
+    place();
+    gsap.to(st, { p: 1, ease: "none", scrollTrigger: { trigger: ".orbit", start: "top top", end: "bottom bottom", scrub: .5 }, onUpdate: place });
+    addEventListener("resize", place);
+    gsap.from(".end h2", { y: 60, opacity: 0, scrollTrigger: { trigger: ".end", start: "top 80%", end: "top 35%", scrub: true } });
+  }
+</script>
+</body>
+</html>
