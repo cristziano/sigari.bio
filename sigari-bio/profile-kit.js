@@ -406,7 +406,7 @@ export function normalizeAppearance(raw) {
   a.title.animated = !!a.title.animated;
   a.seo.description = String(a.seo.description || "").slice(0, 160);
   a.seo.image = safeUrl(a.seo.image) || "";
-  a.link.domain = LINK_DOMAINS.some(x => x[0] === a.link.domain) ? a.link.domain : "18kbio.xyz";
+  a.link.domain = "18kbio.xyz"; // prefixes removed: the link is always 18kbio.xyz/name
   a.link.format = a.link.format === "/@" ? "/@" : "/";
   for (const k of Object.keys(d.privacy)) a.privacy[k] = !!a.privacy[k];
   for (const k of Object.keys(d.glow)) a.glow[k] = !!a.glow[k];
