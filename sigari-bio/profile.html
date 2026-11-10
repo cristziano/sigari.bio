@@ -24,14 +24,16 @@
   .msg h1 { font-size:clamp(34px, 7vw, 64px); letter-spacing:-.05em; line-height:1; }
   .msg p { margin-top:14px; color:#8f8f8f; font-size:15px; }
   .msg a { display:inline-flex; align-items:center; height:44px; padding:0 18px; margin-top:22px; border-radius:10px; background:#fff; color:#000; font-weight:600; text-decoration:none; }
-  .brand { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:30; display:flex; align-items:center; gap:8px; font:600 12.5px "Geist",system-ui,sans-serif; color:#fff; text-decoration:none; padding:8px 14px 8px 12px; border-radius:99px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .2s, background .2s; white-space:nowrap; }
-  .brand:hover { transform:translateX(-50%) translateY(-2px); background:rgba(0,0,0,.75); }
+  /* like and "crea il tuo profilo" side by side at the bottom, never on top of each other */
+  .dock { position:fixed; left:50%; bottom:max(14px, env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:31; display:flex; align-items:center; gap:8px; max-width:calc(100vw - 24px); }
+  .brand { position:relative; height:42px; box-sizing:border-box; display:flex; align-items:center; gap:8px; font:600 12.5px "Geist",system-ui,sans-serif; color:#fff; text-decoration:none; padding:8px 14px 8px 12px; border-radius:99px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); transition:transform .2s, background .2s; white-space:nowrap; }
+  .brand:hover { transform:translateY(-2px); background:rgba(0,0,0,.75); }
   .brand i { font-style:normal; font-weight:700; letter-spacing:-.02em; }
   .brand span { color:rgba(255,255,255,.65); font-weight:500; }
   .hidden { display:none !important; }
-  .report-btn { position:fixed; right:12px; bottom:14px; z-index:30; border:0; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.4); padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); cursor:pointer; }
+  .report-btn { position:relative; flex:none; height:30px; border:0; font:500 11px "Geist Mono",monospace; color:rgba(255,255,255,.4); padding:5px 10px; border-radius:99px; background:rgba(0,0,0,.35); cursor:pointer; }
   .report-btn:hover { color:#fff; }
-  .like-btn { position:fixed; left:50%; bottom:max(14px, env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:31; display:inline-flex; align-items:center; gap:8px; height:42px; padding:0 18px 0 14px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.55); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); color:#fff; font:600 14px "Geist",system-ui,sans-serif; cursor:pointer; transition:transform .2s, background .2s, border-color .2s; -webkit-tap-highlight-color:transparent; }
+  .like-btn { position:relative; flex:none; display:inline-flex; align-items:center; gap:8px; height:42px; padding:0 18px 0 14px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.55); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); color:#fff; font:600 14px "Geist",system-ui,sans-serif; cursor:pointer; transition:transform .2s, background .2s, border-color .2s; -webkit-tap-highlight-color:transparent; }
   .like-btn:hover { border-color:rgba(255,255,255,.45); }
   .like-btn .lh { display:inline-flex; color:rgba(255,255,255,.75); transition:transform .25s, color .2s; }
   .like-btn .lh svg { width:18px; height:18px; }
@@ -42,6 +44,7 @@
   .like-tip { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:31; padding:9px 14px; border-radius:12px; background:#111; border:1px solid #2c2c2c; color:#ddd; font:400 13px "Geist",system-ui,sans-serif; white-space:nowrap; }
   .like-tip a { color:#fff; font-weight:600; }
   .like-btn.hidden, .like-tip.hidden { display:none; }
+  @media (max-width:380px) { .brand span { display:none; } }
   @media (prefers-reduced-motion: reduce) { .like-btn, .like-btn .lh { transition:none; } }
   .report { margin:auto; border:1px solid #2a2a2a; border-radius:16px; background:#0b0b0b; color:#f2f2f2; padding:18px; width:min(380px,92vw); }
   .report::backdrop { background:rgba(0,0,0,.7); }
@@ -59,10 +62,9 @@
 <body>
 <div id="root"></div>
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
-<a class="brand" href="/" id="brand" aria-label="Vai a 18k.bio e crea il tuo profilo"><i>18k.bio</i><span>· crea il tuo profilo →</span></a>
-<button class="like-btn hidden" id="likeBtn" type="button" aria-pressed="false" aria-label="Metti like"><span class="lh"></span><b id="likeN">0</b></button>
+<div class="dock"><a class="brand" href="/" id="brand" aria-label="Vai a 18k.bio e crea il tuo profilo"><i>18k.bio</i><span>· crea il tuo profilo →</span></a>
+<button class="like-btn hidden" id="likeBtn" type="button" aria-pressed="false" aria-label="Metti like"><span class="lh"></span><b id="likeN">0</b></button><button class="report-btn hidden" id="reportBtn" type="button">segnala</button></div>
 <div class="like-tip hidden" id="likeTip">Accedi per mettere like. <a id="likeLogin" href="/login.html">Accedi</a></div>
-<button class="report-btn hidden" id="reportBtn" type="button">segnala</button>
 <dialog class="report" id="reportDlg">
   <form method="dialog" id="reportForm">
     <b>Segnala questo profilo</b>
