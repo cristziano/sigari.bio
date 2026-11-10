@@ -707,6 +707,28 @@
   /* the smoke is replaced by the lines in the hero */
   #fx, .fx-fallback { display:none !important; }
 
+  /* ===== PLANS: two cards, Premium coming soon ===== */
+  .pc-h { margin:0 auto 32px; max-width:none; text-align:center; }
+  .pc-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px; max-width:880px; margin:0 auto; }
+  .pc-card { display:flex; flex-direction:column; padding:32px 30px; border:1px solid var(--ui-line); border-radius:var(--ui-r-l); background:#0a0a0a; }
+  .pc-pro { background:#000; border-color:rgba(255,255,255,.22); }
+  .pc-top { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .pc-name { font-size:19px; font-weight:600; letter-spacing:-.01em; }
+  .pc-tag { font:600 11px/1 var(--ui-sans); padding:6px 10px; border-radius:var(--ui-r-s); background:#fff; color:#000; }
+  .pc-sub { margin-top:10px; font-size:14.5px; line-height:1.5; color:var(--ui-muted); min-height:3em; }
+  .pc-price { margin-top:22px; font:700 44px/1 var(--ui-sans); letter-spacing:-.04em; }
+  .pc-price small { font-size:14px; font-weight:400; letter-spacing:0; color:var(--ui-muted); }
+  .pc-btn { margin-top:24px; display:flex; align-items:center; justify-content:center; min-height:44px; border-radius:var(--ui-r-m); border:1px solid var(--ui-line); font-size:14.5px; font-weight:600; color:#fff; text-decoration:none;
+    transition:transform var(--ui-t-press) var(--ui-ease-out), background 160ms var(--ui-ease-out); }
+  .pc-btn:active { transform:scale(.97); }
+  @media (hover:hover){ a.pc-btn:hover { background:#151515; } }
+  .pc-btn-on { background:#fff; color:#000; border-color:#fff; cursor:default; }
+  .pc-list { list-style:none; margin-top:26px; padding-top:22px; border-top:1px solid var(--ui-line); display:grid; gap:14px; }
+  .pc-list li { display:flex; gap:12px; align-items:center; font-size:14.5px; }
+  .pc-ck { width:16px; height:16px; flex:none; fill:none; stroke:var(--ui-muted); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .pc-pro .pc-ck { stroke:#fff; }
+  @media (max-width:760px){ .pc-grid { grid-template-columns:1fr; } .pc-card { padding:26px 22px; } }
+
   /* ===== HERO v4: all black, a soft light, text on the left, 18kbio inside the title ===== */
   .hx-paths { display:none !important; }
   .hero { background:#000; }
@@ -1106,34 +1128,36 @@
     </div>
   </section>
 
-  <section class="s pl" id="plans" aria-label="Quanto costa">
-    <div class="wrap pl-in">
-      <div class="pl-art" aria-hidden="true">
-        <svg class="pl-zero" id="plZero" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet">
-          <defs><mask id="plMask"><rect width="640" height="360" fill="#000"/><text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" fill="#fff">0€</text></mask></defs>
-          <g mask="url(#plMask)"><rect width="640" height="360" fill="#0b0b0b"/><g id="plLines"></g></g>
-          <text class="pl-out" x="50%" y="58%" text-anchor="middle" dominant-baseline="middle">0€</text>
-        </svg>
-      </div>
-      <div class="pl-txt">
-        <h2 class="h2">Gratis. <span class="g">Per sempre.</span></h2>
-        <p class="pl-lead">Tutto quello che c'è oggi è gratis: niente carta, niente prova che scade.</p>
-        <ul class="pl-list">
-          <li>La tua @ su 18kbio.xyz</li>
-          <li>Colori, gradienti, foto e video</li>
-          <li>13 effetti, 20 font, 5 layout</li>
-          <li>Musica e widget</li>
-          <li>La tua carta e le statistiche</li>
-          <li>Prova senza account</li>
-        </ul>
-        <a class="ui-btn pl-go" href="#top" data-focus-claim>Prendi la tua @</a>
-        <div class="pl-prem">
-          <div class="pl-prem-h"><b>Premium</b><span class="pl-soon">Presto</span></div>
-          <ul class="pl-list pl-list-2">
-            <li>Effetti e font in più</li>
-            <li>Badge esclusivi</li>
-            <li>Statistiche complete</li>
-            <li>Chi entra prima lo sa per primo</li>
+  <section class="s pc" id="plans" aria-label="Piani">
+    <div class="wrap">
+      <h2 class="h2 pc-h">Piani</h2>
+      <div class="pc-grid">
+        <div class="pc-card">
+          <b class="pc-name">Gratis</b>
+          <p class="pc-sub">Tutto quello che serve per la tua pagina. Niente carta, niente prova che scade.</p>
+          <div class="pc-price">0€ <small>/ per sempre</small></div>
+          <a class="pc-btn" href="#top" data-focus-claim>Prendi la tua @</a>
+          <ul class="pc-list">
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>La tua @ su 18kbio.xyz</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Colori, gradienti, foto e video</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>13 effetti, 20 font, 5 layout</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Musica e widget</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>La tua carta e le statistiche</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Prova senza account</li>
+          </ul>
+        </div>
+        <div class="pc-card pc-pro">
+          <div class="pc-top"><b class="pc-name">Premium</b><span class="pc-tag">In arrivo</span></div>
+          <p class="pc-sub">Per chi vuole un profilo che non ha nessun altro.</p>
+          <div class="pc-price">Soon</div>
+          <span class="pc-btn pc-btn-on" aria-disabled="true">Presto disponibile</span>
+          <ul class="pc-list">
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Tutto quello del piano Gratis</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Effetti e font in più</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Decorazioni esclusive</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Badge esclusivi</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Statistiche complete</li>
+            <li><svg class="pc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Chi entra prima lo sa per primo</li>
           </ul>
         </div>
       </div>
