@@ -211,11 +211,8 @@
   .tc-contours { opacity:.35; }
   .tc-scroll { display:none !important; }
   .tc-title { margin-top:clamp(28px, 7vh, 80px); }
-  @media (min-width:1500px){
-    .tc-foot { display:grid; grid-template-columns:1fr auto 1fr; align-items:end; }
-    .tc-box { grid-column:2; }
-    .tc-cta { grid-column:3; justify-self:end; }
-  }
+  .tc-ui > .tc-box { grid-column:1; align-self:start; margin-top:28px; }
+  .tc-foot { justify-content:flex-end; }
   /* NO GLOW anywhere on the site (Cristiano): no glowing text, no light halos, no light following the mouse */
   *, *::before, *::after { text-shadow:none !important; }
   .hl-c::before, .cl-card::before, .led::before, .tp::before, .pt-builder::before, .plan::before, .shot::before { display:none !important; }
@@ -886,8 +883,8 @@
       <div class="tc-k">18K_CARDS</div>
       <div class="tc-meta"><div>ESEMPIO: <b>@1</b></div><div>CARTA N° 001</div></div>
       <h2 class="tc-title">LA TUA<br>CARTA</h2>
+      <div class="tc-box"><b>Cos'è la carta?</b><p>È la tua carta d'identità di 18k.bio, con la tua @ sopra. Scegli foto, sticker, bordo e come si apre. Sul tuo profilo c'è il tasto "mostra la mia carta": chi lo preme la vede aprirsi.</p><a href="/1" class="tc-see">Questa è la carta di @1 ↗</a></div>
       <div class="tc-foot">
-        <div class="tc-box"><b>Cos'è la carta?</b><p>È la tua carta d'identità di 18k.bio, con la tua @ sopra. Scegli foto, sticker, bordo e come si apre. Sul tuo profilo c'è il tasto "mostra la mia carta": chi lo preme la vede aprirsi.</p><a href="/1" class="tc-see">Questa è la carta di @1 ↗</a></div>
         <a href="dashboard.html#card" class="tc-cta" data-guest>CREA LA TUA</a>
       </div>
     </div>
