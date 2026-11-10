@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // GET /api/lookup?p=<platform>&u=<username>: looks the account up on the platform itself,
 // so the dashboard can show "found: <photo> <name>" before saving the social.
 // Only platforms with a public lookup and no key: roblox, github, bluesky, telegram.
@@ -46,6 +47,7 @@ async function pinImage(link) {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "lookup", 40)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const q = new URL(req.url, "https://x").searchParams;
   if (q.get("pin")) {

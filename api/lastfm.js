@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // GET /api/lastfm?user=<name>: the Last.fm profile (picture, plays) and the track playing now (or the last one).
 // The read-only API key stays on Vercel (LASTFM_API_KEY), never in the page.
 //
@@ -34,6 +35,7 @@ async function connect(req, res) {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "lastfm", 60)) return; // traffic guard (see _limit.js)
   if (new URL(req.url, "https://x").searchParams.has("connect")) return connect(req, res);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const user = String(new URL(req.url, "https://x").searchParams.get("user") || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);

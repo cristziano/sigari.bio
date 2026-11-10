@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // 18kbio.xyz/handle (and the old /@handle): serves profile.html with the link preview filled in
 // (title, description, picture, accent colour), so Discord, WhatsApp and
 // Telegram show the profile instead of a generic card. Everything else still
@@ -30,6 +31,7 @@ async function readPage(origin) {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "profile", 180)) return; // traffic guard (see _limit.js)
   const url = new URL(req.url, "https://18k.bio");
   const handle = String(url.searchParams.get("h") || "").replace(/^@/, "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
   const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18kbio.xyz");

@@ -1,6 +1,8 @@
+const { limited } = require("./_limit");
 // GET /api/discord-invite?code=<invite>: name, icon and member counts of a Discord server, for the
 // "server Discord" widget. Discord gives this for any public invite, without a key.
 module.exports = async (req, res) => {
+  if (limited(req, res, "invite", 20)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const raw = String(new URL(req.url, "https://x").searchParams.get("code") || "");
   const code = raw.replace(/^(https?:\/\/)?(www\.)?(discord\.gg|discord\.com\/invite)\//i, "").replace(/[^a-z0-9-]/gi, "").slice(0, 40);

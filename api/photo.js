@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // /api/photo?album=sets&m=<message id>&i=<n>
 // A link to one photo that never expires: asks Discord for a fresh link and redirects there.
 // With &raw=1 it sends the file itself (used to turn a photo into a sticker, max 4 MB).
@@ -90,6 +91,7 @@ async function upload(req, res, url) {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, (req.method === "POST" ? "upload" : "photo"), req.method === "POST" ? 15 : 240, req.method === "POST" ? 600 : 60)) return; // traffic guard (see _limit.js)
   const url = new URL(req.url, "https://18k.bio");
   if (req.method === "POST" && url.searchParams.get("upload") === "1") return upload(req, res, url);
   if (url.searchParams.get("file")) { try { return await sendFromFirestore(res, url.searchParams.get("file")); } catch (_) { res.statusCode = 502; return res.end("File non raggiungibile."); } }

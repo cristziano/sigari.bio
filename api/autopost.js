@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // GET /api/autopost: posts 4 random Pinterest pictures in the 18k pfps channel,
 // about every 3 hours. A scheduler (GitHub Actions, every hour) just opens this address:
 // the function itself decides if it is time, so opening it more often cannot spam.
@@ -30,6 +31,7 @@ const TOPICS = [
 
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "autopost", 10)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   const dry = /[?&]dry=1/.test(req.url || ""), test = /[?&]test=1/.test(req.url || "");

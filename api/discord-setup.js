@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // GET /api/discord-setup: tells Discord which slash commands the 18k bot has.
 // Safe to open more than once: it always writes the same fixed list.
 const { discord, fileChannel } = require("./_discord");
@@ -25,6 +26,7 @@ const COMMANDS = [{
 }];
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "setup", 10)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   // ?rules=1 publishes the Firestore rules that are in the repository (always the same file: safe to open)

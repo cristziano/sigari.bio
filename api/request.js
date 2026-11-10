@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // POST /api/request  { handle, type, text, link, website }  + header Authorization: Bearer <Firebase ID token>
 // Sends a request from the app to the 18k request channel, with 3 pictures the bot finds on
 // Pinterest from the request text. One request per account per week: the bot checks its own
@@ -76,6 +77,7 @@ async function lastRequest(code) {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, (/[?&]bug=1/.test(req.url || "") ? "bug" : /[?&]sys=1/.test(req.url || "") ? "sys" : "request"), /[?&]bug=1/.test(req.url || "") ? 5 : 20, /[?&]bug=1/.test(req.url || "") ? 600 : 300)) return; // traffic guard (see _limit.js)
   if (/[?&]bug=1/.test(req.url || "")) return bugReport(req, res);
   if (/[?&]sys=1/.test(req.url || "")) return sysError(req, res);
   res.setHeader("Content-Type", "application/json; charset=utf-8");

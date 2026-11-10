@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // "Continua con Discord": Firebase has no Discord sign-in, so this does the Discord part and then
 // gives Firebase a signed "custom token" for the uid discord:<id>.
 //   1. GET /api/discord-login            -> sends the user to Discord to say yes
@@ -32,6 +33,7 @@ const SITES = ["18kbio.xyz", "www.18kbio.xyz", "18kbio.vercel.app"];
 const back = (res, hash, site) => { res.statusCode = 302; res.setHeader("Location", (site && SITES.includes(site) ? `https://${site}` : "") + "/login.html#" + hash); res.end(); };
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "login", 30)) return; // traffic guard (see _limit.js)
   res.setHeader("Cache-Control", "no-store");
   const url = new URL(req.url, "https://" + req.headers.host);
   const redirect = `https://${HOME}/api/discord-login`;

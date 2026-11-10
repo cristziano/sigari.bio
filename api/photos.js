@@ -1,9 +1,11 @@
+const { limited } = require("./_limit");
 // /api/photos?album=sets&before=<message id>
 // The photos posted in one of the 18k Discord channels, newest first, 50 messages per page.
 // Links point to /api/photo, which never expires (Discord's own links last about a day).
 const { ALBUMS, SNOWFLAKE, discord, guildOf, mediaOf, avatarOf, thumbUrl } = require("./_discord");
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "photos", 120)) return; // traffic guard (see _limit.js)
   const url = new URL(req.url, "https://18k.bio");
   const key = url.searchParams.get("album") || "";
   const before = url.searchParams.get("before") || "";

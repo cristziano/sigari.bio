@@ -1,3 +1,4 @@
+const { limited } = require("./_limit");
 // The song search in the dashboard (Musica).
 //   GET /api/music-search?q=<text>       -> up to 12 songs { id, title, artist, cover, deezer, spotify? }
 //   GET /api/music-search?resolve=<id>   -> { spotify } the same song on Spotify, when it exists
@@ -22,6 +23,7 @@ async function spotifyToken() {
 }
 
 module.exports = async (req, res) => {
+  if (limited(req, res, "music", 60)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const url = new URL(req.url, "https://x");
   const q = String(url.searchParams.get("q") || "").trim().slice(0, 80);
