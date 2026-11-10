@@ -162,6 +162,8 @@
   @media (prefers-reduced-motion:reduce){ .haze i { animation:none; } }
   @keyframes haze { 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(8vw,-10vh,0) scale(1.15)} 100%{transform:translate3d(-6vw,6vh,0) scale(.92)} }
   main, footer { position:relative; z-index:1; }
+  /* template pile: still pictures, nothing moves inside (only the card hover) */
+  .tg-pv *, .tg-pv *::before, .tg-pv *::after { animation:none !important; transition:none !important; }
   /* cleaner: no corner texts in the hero, hidden sections really hidden */
   .hud, .hud-r { display:none !important; }
   section[hidden] { display:none !important; }
@@ -1668,7 +1670,10 @@
       if (!e.isIntersecting || mounted) return;
       mounted = true; obs.disconnect();
       $$(".tg-pv > div", grid).forEach((box, i) => {
-        const a = previewAppearance(GALLERY[i].a, GALLERY[i].thumb);
+        // landing = photos only: the still frame of each gif (no moving gifs/videos, no animations: it was laggy)
+        const still = String(GALLERY[i].thumb || "").replace(/\/200w\.webp$/, "/200w_s.gif");
+        const a = previewAppearance(GALLERY[i].a, still);
+        a.effect = "none"; a.card.tilt = false;
         const h = state.handle || "tuonome";
         mountProfile(box, { handle: h, displayName: h, bio: "nero, bianco e senza filtri", views: 3200, badges: ["beta"], links: [{ title: "Ultima uscita", url: "https://18k.bio" }, { title: "Portfolio", url: "https://18k.bio" }], appearance: a }, { preview: true, entrance: false });
       });
