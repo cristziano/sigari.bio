@@ -861,7 +861,7 @@
           <li><button type="button" data-step="0"><b>Colori</b><span>Ogni colore del profilo è tuo: testo, bottoni, bordi.</span><i class="dbar"></i></button></li>
           <li><button type="button" data-step="1"><b>Sfondo</b><span>Una foto, una GIF o un video dietro al profilo.</span><i class="dbar"></i></button></li>
           <li><button type="button" data-step="2"><b>Font ed effetti</b><span>20 font e gli effetti sul nome.</span><i class="dbar"></i></button></li>
-          <li><button type="button" data-step="3"><b>Link e social</b><span>I tuoi link e i social, nell'ordine che vuoi.</span><i class="dbar"></i></button></li>
+          <li><button type="button" data-step="3"><b>Social</b><span>Discord, Instagram, TikTok, Spotify e tutti gli altri.</span><i class="dbar"></i></button></li>
         </ol>
         <a class="hx-explore demo-go" href="dashboard.html" data-guest>Prova a modificarlo tu <span aria-hidden="true">→</span></a>
       </div>
@@ -1861,8 +1861,7 @@
     const plain = normalizeAppearance({ ...DEFAULT_APPEARANCE, effect: "none" });
     const noEnter = a => ({ ...a, enter: { ...a.enter, on: false } });
     let who = { handle: "1", displayName: "1", bio: "", avatarUrl: "", badges: [], views: 0,
-      links: [{ title: "Ultima uscita", url: "https://18kbio.xyz/1" }, { title: "Portfolio", url: "https://18kbio.xyz/1" }, { title: "Discord", url: "https://18kbio.xyz/1" }],
-      socials: { instagram: "1", tiktok: "1", discord: "1", spotify: "1" } };
+      links: [], socials: { discord: "1", instagram: "1", tiktok: "1", spotify: "1" } };
     let full = plain, frames = [plain, plain, plain, plain];
     // step by step: colours, then background, then fonts, then everything (links and socials included)
     const build = () => {
@@ -1871,7 +1870,7 @@
       const f2 = applyTemplate(f1, full, "fonts");
       frames = [f0, f1, f2, full];
     };
-    const prof = k => ({ ...who, links: k < 3 ? who.links.slice(0, 1) : who.links, socials: k < 3 ? {} : who.socials, appearance: noEnter(frames[k]) });
+    const prof = k => ({ ...who, links: [], socials: k < 3 ? {} : who.socials, appearance: noEnter(frames[k]) });
     const view = mountProfile(pv, { ...who, appearance: noEnter(plain) }, { preview: true, entrance: false });
     // the real profile of @1 (read only): if it can't be read, a plain "@1" stays
     firebase().then(async ({ db, fs }) => {
@@ -1880,9 +1879,9 @@
       const p = s.data();
       who = { handle: "1", displayName: p.displayName || "1", bio: p.bio || "", avatarUrl: p.avatarUrl || "", banner: p.banner, badges: p.badges || [], views: p.views || 0,
         links: (p.links || []).filter(l => l && !l.hidden && l.title).slice(0, 4), socials: p.socials || {}, card: p.card };
-      // @1 has no links yet: the demo shows example ones (the real profile is not touched)
-      who.links = [{ title: "Ultima uscita", url: "https://18kbio.xyz/1" }, { title: "Portfolio", url: "https://18kbio.xyz/1" }, { title: "Discord", url: "https://18kbio.xyz/1" }];
-      if (!Object.keys(who.socials).length) who.socials = { instagram: "1", tiktok: "1", discord: "1", spotify: "1" };
+      // no link buttons in the demo, only socials (example ones if @1 has none; the real profile is not touched)
+      who.links = [];
+      if (!Object.keys(who.socials).length) who.socials = { discord: "1", instagram: "1", tiktok: "1", spotify: "1" };
       const pa = p.appearance || {};
       full = normalizeAppearance({ ...pa, effect: pa.effect || "none", music: { ...(pa.music || {}), type: "none" }, sfx: { ...(pa.sfx || {}), on: false } });
       build(); if (k >= 0) view.update(prof(k));
