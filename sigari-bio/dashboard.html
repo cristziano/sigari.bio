@@ -328,6 +328,31 @@
   .toggle button { border:0; background:none; padding:6px 13px; border-radius:999px; color:var(--m); cursor:pointer; font-size:12.5px; }
   .toggle button.on { background:var(--inv-bg); color:var(--inv-fg); font-weight:600; }
   .frame { position:relative; width:100%; max-width:360px; flex:1; min-height:0; max-height:720px; border:1px solid var(--b); border-radius:34px; overflow:hidden; background:#000; transition:max-width .35s ease, border-radius .35s ease; }
+  /* hand-edit mode */
+  .hand-ov { position:fixed; inset:0; z-index:5000; background:#000; opacity:0; transition:opacity .25s cubic-bezier(.23,1,.32,1); }
+  .hand-ov.in { opacity:1; }
+  .hand-stage { position:absolute; inset:0; }
+  .hand-stage > .pv-root.hand-root { position:absolute !important; inset:0 !important; width:auto !important; height:auto !important; transform:none !important; }
+  /* the light on the edges tells you this is a special mode */
+  .hand-glow { position:absolute; inset:0; pointer-events:none; z-index:3;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.6), inset 0 0 120px 22px rgba(255,255,255,.22); animation:handglow 2.6s ease-in-out infinite; }
+  @keyframes handglow { 50% { box-shadow:inset 0 0 0 2px rgba(255,255,255,.35), inset 0 0 60px 6px rgba(255,255,255,.08); } }
+  .hand-bar { position:absolute; left:50%; top:14px; transform:translateX(-50%); z-index:5; display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center;
+    max-width:calc(100vw - 24px); padding:10px 12px 10px 16px; border-radius:12px; background:rgba(10,10,10,.92); border:1px solid rgba(255,255,255,.18); font-size:13px; color:#cfcfcf; }
+  .hand-bar b { color:#fff; }
+  .hand-btns { display:flex; gap:8px; }
+  .hand-box { position:fixed; z-index:4; border:1.5px solid #fff; border-radius:6px; cursor:move; touch-action:none; outline:none; }
+  .hand-box:focus-visible { box-shadow:0 0 0 3px rgba(255,255,255,.35); }
+  .hand-box.dragging { border-style:dashed; }
+  .hh { position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; background:#fff; border:2px solid #000; border-radius:3px; }
+  .hh-n { left:50%; top:0; cursor:ns-resize; } .hh-s { left:50%; top:100%; cursor:ns-resize; }
+  .hh-e { left:100%; top:50%; cursor:ew-resize; } .hh-w { left:0; top:50%; cursor:ew-resize; }
+  .hh-ne { left:100%; top:0; cursor:nesw-resize; border-radius:50%; } .hh-sw { left:0; top:100%; cursor:nesw-resize; border-radius:50%; }
+  .hh-nw { left:0; top:0; cursor:nwse-resize; border-radius:50%; } .hh-se { left:100%; top:100%; cursor:nwse-resize; border-radius:50%; }
+  .hh-rot { position:absolute; left:50%; top:-36px; width:16px; height:16px; margin-left:-8px; border-radius:50%; background:#000; border:2px solid #fff; cursor:grab; }
+  .hh-rot::after { content:""; position:absolute; left:50%; top:14px; width:1.5px; height:20px; margin-left:-.75px; background:#fff; }
+  @media (pointer:coarse) { .hh { width:22px; height:22px; margin:-11px 0 0 -11px; } .hh-rot { width:24px; height:24px; margin-left:-12px; top:-44px; } }
+  @media (prefers-reduced-motion:reduce) { .hand-glow { animation:none; } }
   .frame.desktop { max-width:100%; border-radius:14px; flex:none; aspect-ratio:16/10; max-height:none; }
   .frame > .pv-root { position:absolute; inset:0; }
   /* "computer" preview: the profile is drawn on a real 1280px screen and shrunk to fit,
@@ -958,7 +983,9 @@
           <div class="field"><div class="label">angoli <span class="val" data-show="appearance.card.radius" data-unit="px"></span></div><input type="range" min="0" max="40" data-k="appearance.card.radius"></div>
           <div class="field" id="cardSize"><div class="label">larghezza · allunga di lato <span class="val" data-show="appearance.card.width" data-unit="px"></span></div><input type="range" min="320" max="900" step="10" data-k="appearance.card.width"></div>
           <div class="field"><div class="label">altezza · allunga in giù <span class="val" data-show="appearance.card.minH" data-unit="px"></span></div><input type="range" min="0" max="1200" step="10" data-k="appearance.card.minH"><p class="hint" style="margin:6px 0 0">0 = alto quanto serve. Sul telefono si ferma all'altezza dello schermo.</p></div>
-          <div class="field" id="cardMove"><div class="label">sposta e ruota · come una foto</div>
+          <div class="field" id="cardMove">
+            <button type="button" class="save-btn" id="editHand" style="width:100%;justify-content:center">Modifica a mano sul profilo</button>
+            <p class="hint" style="margin:6px 0 4px">Si apre a schermo intero: trascini il profilo, lo allarghi dai quadratini e lo ruoti, come una casella di testo su Canva.</p>
             <div class="label" style="margin-top:8px">orizzontale <span class="val" data-show="appearance.card.x" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.x">
             <div class="label" style="margin-top:8px">verticale <span class="val" data-show="appearance.card.y" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.y">
             <div class="label" style="margin-top:8px">zoom <span class="val" data-show="appearance.card.zoom" data-unit="%"></span></div><input type="range" min="50" max="160" step="1" data-k="appearance.card.zoom">
@@ -2375,6 +2402,7 @@
     if (/^(INPUT|TEXTAREA)$/.test(el.tagName) && matchMedia("(pointer:fine)").matches) setTimeout(() => el.focus({ preventScroll: true }), 350);
   }
   function pickToEdit(part) {
+    if (typeof handEditing !== "undefined" && handEditing) return;
     $("preview").classList.remove("open"); // on phones the preview covers the editor
     const [kind, key] = String(part).split(":");
     let view = "", find = null;
@@ -2404,9 +2432,102 @@
   // keeps the shrink factor of the computer preview right when the panel changes size
   new ResizeObserver(() => { const f = $("frame"); f.style.setProperty("--fs", (f.clientWidth / 1280).toFixed(4)); f.style.setProperty("--fh", f.clientHeight + "px"); }).observe($("frame"));
   // back to the middle: every slider of "sposta e ruota" to its starting value
-  $("cardMoveReset").addEventListener("click", () => {
-    $$('#cardMove input[type="range"]').forEach(i => { i.value = i.dataset.k.endsWith("zoom") ? 100 : 0; i.dispatchEvent(new Event("input", { bubbles: true })); });
-  });
+  // back to the middle: no shift, no zoom, no turn, card placed in the centre of the page,
+  // then whatever is still off-centre (banner, layout) is measured and corrected
+  function centerCard() {
+    Object.assign(draft.appearance.card, { x: 0, y: 0, zoom: 100, rot: 0, pos: "center" });
+    syncControls(); changed();
+    setTimeout(() => {
+      const root = $("pvRoot"), card = root && root.querySelector(".pk-card"); if (!card) return;
+      const r = root.getBoundingClientRect(), c = card.getBoundingClientRect();
+      const dx = (r.left + r.width / 2) - (c.left + c.width / 2), dy = (r.top + r.height / 2) - (c.top + c.height / 2);
+      const pxW = r.width / (root.offsetWidth || r.width), pxH = r.height / (root.offsetHeight || r.height);
+      const fitsY = c.height < r.height - 8;
+      draft.appearance.card.x = Math.max(-50, Math.min(50, Math.round(dx / pxW / root.offsetWidth * 100)));
+      draft.appearance.card.y = fitsY ? Math.max(-50, Math.min(50, Math.round(dy / pxH / root.offsetHeight * 100))) : 0;
+      syncControls(); changed();
+    }, 120);
+  }
+  $("cardMoveReset").addEventListener("click", centerCard);
+
+  /* ---------- Hand-edit mode: full screen, drag / resize / rotate the profile like a Canva box ---------- */
+  let handEditing = false;
+  $("editHand").addEventListener("click", () => openHandEdit());
+  function openHandEdit() {
+    if (handEditing) return;
+    handEditing = true;
+    const root = $("pvRoot"), home = root.parentNode, next = root.nextSibling;
+    const ov = document.createElement("div"); ov.className = "hand-ov"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Modifica a mano del profilo");
+    ov.innerHTML = `<div class="hand-stage"></div><div class="hand-glow" aria-hidden="true"></div>
+      <div class="hand-bar"><span><b>Modalità modifica</b> · trascina il profilo per spostarlo, tira i quadratini per allungarlo, gli angoli per ingrandirlo, il pallino per ruotarlo</span>
+      <span class="hand-btns"><button type="button" class="ghost-btn sm" data-h="center">Rimetti al centro</button><button type="button" class="save-btn sm" data-h="done">Fatto</button></span></div>
+      <div class="hand-box" tabindex="0" aria-label="Profilo: trascina per spostare, frecce per spostare di poco">
+        ${["n", "s", "e", "w", "ne", "nw", "se", "sw"].map(h => `<i class="hh hh-${h}" data-h="${h}"></i>`).join("")}<i class="hh-rot" data-h="rot"></i></div>`;
+    document.body.appendChild(ov);
+    ov.querySelector(".hand-stage").appendChild(root);
+    root.classList.add("hand-root");
+    document.documentElement.classList.add("hand-open");
+    requestAnimationFrame(() => ov.classList.add("in"));
+    const box = ov.querySelector(".hand-box"), C = () => draft.appearance.card;
+    const cardEl = () => root.querySelector(".pk-card");
+    // the box follows the card (its real size, centre and angle)
+    let raf = 0;
+    const place = () => {
+      const c = cardEl(); if (c) {
+        const b = c.getBoundingClientRect(), z = C().zoom / 100;
+        const w = c.offsetWidth * z, h = c.offsetHeight * z;
+        box.style.width = w + "px"; box.style.height = h + "px";
+        box.style.left = (b.left + b.width / 2 - w / 2) + "px"; box.style.top = (b.top + b.height / 2 - h / 2) + "px";
+        box.style.transform = `rotate(${C().rot}deg)`;
+      }
+      raf = requestAnimationFrame(place);
+    };
+    place();
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const apply = () => { syncDerived(); changed(); };
+    let drag = null;
+    box.addEventListener("pointerdown", e => {
+      const kind = e.target.dataset.h || "move";
+      const c = cardEl(); if (!c) return;
+      const b = box.getBoundingClientRect();
+      drag = { kind, x0: e.clientX, y0: e.clientY, card: { ...C() }, cx: b.left + b.width / 2, cy: b.top + b.height / 2, h0: c.offsetHeight,
+        rw: root.offsetWidth, rh: root.offsetHeight };
+      drag.d0 = Math.hypot(e.clientX - drag.cx, e.clientY - drag.cy) || 1;
+      drag.a0 = Math.atan2(e.clientY - drag.cy, e.clientX - drag.cx);
+      box.setPointerCapture(e.pointerId); box.classList.add("dragging"); e.preventDefault();
+    });
+    box.addEventListener("pointermove", e => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0, s = drag.card, z = s.zoom / 100, k = drag.kind;
+      if (k === "move") { C().x = clamp(Math.round(s.x + dx / drag.rw * 100), -50, 50); C().y = clamp(Math.round(s.y + dy / drag.rh * 100), -50, 50); }
+      else if (k === "e" || k === "w") { C().width = clamp(Math.round((s.width + (k === "e" ? dx : -dx) * 2 / z) / 10) * 10, 320, 900); }
+      else if (k === "n" || k === "s") { const base = s.minH || drag.h0; C().minH = clamp(Math.round((base + (k === "s" ? dy : -dy) * 2 / z) / 10) * 10, 0, 1200); }
+      else if (k === "rot") { const a = Math.atan2(e.clientY - drag.cy, e.clientX - drag.cx); C().rot = clamp(Math.round(s.rot + (a - drag.a0) * 180 / Math.PI), -30, 30); }
+      else { const d = Math.hypot(e.clientX - drag.cx, e.clientY - drag.cy); C().zoom = clamp(Math.round(s.zoom * d / drag.d0), 50, 160); }
+      apply();
+    });
+    const end = () => { if (!drag) return; drag = null; box.classList.remove("dragging"); };
+    box.addEventListener("pointerup", end); box.addEventListener("pointercancel", end);
+    box.addEventListener("keydown", e => {
+      const m = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (!m) return; e.preventDefault();
+      C().x = clamp(C().x + m[0], -50, 50); C().y = clamp(C().y + m[1], -50, 50); apply();
+    });
+    const close = () => {
+      cancelAnimationFrame(raf);
+      root.classList.remove("hand-root");
+      if (next && next.parentNode === home) home.insertBefore(root, next); else home.appendChild(root);
+      ov.remove(); document.documentElement.classList.remove("hand-open");
+      document.removeEventListener("keydown", onKey);
+      handEditing = false; syncControls(); changed();
+      flashEl($("editHand"));
+    };
+    const onKey = e => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    ov.querySelector('[data-h="done"]').addEventListener("click", close);
+    ov.querySelector('[data-h="center"]').addEventListener("click", centerCard);
+    setTimeout(() => box.focus({ preventScroll: true }), 60);
+  }
   $("btnDesktop").addEventListener("click", () => { $("frame").classList.add("desktop"); $("btnDesktop").classList.add("on"); $("btnMobile").classList.remove("on"); });
   $("btnMobile").addEventListener("click", () => { $("frame").classList.remove("desktop"); $("btnMobile").classList.add("on"); $("btnDesktop").classList.remove("on"); });
   $("openPreview").addEventListener("click", () => $("preview").classList.add("open"));
