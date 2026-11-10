@@ -1,7 +1,6 @@
 // Hero globe: a white dotted globe; orange lines leave from different places, each with a small
 // social icon riding on it, and all land on the same point (Italy), then fade away.
 const ICON_CDN = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
-const ORANGE = "255,106,43";
 // rough continents as [lon, lat] polygons: enough for a dotted look
 const LAND = [
   [[-168,66],[-162,70],[-140,70],[-125,72],[-95,72],[-80,73],[-62,66],[-56,52],[-66,45],[-70,42],[-76,35],[-81,31],[-80,25],[-82,28],[-90,30],[-97,27],[-97,21],[-92,18],[-87,21],[-84,15],[-83,9],[-79,8],[-86,12],[-92,15],[-105,20],[-110,24],[-112,30],[-117,32],[-124,40],[-124,48],[-132,55],[-140,60],[-152,59],[-158,57],[-165,61]],
@@ -24,6 +23,12 @@ const vec = (lo, la) => { const a = lo * Math.PI / 180, b = la * Math.PI / 180; 
 const FROM = [["instagram", -74, 40], ["telegram", 55, 25], ["x", 3, 6], ["github", 77, 28], ["ethereum", 37, 56], ["bitcoin", 18, -34],
   ["discord", -43, -22], ["tiktok", 103, 1], ["spotify", -22, 64], ["youtube", 31, 30], ["twitch", -9, 38], ["reddit", 47, -19]];
 const HOME = vec(12, 43);
+// each brand's line colour: [start, end] (the line fades from one to the other, like the logo)
+const BRAND = { instagram: [[150, 60, 220], [255, 130, 40]], telegram: [[40, 170, 235], [40, 170, 235]], x: [[10, 10, 10], [10, 10, 10]],
+  github: [[150, 120, 230], [235, 235, 245]], ethereum: [[98, 126, 234], [140, 160, 255]], bitcoin: [[247, 147, 26], [255, 180, 60]],
+  discord: [[88, 101, 242], [120, 130, 255]], tiktok: [[37, 244, 238], [254, 44, 85]], spotify: [[30, 215, 96], [30, 215, 96]],
+  youtube: [[255, 20, 20], [255, 60, 60]], twitch: [[145, 70, 255], [175, 120, 255]], reddit: [[255, 69, 0], [255, 110, 50]] };
+const mix = (c, t) => c[0].map((v, i) => Math.round(v + (c[1][i] - v) * t)).join(",");
 
 export function mountGlobe(canvas) {
   const ctx = canvas.getContext("2d"), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -50,7 +55,7 @@ export function mountGlobe(canvas) {
   const proj = p => { const [x, y, z] = rot(p); return [cx + x * R, cy - y * R, z]; };
   const slerp = (a, b, t) => { const d = Math.acos(Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2])), s = Math.sin(d) || 1; const k1 = Math.sin((1 - t) * d) / s, k2 = Math.sin(t * d) / s; return [a[0] * k1 + b[0] * k2, a[1] * k1 + b[1] * k2, a[2] * k1 + b[2] * k2]; };
   const arcs = []; let next = 0, idx = 0;
-  const spawn = now => { const [k, lo, la] = FROM[idx++ % FROM.length]; const a = vec(lo, la); const ang = Math.acos(a[0] * HOME[0] + a[1] * HOME[1] + a[2] * HOME[2]); arcs.push({ k, a, h: .12 + ang * .14, t0: now, dur: 1700 }); };
+  const spawn = now => { const [k, lo, la] = FROM[idx++ % FROM.length]; const a = vec(lo, la); const ang = Math.acos(a[0] * HOME[0] + a[1] * HOME[1] + a[2] * HOME[2]); arcs.push({ k, c: BRAND[k] || [[255, 106, 43], [255, 106, 43]], a, h: .12 + ang * .14, t0: now, dur: 1700 }); };
   const ease = t => 1 - Math.pow(1 - t, 3);
   const point = (arc, t) => { const p = slerp(arc.a, HOME, t), m = 1 + arc.h * Math.sin(Math.PI * t); return proj([p[0] * m, p[1] * m, p[2] * m]); };
   const pulses = [];
@@ -74,22 +79,25 @@ export function mountGlobe(canvas) {
       const A = arcs[i], t = (now - A.t0) / A.dur;
       if (t >= 1.35) { arcs.splice(i, 1); continue; }
       const head = ease(Math.min(1, t)), tail = ease(Math.max(0, Math.min(1, (t - .35) / 1)));
-      if (t >= 1 && !A.landed) { A.landed = true; pulses.push({ t0: now }); }
+      if (t >= 1 && !A.landed) { A.landed = true; pulses.push({ t0: now, c: A.k === "x" ? "255,255,255" : mix(A.c, 1) }); }
       const N = 40; ctx.lineWidth = 1.6; ctx.lineCap = "round";
       let prev = null;
       for (let j = 0; j <= N; j++) {
         const u = tail + (head - tail) * j / N, p = point(A, u);
-        if (prev && (p[2] > -.05 || Math.hypot(p[0] - cx, p[1] - cy) > R)) { const a = j / N; ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.strokeStyle = `rgba(${ORANGE},${a * .22})`; ctx.lineWidth = 7; ctx.stroke(); ctx.strokeStyle = `rgba(${ORANGE},${a * .95})`; ctx.lineWidth = 1.6; ctx.stroke(); }
+        if (prev && (p[2] > -.05 || Math.hypot(p[0] - cx, p[1] - cy) > R)) { const a = j / N, c = mix(A.c, u); ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]);
+          // X is black: its glow is white, so it shows on the dark globe
+          ctx.strokeStyle = A.k === "x" ? `rgba(255,255,255,${a * .28})` : `rgba(${c},${a * .25})`; ctx.lineWidth = 7; ctx.stroke();
+          ctx.strokeStyle = `rgba(${c},${a * .95})`; ctx.lineWidth = A.k === "x" ? 2.2 : 1.6; ctx.stroke(); }
         prev = p;
       }
       // the icon rides on top of the line head, transparent, and fades as it lands
       const ic = icons[A.k];
       if (ic && t < 1) { const p = point(A, head), al = Math.min(1, t * 5) * (1 - Math.max(0, (t - .75) / .25)); ctx.globalAlpha = al * .7; ctx.drawImage(ic, p[0] - 9, p[1] - 26, 18, 18); ctx.globalAlpha = 1; }
-      if (t < 1) { const p = point(A, head); ctx.save(); ctx.shadowColor = `rgb(${ORANGE})`; ctx.shadowBlur = 16; ctx.fillStyle = `rgb(${ORANGE})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+      if (t < 1) { const p = point(A, head); const hc = mix(A.c, head); ctx.save(); ctx.shadowColor = A.k === "x" ? "#fff" : `rgb(${hc})`; ctx.shadowBlur = 16; ctx.fillStyle = `rgb(${hc})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
     }
     for (let i = pulses.length - 1; i >= 0; i--) {
       const k = (now - pulses[i].t0) / 700; if (k >= 1) { pulses.splice(i, 1); continue; }
-      ctx.save(); ctx.shadowColor = `rgb(${ORANGE})`; ctx.shadowBlur = 14; ctx.strokeStyle = `rgba(${ORANGE},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      const pc = pulses[i].c; ctx.save(); ctx.shadowColor = `rgb(${pc})`; ctx.shadowBlur = 14; ctx.strokeStyle = `rgba(${pc},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
   };
   let raf = 0, on = false;
