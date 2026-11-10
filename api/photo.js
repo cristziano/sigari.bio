@@ -35,10 +35,19 @@ async function sendFromFirestore(res, id) {
   const parts = await Promise.all(Array.from({ length: n }, (_, k) => get(`files/${id}/parts/${k}`)));
   if (parts.some(p => !p)) { res.statusCode = 502; return res.end("File incompleto."); }
   const buf = Buffer.concat(parts.map(p => Buffer.from(p.fields.d.bytesValue, "base64")));
-  res.setHeader("Content-Type", doc.fields.type.stringValue || "application/octet-stream");
+  // SAFETY: only pictures, audio, video and fonts are sent with their real type. Anything else
+  // (e.g. a page with code inside) becomes a plain download and can never run on 18kbio.xyz.
+  safeHeaders(res, doc.fields.type.stringValue);
   res.setHeader("Cache-Control", "public, max-age=31536000, s-maxage=31536000, immutable");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.end(buf);
+}
+function safeHeaders(res, type) {
+  const t = String(type || "").split(";")[0].trim().toLowerCase();
+  res.setHeader("Content-Type", TYPES.test(t) && t !== "application/octet-stream" ? t : "application/octet-stream");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Content-Security-Policy", "default-src 'none'; sandbox");
+  if (!TYPES.test(t)) res.setHeader("Content-Disposition", "attachment");
 }
 const TYPES = /^(image\/(png|jpeg|webp|gif|apng)|audio\/(mpeg|mp3|ogg|wav|x-wav|mp4|aac|x-m4a)|video\/mp4|font\/(ttf|otf|woff2?)|application\/(font-woff|x-font-ttf|octet-stream))$/;
 async function upload(req, res, url) {
@@ -98,7 +107,7 @@ module.exports = async (req, res) => {
       const r = await fetch(md.url);
       if (!r.ok) { res.statusCode = 502; return res.end("Discord non ha dato la foto."); }
       const buf = Buffer.from(await r.arrayBuffer());
-      res.setHeader("Content-Type", r.headers.get("content-type") || "image/png");
+      safeHeaders(res, r.headers.get("content-type") || "image/png");
       res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
       return res.end(buf);
     }

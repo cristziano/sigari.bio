@@ -15,15 +15,12 @@ service cloud.firestore {
     // Files uploaded from the dashboard (photos, audio, fonts), in pieces of at most 1 MB
     match /files/{id} {
       allow read: if true;
-      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
-                    && request.resource.data.parts is int && request.resource.data.parts >= 1 && request.resource.data.parts <= 6
-                    && request.resource.data.type is string && request.resource.data.type.size() <= 60
-                    && request.resource.data.keys().hasOnly(['uid', 'type', 'parts', 'size', 'createdAt']);
+      // only the server writes files (it checks the type); nobody can create them from the browser
+      allow create: if false;
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
       match /parts/{n} {
         allow read: if true;
-        allow create: if signedIn() && get(/databases/$(database)/documents/files/$(id)).data.uid == request.auth.uid
-                      && request.resource.data.keys().hasOnly(['d']) && request.resource.data.d is bytes;
+        allow create: if false;
         allow delete: if signedIn() && get(/databases/$(database)/documents/files/$(id)).data.uid == request.auth.uid;
       }
     }
@@ -72,7 +69,9 @@ service cloud.firestore {
 
     // Saved looks ("i tuoi look"): 1 slot for everyone, 3 with the premium badge
     function isPremium() {
-      return 'premium' in get(/databases/$(database)/documents/profiles/$(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.handle)).data.get('badges', []);
+      // the handle written in your account must really be yours (otherwise anyone could borrow a premium @)
+      return ownsHandle(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.handle)
+        && 'premium' in get(/databases/$(database)/documents/profiles/$(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.handle)).data.get('badges', []);
     }
     match /slots/{uid} {
       allow read, delete: if signedIn() && request.auth.uid == uid;
