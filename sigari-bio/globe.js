@@ -62,18 +62,20 @@ export function mountGlobe(canvas) {
   const draw = now => {
     ctx.clearRect(0, 0, W, H);
     yaw = (24 + Math.sin(now / 2800) * 38) * Math.PI / 180;
-    // glow: a soft white halo around the globe
-    const halo = ctx.createRadialGradient(cx, cy, R * .85, cx, cy, R * 1.45);
-    halo.addColorStop(0, "rgba(255,255,255,.13)"); halo.addColorStop(.35, "rgba(255,255,255,.05)"); halo.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, R * 1.45, 0, Math.PI * 2); ctx.fill();
+    // a very faint halo, just enough to lift the globe off the black
+    const halo = ctx.createRadialGradient(cx, cy, R * .95, cx, cy, R * 1.2);
+    halo.addColorStop(0, "rgba(255,255,255,.035)"); halo.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, R * 1.2, 0, Math.PI * 2); ctx.fill();
     // the sphere: soft white body and a light rim
     const g = ctx.createRadialGradient(cx - R * .35, cy - R * .4, R * .1, cx, cy, R);
-    g.addColorStop(0, "rgba(255,255,255,.16)"); g.addColorStop(.6, "rgba(255,255,255,.06)"); g.addColorStop(1, "rgba(255,255,255,.02)");
+    g.addColorStop(0, "rgba(255,255,255,.06)"); g.addColorStop(.6, "rgba(255,255,255,.025)"); g.addColorStop(1, "rgba(255,255,255,.01)");
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
-    ctx.save(); ctx.shadowColor = "rgba(255,255,255,.55)"; ctx.shadowBlur = 18; ctx.strokeStyle = "rgba(255,255,255,.22)"; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
-    for (const d of dots) { const [x, y, z] = proj(d); if (z <= 0) continue; ctx.fillStyle = `rgba(255,255,255,${.18 + z * .62})`; ctx.fillRect(x - .9, y - .9, 1.8, 1.8); }
+    ctx.strokeStyle = "rgba(255,255,255,.13)"; ctx.lineWidth = 1; ctx.stroke();
+    // crisp dots: snapped to the pixel grid, so they stay sharp instead of blurry
+    const px = 1 / dpr, ds = Math.max(px * 2, 1.4);
+    for (const d of dots) { const [x, y, z] = proj(d); if (z <= 0) continue; ctx.fillStyle = `rgba(255,255,255,${.1 + z * .5})`; ctx.fillRect(Math.round(x * dpr) / dpr - ds / 2, Math.round(y * dpr) / dpr - ds / 2, ds, ds); }
     const [hx, hy] = proj(HOME);
-    ctx.save(); ctx.shadowColor = "#fff"; ctx.shadowBlur = 12; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(hx, hy, 2.2, 0, Math.PI * 2); ctx.fill();
     if (!reduce && now > next) { spawn(now); next = now + 900; }
     for (let i = arcs.length - 1; i >= 0; i--) {
       const A = arcs[i], t = (now - A.t0) / A.dur;
@@ -86,18 +88,18 @@ export function mountGlobe(canvas) {
         const u = tail + (head - tail) * j / N, p = point(A, u);
         if (prev && (p[2] > -.05 || Math.hypot(p[0] - cx, p[1] - cy) > R)) { const a = j / N, c = mix(A.c, u); ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]);
           // X is black: its glow is white, so it shows on the dark globe
-          ctx.strokeStyle = A.k === "x" ? `rgba(255,255,255,${a * .28})` : `rgba(${c},${a * .25})`; ctx.lineWidth = 7; ctx.stroke();
+          ctx.strokeStyle = A.k === "x" ? `rgba(255,255,255,${a * .14})` : `rgba(${c},${a * .12})`; ctx.lineWidth = 5; ctx.stroke();
           ctx.strokeStyle = `rgba(${c},${a * .95})`; ctx.lineWidth = A.k === "x" ? 2.2 : 1.6; ctx.stroke(); }
         prev = p;
       }
       // the icon rides on top of the line head, transparent, and fades as it lands
       const ic = icons[A.k];
       if (ic && t < 1) { const p = point(A, head), al = Math.min(1, t * 5) * (1 - Math.max(0, (t - .75) / .25)); ctx.globalAlpha = al * .7; ctx.drawImage(ic, p[0] - 9, p[1] - 26, 18, 18); ctx.globalAlpha = 1; }
-      if (t < 1) { const p = point(A, head); const hc = mix(A.c, head); ctx.save(); ctx.shadowColor = A.k === "x" ? "#fff" : `rgb(${hc})`; ctx.shadowBlur = 16; ctx.fillStyle = `rgb(${hc})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+      if (t < 1) { const p = point(A, head); const hc = mix(A.c, head); ctx.save(); ctx.shadowColor = A.k === "x" ? "#fff" : `rgb(${hc})`; ctx.shadowBlur = 8; ctx.fillStyle = `rgb(${hc})`; ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
     }
     for (let i = pulses.length - 1; i >= 0; i--) {
       const k = (now - pulses[i].t0) / 700; if (k >= 1) { pulses.splice(i, 1); continue; }
-      const pc = pulses[i].c; ctx.save(); ctx.shadowColor = `rgb(${pc})`; ctx.shadowBlur = 14; ctx.strokeStyle = `rgba(${pc},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      const pc = pulses[i].c; ctx.save(); ctx.shadowColor = `rgb(${pc})`; ctx.shadowBlur = 6; ctx.strokeStyle = `rgba(${pc},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
     if (W >= 600) drawLabel(hx, hy, now); // on phones the globe sits under the buttons: no label there
   };
@@ -117,7 +119,7 @@ export function mountGlobe(canvas) {
     ctx.save();
     ctx.translate(x + w / 2, y + h / 2); ctx.scale(pop, pop); ctx.translate(-w / 2, -h / 2);
     ctx.beginPath(); ctx.roundRect(0, 0, w, h, h / 2);
-    ctx.shadowColor = `rgba(${c},${.9 * glow})`; ctx.shadowBlur = 22 * glow;
+    ctx.shadowColor = `rgba(${c},${.7 * glow})`; ctx.shadowBlur = 12 * glow;
     ctx.fillStyle = "rgba(8,8,8,.88)"; ctx.fill();
     ctx.shadowBlur = 0;
     ctx.strokeStyle = glow > 0 ? `rgba(${c},${.3 + .7 * glow})` : "rgba(255,255,255,.3)"; ctx.lineWidth = 1.2; ctx.stroke();
