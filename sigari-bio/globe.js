@@ -79,7 +79,7 @@ export function mountGlobe(canvas) {
       const A = arcs[i], t = (now - A.t0) / A.dur;
       if (t >= 1.35) { arcs.splice(i, 1); continue; }
       const head = ease(Math.min(1, t)), tail = ease(Math.max(0, Math.min(1, (t - .35) / 1)));
-      if (t >= 1 && !A.landed) { A.landed = true; pulses.push({ t0: now, c: A.k === "x" ? "255,255,255" : mix(A.c, 1) }); }
+      if (t >= 1 && !A.landed) { A.landed = true; pulses.push({ t0: now, c: A.k === "x" ? "255,255,255" : mix(A.c, 1) }); hit = pulses[pulses.length - 1]; }
       const N = 40; ctx.lineWidth = 1.6; ctx.lineCap = "round";
       let prev = null;
       for (let j = 0; j <= N; j++) {
@@ -99,11 +99,39 @@ export function mountGlobe(canvas) {
       const k = (now - pulses[i].t0) / 700; if (k >= 1) { pulses.splice(i, 1); continue; }
       const pc = pulses[i].c; ctx.save(); ctx.shadowColor = `rgb(${pc})`; ctx.shadowBlur = 14; ctx.strokeStyle = `rgba(${pc},${(1 - k) * .9})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 3 + k * 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
+    if (W >= 600) drawLabel(hx, hy, now); // on phones the globe sits under the buttons: no label there
   };
+  // the landing point is YOUR link: a small label "18kbio.xyz/tuonome" that pops and lights up in the colour of each brand that arrives
+  let hit = null, name = "tuonome";
+  function drawLabel(hx, hy, now) {
+    const fs = Math.max(11, Math.min(14, R * .045)), pre = "18kbio.xyz/", nm = name;
+    ctx.font = `500 ${fs}px "Geist Mono", ui-monospace, monospace`;
+    const w1 = ctx.measureText(pre).width, w2 = ctx.measureText(nm).width, padX = fs * .9, h = fs * 2.2, w = w1 + w2 + padX * 2;
+    const age = hit ? now - hit.t0 : 1e9, pop = age < 320 ? 1 + .12 * Math.sin(Math.PI * age / 320) : 1, glow = Math.max(0, 1 - age / 900);
+    const c = hit ? hit.c : "255,255,255";
+    let x = hx + 16, y = hy - h - 14;
+    if (x + w > W - 8) x = hx - 16 - w;
+    if (y < 8) y = hy + 14;
+    // thin stem from the point to the label
+    ctx.strokeStyle = "rgba(255,255,255,.28)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(x + (x > hx ? 0 : w), y + h / 2); ctx.stroke();
+    ctx.save();
+    ctx.translate(x + w / 2, y + h / 2); ctx.scale(pop, pop); ctx.translate(-w / 2, -h / 2);
+    ctx.beginPath(); ctx.roundRect(0, 0, w, h, h / 2);
+    ctx.shadowColor = `rgba(${c},${.9 * glow})`; ctx.shadowBlur = 22 * glow;
+    ctx.fillStyle = "rgba(8,8,8,.88)"; ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = glow > 0 ? `rgba(${c},${.3 + .7 * glow})` : "rgba(255,255,255,.3)"; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.fillText(pre, padX, h / 2 + .5);
+    ctx.fillStyle = "#fff"; ctx.fillText(nm, padX + w1, h / 2 + .5);
+    ctx.restore();
+  }
   let raf = 0, on = false;
   const loop = now => { draw(now); raf = on ? requestAnimationFrame(loop) : 0; };
   size(); addEventListener("resize", () => { size(); if (!on) draw(performance.now()); });
-  if (reduce) { draw(performance.now()); return; }
+  const api = { setName(n) { name = String(n || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20) || "tuonome"; if (!on) draw(performance.now()); } };
+  if (reduce) { draw(performance.now()); return api; }
   new IntersectionObserver(([e]) => { on = e.isIntersecting && !document.hidden; if (on && !raf) raf = requestAnimationFrame(loop); }).observe(canvas);
   document.addEventListener("visibilitychange", () => { on = !document.hidden; if (on && !raf) raf = requestAnimationFrame(loop); });
+  return api;
 }

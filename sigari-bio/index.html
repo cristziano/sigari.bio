@@ -2164,7 +2164,15 @@
   }
 </script>
 
-<script type="module">import { mountGlobe } from "./globe.js"; const c = document.getElementById("hxGlobe"); if (c) mountGlobe(c);</script>
+<script type="module">
+  import { mountGlobe } from "./globe.js";
+  const c = document.getElementById("hxGlobe");
+  if (c) {
+    const g = mountGlobe(c);
+    // the label on the globe shows the name the person is typing
+    document.querySelectorAll("[data-handle]").forEach(i => i.addEventListener("input", () => g.setName(i.value)));
+  }
+</script>
 <script>
   // Smooth wheel (computer only): the page glides a little after each turn of the wheel, like Lenis, no jumps between sections
   (function smoothWheel() {
