@@ -104,7 +104,7 @@ export function mountGlobe(canvas) {
   // the landing point is YOUR link: a small label "18kbio.xyz/tuonome" that pops and lights up in the colour of each brand that arrives
   let hit = null, name = "tuonome";
   function drawLabel(hx, hy, now) {
-    const fs = Math.max(11, Math.min(14, R * .045)), pre = "18kbio.xyz/", nm = name;
+    const fs = Math.max(9, Math.min(11.5, R * .036)), pre = "18kbio.xyz/", nm = name;
     ctx.font = `500 ${fs}px "Geist Mono", ui-monospace, monospace`;
     const w1 = ctx.measureText(pre).width, w2 = ctx.measureText(nm).width, padX = fs * .9, h = fs * 2.2, w = w1 + w2 + padX * 2;
     const age = hit ? now - hit.t0 : 1e9, pop = age < 320 ? 1 + .12 * Math.sin(Math.PI * age / 320) : 1, glow = Math.max(0, 1 - age / 900);
