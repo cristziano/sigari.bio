@@ -48,7 +48,7 @@ export function mountGlobe(canvas) {
   const size = () => {
     dpr = Math.min(2, devicePixelRatio || 1); const r = canvas.getBoundingClientRect(); W = r.width; H = r.height;
     canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    R = Math.min(H * .42, W * .48); cx = W - R * .8; cy = H * .54;
+    R = Math.min(H * .4, W * .456); cx = W - R * .8; cy = H * .54;
   };
   let yaw = 0, pitch = .5;
   const rot = ([x, y, z]) => { const c = Math.cos(yaw), s = Math.sin(yaw); const x1 = x * c - z * s, z1 = x * s + z * c; const cp = Math.cos(pitch), sp = Math.sin(pitch); return [x1, y * cp - z1 * sp, y * sp + z1 * cp]; };
@@ -61,7 +61,7 @@ export function mountGlobe(canvas) {
   const pulses = [];
   const draw = now => {
     ctx.clearRect(0, 0, W, H);
-    yaw = (24 + Math.sin(now / 1900) * 38) * Math.PI / 180;
+    yaw = (24 + Math.sin(now / 2800) * 38) * Math.PI / 180;
     // glow: a soft white halo around the globe
     const halo = ctx.createRadialGradient(cx, cy, R * .85, cx, cy, R * 1.45);
     halo.addColorStop(0, "rgba(255,255,255,.13)"); halo.addColorStop(.35, "rgba(255,255,255,.05)"); halo.addColorStop(1, "rgba(255,255,255,0)");
