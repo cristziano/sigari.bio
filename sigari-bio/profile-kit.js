@@ -150,7 +150,7 @@ export const DEFAULT_APPEARANCE = {
   v: 2,
   layout: "classic",
   bg: { type: "color", color: "#000000", gradient: { kind: "linear", angle: 160, stops: ["#1a1a1a", "#000000", "#2b2b2b"] }, image: "", video: "", poster: "", fit: "cover", dim: 30, blur: 0, x: 50, y: 50, zoom: 100, gray: 0, sat: 100, tint: "#000000", tintA: 0, vignette: 0 },
-  effect: "lava", effectColor: "#ffffff", intensity: 80,
+  effect: "none", effectColor: "#ffffff", intensity: 80,
   card: { opacity: 55, blur: 14, radius: 22, border: "solid", width: 420, minH: 0, x: 0, y: 0, zoom: 100, rot: 0, gradient: false, borderColor: "", borderWidth: 1, shadow: "none", padding: 24, align: "center", pos: "center", grad2: "", gradAngle: 160, tilt: false },
   colors: { accent: "#ffffff", text: "#ffffff", muted: "#9a9a9a", icon: "#ffffff", primary: "#0d0d0d", secondary: "#141414", border: "#2a2a2a" },
   font: { name: "geist", body: "geist", nameSize: 100, upper: false, spacing: 0, custom: "" },

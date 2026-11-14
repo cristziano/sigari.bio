@@ -1012,6 +1012,10 @@
       </div>
       <div class="card pz" id="c-bg">
         <div class="pz-h"><b>Sfondo</b><span>quello che c'è dietro il profilo</span></div>
+        <div class="gc-grid bg-fx">
+          <div class="gc"><div class="label">effetto sopra lo sfondo</div><select class="text" data-k="appearance.effect" data-opts="effects"></select><p class="hint">Macchie, neve, stelle… Scegli "Nessuno" per vedere solo il tuo sfondo.</p></div>
+          <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
+        </div>
         <div class="bg-tabs" data-seg="appearance.bg.type" data-o="bgType" role="tablist" aria-label="Tipo di sfondo"></div>
         <div class="bg-panel" data-when="appearance.bg.type=color">
           <div class="label">colore dello sfondo <small style="text-transform:none;letter-spacing:0">(solo lo sfondo, non il profilo)</small></div>
@@ -1061,7 +1065,7 @@
         </div>
       </div>
       <div class="card pz" id="c-general">
-        <div class="pz-h"><b>Generale</b><span>descrizione, nome, posizione, effetti di sfondo e sul nome, glow, tag</span></div>
+        <div class="pz-h"><b>Generale</b><span>descrizione, nome, posizione, effetti sul nome, glow, tag</span></div>
         <div class="gc-grid">
           <div class="gc span-2"><div class="label">descrizione <span class="val" data-count="bio" data-max="300"></span></div>
           <div class="fmt" id="bioFmt"></div>
@@ -1072,8 +1076,6 @@
           <div class="gc"><div class="label">posizione</div><input class="text" id="locInput" data-k="location" maxlength="60" placeholder="Città, paese"></div>
           <div class="gc gc-quiet"><div class="label">alias <span class="val">facoltativo</span></div><input class="text" id="akaInput" data-k="aka" maxlength="80" autocomplete="off" placeholder="nomi vecchi, es. cz/cristiano"><p class="hint">I nomi con cui ti conoscevano prima. Uno spazio diventa /. Sul profilo appaiono piccoli sotto la @.</p></div>
       
-          <div class="gc"><div class="label">effetti di sfondo</div><select class="text" data-k="appearance.effect" data-opts="effects"></select></div>
-          <div class="gc" data-when="appearance.effect!=none"><div class="label">colore e intensità dell'effetto <span class="val" data-show="appearance.intensity" data-unit="%"></span></div><div class="hex-row"><input type="color" data-k="appearance.effectColor"><input type="range" min="0" max="100" data-k="appearance.intensity" style="flex:1"></div></div>
         
           <div class="gc"><div class="label">effetti sul nome</div><select class="text" data-k="appearance.nameFx" data-opts="nameFx"></select></div>
           <div class="gc" data-when="appearance.nameFx=gradient"><div class="label">colori del gradiente</div><div class="hex-row"><input type="color" data-k="appearance.nameGradient.0"><input type="color" data-k="appearance.nameGradient.1"></div></div>
@@ -2872,7 +2874,7 @@
     try {
       if (b.dataset.use === "bg") {
         const bg = draft.appearance.bg;
-        if (it.video) { bg.type = "video"; bg.video = src; bg.poster = ""; } else { bg.type = "image"; bg.image = src; }
+        if (it.video) { bg.type = "video"; bg.video = src; bg.poster = ""; } else { bg.type = "image"; bg.image = src; } if (draft.appearance.effect === "lava") draft.appearance.effect = "none";
         out.textContent = "Fatto: è lo sfondo del profilo. Ricordati di salvare.";
       } else if (b.dataset.use === "avatar") {
         draft.avatarUrl = src; renderAvatarBox();
@@ -3610,7 +3612,11 @@
     });
   }
   uploadFlow("avatarPick", "avatarInput", "avatar", 512, url => { draft.avatarUrl = url; renderAvatarBox(); });
-  uploadFlow("bgPick", "bgInput", "bg", 1920, (url, vid) => { const bg = draft.appearance.bg; if (vid) { bg.video = url; bg.poster = ""; bg.type = "video"; } else { bg.image = url; bg.type = "image"; } });
+  uploadFlow("bgPick", "bgInput", "bg", 1920, (url, vid) => {
+    const bg = draft.appearance.bg; if (vid) { bg.video = url; bg.poster = ""; bg.type = "video"; } else { bg.image = url; bg.type = "image"; }
+    // your own picture or video: the default "Lava" blobs (the white dots) go away; you can put an effect back from Sfondo
+    if (draft.appearance.effect === "lava") draft.appearance.effect = "none";
+  });
   uploadFlow("cursorPick", "cursorInput", "cursor", 48, url => { draft.appearance.cursor.url = url; draft.appearance.cursor.type = "custom"; });
   uploadFlow("decoUpload", "decoInput", "deco", 512, url => { draft.appearance.avatar.decoUrl = url; draft.appearance.avatar.deco = "custom"; });
   uploadFlow("bannerPick", "bannerInput", "banner", 1500, (url, vid) => { draft.appearance.banner.url = url; draft.appearance.banner.type = vid ? "video" : "image"; });
