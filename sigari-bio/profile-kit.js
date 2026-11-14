@@ -877,7 +877,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 @keyframes pk-pop{from{opacity:0;transform:scale(.92)}}
 .pk-card.in-glitch{animation:pk-glin .5s steps(1,end) both}
 @keyframes pk-glin{0%{opacity:0}20%{opacity:1;transform:translate(-6px,2px);clip-path:inset(20% 0 40% 0)}40%{transform:translate(5px,-2px);clip-path:inset(60% 0 10% 0)}60%{transform:translate(-3px,0);clip-path:inset(0 0 70% 0)}80%{transform:translate(2px,1px);clip-path:inset(40% 0 0 0)}100%{transform:none;clip-path:none}}
-.pk-trail{position:absolute;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
+.pk-trail{position:absolute;left:0;top:0;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
 .pk-trail.sparkle{border-radius:0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .pk-trail.ghost{width:22px;height:22px;margin:-11px 0 0 -11px;background:none;border:1px solid var(--pk-accent)}
 .pk-ban{position:relative;height:var(--pk-banh,120px);margin:-28px -20px 0;border-radius:var(--pk-radius) var(--pk-radius) 0 0;overflow:hidden;background:var(--pk-surface)}

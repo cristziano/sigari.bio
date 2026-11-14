@@ -1574,8 +1574,12 @@
   if (fine && !reduce) {
     const ring = $("#ring");
     let rx = innerWidth / 2, ry = innerHeight / 2, tx = rx, ty = ry;
+    // the page is shown at 90% on computers (zoom in ui.css): the mouse position is in screen pixels,
+    // the ring moves in page pixels, so divide by the zoom or the ring drifts away from the real pointer
+    const zoomOf = () => parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+    let Z = zoomOf(); addEventListener("resize", () => { Z = zoomOf(); });
     addEventListener("pointermove", e => {
-      tx = e.clientX; ty = e.clientY; ring.classList.add("on");
+      tx = e.clientX / Z; ty = e.clientY / Z; ring.classList.add("on");
       $("#hudXY").textContent = String(Math.round(tx)).padStart(4, "0") + " · " + String(Math.round(ty)).padStart(4, "0");
     }, { passive: true });
     document.addEventListener("pointerleave", () => ring.classList.remove("on"));
@@ -1615,7 +1619,8 @@
     const c = e.target.closest && e.target.closest(".hl-c, .cl-card, .led, .tp, .pt-builder, .plan, .shot");
     if (!c) return;
     const r = c.getBoundingClientRect();
-    c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+    const z = r.width / (c.offsetWidth || r.width) || 1; // 90% zoom: back to page pixels
+    c.style.setProperty("--mx", (e.clientX - r.left) / z + "px"); c.style.setProperty("--my", (e.clientY - r.top) / z + "px");
   }, { passive: true });
   const io = new IntersectionObserver(entries => entries.forEach(en => {
     if (!en.isIntersecting) return;
