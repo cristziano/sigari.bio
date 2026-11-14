@@ -5,7 +5,7 @@ const { limited } = require("./_limit");
 // Every post: 4 pictures of one topic, only pictures. The next post uses another topic.
 // State lives in the channel itself (the invisible link of the bot's pictures).
 //   ?dry=1  -> only shows what it would post (nothing is sent)
-//   ?test=1 -> posts now, without waiting 3 hours (never twice within 10 minutes); &topic=xyz chooses the topic
+//   ?test=1 -> posts now, without waiting 3 hours (never twice within an hour); &topic=xyz chooses one of TOPICS
 const { discord } = require("./_discord");
 const { pinterest, shuffle, isMatching } = require("./_pinterest");
 
@@ -65,10 +65,13 @@ module.exports = async (req, res) => {
     // A new topic every post, never one of the last 10
     const fresh = TOPICS.filter(x => !recentTopics.slice(0, 10).includes(x));
     // ?test=1&topic=xyz picks the topic of a test post by hand
-    const forced = (test || dry) && /[?&]topic=([^&]+)/.exec(req.url || "");
-    const topic = forced ? decodeURIComponent(forced[1].replace(/\+/g, " ")).replace(/[^\w !.'-]/g, "").trim().slice(0, 60)
+    // SAFETY: anyone can open this link, so a hand-picked topic must be one of the list above
+    // (otherwise a stranger could make the bot post the pictures of any search in the channel)
+    const forcedM = (test || dry) && /[?&]topic=([^&]+)/.exec(req.url || "");
+    const forced = forcedM && TOPICS.find(x => x === decodeURIComponent(forcedM[1].replace(/\+/g, " ")).trim().toLowerCase());
+    const topic = forced ? forced
       : recentTopics.length ? shuffle(fresh.length ? fresh : TOPICS.slice())[0] : TOPICS[0];
-    if (test && last && Date.now() - last < 10 * 60e3) return res.end(JSON.stringify({ skipped: true, reason: "ultimo invio meno di 10 minuti fa" }));
+    if (test && last && Date.now() - last < 60 * 60e3) return res.end(JSON.stringify({ skipped: true, reason: "ultimo invio meno di un'ora fa" }));
     if (!dry && !test && last && Date.now() - last < EVERY) return res.end(JSON.stringify({ skipped: true, next_in_min: Math.round((EVERY - (Date.now() - last)) / 60000) }));
 
     const res0 = await pinterest(topic);

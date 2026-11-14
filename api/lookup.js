@@ -39,7 +39,8 @@ const LOOKUP = {
 async function pinImage(link) {
   let u;
   try { u = new URL(link); } catch (_) { return null; }
-  if (!/(^|\.)pinterest\.[a-z.]+$|^pin\.it$/i.test(u.hostname)) return null;
+  // only real Pinterest addresses: "pinterest.something-else.com" must not pass
+  if (u.protocol !== "https:" || !/^(?:[a-z]{2,3}\.|www\.)?pinterest\.(?:com|it|fr|de|es|ca|ch|at|pt|se|dk|ie|nz|jp|kr|ph|cl|ru|co\.uk|com\.au|com\.mx)$|^pin\.it$/i.test(u.hostname)) return null;
   const r = await fetch(u.href, { headers: { "User-Agent": "Mozilla/5.0 (compatible; 18kbio/1.0)", Accept: "text/html" }, redirect: "follow", signal: AbortSignal.timeout(7000) });
   const html = await r.text();
   const img = ogOf(html, "image") || (/"(https:\/\/i\.pinimg\.com\/(?:originals|736x)\/[^"]+\.(?:jpg|png|gif|webp))"/.exec(html) || [])[1] || "";

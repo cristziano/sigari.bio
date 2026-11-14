@@ -64,7 +64,16 @@ service cloud.firestore {
 
     // Private account document: only its owner
     match /users/{uid} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+      allow read, create: if signedIn() && request.auth.uid == uid;
+      // the @ written in the account never changes (nor can it be emptied to get around the delete rule below)
+      allow update: if signedIn() && request.auth.uid == uid
+                    && (resource.data.get('handle', '') == '' || request.resource.data.get('handle', '') == resource.data.get('handle', ''));
+      // SAFETY: the account document goes only after its @ was given back, otherwise one account
+      // could delete it and reserve a new main @ again and again (taking all the short names)
+      allow delete: if signedIn() && request.auth.uid == uid
+                    && (resource.data.get('handle', '') == ''
+                        || !exists(/databases/$(database)/documents/usernames/$(resource.data.handle))
+                        || get(/databases/$(database)/documents/usernames/$(resource.data.handle)).data.uid != uid);
     }
 
     // Saved looks ("i tuoi look"): 1 slot for everyone, 3 with the premium badge
