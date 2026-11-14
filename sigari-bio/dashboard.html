@@ -138,6 +138,9 @@
   .soon-card { position:relative; overflow:hidden; }
   .soon-card > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
   .soon-card .soon-veil { position:absolute; inset:0; top:0; justify-content:center; margin:0; padding:12px; }
+  .soon-mini { min-height:64px; }
+  .soon-mini .soon-veil { flex-direction:row; padding:0 12px; }
+  .soon-mini .soon-veil b { font-size:20px; }
   .glitch { position:relative; display:inline-block; font:800 clamp(30px,6vw,56px)/1 "Geist Mono",monospace; letter-spacing:-.02em; color:var(--fg); }
   .glitch::before, .glitch::after { content:attr(data-text); position:absolute; inset:0; overflow:hidden; }
   .glitch::before { color:#ff2a6d; animation:gl1 2.6s infinite steps(1,end); mix-blend-mode:screen; }
@@ -1562,6 +1565,8 @@
         <div class="wp-list" id="wpList"></div>
         <input type="file" id="wpInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
       </div>
+      <div class="soon-card soon-mini">
+        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b></div>
       <details class="quiet-box" id="discordLive">
         <summary>Stato Discord dal vivo <span>facoltativo</span></summary>
         <p class="hint">Mostra sul profilo se sei online, cosa giochi o ascolti su Discord. Lo fa <a href="https://lanyard.rest" target="_blank" rel="noopener">Lanyard</a>, un servizio esterno gratuito: per farlo funzionare entri una volta nel suo server (discord.gg/lanyard), perché Discord non lascia leggere lo stato ai siti. Spento finché non lo accendi tu.</p>
@@ -1570,6 +1575,7 @@
         <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Usa l'avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discord"><span class="track"><span class="knob"></span></span></label></div>
         <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Decorazione avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discordDeco"><span class="track"><span class="knob"></span></span></label></div>
       </details>
+      </div>
     </section>
 
     <section class="view hidden" id="view-page">
