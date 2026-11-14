@@ -134,6 +134,10 @@
   .view.soon > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
   .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 16px; margin-bottom:-120px; text-align:center; pointer-events:none; }
   .soon-veil span { font-size:13px; color:var(--m); }
+  /* one card "coming soon" (e.g. Last.fm): greyed out, not clickable, the label in the middle */
+  .soon-card { position:relative; overflow:hidden; }
+  .soon-card > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
+  .soon-card .soon-veil { position:absolute; inset:0; top:0; justify-content:center; margin:0; padding:12px; }
   .glitch { position:relative; display:inline-block; font:800 clamp(30px,6vw,56px)/1 "Geist Mono",monospace; letter-spacing:-.02em; color:var(--fg); }
   .glitch::before, .glitch::after { content:attr(data-text); position:absolute; inset:0; overflow:hidden; }
   .glitch::before { color:#ff2a6d; animation:gl1 2.6s infinite steps(1,end); mix-blend-mode:screen; }
@@ -1495,7 +1499,8 @@
       </div>
 
       <div class="label section-label">last.fm</div>
-      <div class="card lf-card">
+      <div class="card lf-card soon-card">
+        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Last.fm arriva presto.</span></div>
         <div class="lf-row">
           <div class="lf-logo" aria-hidden="true">as</div>
           <div class="lf-txt"><b id="lfState">Last.fm non collegato</b><span id="lfSub">Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.</span></div>
