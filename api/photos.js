@@ -29,6 +29,30 @@ module.exports = async (req, res) => {
   if (limited(req, res, "photos", 120)) return; // traffic guard (see _limit.js)
   const url = new URL(req.url, "https://18k.bio");
   if (req.method === "DELETE") return remove(req, res, url);
+  // ?profili=top  -> the most voted profile of the week in the Discord "profili" channel (for the home page)
+  // ?profili=scan -> adds ✅ ❌ to profile links posted by hand there (opened every hour by GitHub Actions)
+  const pr = url.searchParams.get("profili");
+  if (pr) {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    const P = require("./_profili");
+    try {
+      if (pr === "scan") { res.setHeader("Cache-Control", "no-store"); return res.end(JSON.stringify(await P.scan())); }
+      const t = await P.top();
+      let out = null;
+      if (t) {
+        const p = await require("./_firestore").profileByName(t.handle).catch(() => null);
+        if (p && !p.private) {
+          const bio = String(p.bio || "").replace(/\[(?:glow|rainbow|\/glow|\/rainbow|#[0-9a-f]{6}|\/)\]/gi, "").replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, "$1").replace(/\*\*|__|~~|\|\||`|\*/g, "").replace(/\s+/g, " ").trim().slice(0, 160);
+          const ap = p.appearance || {};
+          out = { handle: p.handle, name: p.displayName || p.handle, bio, avatar: /^https:\/\//.test(p.avatarUrl || "") ? p.avatarUrl : "",
+            banner: ap.banner && ap.banner.type === "image" && /^https:\/\//.test(ap.banner.url || "") ? ap.banner.url : (ap.bg && ap.bg.type === "image" && /^https:\/\//.test(ap.bg.image || "") ? ap.bg.image : ""),
+            accent: /^#[0-9a-f]{6}$/i.test((ap.colors && ap.colors.accent) || "") ? ap.colors.accent : "#ffffff", yes: t.yes, score: t.score };
+        }
+      }
+      res.setHeader("Cache-Control", "public, max-age=300, s-maxage=1800, stale-while-revalidate=3600");
+      return res.end(JSON.stringify({ top: out }));
+    } catch (e) { res.statusCode = 502; res.setHeader("Cache-Control", "no-store"); return res.end(JSON.stringify({ error: "Discord non risponde." })); }
+  }
   const key = url.searchParams.get("album") || "";
   const before = url.searchParams.get("before") || "";
   res.setHeader("Content-Type", "application/json; charset=utf-8");

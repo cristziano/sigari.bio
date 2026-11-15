@@ -37,6 +37,8 @@ async function connect(req, res) {
 module.exports = async (req, res) => {
   if (limited(req, res, "lastfm", 60)) return; // traffic guard (see _limit.js)
   if (new URL(req.url, "https://x").searchParams.has("connect")) return connect(req, res);
+  // ?ping=1: is Last.fm set up on Vercel? (the dashboard shows "coming soon" until it is)
+  if (new URL(req.url, "https://x").searchParams.has("ping")) { res.setHeader("Content-Type", "application/json; charset=utf-8"); res.setHeader("Cache-Control", "public, s-maxage=300"); return res.end(JSON.stringify({ ready: !!(process.env.LASTFM_API_KEY && process.env.LASTFM_SHARED_SECRET) })); }
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const user = String(new URL(req.url, "https://x").searchParams.get("user") || "").replace(/[^a-z0-9_.-]/gi, "").slice(0, 30);
   if (!user) { res.statusCode = 400; return res.end(JSON.stringify({ error: "Manca il nome Last.fm." })); }

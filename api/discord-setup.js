@@ -12,6 +12,9 @@ const COMMANDS = [{
     { type: 6, name: "utente", description: "Una persona del server", required: false }
   ]
 }, {
+  name: "condividi", type: 1, description: "Condividi il tuo profilo 18k.bio nel canale profili: gli altri lo votano con ✅ e ❌",
+  dm_permission: false
+}, {
   name: "posta", type: 1, description: "Posta pfp e banner nel canale, con anteprima e bottone per scaricarli (admin e ruolo pfps)",
   dm_permission: false,
   options: [

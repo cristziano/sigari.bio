@@ -1565,8 +1565,6 @@
         <div class="wp-list" id="wpList"></div>
         <input type="file" id="wpInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
       </div>
-      <div class="soon-card soon-mini">
-        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b></div>
       <details class="quiet-box" id="discordLive">
         <summary>Stato Discord dal vivo <span>facoltativo</span></summary>
         <p class="hint">Mostra sul profilo se sei online, cosa giochi o ascolti su Discord. Lo fa <a href="https://lanyard.rest" target="_blank" rel="noopener">Lanyard</a>, un servizio esterno gratuito: per farlo funzionare entri una volta nel suo server (discord.gg/lanyard), perché Discord non lascia leggere lo stato ai siti. Spento finché non lo accendi tu.</p>
@@ -1574,8 +1572,9 @@
         <div class="field" data-when="appearance.widgets.discordPresence=true"><div class="label">il tuo ID utente discord</div><input class="text" data-k="appearance.widgets.discordId" inputmode="numeric" maxlength="20" placeholder="es. 123456789012345678"><p class="hint">Discord, Impostazioni, Avanzate, Modalità sviluppatore; poi tasto destro sul tuo nome, "Copia ID utente". Chi entra con Discord ce l'ha già.</p></div>
         <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Usa l'avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discord"><span class="track"><span class="knob"></span></span></label></div>
         <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Decorazione avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discordDeco"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="row" data-when="appearance.widgets.discordPresence=true" style="flex-wrap:wrap;gap:8px;margin-top:8px"><a class="ghost-btn sm" href="https://discord.gg/lanyard" target="_blank" rel="noopener">1. Entra nel server Lanyard</a><button class="save-btn sm" id="dcCheck" type="button">2. Verifica</button></div>
+        <p class="hint" id="dcCheckOut" data-when="appearance.widgets.discordPresence=true"></p>
       </details>
-      </div>
     </section>
 
     <section class="view hidden" id="view-page">
@@ -2895,6 +2894,16 @@
       PH.items = []; PH.next = null; PH.cur = {}; PH.done = {}; PH.buf = []; loadPhotos(); setStatus("Foto eliminata.", "ok");
     } catch (err) { out.textContent = err.message; btn.disabled = false; }
   });
+  $("dcCheck").addEventListener("click", async () => {
+    const id = String(draft.appearance.widgets.discordId || "").trim(), out = $("dcCheckOut");
+    if (!/^\d{15,20}$/.test(id)) { out.textContent = "Prima metti il tuo ID utente Discord (solo numeri)."; return; }
+    out.textContent = "Controllo...";
+    try {
+      const j = await fetch("https://api.lanyard.rest/v1/users/" + id).then(r => r.json());
+      if (j.success) out.textContent = "Funziona: sul profilo si vede il tuo stato (" + ({ online: "online", idle: "assente", dnd: "non disturbare", offline: "offline" }[j.data.discord_status] || "offline") + "). Ricordati di salvare.";
+      else out.textContent = "Lanyard non ti vede ancora: entra nel server Lanyard con questo account Discord (punto 1), aspetta un minuto e premi di nuovo Verifica.";
+    } catch (_) { out.textContent = "Lanyard non risponde adesso, riprova tra poco."; }
+  });
   const closePhoto = () => { $("phLb").classList.add("hidden"); $("phLbMedia").replaceChildren(); PH.open = null; };
   $("phLbClose").addEventListener("click", closePhoto);
   $("phLb").addEventListener("click", e => { if (e.target === $("phLb") || e.target === $("phLbMedia")) closePhoto(); });
@@ -3237,7 +3246,15 @@
   });
 
   /* ---------- Last.fm: real connection (api/lastfm.js?connect=1) ---------- */
+  // Last.fm stays "coming soon" until its keys are on Vercel; then the card turns on by itself
+  let lfReady = null;
+  function lastfmReady() {
+    if (lfReady !== null) return;
+    lfReady = false;
+    fetch("/api/lastfm?ping=1").then(r => r.json()).then(j => { if (!j.ready) return; lfReady = true; const c = document.querySelector(".lf-card"); c.classList.remove("soon-card"); c.querySelector(".soon-veil")?.remove(); }).catch(() => {});
+  }
   function renderLastfm() {
+    lastfmReady();
     const u = draft.appearance.lastfm.user;
     $("lfState").textContent = u ? `Collegato: ${u}` : "Last.fm non collegato";
     $("lfSub").textContent = u ? "Sul profilo: la tua foto Last.fm, i tuoi ascolti e cosa stai ascoltando adesso." : "Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.";

@@ -3,6 +3,7 @@
 //   /pfp            -> your 18k.bio profile (the one with your Discord id in "presenza discord")
 //   /pfp nome:xyz   -> the profile 18kbio.xyz/xyz
 //   /pfp utente:@x  -> the profile of that Discord user
+//   /condividi      -> posts your own profile in the "profili" channel, with ✅ and ❌ to vote (once every 12 hours)
 //   /posta pfp:<file> banner:<file> canale crediti
 //                   -> (admins, the "pfps" role and the "developer"/"dev" role) the bot posts pfp + banner in the channel, with a
 //                      Discord-profile style preview, "by …" and a ⬇ button that sends you both files
@@ -54,6 +55,34 @@ function card(p) {
   if (avatar) buttons.push({ type: 2, style: 5, label: "Scarica la pfp", url: avatar });
   if (banner || bgImage) buttons.push({ type: 2, style: 5, label: "Scarica il banner", url: banner || bgImage });
   return { embeds: [embed], components: [{ type: 1, components: buttons }] };
+}
+
+/* ---------- /condividi ---------- */
+async function doCondividi(i) {
+  const API_ = "https://discord.com/api/v10";
+  const edit = content => fetch(`${API_}/webhooks/${i.application_id}/${i.token}/messages/@original`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) }).catch(() => {});
+  const me = (i.member && i.member.user) || i.user || {};
+  const P = require("./_profili");
+  try {
+    const p = await profileByDiscord(String(me.id || ""));
+    if (!p) return edit("Non trovo il tuo profilo. Entra su 18kbio.xyz con Discord (si collega da solo), poi riprova `/condividi`.");
+    if (p.private) return edit("Il tuo profilo è privato o non ancora pubblicato: mettilo online dalla dashboard (Pubblica) e riprova.");
+    const ch = await P.profilesChannel();
+    if (!ch) return edit("Manca il canale dei profili: lo staff deve creare un canale con \"profili\" nel nome.");
+    // one share every 12 hours per profile, so the channel stays readable
+    const recent = await discord(`/channels/${ch}/messages?limit=50`);
+    const mine = recent.find(m => m.author && m.author.bot && P.handleOf(m) === p.handle && Date.now() - Date.parse(m.timestamp) < 12 * 3600e3);
+    if (mine) return edit(`Hai già condiviso il tuo profilo da poco: https://discord.com/channels/${i.guild_id}/${ch}/${mine.id}. Riprova tra qualche ora.`);
+    const c = card(p);
+    const m = await discord(`/channels/${ch}/messages`, { method: "POST", body: JSON.stringify({ content: `<@${me.id}> ha condiviso il suo profilo. Votalo con ${P.YES} o ${P.NO}`, allowed_mentions: { parse: [] }, ...c }) });
+    await discord(`/channels/${ch}/messages/${m.id}/reactions/${encodeURIComponent(P.YES)}/@me`, { method: "PUT" }).catch(() => {});
+    await new Promise(ok => setTimeout(ok, 350));
+    await discord(`/channels/${ch}/messages/${m.id}/reactions/${encodeURIComponent(P.NO)}/@me`, { method: "PUT" }).catch(() => {});
+    await edit(`Fatto ✓ il tuo profilo è in <#${ch}>. Il più votato della settimana finisce sulla home di 18kbio.xyz.`);
+    await P.scan(20).catch(() => {});
+  } catch (_) {
+    return edit("Non sono riuscito a condividerlo, riprova tra poco.");
+  }
 }
 
 /* ---------- /posta ---------- */
@@ -148,6 +177,13 @@ module.exports = async (req, res) => {
     // answer now ("sto postando…"), do the work right after: Discord waits only 3 seconds
     res.setHeader("Content-Type", "application/json");
     const work = doPosta(i, opt);
+    if (waitUntil) { waitUntil(work); return res.end(JSON.stringify({ type: 5, data: { flags: 64 } })); }
+    res.end(JSON.stringify({ type: 5, data: { flags: 64 } }));
+    return work;
+  }
+  if (i.type === 2 && i.data && i.data.name === "condividi") {
+    res.setHeader("Content-Type", "application/json");
+    const work = doCondividi(i);
     if (waitUntil) { waitUntil(work); return res.end(JSON.stringify({ type: 5, data: { flags: 64 } })); }
     res.end(JSON.stringify({ type: 5, data: { flags: 64 } }));
     return work;

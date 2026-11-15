@@ -709,6 +709,26 @@
   #fx, .fx-fallback { display:none !important; }
 
   /* ===== PLANS: two cards, Premium coming soon ===== */
+  /* profile of the week */
+  .wk-in { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 400px); gap:clamp(28px, 5vw, 72px); align-items:center; max-width:1100px; margin:0 auto; }
+  .wk-h { margin:0; font-size:clamp(34px, 3.6vw, 56px); max-width:12ch; }
+  .wk-sub { margin-top:14px; font-size:15.5px; line-height:1.55; color:var(--ui-muted); max-width:46ch; }
+  .wk-sub code { font:500 .92em var(--ui-mono, "Geist Mono", monospace); color:#fff; }
+  .wk-btn { display:inline-flex; align-items:center; min-height:44px; padding:0 18px; margin-top:22px; border-radius:var(--ui-r-m); border:1px solid var(--ui-line); color:#fff; font-size:14.5px; font-weight:600; text-decoration:none; transition:transform var(--ui-t-press, 120ms) var(--ui-ease-out, ease); }
+  .wk-btn:active, .wk-card:active { transform:scale(.97); }
+  @media (hover:hover){ .wk-btn:hover { background:#151515; } .wk-card[href]:not([href="#"]):hover { border-color:rgba(255,255,255,.3); } }
+  .wk-card { display:block; border:1px solid var(--ui-line); border-radius:var(--ui-r-l); background:#0a0a0a; overflow:hidden; color:#fff; text-decoration:none; transition:transform var(--ui-t-press, 120ms) var(--ui-ease-out, ease), border-color .2s; }
+  .wk-card[href="#"] { pointer-events:none; }
+  .wk-ban { height:120px; background:#141414 center/cover no-repeat; }
+  .wk-body { position:relative; padding:0 24px 24px; display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+  .wk-av { width:76px; height:76px; margin-top:-38px; margin-bottom:10px; border-radius:50%; border:3px solid #0a0a0a; background:#1c1c1c center/cover no-repeat; display:grid; place-items:center; font-size:28px; font-weight:700; color:var(--ui-muted); }
+  .wk-name { font-size:20px; font-weight:600; letter-spacing:-.01em; }
+  .wk-handle { font:500 13px var(--ui-mono, "Geist Mono", monospace); color:var(--ui-muted); }
+  .wk-bio { margin-top:10px; font-size:14px; line-height:1.5; color:var(--ui-muted); }
+  .wk-bio:empty { display:none; }
+  .wk-votes { margin-top:12px; font-size:13px; font-weight:600; }
+  .wk-votes:empty { display:none; }
+  @media (max-width:860px){ .wk-in { grid-template-columns:1fr; } }
   .pc-h { margin:0 auto 14px; max-width:none; text-align:center; }
   .pc-lead { max-width:640px; margin:0 auto 22px; text-align:center; font-size:15.5px; line-height:1.55; color:var(--ui-muted); }
   .pc-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px; max-width:1240px; margin:0 auto; }
@@ -1145,6 +1165,27 @@
         <div class="soon-c"><span class="k">topic</span><b>Topic della settimana</b><p>Una sfida a settimana sul profilo: la community vota, chi vince prende il badge.</p></div>
         <div class="soon-c"><span class="k">premium</span><b>Premium</b><p>Effetti, font e badge in più per chi vuole spingere il profilo.</p></div>
       </div>
+    </div>
+  </section>
+
+  <!-- PROFILE OF THE WEEK: the most voted profile in the Discord "profili" channel (api/photos.js?profili=top) -->
+  <section class="s wk" id="weekly" aria-label="Profilo della settimana">
+    <div class="wrap wk-in">
+      <div class="wk-txt">
+        <h2 class="h2 wk-h">Il profilo della settimana</h2>
+        <p class="wk-sub">Il più votato sul nostro Discord. Condividi il tuo con <code>/condividi</code> nel canale profili: ogni settimana il vincitore finisce qui.</p>
+        <a class="wk-btn" href="https://discord.gg/18k" target="_blank" rel="noopener">Entra nel Discord</a>
+      </div>
+      <a class="wk-card" id="wkCard" href="#" aria-label="Profilo della settimana">
+        <div class="wk-ban" id="wkBan"></div>
+        <div class="wk-body">
+          <div class="wk-av" id="wkAv"></div>
+          <b class="wk-name" id="wkName">Ancora nessun vincitore</b>
+          <span class="wk-handle" id="wkHandle">sii il primo: /condividi</span>
+          <p class="wk-bio" id="wkBio"></p>
+          <span class="wk-votes" id="wkVotes"></span>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -2203,6 +2244,25 @@
     }, { passive: false });
     // scrollbar, links and keys move the page on their own: follow them
     addEventListener("scroll", () => { if (mine) { mine = false; return; } if (!raf) cur = target = scrollY; }, { passive: true });
+  })();
+</script>
+<script>
+  // Profile of the week: filled from the votes in the Discord "profili" channel; stays as "no winner yet" otherwise
+  (function weekly() {
+    const $ = id => document.getElementById(id);
+    if (!$("wkCard")) return;
+    fetch("/api/photos?profili=top").then(r => r.ok ? r.json() : null).then(j => {
+      const t = j && j.top; if (!t) return;
+      const card = $("wkCard");
+      card.href = "/" + t.handle; card.setAttribute("aria-label", "Apri il profilo di @" + t.handle);
+      card.style.borderColor = t.accent && t.accent.toLowerCase() !== "#ffffff" ? t.accent + "66" : "";
+      if (t.banner) $("wkBan").style.backgroundImage = 'url("' + t.banner.replace(/"/g, "%22") + '")';
+      if (t.avatar) $("wkAv").style.backgroundImage = 'url("' + t.avatar.replace(/"/g, "%22") + '")'; else $("wkAv").textContent = (t.name || t.handle)[0].toUpperCase();
+      $("wkName").textContent = t.name || t.handle;
+      $("wkHandle").textContent = "18kbio.xyz/" + t.handle;
+      $("wkBio").textContent = t.bio || "";
+      $("wkVotes").textContent = "\u2705 " + t.yes + (t.yes === 1 ? " voto" : " voti") + " questa settimana";
+    }).catch(() => {});
   })();
 </script>
 </body>

@@ -11,3 +11,5 @@ jobs:
     timeout-minutes: 2
     steps:
       - run: curl -sS --max-time 60 -L https://18kbio.vercel.app/api/autopost || true
+      # ✅ ❌ under profile links posted by hand in the Discord "profili" channel
+      - run: curl -sS --max-time 60 -L "https://18kbio.vercel.app/api/photos?profili=scan" || true
