@@ -102,4 +102,15 @@ async function deployRules(source) {
   return rs.name;
 }
 
-module.exports = { adminToken, reportSystem, deployRules, alertStaff, alertIfMany, PROJECT };
+// Is this account staff? (the owner of @1 now, or a /staff document) — same rule as firestore.rules
+async function isStaffUid(uid) {
+  if (!uid) return false;
+  const H = { Authorization: "Bearer " + await adminToken() };
+  const base = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
+  const st = await fetch(`${base}/staff/${encodeURIComponent(uid)}`, { headers: H, signal: AbortSignal.timeout(6000) });
+  if (st.ok) return true;
+  const one = await fetch(`${base}/usernames/1`, { headers: H, signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null).catch(() => null);
+  return !!(one && one.fields && one.fields.uid && one.fields.uid.stringValue === uid);
+}
+
+module.exports = { adminToken, reportSystem, deployRules, alertStaff, alertIfMany, isStaffUid, PROJECT };

@@ -1856,6 +1856,7 @@
       <button class="ghost-btn sm" type="button" data-use="banner">Come banner</button>
     </div>
     <div class="row" style="flex-wrap:wrap;margin-top:6px"><a class="ghost-btn sm" id="phLbOpen" target="_blank" rel="noopener">Apri originale</a><a class="ghost-btn sm" id="phLbDiscord" target="_blank" rel="noopener">Apri su Discord</a></div>
+    <button class="ghost-btn sm ph-del" id="phLbDel" type="button" hidden>Elimina (staff)</button>
     <p class="hint" id="phLbOut"></p>
   </div>
 </div>
@@ -2788,7 +2789,7 @@
      Foto: the photos posted in the 18k Discord channels (api/photos.js)
      ========================================================= */
   // "Tutte" mixes the three channels by date and keeps loading while you scroll; the channels are small filters
-  const PH = { albums: [["all", "Tutte"], ["sets", "sets"], ["replies", "replies"], ["pfps", "pfps"]], album: "all", items: [], next: null, cur: {}, done: {}, buf: [], loading: false };
+  const PH = { albums: [["all", "Tutte"], ["sets", "sets"], ["replies", "replies"], ["pfps", "pfps"]], album: "all", items: [], next: null, cur: {}, done: {}, buf: [], loading: false, gone: new Set() };
   const PH_CH = ["sets", "replies", "pfps"];
   const absUrl = u => /^https?:/.test(u) ? u : location.origin + u;
   // The address people share: always the real domain (not www., not the old vercel.app one)
@@ -2816,7 +2817,7 @@
     }
     const want = PH_CH.filter(al => !PH.done[al]);
     const pages = await Promise.all(want.map(al => fetchAlbum(al, PH.cur[al]).then(j => [al, j]).catch(() => [al, { items: [], next: null }])));
-    pages.forEach(([al, j]) => { PH.cur[al] = j.next; if (!j.next) PH.done[al] = true; PH.buf.push(...j.items.map(x => ({ ...x, album: al }))); });
+    pages.forEach(([al, j]) => { PH.cur[al] = j.next; if (!j.next) PH.done[al] = true; PH.buf.push(...j.items.filter(x => !PH.gone.has(String(x.id).split("-")[0])).map(x => ({ ...x, album: al }))); });
     PH.buf.sort((a, b) => String(b.at).localeCompare(String(a.at)));
     const items = PH.buf.splice(0, PH.buf.length);
     return { items, more: PH_CH.some(al => !PH.done[al]) };
@@ -2862,9 +2863,11 @@
   $("phGrid").addEventListener("click", e => { const b = e.target.closest(".ph-it"); if (b) openPhoto(PH.items[+b.dataset.i]); });
   function openPhoto(it) {
     if (!it) return;
-    PH.cur = it;
+    PH.open = it; // the photo in the big view (PH.cur holds the page cursors of each album)
     const src = absUrl(it.src);
-    $("phLbMedia").innerHTML = it.video ? `<video src="${escTxt(src)}" autoplay loop muted playsinline controls></video>` : `<img src="${escTxt(src)}" alt="">`;
+    // the big view shows a light 1600px copy of still pictures, not the original file
+    $("phLbMedia").innerHTML = it.video ? `<video src="${escTxt(src)}" autoplay loop muted playsinline controls></video>` : `<img src="${escTxt(it.kind === "image" ? sized(src, 1600) : src)}" alt="">`;
+    $("phLbDel").hidden = !isStaff; $("phLbDel").disabled = false;
     const when = it.at ? new Date(it.at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" }) : "";
     $("phLbBy").innerHTML = `${it.author.avatar ? `<img src="${escTxt(it.author.avatar)}" alt="">` : ""}<span>${escTxt(it.author.name || "18k")}<small>${escTxt(when)}</small></span>`;
     $("phLbText").textContent = it.text || "";
@@ -2874,13 +2877,33 @@
     $("phLbOut").textContent = "";
     $("phLb").classList.remove("hidden");
   }
-  const closePhoto = () => { $("phLb").classList.add("hidden"); $("phLbMedia").replaceChildren(); PH.cur = null; };
+  // a still picture from the 18k library at the size it is used (avatar 512px, banner 1500px...), as light WebP
+  function sized(src, w) { return /\/api\/photo\?album=/.test(src) ? src + "&w=" + w : src; }
+  // Staff: delete a photo (its Discord message) from the library
+  $("phLbDel").addEventListener("click", async () => {
+    const it = PH.open; if (!it || !isStaff) return;
+    if (!confirm("Eliminare questa foto? Sparisce dall'app e dal canale Discord (con tutte le foto dello stesso messaggio).")) return;
+    const btn = $("phLbDel"), out = $("phLbOut"); btn.disabled = true; out.textContent = "Elimino...";
+    try {
+      const { auth } = await firebase();
+      const m = String(it.id).split("-")[0];
+      const r = await fetch(`/api/photos?album=${encodeURIComponent(it.album)}&m=${m}`, { method: "DELETE", headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken() } });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Non riuscito, riprova.");
+      // the photo list is cached for a few minutes: remember what was deleted so it does not come back
+      PH.gone.add(m); closePhoto();
+      PH.items = []; PH.next = null; PH.cur = {}; PH.done = {}; PH.buf = []; loadPhotos(); setStatus("Foto eliminata.", "ok");
+    } catch (err) { out.textContent = err.message; btn.disabled = false; }
+  });
+  const closePhoto = () => { $("phLb").classList.add("hidden"); $("phLbMedia").replaceChildren(); PH.open = null; };
   $("phLbClose").addEventListener("click", closePhoto);
   $("phLb").addEventListener("click", e => { if (e.target === $("phLb") || e.target === $("phLbMedia")) closePhoto(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && !$("phLb").classList.contains("hidden")) closePhoto(); });
   $("phLb").addEventListener("click", async e => {
-    const b = e.target.closest("[data-use]"); if (!b || !PH.cur) return;
-    const it = PH.cur, src = absUrl(it.src), out = $("phLbOut");
+    const b = e.target.closest("[data-use]"); if (!b || !PH.open) return;
+    const it = PH.open, out = $("phLbOut");
+    const W = { avatar: 512, banner: 1500, bg: 1920, cardbg: 1200 }[b.dataset.use];
+    const src = it.kind === "image" && W ? sized(absUrl(it.src), W) : absUrl(it.src);
     const ensureCard = () => { if (!draft.card) draft.card = normalizeCard({}); draft.card = normalizeCard(draft.card); };
     try {
       if (b.dataset.use === "bg") {

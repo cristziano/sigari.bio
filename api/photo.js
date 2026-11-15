@@ -4,7 +4,7 @@ const { limited } = require("./_limit");
 // With &raw=1 it sends the file itself (used to turn a photo into a sticker, max 4 MB).
 // POST /api/photo?upload=1&name=<file name>  (Authorization: Bearer <Firebase token>, body = the file)
 // The dashboard's uploads: saved by the bot in the hidden "18k-file" channel. Answers { url } with a lasting link.
-const { ALBUMS, SNOWFLAKE, discord, mediaOf, fileChannel } = require("./_discord");
+const { ALBUMS, SNOWFLAKE, discord, mediaOf, fileChannel, thumbUrl } = require("./_discord");
 const { verifyUser } = require("./_auth");
 const { adminToken, reportSystem } = require("./_admin");
 
@@ -161,9 +161,12 @@ module.exports = async (req, res) => {
       res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
       return res.end(buf);
     }
+    // &w=512 etc.: a light WebP of a still picture from Discord's media proxy (GIFs and videos stay as they are)
+    const w = parseInt(url.searchParams.get("w") || "0", 10);
+    const still = md.kind === "image" && !md.video && md.thumb && w >= 64 && w <= 2400;
     // Discord links last about a day: one hour of cache is safe
     res.statusCode = 302;
-    res.setHeader("Location", md.url);
+    res.setHeader("Location", still ? thumbUrl(md.thumb, w) : md.url);
     res.setHeader("Cache-Control", "public, max-age=1800, s-maxage=3600");
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.end();

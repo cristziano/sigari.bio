@@ -4,7 +4,7 @@
 //   /pfp nome:xyz   -> the profile 18kbio.xyz/xyz
 //   /pfp utente:@x  -> the profile of that Discord user
 //   /posta pfp:<file> banner:<file> canale crediti
-//                   -> (admins and the "pfps" role) the bot posts pfp + banner in the channel, with a
+//                   -> (admins, the "pfps" role and the "developer"/"dev" role) the bot posts pfp + banner in the channel, with a
 //                      Discord-profile style preview, "by …" and a ⬇ button that sends you both files
 // Every request is checked with the application's public key, fetched with the bot token.
 const crypto = require("crypto");
@@ -69,7 +69,8 @@ async function canPost(i) {
   if (!mine.length || !i.guild_id) return false;
   if (!roleCache[i.guild_id]) roleCache[i.guild_id] = discord(`/guilds/${i.guild_id}/roles`).catch(() => []);
   const roles = await roleCache[i.guild_id];
-  return roles.some(r => mine.includes(r.id) && /pfp/i.test(r.name));
+  // roles allowed: "pfps" and "developer"/"dev" (also with emoji or symbols around the name)
+  return roles.some(r => mine.includes(r.id) && /pfp|(^|[^a-z])dev(eloper)?s?([^a-z]|$)/i.test(r.name));
 }
 const extOf = a => (String(a.filename || "").match(/\.(png|jpe?g|gif|webp)$/i) || [, "png"])[1].toLowerCase().replace("jpeg", "jpg");
 async function getFile(a) {
@@ -143,7 +144,7 @@ module.exports = async (req, res) => {
     const opt = Object.fromEntries((i.data.options || []).map(o => [o.name, o.value]));
     let ok = false;
     try { ok = await canPost(i); } catch (_) { ok = false; }
-    if (!ok) return secret(res, "Questo comando è solo per gli admin e per chi ha il ruolo pfps.");
+    if (!ok) return secret(res, "Questo comando è solo per gli admin e per chi ha il ruolo pfps o developer.");
     // answer now ("sto postando…"), do the work right after: Discord waits only 3 seconds
     res.setHeader("Content-Type", "application/json");
     const work = doPosta(i, opt);
