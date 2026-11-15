@@ -44,30 +44,33 @@ const ICON_WEB = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://
 // Where a social opens: the profile page of that name, or a search for it (in the app or on the web)
 const enc = encodeURIComponent;
 const SOCIAL_FIND = {
-  discord: v => /^\d{15,20}$/.test(v) ? `https://discord.com/users/${v}` : `https://www.google.com/search?q=${enc('discord "' + v + '"')}`,
+  // Discord: a user ID opens the profile, an invite opens the server; a plain username has no link (it gets copied)
+  discord: v => /^\d{15,20}$/.test(v) ? `https://discord.com/users/${v}` : /^(discord\.gg|discord\.com\/invite)\/[\w-]+$/i.test(v) ? `https://${v}` : null,
   applemusic: v => `https://music.apple.com/search?term=${enc(v)}`,
   playstation: v => `https://psnprofiles.com/${enc(v)}`,
   xbox: v => `https://www.xboxgamertag.com/search/${enc(v)}`,
-  epicgames: v => `https://www.google.com/search?q=${enc('epic games "' + v + '"')}`,
-  riotgames: v => v.includes("#") ? `https://tracker.gg/valorant/profile/riot/${enc(v)}/overview` : `https://www.google.com/search?q=${enc('riot id "' + v + '"')}`,
+  epicgames: () => null,
+  riotgames: v => v.includes("#") ? `https://tracker.gg/valorant/profile/riot/${enc(v)}/overview` : null,
   tumblr: v => `https://www.tumblr.com/${enc(v)}`,
-  mastodon: v => { const m = v.match(/^@?([^@\s]+)@([a-z0-9.-]+\.[a-z]{2,})$/i); return m ? `https://${m[2]}/@${m[1]}` : `https://www.google.com/search?q=${enc('mastodon "' + v + '"')}`; },
+  mastodon: v => { const m = v.match(/^@?([^@\s]+)@([a-z0-9.-]+\.[a-z]{2,})$/i); return m ? `https://${m[2]}/@${m[1]}` : null; },
   roblox: v => /^\d+$/.test(v) ? `https://www.roblox.com/users/${v}/profile` : `https://www.roblox.com/search/users?keyword=${enc(v)}`,
   steam: v => /^\d{17}$/.test(v) ? `https://steamcommunity.com/profiles/${v}` : `https://steamcommunity.com/id/${enc(v)}`,
   spotify: v => /^[a-z0-9._-]{1,40}$/i.test(v) ? `https://open.spotify.com/user/${v}` : `https://open.spotify.com/search/${enc(v)}/users`,
   whatsapp: v => `https://wa.me/${v.replace(/\D/g, "")}`,
   email: v => `mailto:${v}`,
-  website: v => /\.[a-z]{2,}/i.test(v) ? `https://${v}` : `https://www.google.com/search?q=${enc(v)}`,
+  website: v => /\.[a-z]{2,}/i.test(v) ? `https://${v}` : null,
   bluesky: v => `https://bsky.app/profile/${v.includes(".") ? v : v + ".bsky.social"}`
 };
 export function socialHref(sd, value) {
   const raw = String(value || "").trim();
   if (!raw) return null;
   if (/^(https?:|mailto:)/i.test(raw)) return safeLinkUrl(raw);
+  // a whole address pasted without https ("instagram.com/nome", "www.tiktok.com/@nome", "discord.gg/abc"): use it as it is
+  if (sd.key !== "email" && /^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+\/\S+$/i.test(raw)) return safeLinkUrl("https://" + raw);
   const v = raw.replace(/^@/, "");
-  if (SOCIAL_FIND[sd.key]) return safeLinkUrl(SOCIAL_FIND[sd.key](sd.key === "mastodon" ? raw : v));
+  if (SOCIAL_FIND[sd.key]) { const u = SOCIAL_FIND[sd.key](sd.key === "mastodon" ? raw : v); return u ? safeLinkUrl(u) : null; }
   if (sd.base) return safeLinkUrl(sd.base + enc(v).replace(/%2F/g, "/"));
-  return safeLinkUrl(`https://www.google.com/search?q=${enc(sd.label + ' "' + v + '"')}`);
+  return null; // no profile address for this platform: the icon copies the name
 }
 
 export const LINK_DOMAINS = [["18kbio.xyz", "il tuo link vero"], ["18k.bio", "classico"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
@@ -784,6 +787,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-soc{display:flex;flex-wrap:wrap;gap:8px;justify-content:var(--pk-soc-align,center);margin-top:16px}
 .pk-soc a{width:var(--pk-soc);height:var(--pk-soc);display:grid;place-items:center;border-radius:50%;transition:transform .2s}
 .pk-soc a:hover{transform:translateY(-2px)}
+.pk-soc a[data-copy]{position:relative}
+.pk-soc a[data-copy=copiato]::after{content:"copiato";position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:3px 7px;border-radius:6px;background:#fff;color:#000;font:600 11px/1.2 system-ui,sans-serif;white-space:nowrap;pointer-events:none}
 .pk-soc i{width:48%;height:48%;background:var(--pk-icon);-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
 .pk[data-soc=brand] .pk-soc i{background:var(--brand)}
 .pk[data-soc=outline] .pk-soc a{border:1px solid var(--pk-border)}
@@ -2002,10 +2007,21 @@ export function mountProfile(root, input, opts = {}) {
       const v = p.socials[sd.key];
       if (!v) return;
       const raw = String(v).trim();
-      const url = socialHref(sd, raw);
-      const n = el(url ? "a" : "span");
+      let url = socialHref(sd, raw);
+      if (!url && sd.key === "discord" && /^\d{15,20}$/.test(String(a.widgets.discordId || ""))) url = `https://discord.com/users/${a.widgets.discordId}`;
+      const n = el("a");
       if (url) { n.href = url; n.target = "_blank"; n.rel = "noopener noreferrer"; n.addEventListener("click", () => track("s", sd.key)); }
-      n.title = url ? sd.label : `${sd.label}: ${raw}`;
+      else {
+        // no public page (e.g. a Discord username): a click copies the name, like the other bio sites do
+        const name = raw.replace(/^@/, "");
+        n.href = "#"; n.setAttribute("role", "button"); n.dataset.copy = "";
+        n.addEventListener("click", e => {
+          e.preventDefault(); track("s", sd.key);
+          const done = () => { n.dataset.copy = "copiato"; clearTimeout(n._t); n._t = setTimeout(() => { n.dataset.copy = ""; }, 1600); };
+          (navigator.clipboard ? navigator.clipboard.writeText(name) : Promise.reject()).then(done, () => { prompt(sd.label, name); });
+        });
+      }
+      n.title = url ? sd.label : `${sd.label}: ${raw} (clicca per copiare)`;
       n.setAttribute("aria-label", sd.label);
       const i = el("i"); i.style.setProperty("--ico", `url("${socialIcon(sd)}")`); i.style.setProperty("--brand", sd.color);
       n.appendChild(i);
