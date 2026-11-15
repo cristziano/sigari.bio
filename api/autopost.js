@@ -30,7 +30,11 @@ const TOPICS = [
 ];
 
 
+// PAUSED (2026-11-15): the bot was posting too many pictures. Set to false to turn it back on.
+const PAUSED = true;
+
 module.exports = async (req, res) => {
+  if (PAUSED) { res.setHeader("Content-Type", "application/json; charset=utf-8"); res.setHeader("Cache-Control", "no-store"); return res.end(JSON.stringify({ paused: true })); }
   if (limited(req, res, "autopost", 10)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
