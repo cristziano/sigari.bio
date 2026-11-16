@@ -134,6 +134,9 @@
   .view.soon > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
   .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 16px; margin-bottom:-120px; text-align:center; pointer-events:none; }
   .soon-veil span { font-size:13px; color:var(--m); }
+  .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
+  .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .dc-link-t span { font-size:13px; color:var(--m); }
   /* one card "coming soon" (e.g. Last.fm): greyed out, not clickable, the label in the middle */
   .soon-card { position:relative; overflow:hidden; }
   .soon-card > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
@@ -1225,6 +1228,7 @@
     <section class="view hidden" id="view-links">
       <h2>Link</h2>
       <p class="desc">Tocca un social, scrivi il nome utente, fatto. Sotto aggiungi i tuoi link personalizzati.</p>
+      <div class="dc-link card"><div class="dc-link-t"><b>Discord</b><span id="dcLinkState">Collegalo e l'icona sul profilo apre il tuo profilo Discord vero.</span></div><button class="save-btn sm" id="dcLinkBtn" type="button">Collega Discord</button></div>
       <div class="search-field" style="margin-top:22px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         <input id="socialSearch" type="text" placeholder="Cerca tra 38 piattaforme" autocomplete="off">
@@ -3264,6 +3268,30 @@
     if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Last.fm lo stesso?")) return;
     location.href = "/api/lastfm?connect=1";
   });
+  // "Collega Discord" (like guns.lol): Discord gives us your id, so the profile icon opens discord.com/users/<id>
+  function renderDcLink() {
+    const id = draft.appearance.widgets.discordId, name = draft.socials && draft.socials.discord;
+    $("dcLinkState").textContent = id ? `Collegato${name ? ": " + name : ""}. L'icona sul profilo apre il tuo profilo Discord.` : "Collegalo e l'icona sul profilo apre il tuo profilo Discord vero.";
+    $("dcLinkBtn").textContent = id ? "Ricollega" : "Collega Discord";
+  }
+  $("dcLinkBtn").addEventListener("click", () => {
+    if (mode === "guest") return setStatus("Per collegare Discord serve un account (è gratis).", "err");
+    if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Discord lo stesso?")) return;
+    location.href = "/api/discord-login?link=1";
+  });
+  function discordReturn() {
+    const h = new URLSearchParams((location.hash || "").slice(1));
+    if (!h.has("dlink")) return false;
+    const id = String(h.get("dlink")).replace(/\D/g, "").slice(0, 20), name = String(h.get("dname") || "").replace(/[^a-z0-9_.]/gi, "").slice(0, 32);
+    if (/^\d{15,20}$/.test(id)) {
+      draft.appearance.widgets.discordId = id;
+      draft.socials = draft.socials || {}; draft.socials.discord = name || id;
+      changed(); syncControls(); renderDcLink();
+      setStatus(`Discord collegato${name ? ": " + name : ""}. Premi Salva.`, "ok");
+    }
+    history.replaceState(null, "", location.pathname + location.search + "#links");
+    return true;
+  }
   function lastfmReturn() {
     const h = new URLSearchParams((location.hash || "").slice(1));
     if (h.has("lastfm")) {
@@ -5103,8 +5131,9 @@
     updateSaveBar();
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     buildSearchIndex();
-    const fromLastfm = lastfmReturn();
-    const first = fromLastfm ? "music" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
+    const fromLastfm = lastfmReturn(), fromDiscord = discordReturn();
+    renderDcLink();
+    const first = fromLastfm ? "music" : fromDiscord ? "links" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
     showView(first);
     openTemplateParam();
   }

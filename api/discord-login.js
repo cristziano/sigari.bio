@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
   // started on 18kbio.xyz: hop to the address Discord knows, remembering where to go back
   if (host !== HOME && !url.searchParams.get("code") && !url.searchParams.get("error")) {
     res.statusCode = 302;
-    res.setHeader("Location", `https://${HOME}/api/discord-login?site=${encodeURIComponent(SITES.includes(host) ? host : "18kbio.xyz")}`);
+    res.setHeader("Location", `https://${HOME}/api/discord-login?site=${encodeURIComponent(SITES.includes(host) ? host : "18kbio.xyz")}${url.searchParams.get("link") === "1" ? "&link=1" : ""}`);
     return res.end();
   }
   const site = SITES.includes(url.searchParams.get("site")) ? url.searchParams.get("site") : (cookie(req, "dlsite") || HOME);
@@ -52,7 +52,9 @@ module.exports = async (req, res) => {
     if (url.searchParams.get("error")) return back(res, "derr=" + encodeURIComponent("Accesso con Discord annullato."), site);
     // Step 1: off to Discord, with a random "state" kept in a short cookie against forged returns
     const state = crypto.randomBytes(16).toString("hex");
-    res.setHeader("Set-Cookie", [`dlstate=${state}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`, `dlsite=${encodeURIComponent(site)}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`]);
+    // ?link=1: "Collega Discord" from the dashboard (already signed in): we only need the Discord id, no sign-in
+    const mode = url.searchParams.get("link") === "1" ? "link" : "login";
+    res.setHeader("Set-Cookie", [`dlstate=${state}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`, `dlsite=${encodeURIComponent(site)}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`, `dlmode=${mode}; Path=/api/discord-login; Max-Age=600; HttpOnly; Secure; SameSite=Lax`]);
     res.statusCode = 302;
     res.setHeader("Location", "https://discord.com/oauth2/authorize?" + new URLSearchParams({ client_id: CLIENT_ID, response_type: "code", scope: "identify email", redirect_uri: redirect, state, prompt: "none" }));
     return res.end();
@@ -60,7 +62,8 @@ module.exports = async (req, res) => {
 
   try {
     if (!url.searchParams.get("state") || url.searchParams.get("state") !== cookie(req, "dlstate")) throw new Error("Accesso scaduto, riprova.");
-    res.setHeader("Set-Cookie", ["dlstate=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax", "dlsite=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax"]);
+    const linking = cookie(req, "dlmode") === "link";
+    res.setHeader("Set-Cookie", ["dlstate=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax", "dlsite=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax", "dlmode=; Path=/api/discord-login; Max-Age=0; HttpOnly; Secure; SameSite=Lax"]);
     const t = await fetch("https://discord.com/api/v10/oauth2/token", {
       method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ client_id: CLIENT_ID, client_secret: process.env.DISCORD_CLIENT_SECRET, grant_type: "authorization_code", code, redirect_uri: redirect })
@@ -68,6 +71,12 @@ module.exports = async (req, res) => {
     if (!t.access_token) throw new Error("Discord non ha confermato l'accesso, riprova.");
     const me = await fetch("https://discord.com/api/v10/users/@me", { headers: { Authorization: "Bearer " + t.access_token } }).then(r => r.json());
     if (!me.id) throw new Error("Discord non ha dato il tuo profilo, riprova.");
+    if (linking) {
+      // back to the dashboard with the Discord id and name: the profile icon will open discord.com/users/<id>
+      res.statusCode = 302;
+      res.setHeader("Location", (SITES.includes(site) ? `https://${site}` : "") + "/dashboard.html#" + new URLSearchParams({ dlink: me.id, dname: me.username || "" }).toString());
+      return res.end();
+    }
     const token = customToken("discord:" + me.id, { discord: me.id });
     const name = me.global_name || me.username || "";
     const email = me.verified && me.email ? me.email : "";
