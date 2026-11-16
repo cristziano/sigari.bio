@@ -326,6 +326,8 @@ export function normalizeAppearance(raw) {
   if (a.avatar.deco === "custom" && !a.avatar.decoUrl) a.avatar.deco = "none";
   a.avatar.discord = !!a.avatar.discord;
   a.avatar.discordDeco = !!a.avatar.discordDeco;
+  // 2026-11-16: avatar decorations are switched off for everyone (they come back when the new images are ready)
+  a.avatar.deco = "none"; a.avatar.decoUrl = ""; a.avatar.discordDeco = false;
   a.banner.type = ["none", "image", "video"].includes(a.banner.type) ? a.banner.type : "none";
   a.banner.url = (a.banner.type === "video" ? safeUrl(a.banner.url) : safeUrl(a.banner.url, true)) || "";
   a.banner.height = clamp(a.banner.height, 70, 240, 120);

@@ -2332,7 +2332,6 @@
     ["Scia del mouse", "Puntini, scintille o fantasma dietro al mouse.", "scia mouse trail puntini scintille fantasma", "effects", "appearance.cursor.trail"],
     ["Suoni", "Un suono quando passi o clicchi sui bottoni.", "suono suoni audio click hover effetti sonori sfx", "effects", "appearance.sfx.click"],
     ["Foto profilo", "Forma, grandezza, anello e decorazione della pfp.", "foto profilo pfp avatar immagine tonda cerchio anello", "customize", "appearance.avatar.size"],
-    ["Decorazione della foto (staff)", "Cornici animate intorno alla foto profilo, o la tua. Solo per lo staff.", "decorazione cornice discord avatar deco anello pfp", "customize", "appearance.avatar.decoSize"],
     ["Banner", "Un'immagine o un video sopra al profilo.", "banner copertina header immagine sopra", "customize", "appearance.banner.type"],
     ["Bottoni dei link", "Stile, forma, ombra, animazione e grandezza dei bottoni.", "bottoni pulsanti link forma stile ombra hover tasti", "links", "appearance.buttons.variant"],
     ["Social", "Instagram, TikTok, Discord e altre 35 piattaforme.", "social instagram tiktok discord youtube x twitter twitch snapchat icone", "links", "#socialSearch"],
@@ -3498,7 +3497,9 @@
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
     $$("select[data-opts]").forEach(sel => { sel.innerHTML = (OPTS[sel.dataset.opts] || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join(""); });
     pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "404").slice(0, 9)}</span><small>${l}</small>`);
-    ensureFonts(FONTS.map(f => f[0]));
+    // the ~20 font previews are heavy: load them only when the font list comes on screen
+    const allFonts = () => ensureFonts(FONTS.map(f => f[0]));
+    if ("IntersectionObserver" in window) { const io = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { allFonts(); io.disconnect(); } }); io.observe($("fontPick")); io.observe($("bodyFont")); } else allFonts();
     $("bodyFont").innerHTML = FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("") + '<option value="custom">Il tuo font</option>';
     // Decorations as tiles with their preview (like a shop), filtered by group
     pickGrid($("decoPick"), "appearance.avatar.deco", AVATAR_DECOS, (v, l) => `<span class="dk-prev"><i class="dk-av"></i>${v === "none" ? "" : v === "custom" ? '<span class="dk-up">↑</span>' : `<svg viewBox="0 0 100 100" class="pk-av-deco" aria-hidden="true">${decoSvg(v)}</svg>`}</span><small>${l}</small>`);
@@ -4725,7 +4726,7 @@
       isStaff = owners.includes(uid) || (await F.getDoc(F.doc(db, "staff", uid))).exists();
     } catch (_) { isStaff = false; }
     $$('[data-view="staff"]').forEach(b => { b.hidden = !isStaff; });
-    $("decoBox").hidden = !isStaff; // avatar decorations: staff only for now
+    $("decoBox").hidden = true; // avatar decorations: off for everyone for now
     $$('#mnav option[value="staff"]').forEach(o => { o.hidden = !isStaff; o.disabled = !isStaff; });
     if (isStaff) staffNews();
   }
