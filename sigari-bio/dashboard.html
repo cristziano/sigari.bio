@@ -1142,6 +1142,7 @@
           <div class="gc span-2"><div class="label">descrizione <span class="val" data-count="bio" data-max="300"></span></div>
           <div class="fmt" id="bioFmt"></div>
           <textarea class="text" data-k="bio" id="bioInput" maxlength="300" placeholder="Una riga su di te"></textarea>
+          <p class="hint bio-lines-note" id="bioLinesNote" hidden>Sul profilo adesso si vede la <b>descrizione animata</b> (righe che si scrivono da sole). <button type="button" class="ghost-btn sm" data-go="effects" id="bioLinesGo">Modificala qui</button></p>
           <p class="hint">Seleziona del testo e usa i bottoni, oppure scrivi: **grassetto** *corsivo* ||spoiler|| [glow]testo[/glow] [#ff5fc8]colore[/] [testo](https://link)</p>
           </div>
           <div class="gc"><div class="label">nome visualizzato <span class="val" data-count="displayName" data-max="40"></span></div><input class="text" id="dnInput" data-k="displayName" maxlength="40" placeholder="Il tuo nome"></div>
@@ -1467,7 +1468,7 @@
         <div class="seg" data-seg="appearance.bioFx" data-o="bioFx"></div>
         <div class="field" data-when="appearance.bioFx=typewriter|cycle">
           <div class="label">frasi, una per riga (massimo 6)</div>
-          <textarea class="text" data-k="appearance.bioLines" data-type="lines" placeholder="nero, bianco e senza filtri&#10;vota la mia pagina"></textarea>
+          <textarea class="text" id="bioLinesInput" data-k="appearance.bioLines" data-type="lines" placeholder="nero, bianco e senza filtri&#10;vota la mia pagina"></textarea>
           <p class="hint">Se lasci vuoto, usa la tua descrizione.</p>
           <div class="label">velocità <span class="val" data-show="appearance.typeSpeed" data-unit=" ms"></span></div>
           <input type="range" min="20" max="200" step="5" data-k="appearance.typeSpeed">
@@ -2490,6 +2491,7 @@
   }
 
   function syncControls() {
+    if (typeof renderBioNote === "function") renderBioNote();
     $$("[data-k]").forEach(t => writeControl(t, getPath(draft, t.dataset.k)));
     $$("[data-hex]").forEach(t => { if (document.activeElement !== t) t.value = getPath(draft, t.dataset.hex) || ""; });
     $$("[data-seg]").forEach(renderSeg);
@@ -2582,6 +2584,7 @@
   function changed() {
     if (trial) endTrial(false, true);
     syncDerived();
+    if (typeof renderBioNote === "function") renderBioNote();
     updateSaveBar();
     if (pvQueued) return;
     pvQueued = true;
@@ -2623,6 +2626,8 @@
     else if (kind === "social") { view = "links"; find = () => [...$("socialActive").querySelectorAll(".active-card")].find(c => (c.querySelector("strong") || {}).textContent === key) || $("socialActive"); }
     else if (kind === "widget") { view = key === "lf" ? "music" : "widgets"; find = () => (WIDGET_FIELD[key] && document.querySelector(`[data-k="${WIDGET_FIELD[key]}"]`)) || $("wpList"); }
     else if (kind === "music") { view = "music"; find = () => $("msQuery"); }
+    // the profile shows the animated lines when there are some: open those, not the plain description
+    else if (kind === "bio" && (draft.appearance.bioLines || []).length) { view = "effects"; find = () => $("bioLinesInput"); }
     if (view) { showView(view); setTimeout(() => flashEl(find()), 90); return; }
     const target = PICK_TARGET[part] || "customize";
     const [v, anchor] = target.split("#");
@@ -3552,6 +3557,8 @@
     history.replaceState(null, "", location.pathname + location.search + "#music");
     return true;
   }
+  function renderBioNote() { const n = $("bioLinesNote"); if (n) n.hidden = !(draft && (draft.appearance.bioLines || []).length); }
+  $("bioLinesGo").addEventListener("click", () => setTimeout(() => flashEl($("bioLinesInput")), 120));
   function renderLastfm() {
     lastfmReady(); spotifyReady();
     const u = draft.appearance.lastfm.user;
@@ -5479,7 +5486,7 @@
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     buildSearchIndex();
     const fromLastfm = lastfmReturn() || spotifyReturn(), fromDiscord = discordReturn();
-    renderDcLink(); renderCrypto();
+    renderDcLink(); renderCrypto(); renderBioNote();
     const first = fromLastfm ? "music" : fromDiscord ? "links" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
     showView(first);
     openTemplateParam();
