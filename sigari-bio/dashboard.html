@@ -2627,7 +2627,7 @@
     else if (kind === "widget") { view = key === "lf" ? "music" : "widgets"; find = () => (WIDGET_FIELD[key] && document.querySelector(`[data-k="${WIDGET_FIELD[key]}"]`)) || $("wpList"); }
     else if (kind === "music") { view = "music"; find = () => $("msQuery"); }
     // the profile shows the animated lines when there are some: open those, not the plain description
-    else if (kind === "bio" && (draft.appearance.bioLines || []).length) { view = "effects"; find = () => $("bioLinesInput"); }
+    else if (kind === "bio" && bioShowsLines()) { view = "effects"; find = () => $("bioLinesInput"); }
     if (view) { showView(view); setTimeout(() => flashEl(find()), 90); return; }
     const target = PICK_TARGET[part] || "customize";
     const [v, anchor] = target.split("#");
@@ -3558,7 +3558,15 @@
     history.replaceState(null, "", location.pathname + location.search + "#music");
     return true;
   }
-  function renderBioNote() { const n = $("bioLinesNote"); if (n) n.hidden = !(draft && (draft.appearance.bioLines || []).length); }
+  // which text the profile really shows (same rule as profile-kit): the animated lines only with the
+  // "macchina da scrivere" / "a rotazione" effect, or when the plain description is empty
+  function bioShowsLines() {
+    if (!draft) return false;
+    const a = draft.appearance, lines = (a.bioLines || []).filter(x => String(x).trim());
+    if (!lines.length) return false;
+    return !String(draft.bio || "").trim() || a.bioFx === "typewriter" || (a.bioFx === "cycle" && lines.length > 1);
+  }
+  function renderBioNote() { const n = $("bioLinesNote"); if (n) n.hidden = !bioShowsLines(); }
   $("bioLinesGo").addEventListener("click", () => setTimeout(() => flashEl($("bioLinesInput")), 120));
   function renderLastfm() {
     lastfmReady(); spotifyReady();
