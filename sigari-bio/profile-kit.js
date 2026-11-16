@@ -330,7 +330,10 @@ export function normalizeAppearance(raw) {
   a.badges.color = safeColor(a.badges.color, "");
   a.badges.style = ["box", "round", "plain"].includes(a.badges.style) ? a.badges.style : "box";
   const cb = isObj(a.badges.custom) ? a.badges.custom : {};
-  a.badges.custom = { on: !!cb.on, icon: BADGE_ICONS[cb.icon] ? cb.icon : "star", label: String(cb.label || "").slice(0, 24), color: safeColor(cb.color, "") };
+  a.badges.custom = { on: !!cb.on, icon: BADGE_ICONS[cb.icon] ? cb.icon : "star", label: String(cb.label || "").slice(0, 24), color: safeColor(cb.color, ""),
+    // more control: only this badge, background, size, shape, glow, capitals, an emoji instead of the icon (or no icon)
+    only: !!cb.only, bg: safeColor(cb.bg, ""), size: clamp(cb.size, 80, 180, 100), shape: ["pill", "square", "plain"].includes(cb.shape) ? cb.shape : "pill",
+    glow: !!cb.glow, upper: !!cb.upper, noIcon: !!cb.noIcon, emoji: [...String(cb.emoji || "").trim()].slice(0, 2).join("") };
   a.sfx.hover = pickOne(a.sfx.hover, SFX, "none");
   a.sfx.click = pickOne(a.sfx.click, SFX, "none");
   a.sfx.volume = clamp(a.sfx.volume, 0, 100, 50);
@@ -1011,7 +1014,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-clans a.primary{background:var(--pk-accent);border-color:var(--pk-accent);color:var(--pk-on-accent,#000)}
 .pk[data-bstyle=round] .pk-badge{border-radius:50%}
 .pk[data-bstyle=plain] .pk-badge{background:none;border-color:transparent}
-.pk-badge.custom{width:auto;padding:0 8px 0 6px;gap:4px;display:inline-flex;align-items:center;font-size:11px;font-weight:600;color:var(--pk-cb,var(--pk-badge,var(--pk-accent)))}
+.pk-badge.custom{width:auto;padding:0 8px 0 6px;gap:4px;display:inline-flex;align-items:center;font-size:11px;font-weight:600;color:var(--pk-cb,var(--pk-badge,var(--pk-accent)))}.pk-badge.custom{background:var(--pk-cbbg,var(--pk-surface))}.pk-badge.cb-pill{border-radius:999px}.pk-badge.cb-square{border-radius:4px}.pk-badge.cb-plain{background:none;border-color:transparent}.pk-badge.cb-glow{box-shadow:0 0 12px var(--pk-cb,var(--pk-accent)),0 0 26px color-mix(in srgb,var(--pk-cb,var(--pk-accent)) 50%,transparent)}.pk-badge.cb-up{text-transform:uppercase;letter-spacing:.06em}.cb-emo{font-size:12px;line-height:1}
 .pk-badge{color:var(--pk-badge,var(--pk-accent))}
 .pk-rt b{font-weight:700}.pk-rt i{font-style:italic}.pk-rt u{text-decoration:underline}.pk-rt s{text-decoration:line-through}
 .pk-rt code{font-family:ui-monospace,monospace;font-size:.92em;padding:1px 5px;border-radius:5px;background:var(--pk-surface);border:1px solid var(--pk-border)}
@@ -2045,12 +2048,14 @@ export function mountProfile(root, input, opts = {}) {
     const cb = a.badges.custom;
     if (a.badges.show && !a.privacy.hideBadges && (p.badges.length || (cb.on && cb.label))) {
       const bx = el("div", "pk-badges");
-      p.badges.forEach(b => { const [tip, path] = BADGES[b]; const n = el("span", "pk-badge"); n.dataset.tip = tip; n.innerHTML = svg(path, 13); bx.appendChild(n); });
+      if (!(cb.on && cb.label && cb.only)) p.badges.forEach(b => { const [tip, path] = BADGES[b]; const n = el("span", "pk-badge"); n.dataset.tip = tip; n.innerHTML = svg(path, 13); bx.appendChild(n); });
       if (cb.on && cb.label) {
-        const n = el("span", "pk-badge custom");
-        n.innerHTML = svg(BADGE_ICONS[cb.icon], 12);
+        const n = el("span", "pk-badge custom cb-" + cb.shape + (cb.glow ? " cb-glow" : "") + (cb.upper ? " cb-up" : ""));
+        if (cb.emoji) n.appendChild(el("span", "cb-emo", cb.emoji)); else if (!cb.noIcon) n.innerHTML = svg(BADGE_ICONS[cb.icon], 12);
         n.append(cb.label);
         if (cb.color) n.style.setProperty("--pk-cb", cb.color);
+        if (cb.bg) n.style.setProperty("--pk-cbbg", cb.bg);
+        if (cb.size !== 100) n.style.zoom = String(cb.size / 100);
         bx.appendChild(n);
       }
       badges.push(bx);

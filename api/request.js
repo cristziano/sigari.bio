@@ -76,10 +76,30 @@ async function lastRequest(code) {
   return 0;
 }
 
+// GET /api/request?count=1 (staff only): how many accounts and how many public profiles there are
+async function counts(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  try {
+    const uid = await verifyUser(req);
+    const { isStaffUid } = require("./_admin");
+    if (!(await isStaffUid(uid))) { res.statusCode = 403; return res.end(JSON.stringify({ error: "Solo per lo staff." })); }
+    const token = await adminToken();
+    const base = "https://firestore.googleapis.com/v1/projects/kbio-c6126/databases/(default)/documents";
+    const count = (col, where) => fetch(`${base}:runAggregationQuery`, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, signal: AbortSignal.timeout(8000),
+      body: JSON.stringify({ structuredAggregationQuery: { structuredQuery: { from: [{ collectionId: col }], ...(where ? { where } : {}) }, aggregations: [{ alias: "n", count: {} }] } }) })
+      .then(r => r.json()).then(j => +((j[0] && j[0].result && j[0].result.aggregateFields && j[0].result.aggregateFields.n && j[0].result.aggregateFields.n.integerValue) || 0));
+    const day = new Date(Date.now() - 864e5).toISOString();
+    const [users, profiles, pub] = await Promise.all([count("users"), count("profiles"), count("profiles", { fieldFilter: { field: { fieldPath: "private" }, op: "EQUAL", value: { booleanValue: false } } })]);
+    res.end(JSON.stringify({ users, profiles, public: pub, at: new Date().toISOString(), since: day }));
+  } catch (e) { res.statusCode = e.status || 500; res.end(JSON.stringify({ error: e.status === 401 ? "Accedi." : "Non riesco a contare adesso." })); }
+}
+
 module.exports = async (req, res) => {
   if (limited(req, res, (/[?&]bug=1/.test(req.url || "") ? "bug" : /[?&]sys=1/.test(req.url || "") ? "sys" : "request"), /[?&]bug=1/.test(req.url || "") ? 5 : 20, /[?&]bug=1/.test(req.url || "") ? 600 : 300)) return; // traffic guard (see _limit.js)
   if (/[?&]bug=1/.test(req.url || "")) return bugReport(req, res);
   if (/[?&]sys=1/.test(req.url || "")) return sysError(req, res);
+  if (/[?&]count=1/.test(req.url || "")) return counts(req, res);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") { res.statusCode = 405; return res.end(JSON.stringify({ error: "Usa POST." })); }

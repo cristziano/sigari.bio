@@ -82,12 +82,15 @@
   /* ===== Mercury login ===== */
   body { background:#050505; }
   .svg-hidden { position:absolute; width:0; height:0; }
-  .stage { position:fixed; inset:0; z-index:0; filter:url(#gooey); opacity:.3; pointer-events:none; overflow:hidden; }
-  @media (max-width:700px){ .stage { opacity:.18; } }
-  .mblob { position:absolute; border-radius:50%; background:linear-gradient(135deg, #e0e0e0, #888); filter:blur(20px);
-    animation:mfloat 20s infinite alternate ease-in-out; box-shadow:inset -10px -10px 20px rgba(0,0,0,.5); transition:margin .1s ease-out; }
+  /* slime: barely visible drops that melt into each other (gooey filter) and wobble slowly */
+  .stage { position:fixed; inset:0; z-index:0; filter:url(#gooey); opacity:.09; pointer-events:none; overflow:hidden; }
+  @media (max-width:700px){ .stage { opacity:.06; } }
+  .mblob { position:absolute; border-radius:46% 54% 58% 42% / 52% 44% 56% 48%; background:radial-gradient(circle at 32% 28%, #fff 0, #d6d6d6 18%, #8a8a8a 55%, #3a3a3a 100%);
+    animation:mfloat 26s infinite alternate ease-in-out, mslime 9s infinite alternate ease-in-out; transition:margin .4s cubic-bezier(.23,1,.32,1); }
+  @keyframes mslime { 0% { border-radius:46% 54% 58% 42% / 52% 44% 56% 48%; } 50% { border-radius:58% 42% 40% 60% / 42% 60% 40% 58%; } 100% { border-radius:40% 60% 54% 46% / 60% 38% 62% 40%; } }
   @keyframes mfloat { 0% { transform:translate(0,0) scale(1); } 33% { transform:translate(10vw,calc(20vh * var(--vz, 1))) scale(1.2); } 66% { transform:translate(-5vw,calc(10vh * var(--vz, 1))) scale(.8); } 100% { transform:translate(5vw,calc(-10vh * var(--vz, 1))) scale(1.1); } }
   @media (prefers-reduced-motion:reduce){ .mblob { animation:none; } }
+  .mblob::after { content:""; position:absolute; left:22%; top:16%; width:22%; height:14%; border-radius:50%; background:rgba(255,255,255,.7); filter:blur(4px); }
 
   .wrap { max-width:440px; }
   .auth { align-items:center; }

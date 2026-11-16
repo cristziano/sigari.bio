@@ -146,6 +146,24 @@
   .cr-coin { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px; border:1px solid var(--line, #262626); background:none; color:inherit; font-size:13px; cursor:pointer; text-align:left; }
   .cr-coin:hover { background:#141414; } .cr-coin:disabled { opacity:.35; cursor:default; }
   @media (max-width:600px){ .cr-row b { display:none; } }
+  .st-counts { display:flex; gap:12px; margin:18px 0 6px; flex-wrap:wrap; }
+  .st-n { flex:1; min-width:150px; padding:16px 18px; border:1px solid var(--line, #262626); border-radius:14px; display:flex; flex-direction:column; gap:4px; }
+  .st-n b { font-size:30px; font-weight:700; letter-spacing:-.03em; }
+  .st-n span { font-size:13px; color:var(--m); }
+  /* smart search, top right */
+  .cmdk-btn { position:fixed; top:92px; right:calc(var(--pvw, 0px) + 18px); z-index:60; display:flex; align-items:center; gap:8px; height:36px; padding:0 10px 0 12px; border:1px solid var(--line, #262626); border-radius:999px; background:#0a0a0a; color:var(--m, #9a9a9a); font:500 13px "Geist", system-ui, sans-serif; cursor:pointer; }
+  .cmdk-btn:hover { color:#fff; border-color:#3a3a3a; } .cmdk-btn:active { transform:scale(.97); }
+  .cmdk-btn kbd { font:500 10.5px "Geist Mono", monospace; padding:2px 6px; border-radius:6px; border:1px solid var(--line, #262626); color:var(--m, #9a9a9a); }
+  @media (max-width:1100px){ .cmdk-btn { display:none; } }
+  .cmdk { position:fixed; inset:0; z-index:4000; background:rgba(0,0,0,.6); display:flex; justify-content:center; align-items:flex-start; padding:10vh 16px 16px; }
+  .cmdk-box { width:min(640px, 100%); max-height:72vh; display:flex; flex-direction:column; border:1px solid #2a2a2a; border-radius:16px; background:#0b0b0b; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+  .cmdk-top { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid #222; color:var(--m, #9a9a9a); }
+  .cmdk-top input { flex:1; background:none; border:0; outline:0; color:#fff; font:500 16px "Geist", system-ui, sans-serif; }
+  .cmdk-res { overflow:auto; padding:8px; display:flex; flex-direction:column; gap:2px; }
+  .ck-item { display:grid; grid-template-columns:1fr auto; gap:2px 12px; text-align:left; padding:10px 12px; border:0; border-radius:10px; background:none; color:#fff; cursor:pointer; }
+  .ck-item b { font-size:14px; font-weight:600; } .ck-item span { grid-column:1; font-size:12.5px; color:var(--m, #9a9a9a); line-height:1.4; }
+  .ck-item small { grid-column:2; grid-row:1; font-size:11px; color:var(--m, #9a9a9a); align-self:center; }
+  .ck-item.on, .ck-item:hover { background:#161616; }
   .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
   .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .dc-link-t span { font-size:13px; color:var(--m); }
@@ -829,6 +847,9 @@
 <link rel="stylesheet" href="ui.css">
 </head>
 <body>
+<button type="button" class="cmdk-btn" id="cmdkBtn" aria-label="Cerca una funzione"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Cerca una funzione</span><kbd>Ctrl K</kbd></button>
+<div class="cmdk hidden" id="cmdk" role="dialog" aria-label="Cerca una funzione"><div class="cmdk-box"><div class="cmdk-top"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="cmdkIn" type="text" placeholder="Cosa vuoi fare? Es. 3d, sfondo video, crypto, musica…" autocomplete="off" aria-label="Cerca una funzione"></div><div class="cmdk-res" id="cmdkRes"></div></div></div>
+
 
 <div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 <div class="loading" id="loading">Caricamento…</div>
@@ -954,6 +975,14 @@
           <div class="field"><div class="label">nome</div><input class="text" data-k="appearance.badges.custom.label" maxlength="24" placeholder="es. fondatore"></div>
           <label class="color-field"><span class="cname">Colore</span><span class="hex-row"><input type="color" data-k="appearance.badges.custom.color"><input class="hex-input" data-hex="appearance.badges.custom.color" maxlength="7" placeholder="come gli altri"></span></label>
           <div class="field span-2"><div class="label">icona</div><div class="iconpick" id="badgeIconPick"></div></div>
+          <div class="field"><div class="label">oppure un'emoji</div><input class="text" data-k="appearance.badges.custom.emoji" maxlength="4" placeholder="es. 🔥"></div>
+          <label class="color-field"><span class="cname">Sfondo</span><span class="hex-row"><input type="color" data-k="appearance.badges.custom.bg"><input class="hex-input" data-hex="appearance.badges.custom.bg" maxlength="7" placeholder="come gli altri"></span></label>
+          <div class="field"><div class="label">forma</div><div class="seg" data-seg="appearance.badges.custom.shape" data-o="cbShape"></div></div>
+          <div class="field"><div class="label">grandezza <span class="val" data-show="appearance.badges.custom.size" data-unit="%"></span></div><input type="range" min="80" max="180" step="5" data-k="appearance.badges.custom.size"></div>
+          <div class="toggle-row span-2"><span>Solo il mio badge<small>Nasconde gli altri badge e lascia solo questo.</small></span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.only"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Bagliore</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.glow"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Tutto maiuscolo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.upper"><span class="track"><span class="knob"></span></span></label></div>
+          <div class="toggle-row"><span>Senza icona</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.badges.custom.noIcon"><span class="track"><span class="knob"></span></span></label></div>
         </div>
       </div>
     </section>
@@ -1165,6 +1194,7 @@
     <section class="view hidden" id="view-staff">
       <h2>Pannello staff</h2>
       <p class="desc">Solo per lo staff di 18k. Dai e togli i badge, nascondi i profili che non rispettano le regole, guarda le segnalazioni.</p>
+      <div class="st-counts" id="stCounts"><div class="st-n"><b id="stUsers">…</b><span>utenti registrati</span></div><div class="st-n"><b id="stPub">…</b><span>profili online</span></div></div>
       <div class="label section-label">cerca un profilo</div>
       <div class="card">
         <div class="row"><div class="prefix-field" style="flex:1;min-width:200px"><span class="prefix">18kbio.xyz/</span><input id="stQuery" maxlength="20" autocomplete="off" placeholder="nome"></div><button class="save-btn sm" id="stOpen" type="button">Apri</button></div>
@@ -2150,6 +2180,116 @@
     box.classList.remove("hidden");
     box._hits = hits;
   }
+  // Smart search: every feature with words people really type (synonyms, english, typos are tolerated) and what it does
+  const FEATURES = [
+    ["Modifica a mano (tipo Canva)", "Sposti e ingrandisci ogni pezzo del profilo trascinandolo: foto, nome, bottoni, icone.", "canva trascina sposta ridimensiona grandezza larghezza altezza posizione mano drag resize muovi", "customize", "#editHand"],
+    ["Inclinazione 3D del profilo", "Il profilo si inclina in 3D seguendo il mouse.", "3d tridimensionale tilt inclina inclinazione prospettiva mouse movimento", "customize", "appearance.card.tilt"],
+    ["Rotazione del profilo", "Gira il profilo di qualche grado.", "ruota rotazione storto girato angolo 3d", "customize", "appearance.card.rot"],
+    ["Sfondo: foto, GIF o video", "Metti una tua foto, una GIF o un video (fino a 40 MB) dietro al profilo.", "sfondo background wallpaper foto video gif immagine mp4 dietro", "customize", "appearance.bg.type"],
+    ["Effetto sopra lo sfondo", "Neve, pioggia, stelle, matrix, ASCII, macchie… o nessuno.", "effetto neve pioggia stelle particelle matrix ascii lava macchie pallini bianchi grana scanline dither cuori aurora 3d", "customize", "appearance.effect"],
+    ["Sfocatura e scurimento dello sfondo", "Rendi lo sfondo più scuro o sfocato per leggere meglio.", "sfoca blur scuro dim oscura luminosita vignetta", "customize", "appearance.bg.blur"],
+    ["Trasparenza del profilo (vetro)", "Quanto si vede lo sfondo attraverso il riquadro del profilo.", "trasparente vetro glass opacita blur riquadro card", "customize", "appearance.card.opacity"],
+    ["Bordo del profilo", "Nessuno, linea, glow o animato, con colore e spessore.", "bordo outline contorno glow cornice animato", "customize", "appearance.card.border"],
+    ["Angoli arrotondati", "Quanto sono tondi gli angoli del profilo.", "angoli arrotondati tondo radius squadrato curva", "customize", "appearance.card.radius"],
+    ["Larghezza e altezza del profilo", "Profilo più largo, più stretto o più alto.", "larghezza lunghezza altezza grande piccolo dimensione width", "customize", "appearance.card.width"],
+    ["Colori", "Colore principale, del testo e delle icone.", "colore colori tinta accento palette tema", "customize", "appearance.colors.primary"],
+    ["Font del testo", "Scegli tra 20 font o carica il tuo.", "font carattere scrittura tipografia lettere testo carica", "effects", "appearance.font.body"],
+    ["Effetti sul nome", "Glitch, neon, glow, arcobaleno, 3D, onda e altri.", "nome effetto glitch neon glow arcobaleno rainbow 3d onda gradiente animato titolo", "effects", "appearance.nameFx"],
+    ["Effetto sulla descrizione", "La bio si scrive da sola, appare piano o lampeggia.", "bio descrizione macchina da scrivere typewriter animazione testo", "effects", "appearance.bioFx"],
+    ["Entrata del profilo", "Come appare il profilo quando si apre la pagina.", "entrata animazione apertura comparsa intro fade", "effects", "appearance.entrance"],
+    ["Schermata 'clicca per entrare'", "Una schermata prima del profilo, utile anche per far partire la musica.", "clicca per entrare enter intro schermata iniziale splash", "effects", "appearance.enter.on"],
+    ["Cursore personalizzato", "Il mouse diventa una tua immagine.", "cursore mouse puntatore freccia cursor", "effects", "appearance.cursor.type"],
+    ["Scia del mouse", "Puntini, scintille o fantasma dietro al mouse.", "scia mouse trail puntini scintille fantasma", "effects", "appearance.cursor.trail"],
+    ["Suoni", "Un suono quando passi o clicchi sui bottoni.", "suono suoni audio click hover effetti sonori sfx", "effects", "appearance.sfx.click"],
+    ["Foto profilo", "Forma, grandezza, anello e decorazione della pfp.", "foto profilo pfp avatar immagine tonda cerchio anello", "customize", "appearance.avatar.size"],
+    ["Decorazione della foto (stile Discord)", "Cornici animate intorno alla foto profilo, o la tua.", "decorazione cornice discord avatar deco anello pfp", "customize", "appearance.avatar.decoSize"],
+    ["Banner", "Un'immagine o un video sopra al profilo.", "banner copertina header immagine sopra", "customize", "appearance.banner.type"],
+    ["Bottoni dei link", "Stile, forma, ombra, animazione e grandezza dei bottoni.", "bottoni pulsanti link forma stile ombra hover tasti", "links", "appearance.buttons.variant"],
+    ["Social", "Instagram, TikTok, Discord e altre 35 piattaforme.", "social instagram tiktok discord youtube x twitter twitch snapchat icone", "links", "#socialSearch"],
+    ["Collega Discord", "L'icona Discord apre il tuo profilo Discord vero.", "discord collega collegamento profilo id account", "links", "#dcLinkBtn"],
+    ["Crypto", "Indirizzi di Bitcoin, Ethereum, Solana e altre: chi visita li copia.", "crypto criptovalute bitcoin btc ethereum eth solana wallet portafoglio indirizzo usdt donazioni", "links", "#crAdd"],
+    ["Dove si vedono social e crypto", "Nel profilo, nella carta o in tutti e due.", "social carta card posizione dove profilo icone", "links", "appearance.socialsStyle.place"],
+    ["Musica", "Playlist, Spotify, SoundCloud, YouTube, con il player che vuoi.", "musica canzone audio mp3 spotify soundcloud player playlist suono", "music", "appearance.music.type"],
+    ["Testi delle canzoni", "Le parole della canzone a tempo, sul profilo.", "testi lyrics parole karaoke canzone", "music", "appearance.music.lyrics"],
+    ["Last.fm", "Mostra cosa stai ascoltando adesso.", "lastfm last.fm ascolto ora scrobble musica", "music", "#lfConnect"],
+    ["Stato Discord dal vivo", "Online, cosa giochi o ascolti, preso da Discord.", "stato discord online presenza gioco lanyard attivita", "widgets", "appearance.widgets.discordPresence"],
+    ["Widget", "GitHub, server Discord, Roblox, meteo, conto alla rovescia, umore, nota.", "widget github roblox meteo countdown conto alla rovescia umore nota orologio", "widgets", "appearance.widgets.github"],
+    ["Guestbook", "Chi visita lascia una firma sul tuo profilo.", "guestbook firma firme commenti messaggi", "widgets", "appearance.widgets.guestbook"],
+    ["Contatti e newsletter", "Un modulo per scriverti o iscriversi.", "contatti email newsletter messaggio modulo form", "widgets", "appearance.widgets.contact"],
+    ["Galleria di foto", "Una galleria di immagini sul profilo.", "galleria foto immagini album gallery", "widgets", "appearance.widgets.gallery"],
+    ["Badge", "Mostra i tuoi badge, scegli forma e colore.", "badge medaglie icone distintivo", "badges", "appearance.badges.show"],
+    ["Badge tutto tuo", "Nome, icona o emoji, colore, sfondo, grandezza, solo quello.", "badge custom personalizzato mio emoji", "badges", "appearance.badges.custom.on"],
+    ["Layout", "Classico, banner, a sinistra, minimal, terminale.", "layout disposizione struttura terminale minimal sinistra", "layout", "appearance.layout"],
+    ["La tua carta", "La tua carta d'identità 18k, con sticker e animazioni.", "carta card tessera identita sticker", "card", "card.on"],
+    ["Testo del bottone della carta", "Cambia 'mostra la mia carta' e togli l'icona.", "bottone carta testo mostra la mia carta icona", "card", "card.btnText"],
+    ["Statistiche", "Visite, clic, da dove arrivano, dispositivi.", "statistiche visite clic analytics numeri views", "analytics", ""],
+    ["Profilo privato o nascosto", "Solo chi ha il link, oppure nessuno.", "privato nascosto privacy segreto non in lista", "settings", "appearance.privacy.private"],
+    ["Nascondi le visite", "Non mostrare il contatore delle visite.", "visite contatore nascondi views", "settings", "appearance.privacy.hideViews"],
+    ["Anteprima del link", "Titolo e immagine quando condividi il link su Discord o WhatsApp.", "anteprima link condividi seo discord whatsapp titolo immagine embed", "page", "appearance.seo.description"],
+    ["Template", "Stili pronti da usare con un clic.", "template stili pronti temi preset", "templates", ""],
+    ["Pubblica il profilo", "Metti online il profilo.", "pubblica online live metti", "publish", ""],
+  ];
+  // small typos are fine: "spotfy", "sfnodo"
+  const dist = (a, b) => { if (Math.abs(a.length - b.length) > 1) return 2; const m = a.length, n = b.length; let prev = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; };
+  function smartHits(q) {
+    const words = norm(q).split(/\s+/).filter(Boolean);
+    return FEATURES.map(f => {
+      const hay = norm(f[0] + " " + f[2]), toks = hay.split(/[\s.]+/);
+      let sc = 0;
+      for (const w of words) {
+        if (norm(f[0]).includes(w)) sc += 5;
+        else if (toks.some(t => t === w)) sc += 4;
+        else if (toks.some(t => t.startsWith(w))) sc += 3;
+        else if (hay.includes(w)) sc += 2;
+        else if (w.length >= 4 && toks.some(t => dist(w, t) <= 1)) sc += 1.5;
+        else return null;
+      }
+      return { f, sc };
+    }).filter(Boolean).sort((a, b) => b.sc - a.sc).map(x => x.f);
+  }
+  function openFeature(f) {
+    closePalette();
+    $("preview").classList.remove("open"); closeSheet();
+    showView(f[3]);
+    const el = !f[4] ? null : f[4].startsWith("#") ? document.querySelector(f[4]) : (document.querySelector(`[data-k="${f[4]}"],[data-seg="${f[4]}"]`));
+    if (el) setTimeout(() => focusTarget(el.closest(".field, .toggle-row, .gc, .card, .row") || el), 120);
+  }
+  // the palette: top right button or Ctrl+K
+  function openPalette() {
+    $("cmdk").classList.remove("hidden"); $("cmdkIn").value = ""; renderPalette(); setTimeout(() => $("cmdkIn").focus(), 10);
+  }
+  function closePalette() { $("cmdk").classList.add("hidden"); }
+  function renderPalette() {
+    const q = $("cmdkIn").value.trim(), box = $("cmdkRes");
+    const hits = q ? smartHits(q).slice(0, 12) : FEATURES.slice(0, 8);
+    box.innerHTML = "";
+    if (!hits.length) box.innerHTML = '<div class="sr-empty">Non trovo niente. Prova con altre parole (es. "sfondo", "musica", "3d").</div>';
+    hits.forEach((f, i) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "ck-item" + (i === 0 ? " on" : "");
+      const t = document.createElement("b"); t.textContent = f[0];
+      const d = document.createElement("span"); d.textContent = f[1];
+      const w = document.createElement("small"); w.textContent = VIEW_NAMES[f[3]] || "";
+      b.append(t, d, w); b.addEventListener("click", () => openFeature(f)); box.appendChild(b);
+    });
+    box._hits = hits;
+  }
+  $("cmdkBtn").addEventListener("click", openPalette);
+  // keep the search button at the top right of the editing area, just left of the live preview
+  function placeCmdk() {
+    const pv = $("preview"), Z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1, r = pv.getBoundingClientRect();
+    const visible = r.width > 0 && r.width < innerWidth * .6 && r.left > innerWidth / 2;
+    $("cmdkBtn").style.right = (visible ? (innerWidth - r.left) / Z + 18 : 18) + "px";
+  }
+  placeCmdk(); setTimeout(placeCmdk, 400); setTimeout(placeCmdk, 1500); addEventListener("resize", placeCmdk);
+  $("cmdkIn").addEventListener("input", renderPalette);
+  $("cmdk").addEventListener("click", e => { if (e.target === $("cmdk")) closePalette(); });
+  $("cmdkIn").addEventListener("keydown", e => {
+    const items = $$(".ck-item", $("cmdkRes")); let i = items.findIndex(x => x.classList.contains("on"));
+    if (e.key === "Escape") return closePalette();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!items.length) return; items[i]?.classList.remove("on"); i = (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length; items[i].classList.add("on"); items[i].scrollIntoView({ block: "nearest" }); }
+    if (e.key === "Enter" && items.length) { e.preventDefault(); openFeature($("cmdkRes")._hits[Math.max(0, i)]); }
+  });
+  addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); e.stopPropagation(); openPalette(); } }, true);
   function openHit(h) {
     $("setSearch").value = ""; $("searchRes").classList.add("hidden");
     $("preview").classList.remove("open"); closeSheet();
@@ -2294,6 +2434,7 @@
     socStyle: [["plain", "Semplice"], ["brand", "Colori brand"], ["glow", "Glow"], ["outline", "Contorno"], ["filled", "Pieno"]],
     socPos: [["top", "Sopra i link"], ["bottom", "Sotto i link"]],
     socPlace: [["profile", "Nel profilo"], ["card", "Nella carta"], ["both", "In tutti e due"]],
+    cbShape: [["pill", "Tondo"], ["square", "Squadrato"], ["plain", "Senza sfondo"]],
     socAlign: [["left", "Sinistra"], ["center", "Centro"], ["right", "Destra"]],
     cursor: [["default", "Normale"], ["crosshair", "Mirino"], ["custom", "Personalizzato"]],
     cursorHot: [["auto", "Punta (freccia)"], ["center", "Centro (mirino)"]],
@@ -4403,7 +4544,16 @@
       dot.textContent = n > 9 ? "9+" : String(n);
     });
   }
+  async function staffCounts() {
+    try {
+      const { auth } = await firebase();
+      const j = await fetch("/api/request?count=1", { headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken() } }).then(r => r.json());
+      if (j.error) throw new Error(j.error);
+      $("stUsers").textContent = j.users.toLocaleString("it-IT"); $("stPub").textContent = j.public.toLocaleString("it-IT");
+    } catch (_) { $("stUsers").textContent = "—"; $("stPub").textContent = "—"; }
+  }
   async function staffNews() {
+    staffCounts();
     try {
       const { F, db } = await firebase();
       const since = new Date(+(store.get("18k-staff-seen") || 0));
