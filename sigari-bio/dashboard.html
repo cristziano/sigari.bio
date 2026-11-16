@@ -231,6 +231,7 @@
   .acc-sec > .acc-h::after { right:18px; }
   .acc-sec:not(.acc-closed) > .acc-h { margin-bottom:10px; }
   .acc > .pz-h:hover, .acc > .acc-h:hover { opacity:.85; }
+  input.has-media::placeholder { color:var(--fg); opacity:.75; }
   .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
   .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .dc-link-t span { font-size:13px; color:var(--m); }
@@ -2603,12 +2604,17 @@
     if (t.dataset.type === "lines") return t.value.split("\n").map(s => s.trim()).filter(Boolean).slice(0, 6);
     return t.value;
   }
+  const MEDIA_K = /^(appearance\.(bg\.(image|video)|banner\.url|avatar\.decoUrl|cursor\.url|font\.custom|seo\.image)|card\.bg\.image|weekly\.image)$/;
   function writeControl(t, v) {
     if (t.type === "checkbox") t.checked = !!v;
     else if (t.dataset.type === "tags") { if (document.activeElement !== t) t.value = (v || []).join(", "); }
     else if (t.dataset.type === "lines") { if (document.activeElement !== t) t.value = (v || []).join("\n"); }
     // a photo uploaded from this device is stored inline: don't show its code in the link field
-    else if (t.type === "url" && typeof v === "string" && v.startsWith("data:")) { if (document.activeElement !== t) { t.value = ""; t.placeholder = "foto caricata dal tuo dispositivo"; } }
+    // photo / video / font fields never show the long link: a short "✓ scelta" instead (paste a new link to change it)
+    else if (t.type === "url" && MEDIA_K.test(t.dataset.k || "")) {
+      if (!t.dataset.ph) t.dataset.ph = t.placeholder;
+      if (document.activeElement !== t) { t.value = ""; t.placeholder = v ? `✓ ${/video/.test(t.dataset.k) ? "video scelto" : /font/.test(t.dataset.k) ? "font scelto" : /cursor/.test(t.dataset.k) ? "cursore scelto" : "immagine scelta"} · incolla un link per cambiarlo` : t.dataset.ph; t.classList.toggle("has-media", !!v); }
+    }
     else if (document.activeElement !== t || t.type === "range" || t.type === "color") t.value = v ?? "";
     if (t.type === "range") t.style.setProperty("--p", ((t.value - t.min) / (t.max - t.min) * 100) + "%");
   }
@@ -2679,6 +2685,8 @@
     });
   }
 
+  // leaving a photo/video field: the link turns back into "✓ immagine scelta"
+  document.addEventListener("focusout", e => { const t = e.target; if (t && t.type === "url" && MEDIA_K.test(t.dataset.k || "")) setTimeout(() => writeControl(t, getPath(draft, t.dataset.k)), 0); });
   document.addEventListener("input", e => {
     const t = e.target;
     if (t.dataset.k) {
