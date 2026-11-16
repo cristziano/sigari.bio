@@ -134,6 +134,18 @@
   .view.soon > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
   .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 16px; margin-bottom:-120px; text-align:center; pointer-events:none; }
   .soon-veil span { font-size:13px; color:var(--m); }
+  .cr-box { margin-top:12px; padding:14px 16px; max-width:820px; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
+  .cr-list { display:flex; flex-direction:column; gap:8px; width:100%; }
+  .cr-list:empty { display:none; }
+  .cr-row { display:flex; align-items:center; gap:10px; width:100%; }
+  .cr-row b { width:96px; flex:none; font-size:13.5px; font-weight:600; }
+  .cr-row .text { flex:1; min-width:0; font-family:"Geist Mono", ui-monospace, monospace; font-size:12.5px; }
+  .cr-dot { flex:none; min-width:30px; height:30px; padding:0 3px; border-radius:50%; display:grid; place-items:center; font:700 9px/1 system-ui; color:#fff; }
+  .cr-pick { width:100%; display:flex; flex-direction:column; gap:10px; }
+  .cr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:6px; max-height:260px; overflow:auto; }
+  .cr-coin { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px; border:1px solid var(--line, #262626); background:none; color:inherit; font-size:13px; cursor:pointer; text-align:left; }
+  .cr-coin:hover { background:#141414; } .cr-coin:disabled { opacity:.35; cursor:default; }
+  @media (max-width:600px){ .cr-row b { display:none; } }
   .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
   .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .dc-link-t span { font-size:13px; color:var(--m); }
@@ -1197,6 +1209,8 @@
         <div class="card-box" style="margin-top:18px">
           <div class="toggle-row"><span>Mostra "la mia carta" sul profilo</span><label class="ios"><input class="sr-only" type="checkbox" data-k="card.on"><span class="track"><span class="knob"></span></span></label></div>
           <p class="hint">Sul profilo c'è sempre il bottone "mostra la mia carta": chi lo tocca vede la tua carta aprirsi con l'animazione che scegli qui sotto.</p>
+          <div class="field" style="margin-top:10px"><div class="label">testo del bottone</div><input class="text" data-k="card.btnText" maxlength="32" placeholder="mostra la mia carta"></div>
+          <div class="toggle-row"><span>Icona della carta nel bottone</span><label class="ios"><input class="sr-only" type="checkbox" data-k="card.btnIcon"><span class="track"><span class="knob"></span></span></label></div>
           <button class="ghost-btn sm" id="cardDelete" type="button" style="margin-top:10px">Elimina la carta</button>
         </div>
       </div>
@@ -1234,6 +1248,11 @@
       <h2>Link</h2>
       <p class="desc">Tocca un social, scrivi il nome utente, fatto. Sotto aggiungi i tuoi link personalizzati.</p>
       <div class="dc-link card"><div class="dc-link-t"><b>Discord</b><span id="dcLinkState">Collegalo e l'icona sul profilo apre il tuo profilo Discord vero.</span></div><button class="save-btn sm" id="dcLinkBtn" type="button">Collega Discord</button></div>
+      <div class="cr-box card"><div class="dc-link-t"><b>Crypto</b><span>Aggiungi i tuoi indirizzi: sul profilo c'è un'icona portafoglio, chi la tocca vede la lista e copia l'indirizzo.</span></div>
+        <div class="cr-list" id="crList"></div>
+        <button class="ghost-btn sm" id="crAdd" type="button">+ Aggiungi crypto</button>
+        <div class="cr-pick hidden" id="crPick"><input class="text" id="crSearch" type="text" placeholder="Cerca: bitcoin, eth, sol…" autocomplete="off"><div class="cr-grid" id="crGrid"></div></div>
+      </div>
       <div class="search-field" style="margin-top:22px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         <input id="socialSearch" type="text" placeholder="Cerca tra 38 piattaforme" autocomplete="off">
@@ -1250,6 +1269,7 @@
         <div class="field"><div class="label">stile</div><div class="seg" data-seg="appearance.socialsStyle.style" data-o="socStyle"></div></div>
         <div class="field-grid">
           <div class="field"><div class="label">posizione</div><div class="seg" data-seg="appearance.socialsStyle.position" data-o="socPos"></div></div>
+          <div class="field"><div class="label">dove si vedono (social e crypto)</div><div class="seg" data-seg="appearance.socialsStyle.place" data-o="socPlace"></div></div>
           <div class="field"><div class="label">allineamento</div><div class="seg" data-seg="appearance.socialsStyle.align" data-o="socAlign"></div></div>
           <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.socialsStyle.size" data-unit="px"></span></div><input type="range" min="28" max="60" data-k="appearance.socialsStyle.size"></div>
         </div>
@@ -1899,7 +1919,7 @@
   import {
     mountProfile, normalizeProfile, normalizeAppearance, DEFAULT_APPEARANCE, FONTS, SOCIALS, socialIcon, LAYOUTS, EFFECTS, NAME_FX, ENTRANCES,
     TEMPLATES, applyTemplate, templateFromAppearance, currentTopic, publicFields, ensureFonts, readableOn,
-    BIO_FX, AVATAR_DECOS, DECO_GROUPS, DECO_GROUP_OF, decoSvg, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS, MUSIC_POS, PLAYER_STYLES
+    BIO_FX, AVATAR_DECOS, DECO_GROUPS, DECO_GROUP_OF, decoSvg, SFX, BADGE_ICONS, BADGES, lockLinks, playSfx, plainText, previewAppearance, LINK_DOMAINS, MUSIC_POS, PLAYER_STYLES, CRYPTOS
   } from "./profile-kit.js";
   import { mountCard, normalizeCard, applyCardPreset, makeSticker, CARD_OPEN, ensureOpenKeyframes, CARD_PRESETS, CARD_PATTERNS, CARD_BORDERS, CARD_NAME_POS, STICKER_STYLES, STICKER_EMOJI } from "./card-kit.js";
 
@@ -2273,6 +2293,7 @@
     align: [["center", "Centrato"], ["left", "A sinistra"]],
     socStyle: [["plain", "Semplice"], ["brand", "Colori brand"], ["glow", "Glow"], ["outline", "Contorno"], ["filled", "Pieno"]],
     socPos: [["top", "Sopra i link"], ["bottom", "Sotto i link"]],
+    socPlace: [["profile", "Nel profilo"], ["card", "Nella carta"], ["both", "In tutti e due"]],
     socAlign: [["left", "Sinistra"], ["center", "Centro"], ["right", "Destra"]],
     cursor: [["default", "Normale"], ["crosshair", "Mirino"], ["custom", "Personalizzato"]],
     cursorHot: [["auto", "Punta (freccia)"], ["center", "Centro (mirino)"]],
@@ -3358,6 +3379,29 @@
     if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Discord lo stesso?")) return;
     location.href = "/api/discord-login?link=1";
   });
+  /* ---------- Crypto wallets ---------- */
+  const coinOf = k => CRYPTOS.find(c => c[0] === k);
+  const coinDot = c => `<span class="cr-dot" style="background:${c[3]}">${c[2]}</span>`;
+  function renderCrypto() {
+    const list = draft.appearance.crypto || (draft.appearance.crypto = []);
+    $("crList").innerHTML = list.map((x, i) => { const c = coinOf(x.c); return c ? `<div class="cr-row">${coinDot(c)}<b>${c[1]}</b><input class="text" data-cr="${i}" value="${escTxt(x.a || "")}" maxlength="120" placeholder="il tuo indirizzo ${c[2]}" autocomplete="off" spellcheck="false"><button class="ghost-btn sm" type="button" data-crdel="${i}" aria-label="Togli ${c[1]}">Togli</button></div>` : ""; }).join("");
+  }
+  function renderCryptoGrid() {
+    const q = $("crSearch").value.trim().toLowerCase(), have = (draft.appearance.crypto || []).map(x => x.c);
+    $("crGrid").innerHTML = CRYPTOS.filter(c => !q || (c[1] + " " + c[2]).toLowerCase().includes(q)).map(c => `<button type="button" class="cr-coin" data-coin="${c[0]}"${have.includes(c[0]) ? " disabled" : ""}>${coinDot(c)}<span>${c[1]}</span></button>`).join("") || '<p class="hint">Nessuna crypto con questo nome.</p>';
+  }
+  $("crAdd").addEventListener("click", () => { $("crPick").classList.toggle("hidden"); renderCryptoGrid(); if (!$("crPick").classList.contains("hidden")) $("crSearch").focus(); });
+  $("crSearch").addEventListener("input", renderCryptoGrid);
+  $("crGrid").addEventListener("click", e => {
+    const b = e.target.closest("[data-coin]"); if (!b) return;
+    const list = draft.appearance.crypto || (draft.appearance.crypto = []);
+    if (list.length >= 12) return setStatus("Massimo 12 crypto.", "err");
+    list.push({ c: b.dataset.coin, a: "" }); $("crPick").classList.add("hidden"); $("crSearch").value = "";
+    renderCrypto(); changed();
+    $("crList").querySelector(`[data-cr="${list.length - 1}"]`)?.focus();
+  });
+  $("crList").addEventListener("input", e => { const i = e.target.dataset.cr; if (i == null) return; draft.appearance.crypto[+i].a = e.target.value.trim(); changed(); });
+  $("crList").addEventListener("click", e => { const i = e.target.dataset.crdel; if (i == null) return; draft.appearance.crypto.splice(+i, 1); renderCrypto(); changed(); });
   function discordReturn() {
     const h = new URLSearchParams((location.hash || "").slice(1));
     if (!h.has("dlink")) return false;
@@ -5211,7 +5255,7 @@
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     buildSearchIndex();
     const fromLastfm = lastfmReturn(), fromDiscord = discordReturn();
-    renderDcLink();
+    renderDcLink(); renderCrypto();
     const first = fromLastfm ? "music" : fromDiscord ? "links" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
     showView(first);
     openTemplateParam();

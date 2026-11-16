@@ -192,6 +192,13 @@ const pickOne = (v, list, f) => list.some(x => x[0] === v) ? v : f;
 
 // Music that starts by itself needs one tap (browsers never play sound before it): the "clicca per entrare" screen gives it
 const needsEnter = a => a.enter.on || (a.music.autoplay && ["audio", "deezer", "youtube", "soundcloud"].includes(a.music.type) && (a.music.type !== "audio" || a.music.tracks.length > 0) && (a.music.type === "audio" || !!a.music.url));
+// Crypto wallets: [key, name, ticker, colour]. On the profile a wallet button opens the list, a click copies the address.
+export const CRYPTOS = [["btc", "Bitcoin", "BTC", "#f7931a"], ["eth", "Ethereum", "ETH", "#627eea"], ["sol", "Solana", "SOL", "#9945ff"],
+  ["usdt", "Tether", "USDT", "#26a17b"], ["usdc", "USD Coin", "USDC", "#2775ca"], ["bnb", "BNB", "BNB", "#f3ba2f"], ["xrp", "XRP", "XRP", "#00aae4"],
+  ["ada", "Cardano", "ADA", "#0033ad"], ["doge", "Dogecoin", "DOGE", "#c2a633"], ["ltc", "Litecoin", "LTC", "#345d9d"], ["xmr", "Monero", "XMR", "#ff6600"],
+  ["trx", "Tron", "TRX", "#ef0027"], ["ton", "Toncoin", "TON", "#0098ea"], ["pol", "Polygon", "POL", "#8247e5"], ["avax", "Avalanche", "AVAX", "#e84142"],
+  ["dot", "Polkadot", "DOT", "#e6007a"], ["link", "Chainlink", "LINK", "#2a5ada"], ["shib", "Shiba Inu", "SHIB", "#ffa409"], ["xlm", "Stellar", "XLM", "#14b6e7"],
+  ["bch", "Bitcoin Cash", "BCH", "#8dc351"], ["pepe", "Pepe", "PEPE", "#3d9e3d"], ["sui", "Sui", "SUI", "#4da2ff"], ["near", "NEAR", "NEAR", "#00c08b"], ["atom", "Cosmos", "ATOM", "#6f7390"]];
 // pieces of the profile that "Modifica a mano" can move and resize
 export const EDIT_KEYS = ["av", "name", "badges", "bio", "meta", "soc", "widgets", "music", "embeds", "links", "gallery", "tags", "banner"];
 export function safeUrl(u, allowData = false) {
@@ -331,6 +338,9 @@ export function normalizeAppearance(raw) {
   a.socialsStyle.size = clamp(a.socialsStyle.size, 28, 60, 40);
   a.socialsStyle.position = a.socialsStyle.position === "bottom" ? "bottom" : "top";
   a.socialsStyle.align = ["left", "center", "right"].includes(a.socialsStyle.align) ? a.socialsStyle.align : "center";
+  a.socialsStyle.place = ["profile", "card", "both"].includes(a.socialsStyle.place) ? a.socialsStyle.place : "profile";
+  a.crypto = (Array.isArray(a.crypto) ? a.crypto : []).filter(x => x && CRYPTOS.some(c => c[0] === x.c) && /^[A-Za-z0-9:._-]{8,120}$/.test(String(x.a || "").trim()))
+    .map(x => ({ c: x.c, a: String(x.a).trim() })).slice(0, 12);
   const b = a.buttons;
   b.variant = ["solid", "outline", "ghost", "glass"].includes(b.variant) ? b.variant : "solid";
   b.palette = ["white", "silver", "graphite", "accent", "custom"].includes(b.palette) ? b.palette : "white";
@@ -707,6 +717,34 @@ function cursorHot(url, mode) {
     img.src = url;
   });
 }
+// The list of wallets: name, short address, "Copia". Closes on a click outside or Esc.
+function cryptoMenu(anchor, list) {
+  document.querySelectorAll(".pk-cmenu").forEach(x => x.remove());
+  const m = el("div", "pk-cmenu"); m.setAttribute("role", "dialog"); m.setAttribute("aria-label", "Indirizzi crypto");
+  m.appendChild(el("b", "pk-cmenu-h", "Crypto · clicca per copiare"));
+  list.forEach(x => {
+    const c = CRYPTOS.find(k => k[0] === x.c);
+    const row = el("button", "pk-cmenu-row"); row.type = "button";
+    const dot = el("span", "pk-cdot", c[2]); dot.style.background = c[3];
+    const txt = el("span", "pk-ctxt"); txt.append(el("b", null, c[1]), el("small", null, x.a.length > 22 ? x.a.slice(0, 10) + "…" + x.a.slice(-8) : x.a));
+    const ok = el("span", "pk-cok", "Copia");
+    row.append(dot, txt, ok);
+    row.addEventListener("click", () => {
+      const done = () => { ok.textContent = "copiato"; setTimeout(() => { ok.textContent = "Copia"; }, 1500); };
+      (navigator.clipboard ? navigator.clipboard.writeText(x.a) : Promise.reject()).then(done, () => prompt(c[1], x.a));
+    });
+    m.appendChild(row);
+  });
+  document.body.appendChild(m);
+  const b = anchor.getBoundingClientRect(), mw = Math.min(320, innerWidth - 16);
+  m.style.width = mw + "px";
+  m.style.left = Math.max(8, Math.min(innerWidth - mw - 8, b.left + b.width / 2 - mw / 2)) + "px";
+  const below = b.bottom + 8 + m.offsetHeight < innerHeight;
+  m.style.top = (below ? b.bottom + 8 : Math.max(8, b.top - 8 - m.offsetHeight)) + "px";
+  const off = e => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); removeEventListener("pointerdown", off, true); removeEventListener("keydown", esc); } };
+  const esc = e => { if (e.key === "Escape") { m.remove(); removeEventListener("pointerdown", off, true); removeEventListener("keydown", esc); } };
+  setTimeout(() => { addEventListener("pointerdown", off, true); addEventListener("keydown", esc); }, 0);
+}
 const finePointer = () => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 const svg = (paths, size = 14, fill = false) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" ${fill ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'}>${paths}</svg>`;
@@ -798,6 +836,15 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-soc{display:flex;flex-wrap:wrap;gap:8px;justify-content:var(--pk-soc-align,center);margin-top:16px}
 .pk-soc a{width:var(--pk-soc);height:var(--pk-soc);display:grid;place-items:center;border-radius:50%;transition:transform .2s}
 .pk-soc a:hover{transform:translateY(-2px)}
+.pk-crypto-btn{color:var(--pk-icon)}
+.pk-cmenu{position:fixed;z-index:2147483600;padding:10px;border-radius:14px;background:#0d0d0d;border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:4px;max-height:60vh;overflow:auto;font-family:system-ui,sans-serif;color:#fff}
+.pk-cmenu-h{font-size:12px;font-weight:600;color:#9a9a9a;padding:2px 6px 6px}
+.pk-cmenu-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border:0;border-radius:10px;background:none;color:#fff;cursor:pointer;text-align:left}
+.pk-cmenu-row:hover{background:#1a1a1a}.pk-cmenu-row:active{transform:scale(.98)}
+.pk-cdot{flex:none;min-width:34px;height:34px;padding:0 4px;border-radius:50%;display:grid;place-items:center;font:700 9.5px/1 system-ui;color:#fff}
+.pk-ctxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.pk-ctxt b{font-size:14px;font-weight:600}.pk-ctxt small{font:12px ui-monospace,monospace;color:#9a9a9a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-cok{flex:none;font-size:12px;font-weight:600;color:#9a9a9a}
+.pk-soc-card{margin-top:16px;--pk-soc:40px;--pk-icon:#fff}
 .pk-soc a[data-copy]{position:relative}
 .pk-soc a[data-copy=copiato]::after{content:"copiato";position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:3px 7px;border-radius:6px;background:#fff;color:#000;font:600 11px/1.2 system-ui,sans-serif;white-space:nowrap;pointer-events:none}
 .pk-soc i{width:48%;height:48%;background:var(--pk-icon);-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
@@ -1855,6 +1902,7 @@ export function mountProfile(root, input, opts = {}) {
     st.last = input;
     const p = normalizeProfile(input);
     const a = p.appearance;
+    st.lastA = a;
     st.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
     st.timers = [];
     st.keyed.forEach(v => { v.used = false; });
@@ -2032,6 +2080,7 @@ export function mountProfile(root, input, opts = {}) {
     }
     fill("meta", meta.childNodes.length ? [meta] : []);
 
+    const buildSocials = () => {
     const socials = el("div", "pk-soc");
     SOCIALS.forEach(sd => {
       const v = p.socials[sd.key];
@@ -2057,9 +2106,19 @@ export function mountProfile(root, input, opts = {}) {
       n.appendChild(i);
       socials.appendChild(n);
     });
-    const hasSocials = socials.childNodes.length > 0;
-    fill("soctop", hasSocials && a.socialsStyle.position === "top" ? [socials] : []);
-    fill("socbot", hasSocials && a.socialsStyle.position === "bottom" ? [socials] : []);
+    if (a.crypto.length) {
+      const n = el("a", "pk-crypto-btn"); n.href = "#"; n.setAttribute("role", "button"); n.title = "Crypto"; n.setAttribute("aria-label", "Indirizzi crypto");
+      n.innerHTML = svg('<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/><path d="M6 6l9-3 1.5 3"/>', 18);
+      n.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); track("s", "crypto"); cryptoMenu(n, a.crypto); });
+      socials.appendChild(n);
+    }
+    return socials;
+    };
+    const socials = buildSocials();
+    st.buildSocials = buildSocials;
+    const hasSocials = socials.childNodes.length > 0, onProfile = a.socialsStyle.place !== "card";
+    fill("soctop", hasSocials && onProfile && a.socialsStyle.position === "top" ? [socials] : []);
+    fill("socbot", hasSocials && onProfile && a.socialsStyle.position === "bottom" ? [socials] : []);
 
     const widgets = [], W = a.widgets, PO = W.pics;
     PIC_OVER = PO;
@@ -2194,13 +2253,18 @@ export function mountProfile(root, input, opts = {}) {
     // The identity card made in the dashboard: a button that shows it full screen
     // Shown also before the card is designed (the default card), unless it was switched off
     if (!p.card || p.card.on !== false) {
-      tagNodes.push(keyedNode("cardbtn", () => {
+      tagNodes.push(keyedNode("cardbtn:" + ((p.card && p.card.btnText) || "") + ":" + (p.card && p.card.btnIcon === false ? 0 : 1), () => {
         const b = el("button", "pk-cardbtn");
         b.type = "button"; b.setAttribute("aria-label", "Apri la carta");
-        b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg><span>mostra la mia carta</span>';
+        const c = p.card || {};
+        if (c.btnIcon !== false) b.innerHTML = '<svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="16" rx="3"/><path d="M5 12h7M5 8h4"/></svg>';
+        b.appendChild(el("span", null, String(c.btnText || "").trim() || "mostra la mia carta"));
         b.addEventListener("click", () => {
-          const cur = st.last;
-          import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }));
+          const cur = st.last, ap = st.lastA;
+          const extra = ap && ap.socialsStyle.place !== "profile" && st.buildSocials ? st.buildSocials() : null;
+          if (extra && !extra.childNodes.length) extra.remove();
+          if (extra) extra.classList.add("pk-soc-card");
+          import("./card-kit.js").then(m => m.openCardViewer(cur.card, { handle: cur.handle, avatarUrl: cur.avatarUrl, displayName: cur.displayName }, { extra: extra && extra.childNodes.length ? extra : null }));
         });
         return b;
       }));

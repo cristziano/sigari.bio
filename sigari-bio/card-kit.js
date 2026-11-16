@@ -107,6 +107,7 @@ export function normalizeCard(raw) {
   c.textColor = safeColor(c.textColor, "#ffffff"); c.accent = safeColor(c.accent, "#ffffff");
   c.namePos = pick(c.namePos, CARD_NAME_POS, "bl");
   ["showBrand", "showAvatar", "showNumber", "showDate"].forEach(k => { c[k] = c[k] !== false; });
+  c.btnText = String(c.btnText || "").slice(0, 32); c.btnIcon = c.btnIcon !== false; // the "mostra la mia carta" button on the profile
   c.number = String(c.number || "").slice(0, 24); c.line = String(c.line || "").slice(0, 60);
   c.stickers = (Array.isArray(c.stickers) ? c.stickers : []).map(normalizeSticker).filter(Boolean).slice(0, 12);
   c.preset = String(c.preset || "").slice(0, 20);
@@ -508,6 +509,8 @@ export function openCardViewer(card, data, opts = {}) {
   // In full screen only that element is visible: the card opens inside it
   (document.fullscreenElement || document.webkitFullscreenElement || document.body).appendChild(ov);
   const m = mountCard(box, c, data, {});
+  // the profile's social icons, when the owner chose to show them with the card
+  if (opts.extra) { const row = h("div"); row.style.cssText = "display:flex;justify-content:center;margin-top:4px"; row.appendChild(opts.extra); box.appendChild(row); }
   const done = () => { m.destroy(); ov.remove(); removeEventListener("keydown", key); };
   const key = e => { if (e.key === "Escape") done(); };
   close.addEventListener("click", done);
