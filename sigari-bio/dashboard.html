@@ -182,7 +182,8 @@
   .cr-row b { width:96px; flex:none; font-size:13.5px; font-weight:600; }
   .cr-row .text { flex:1; min-width:0; font-family:"Geist Mono", ui-monospace, monospace; font-size:12.5px; }
   .cr-dot { position:relative; flex:none; min-width:30px; height:30px; padding:0 3px; border-radius:50%; display:grid; place-items:center; font:700 9px/1 system-ui; color:#fff; overflow:hidden; }
-  .cr-dot img { position:absolute; inset:0; width:100%; height:100%; background:#0b0b0b; }
+  .cr-dot img { position:absolute; inset:0; width:100%; height:100%; }
+  .cr-dot:has(img) { background:none !important; color:transparent; } /* the logo loaded: no coloured ring, no ticker behind it */
   .cr-pick { width:100%; display:flex; flex-direction:column; gap:10px; }
   .cr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:6px; max-height:260px; overflow:auto; }
   .cr-coin { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px; border:1px solid var(--line, #262626); background:none; color:inherit; font-size:13px; cursor:pointer; text-align:left; }

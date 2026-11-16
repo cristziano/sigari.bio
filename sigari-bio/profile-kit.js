@@ -199,8 +199,9 @@ export const CRYPTOS = [["btc", "Bitcoin", "BTC", "#f7931a"], ["eth", "Ethereum"
   ["trx", "Tron", "TRX", "#ef0027"], ["ton", "Toncoin", "TON", "#0098ea"], ["pol", "Polygon", "POL", "#8247e5"], ["avax", "Avalanche", "AVAX", "#e84142"],
   ["dot", "Polkadot", "DOT", "#e6007a"], ["link", "Chainlink", "LINK", "#2a5ada"], ["shib", "Shiba Inu", "SHIB", "#ffa409"], ["xlm", "Stellar", "XLM", "#14b6e7"],
   ["bch", "Bitcoin Cash", "BCH", "#8dc351"], ["pepe", "Pepe", "PEPE", "#3d9e3d"], ["sui", "Sui", "SUI", "#4da2ff"], ["near", "NEAR", "NEAR", "#00c08b"], ["atom", "Cosmos", "ATOM", "#6f7390"]];
-// official coin logo (cryptocurrency-icons, MIT); the profile falls back to the ticker badge if one is missing
-export const cryptoIcon = c => `https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${({ pol: "matic" })[c[0]] || c[0]}.svg`;
+// official coin logo (@web3icons/core, all 24 coins); if one does not load the coloured ticker badge stays
+const W3I = "https://cdn.jsdelivr.net/npm/@web3icons/core@4.0.59/svgs/";
+export const cryptoIcon = c => c[0] === "ton" ? W3I + "networks/branded/ton.svg" : `${W3I}tokens/branded/${c[2]}.svg`;
 // pieces of the profile that "Modifica a mano" can move and resize
 export const EDIT_KEYS = ["av", "name", "badges", "bio", "meta", "soc", "widgets", "music", "embeds", "links", "gallery", "tags", "banner"];
 export function safeUrl(u, allowData = false) {
@@ -848,7 +849,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-cmenu-h{font-size:12px;font-weight:600;color:#9a9a9a;padding:2px 6px 6px}
 .pk-cmenu-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border:0;border-radius:10px;background:none;color:#fff;cursor:pointer;text-align:left}
 .pk-cmenu-row:hover{background:#1a1a1a}.pk-cmenu-row:active{transform:scale(.98)}
-.pk-cdot{position:relative;overflow:hidden;flex:none;min-width:34px;height:34px;padding:0 4px;border-radius:50%;display:grid;place-items:center;font:700 9.5px/1 system-ui;color:#fff}.pk-cdot img{position:absolute;inset:0;width:100%;height:100%;background:#0d0d0d}
+.pk-cdot{position:relative;overflow:hidden;flex:none;min-width:34px;height:34px;padding:0 4px;border-radius:50%;display:grid;place-items:center;font:700 9.5px/1 system-ui;color:#fff}.pk-cdot img{position:absolute;inset:0;width:100%;height:100%}.pk-cdot:has(img){background:none!important;color:transparent}
 .pk-ctxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.pk-ctxt b{font-size:14px;font-weight:600}.pk-ctxt small{font:12px ui-monospace,monospace;color:#9a9a9a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pk-cok{flex:none;font-size:12px;font-weight:600;color:#9a9a9a}
 .pk-soc-card{margin-top:16px;--pk-soc:40px;--pk-icon:#fff}
