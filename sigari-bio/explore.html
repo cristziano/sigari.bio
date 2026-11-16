@@ -30,6 +30,9 @@
   .search:focus-within { border-color:#fff; box-shadow:0 0 0 1px #fff; }
   :focus-visible { outline:2px solid #fff; outline-offset:3px; }
   .search input { flex:1; min-width:0; height:100%; background:none; border:0; outline:0; color:#fff; font:inherit; }
+  .search { transition:border-color .15s, box-shadow .15s; } .search:focus-within { border-color:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.06); color:#fff; }
+  .search input::-webkit-search-cancel-button { display:none; }
+  .q-clear { flex:none; width:26px; height:26px; border-radius:50%; border:0; background:#262626; color:#fff; font-size:14px; cursor:pointer; } .q-clear[hidden] { display:none; }
   .seg { display:inline-flex; gap:3px; padding:3px; border:1px solid #2c2c2c; border-radius:12px; background:#0b0b0b; }
   .seg button { border:0; background:none; color:#8f8f8f; padding:9px 14px; border-radius:9px; cursor:pointer; font:500 13px "Geist",sans-serif; }
   .seg button.on { background:#fff; color:#000; }
@@ -72,7 +75,7 @@
   <h1>Esplora. <em>Chi c'è qui.</em></h1>
   <p class="lead">Tutti i profili di 18k.bio. Tocca il cuore per lasciare un like.</p>
   <div class="bar">
-    <label class="search">@<input id="q" type="search" maxlength="20" placeholder="cerca una @" autocomplete="off" aria-label="Cerca una @"></label>
+    <label class="search">@<input id="q" type="search" maxlength="20" placeholder="cerca una @" autocomplete="off" aria-label="Cerca una @"><button type="button" class="q-clear" id="qClear" aria-label="Cancella" hidden>×</button></label>
     <div class="seg" id="tabs"><button type="button" data-t="new" class="on">Nuovi</button><button type="button" data-t="likes">Più amati</button><button type="button" data-t="top">Più visti</button></div>
   </div>
   <div class="grid" id="grid"></div>
@@ -162,6 +165,8 @@
     }));
     $("note").textContent = rows.length ? "" : tab === "likes" && !$("q").value.trim() ? "Ancora nessun like: apri un profilo e lascia il primo ♥" : $("q").value.trim() ? "Nessun profilo con questo nome. Magari è ancora libero: prendilo tu." : "Ancora pochi profili: il tuo può essere tra i primi. Il tuo non c'è? Nella dashboard, Impostazioni, spegni \"non mostrarmi in Esplora\".";
   }
+  $("q").addEventListener("input", () => { $("qClear").hidden = !$("q").value; });
+  $("qClear").addEventListener("click", e => { e.preventDefault(); $("q").value = ""; $("qClear").hidden = true; $("q").dispatchEvent(new Event("input", { bubbles: true })); $("q").focus(); });
   async function load() {
     $("note").textContent = "Carico i profili…";
     const q = $("q").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
