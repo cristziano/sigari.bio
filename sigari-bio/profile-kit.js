@@ -199,9 +199,9 @@ export const CRYPTOS = [["btc", "Bitcoin", "BTC", "#f7931a"], ["eth", "Ethereum"
   ["trx", "Tron", "TRX", "#ef0027"], ["ton", "Toncoin", "TON", "#0098ea"], ["pol", "Polygon", "POL", "#8247e5"], ["avax", "Avalanche", "AVAX", "#e84142"],
   ["dot", "Polkadot", "DOT", "#e6007a"], ["link", "Chainlink", "LINK", "#2a5ada"], ["shib", "Shiba Inu", "SHIB", "#ffa409"], ["xlm", "Stellar", "XLM", "#14b6e7"],
   ["bch", "Bitcoin Cash", "BCH", "#8dc351"], ["pepe", "Pepe", "PEPE", "#3d9e3d"], ["sui", "Sui", "SUI", "#4da2ff"], ["near", "NEAR", "NEAR", "#00c08b"], ["atom", "Cosmos", "ATOM", "#6f7390"]];
-// official coin logo (@web3icons/core, all 24 coins); if one does not load the coloured ticker badge stays
-const W3I = "https://cdn.jsdelivr.net/npm/@web3icons/core@4.0.59/svgs/";
-export const cryptoIcon = c => c[0] === "ton" ? W3I + "networks/branded/ton.svg" : `${W3I}tokens/branded/${c[2]}.svg`;
+// official coin logos, kept in the site (sigari-bio/crypto/, from @web3icons/core 4.0.59, MIT);
+// if one does not load the coloured ticker badge stays
+export const cryptoIcon = c => `/sigari-bio/crypto/${c[0]}.svg`;
 // pieces of the profile that "Modifica a mano" can move and resize
 export const EDIT_KEYS = ["av", "name", "badges", "bio", "meta", "soc", "widgets", "music", "embeds", "links", "gallery", "tags", "banner"];
 export function safeUrl(u, allowData = false) {
