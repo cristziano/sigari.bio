@@ -5064,7 +5064,7 @@
         a.append(n, t, m); return a;
       }));
       if (!rows.length) $("clanLb").innerHTML = '<div class="empty-state" style="border:0">Ancora nessun clan. Il primo può essere il tuo.</div>';
-    } catch (err) { $("clanLb").innerHTML = `<div class="empty-state" style="border:0">${friendly(err)}</div>`; }
+    } catch (err) { const d = document.createElement("div"); d.className = "empty-state"; d.style.border = "0"; d.textContent = friendly(err); $("clanLb").replaceChildren(d); } // error text as plain text, never as HTML
   }
   const tagOf = v => String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
   $("joinBtn").addEventListener("click", async () => {
