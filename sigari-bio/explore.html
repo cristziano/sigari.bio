@@ -163,8 +163,7 @@
     $("note").textContent = rows.length ? "" : tab === "likes" && !$("q").value.trim() ? "Ancora nessun like: apri un profilo e lascia il primo ♥" : $("q").value.trim() ? "Nessun profilo con questo nome. Magari è ancora libero: prendilo tu." : "Ancora pochi profili: il tuo può essere tra i primi. Il tuo non c'è? Nella dashboard, Impostazioni, spegni \"non mostrarmi in Esplora\".";
   }
   async function load() {
-    $("note").textContent = "";
-    if (!$("grid").children.length) $("grid").innerHTML = Array.from({ length: 8 }, () => '<div class="card" aria-hidden="true"><div class="pv skel" style="border-radius:0"></div><div class="meta"><span class="skel skel-line w40" style="margin:0;height:14px;display:block"></span></div></div>').join("");
+    $("note").textContent = "Carico i profili…";
     const q = $("q").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
     try {
       let snap;

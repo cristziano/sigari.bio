@@ -1181,7 +1181,7 @@
         <a class="wk-btn" href="https://discord.gg/18k" target="_blank" rel="noopener">Entra nel Discord</a>
       </div>
       <a class="wk-card" id="wkCard" href="#" aria-label="Profilo della settimana">
-        <div class="wk-ban skel" id="wkBan" style="border-radius:0"></div>
+        <div class="wk-ban" id="wkBan"></div>
         <div class="wk-body">
           <div class="wk-av" id="wkAv"></div>
           <b class="wk-name" id="wkName">Ancora nessun vincitore</b>
@@ -2255,9 +2255,7 @@
   (function weekly() {
     const $ = id => document.getElementById(id);
     if (!$("wkCard")) return;
-    const stop = () => $("wkBan").classList.remove("skel");
     fetch("/api/photos?profili=top").then(r => r.ok ? r.json() : null).then(j => {
-      stop();
       const t = j && j.top; if (!t) return;
       const card = $("wkCard");
       card.href = "/" + t.handle; card.setAttribute("aria-label", "Apri il profilo di @" + t.handle);
@@ -2268,7 +2266,7 @@
       $("wkHandle").textContent = "18kbio.xyz/" + t.handle;
       $("wkBio").textContent = t.bio || "";
       $("wkVotes").textContent = "\u2705 " + t.yes + (t.yes === 1 ? " voto" : " voti") + " questa settimana";
-    }).catch(stop);
+    }).catch(() => {});
   })();
 </script>
 </body>

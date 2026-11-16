@@ -871,7 +871,7 @@
 
 
 <div class="lava"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
-<div class="loading skel-page" id="loading" aria-label="Caricamento"><div class="skel-card"><div class="skel skel-dot"></div><div class="skel skel-line w60" style="height:18px;margin-top:14px"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div><div class="skel skel-btn"></div><div class="skel skel-btn"></div><div class="skel skel-btn"></div></div></div>
+<div class="loading" id="loading">Caricamento…</div>
 <div class="welcome hidden" id="welcome" role="status" aria-live="polite">
   <div class="welcome-inner"><p class="welcome-kicker" id="welcomeKicker"></p><p class="welcome-name" id="welcomeName"></p></div>
 </div>
@@ -1221,7 +1221,7 @@
     <section class="view hidden" id="view-staff">
       <h2>Pannello staff</h2>
       <p class="desc">Solo per lo staff di 18k. Dai e togli i badge, nascondi i profili che non rispettano le regole, guarda le segnalazioni.</p>
-      <div class="st-counts" id="stCounts"><div class="st-n"><b id="stUsers"><span class="skel" style="display:inline-block;width:70px;height:28px"></span></b><span>utenti registrati</span></div><div class="st-n"><b id="stPub"><span class="skel" style="display:inline-block;width:70px;height:28px"></span></b><span>profili online</span></div></div>
+      <div class="st-counts" id="stCounts"><div class="st-n"><b id="stUsers">…</b><span>utenti registrati</span></div><div class="st-n"><b id="stPub">…</b><span>profili online</span></div></div>
       <div class="label section-label">cerca un profilo</div>
       <div class="card">
         <div class="row"><div class="prefix-field" style="flex:1;min-width:200px"><span class="prefix">18kbio.xyz/</span><input id="stQuery" maxlength="20" autocomplete="off" placeholder="nome"></div><button class="save-btn sm" id="stOpen" type="button">Apri</button></div>
@@ -3152,11 +3152,10 @@
   async function loadPhotos(more) {
     if (PH.loading) return;
     PH.loading = true;
-    if (!more) { $("phGrid").innerHTML = Array.from({ length: 12 }, () => '<div class="ph-it skel" aria-hidden="true" style="aspect-ratio:1"></div>').join(""); $("phNote").textContent = ""; }
+    if (!more) { $("phGrid").replaceChildren(); $("phNote").textContent = "Carico le foto dal server 18k…"; }
     try {
       const j = await nextPage();
       PH.items.push(...j.items); PH.hasMore = j.more;
-      $$(".ph-it.skel", $("phGrid")).forEach(x => x.remove());
       const frag = document.createDocumentFragment();
       j.items.forEach((it, idx) => {
         const b = document.createElement("button");
@@ -5088,7 +5087,7 @@
     const guest = mode === "guest";
     $("clanGuest").classList.toggle("hidden", !guest);
     $("clanUser").classList.toggle("hidden", guest);
-    $("clanLb").innerHTML = Array.from({ length: 4 }, () => '<div class="skel skel-line" style="height:38px;margin:6px 0"></div>').join("");
+    $("clanLb").innerHTML = '<div class="lb-row"><span class="n">…</span><span>Carico la classifica</span><small></small></div>';
     try {
       const { F, db } = await firebase();
       if (!guest) {

@@ -69,16 +69,3 @@ a { text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
-
-/* Skeleton: grey shapes with a light passing over them while things load */
-.skel { position:relative; overflow:hidden; background:#141414; border-radius:8px; }
-.skel::after { content:""; position:absolute; inset:0; transform:translateX(-100%); background:linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent); animation:skel-shine 1.3s ease-in-out infinite; }
-@keyframes skel-shine { to { transform:translateX(100%); } }
-.skel-line { height:12px; margin:8px 0; } .skel-line.w60 { width:60%; } .skel-line.w40 { width:40%; } .skel-line.w80 { width:80%; }
-.skel-dot { width:76px; height:76px; border-radius:50%; }
-.skel-page { position:fixed; inset:0; display:grid; place-items:center; z-index:2; background:#000; }
-.skel-page .skel-card { width:min(380px, 86vw); padding:28px 22px; border:1px solid #1a1a1a; border-radius:20px; display:flex; flex-direction:column; align-items:center; gap:6px; }
-.skel-page .skel-card .skel-line { align-self:stretch; }
-.skel-page .skel-btn { height:46px; width:100%; border-radius:12px; margin-top:8px; }
-@media (prefers-reduced-motion:reduce) { .skel::after { animation:none; } }
-.skel-page.hidden { display:none !important; }

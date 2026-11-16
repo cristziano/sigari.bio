@@ -958,11 +958,6 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-s-gallery{translate:var(--e-gallery-x,0px) var(--e-gallery-y,0px);scale:var(--e-gallery-s,1)}
 .pk-s-tags{translate:var(--e-tags-x,0px) var(--e-tags-y,0px);scale:var(--e-tags-s,1)}
 .pk-s-banner{translate:var(--e-banner-x,0px) var(--e-banner-y,0px);scale:var(--e-banner-s,1)}
-.pk-sk{display:block;position:relative;overflow:hidden;border-radius:6px;background:color-mix(in srgb,var(--pk-text,#fff) 10%,transparent)}
-.pk-sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--pk-text,#fff) 14%,transparent),transparent);animation:pk-skel 1.3s ease-in-out infinite}
-@keyframes pk-skel{to{transform:translateX(100%)}}
-.pk-sk-t{height:11px;width:62%;margin:5px 0 6px}.pk-sk-s{height:9px;width:42%}
-@media (prefers-reduced-motion:reduce){.pk-sk::after{animation:none}}
 .pk-trail{position:absolute;left:0;top:0;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
 .pk-trail.sparkle{border-radius:0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .pk-trail.ghost{width:22px;height:22px;margin:-11px 0 0 -11px;background:none;border:1px solid var(--pk-accent)}
@@ -1294,12 +1289,6 @@ function widgetShell(href, kind) {
   return { w, pic, txt };
 }
 const picKey = (k, o) => o ? `${k}:${o.mode}:${o.url}` : k;
-// grey "ghost" lines in place of the text until the real one arrives
-function skelLines(txt, tag) {
-  txt.replaceChildren();
-  if (tag) txt.appendChild(el("span", "tag", tag));
-  txt.append(el("i", "pk-sk pk-sk-t"), el("i", "pk-sk pk-sk-s"));
-}
 function setLines(txt, tag, title, sub) {
   txt.replaceChildren();
   if (tag) txt.appendChild(el("span", "tag", tag));
@@ -1317,7 +1306,7 @@ function setPic(pic, url) {
 
 function discordWidget(id) {
   const { w, pic, txt } = widgetShell(null, "dc");
-  skelLines(txt, "discord");
+  setLines(txt, "discord", "Carico lo stato…", "");
   cached("ly:" + id, 30000, () => getJSON(`https://api.lanyard.rest/v1/users/${id}`)).then(j => {
     if (!j.success) throw new Error("lanyard");
     const d = j.data, u = d.discord_user || {};
@@ -1336,7 +1325,7 @@ function discordWidget(id) {
 
 function githubWidget(user) {
   const { w, pic, txt } = widgetShell(`https://github.com/${user}`, "gh");
-  skelLines(txt, "github");
+  setLines(txt, "github", user, "");
   cached("gh:" + user, 600000, () => getJSON(`https://api.github.com/users/${user}`)).then(g => {
     setPic(pic, g.avatar_url);
     setLines(txt, "github", g.name || g.login, `${g.public_repos} repo · ${g.followers} follower`);
@@ -1346,7 +1335,7 @@ function githubWidget(user) {
 
 function discordServerWidget(code) {
   const { w, pic, txt } = widgetShell(`https://discord.gg/${code}`, "ds");
-  skelLines(txt, "server discord");
+  setLines(txt, "server discord", "discord.gg/" + code, "");
   cached("ds:" + code, 300000, () => getJSON(`/api/discord-invite?code=${encodeURIComponent(code)}`)).then(j => {
     setPic(pic, j.icon);
     setLines(txt, "server discord", j.name || code, `${j.online.toLocaleString("it-IT")} online · ${j.members.toLocaleString("it-IT")} membri`);
@@ -1356,7 +1345,7 @@ function discordServerWidget(code) {
 }
 function robloxWidget(user) {
   const { w, pic, txt } = widgetShell(`https://www.roblox.com/search/users?keyword=${user}`, "rb");
-  skelLines(txt, "roblox");
+  setLines(txt, "roblox", user, "");
   cached("rb:" + user, 600000, () => getJSON(`/api/lookup?p=roblox&u=${encodeURIComponent(user)}`)).then(j => {
     if (!j.found) return setLines(txt, "roblox", user, "Utente non trovato");
     setPic(pic, j.avatar); if (j.url) w.href = j.url;
@@ -1367,7 +1356,7 @@ function robloxWidget(user) {
 function spotifyWidget(handle) {
   const { w, pic, txt } = widgetShell(null, "sp");
   w.classList.add("pk-w-lf");
-  skelLines(txt, "spotify");
+  setLines(txt, "spotify", "Carico…", "");
   const load = () => cached("sp:" + handle, 20000, () => getJSON(`/api/music-search?spotify=now&h=${encodeURIComponent(handle)}`)).then(j => {
     const t = j && j.track;
     if (!t) return setLines(txt, "spotify", "Niente in ascolto", "");
@@ -1384,7 +1373,7 @@ function spotifyWidget(handle) {
 function lastfmWidget(user) {
   const { w, pic, txt } = widgetShell(`https://www.last.fm/user/${user}`, "lf");
   w.classList.add("pk-w-lf");
-  skelLines(txt, "last.fm");
+  setLines(txt, "last.fm", user, "Carico il profilo…");
   // Through our server (api/lastfm.js), which keeps the key; refreshed every 30 s while on screen
   const load = () => cached("lf:" + user, 25000, () => getJSON(`/api/lastfm?user=${encodeURIComponent(user)}`)).then(j => {
     const t = j && j.track, u = j && j.profile;
@@ -1405,7 +1394,7 @@ const WX = { 0: ["☀️", "sereno"], 1: ["🌤️", "poco nuvoloso"], 2: ["⛅"
 function emojiPic(pic, e) { if (pic.hidden || pic.dataset.fixed) return; pic.querySelector(".pk-emo")?.remove(); pic.appendChild(el("span", "pk-emo", e)); }
 function weatherWidget(city) {
   const { w, pic, txt } = widgetShell(null, "wx");
-  skelLines(txt, "meteo");
+  setLines(txt, "meteo", city, "…");
   cached("wx:" + city, 900000, async () => {
     const g = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=it`);
     const r = g.results && g.results[0]; if (!r) throw new Error("city");
@@ -1792,7 +1781,7 @@ function newsletterForm(actions, text) {
 }
 function guestbookNode(actions) {
   const f = formShell("guestbook");
-  const list = el("div", "pk-gb"); [70, 50, 62].forEach(w => { const g = el("i", "pk-sk pk-sk-t"); g.style.width = w + "%"; g.style.display = "block"; g.style.margin = "10px 0"; list.appendChild(g); });
+  const list = el("div", "pk-gb"); list.appendChild(el("div", null, "Carico le firme…"));
   f.appendChild(list);
   f.innerHTML += '<div class="row"><input name="text" maxlength="200" placeholder="Lascia una firma"><button type="submit">Firma</button></div><span class="msg out"></span>';
   const out = f.querySelector(".out"), bt = f.querySelector("button"), gb = f.querySelector(".pk-gb");
