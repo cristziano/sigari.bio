@@ -202,6 +202,8 @@ export const CRYPTOS = [["btc", "Bitcoin", "BTC", "#f7931a"], ["eth", "Ethereum"
 // official coin logos, kept in the site (sigari-bio/crypto/, from @web3icons/core 4.0.59, MIT);
 // if one does not load the coloured ticker badge stays
 export const cryptoIcon = c => `/sigari-bio/crypto/${c[0]}.svg`;
+// parts of the profile that can have their own font (the name has font.name, everything else font.body)
+export const FONT_PARTS = ["handle", "aka", "bio", "links", "player", "badge", "widgets"];
 // pieces of the profile that "Modifica a mano" can move and resize
 export const EDIT_KEYS = ["av", "name", "badges", "bio", "meta", "soc", "widgets", "music", "embeds", "links", "gallery", "tags", "banner"];
 export function safeUrl(u, allowData = false) {
@@ -309,6 +311,10 @@ export function normalizeAppearance(raw) {
   a.font.nameSize = clamp(a.font.nameSize, 60, 200, 100);
   a.font.spacing = clamp(a.font.spacing, -8, 30, 0);
   a.font.upper = !!a.font.upper;
+  // a font for each part of the profile; "" = same as the rest of the text
+  const fp = isObj(a.font.parts) ? a.font.parts : {};
+  a.font.parts = {};
+  FONT_PARTS.forEach(k => { const v = fp[k]; a.font.parts[k] = FONT[v] || (v === "custom" && a.font.custom) ? v : ""; });
   a.nameFx = pickOne(a.nameFx, NAME_FX, "none");
   a.nameGradient = [safeColor(a.nameGradient?.[0], "#ffffff"), safeColor(a.nameGradient?.[1], "#8a8a8a")];
   a.bioFx = pickOne(a.bioFx, BIO_FX, "none");
@@ -889,7 +895,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk[data-wsize=compact] .pk-w{padding:7px 9px;gap:9px;font-size:12px}.pk[data-wsize=compact] .pk-w .pic{width:32px;height:32px}
 .pk[data-wsize=large] .pk-w{padding:15px 16px;gap:14px;font-size:14.5px}.pk[data-wsize=large] .pk-w .pic{width:60px;height:60px}
 .pk-embed{border-radius:var(--pk-w-radius,14px)!important;overflow:hidden}
-.pk-link{min-height:var(--btn-h,50px)!important;font-size:var(--btn-fs,14px)!important;font-family:var(--btn-font,inherit)!important;text-transform:var(--btn-tt,none);letter-spacing:var(--btn-ls,0)}
+.pk-link{min-height:var(--btn-h,50px)!important;font-size:var(--btn-fs,14px)!important;font-family:var(--pk-f-links,var(--btn-font,inherit))!important;text-transform:var(--btn-tt,none);letter-spacing:var(--btn-ls,0)}
 .pk[data-banim=shine] .pk-link::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);animation:pkShine 3.2s ease-in-out infinite;pointer-events:none}
 @keyframes pkShine{60%,100%{transform:translateX(120%)}}
 .pk[data-banim=pulse] .pk-link{animation:pkPulse 2.4s ease-in-out infinite}
@@ -964,6 +970,8 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk-s-gallery{translate:var(--e-gallery-x,0px) var(--e-gallery-y,0px);scale:var(--e-gallery-s,1)}
 .pk-s-tags{translate:var(--e-tags-x,0px) var(--e-tags-y,0px);scale:var(--e-tags-s,1)}
 .pk-s-banner{translate:var(--e-banner-x,0px) var(--e-banner-y,0px);scale:var(--e-banner-s,1)}
+.pk-handle{font-family:var(--pk-f-handle,inherit)}.pk-aka{font-family:var(--pk-f-aka,inherit)}.pk-bio{font-family:var(--pk-f-bio,inherit)}
+.pk-mp,.pk-mp *{font-family:var(--pk-f-player,inherit)}.pk-badge.custom{font-family:var(--pk-f-badge,inherit)}.pk-w,.pk-w *{font-family:var(--pk-f-widgets,inherit)}
 .pk-trail{position:absolute;left:0;top:0;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
 .pk-trail.sparkle{border-radius:0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .pk-trail.ghost{width:22px;height:22px;margin:-11px 0 0 -11px;background:none;border:1px solid var(--pk-accent)}
@@ -1933,7 +1941,7 @@ export function mountProfile(root, input, opts = {}) {
     st.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
     st.timers = [];
     st.keyed.forEach(v => { v.used = false; });
-    ensureFonts([a.font.name, a.font.body].filter(f => FONT[f]));
+    ensureFonts([a.font.name, a.font.body, ...Object.values(a.font.parts)].filter(f => FONT[f]));
     loadCustomFont(a.font.custom);
     st.sfx = a.sfx;
 
@@ -1944,6 +1952,7 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-card-rgb", hexRgb(c.primary)); s.setProperty("--pk-card-a", (a.card.opacity / 100).toFixed(2));
     s.setProperty("--pk-card-blur", a.card.blur + "px"); s.setProperty("--pk-card-bf", a.card.blur > 0 ? `blur(${Math.min(a.card.blur, 16)}px)` : "none"); s.setProperty("--pk-radius", a.card.radius + "px"); s.setProperty("--pk-w", a.card.width + "px"); s.setProperty("--pk-minh", a.card.minH ? a.card.minH + "px" : "0px");
     s.setProperty("--pk-name-font", fontStack(a.font.name, a)); s.setProperty("--pk-body-font", fontStack(a.font.body, a));
+    FONT_PARTS.forEach(k => { const v = a.font.parts[k]; if (v) s.setProperty("--pk-f-" + k, fontStack(v, a)); else s.removeProperty("--pk-f-" + k); });
     s.setProperty("--pk-on-accent", readableOn(c.accent)); s.setProperty("--pk-badge", a.badges.color || c.accent); s.setProperty("--pk-banh", a.banner.height + "px");
     s.setProperty("--pk-name-scale", (a.font.nameSize / 100).toFixed(2)); s.setProperty("--pk-name-ls", (a.font.spacing / 100) + "em");
     s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-dsz", String(a.avatar.decoSize / 100));

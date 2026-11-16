@@ -341,6 +341,14 @@
   .pick:hover { color:var(--fg); border-color:var(--m); }
   .pick.on { color:var(--fg); border-color:var(--fg); box-shadow:inset 0 0 0 1px var(--fg); }
   .pick .sw { display:block; height:44px; border-radius:8px; margin-bottom:8px; border:1px solid var(--b); }
+  .ft-where { margin-bottom:12px; }
+  .ft-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .ft-chips button { display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:8px 12px; border:1px solid var(--b); border-radius:12px; background:var(--s1, #0d0d0d); color:var(--fg); font:600 13px "Geist", system-ui, sans-serif; cursor:pointer; text-align:left; }
+  .ft-chips button small { font:500 11px "Geist", system-ui, sans-serif; color:var(--m); }
+  .ft-chips button.on { background:var(--fg); color:var(--bg, #000); border-color:var(--fg); }
+  .ft-chips button.on small { color:inherit; opacity:.7; }
+  .ft-chips button:active { transform:scale(.97); }
+  .fontgrid .pick[hidden] { display:none; }
   .fontgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
   .fontgrid .pick { font-size:20px; color:var(--fg); line-height:1.2; padding:12px; }
   .fontgrid .pick small { display:block; font:400 10.5px "Geist Mono",monospace; color:var(--d); margin-top:4px; }
@@ -1502,10 +1510,15 @@
       <h2>Font ed effetti</h2>
       <p class="desc">Font, descrizione animata, effetti del cursore, suoni e schermata d'ingresso.</p>
       <div class="label section-label">font</div>
+      <div class="ft-where">
+        <div class="label" style="margin:0 0 8px">dove lo metti</div>
+        <div class="ft-chips" id="fontWhere" role="tablist" aria-label="Dove applicare il font"></div>
+        <p class="hint" id="fontNow"></p>
+      </div>
       <div class="fontgrid" id="fontPick"></div>
       <div class="card" style="margin-top:12px">
         <div class="field-grid">
-          <div class="field"><div class="label">font del testo</div><select class="text" data-k="appearance.font.body" id="bodyFont"></select></div>
+          <div class="field" hidden><div class="label">font del testo</div><select class="text" data-k="appearance.font.body" id="bodyFont"></select></div>
           <div class="field"><div class="label">grandezza del nome <span class="val" data-show="appearance.font.nameSize" data-unit="%"></span></div><input type="range" min="60" max="200" step="5" data-k="appearance.font.nameSize"></div>
           <div class="field"><div class="label">spaziatura <span class="val" data-show="appearance.font.spacing"></span></div><input type="range" min="-8" max="30" data-k="appearance.font.spacing"></div>
         </div>
@@ -1516,7 +1529,8 @@
         <div class="asset">
           <div class="asset-h"><b>Carica un tuo font</b><span class="hint">TTF, OTF, WOFF</span></div>
           <div class="row"><button class="save-btn sm" id="fontUpload" type="button">Carica</button><input class="text" type="url" data-k="appearance.font.custom" placeholder="oppure il link di un font" style="flex:1;min-width:120px"></div>
-          <div class="row"><button class="ghost-btn sm" id="useFontName" type="button">Per il nome</button><button class="ghost-btn sm" id="useFontBody" type="button">Per il testo</button></div>
+          <p class="hint">Caricato il font, scegli sopra dove metterlo e tocca «Il tuo font».</p>
+          <div class="row" hidden><button class="ghost-btn sm" id="useFontName" type="button">Per il nome</button><button class="ghost-btn sm" id="useFontBody" type="button">Per il testo</button></div>
           <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" hidden>
           <p class="hint">Oppure scegli uno dei 20 font qui sopra.</p>
         </div>
@@ -2694,6 +2708,7 @@
     if (trial) endTrial(false, true);
     syncDerived();
     if (typeof renderBioNote === "function") renderBioNote();
+    if (typeof renderFontWhere === "function") renderFontWhere();
     updateSaveBar();
     if (pvQueued) return;
     pvQueued = true;
@@ -3467,6 +3482,26 @@
     minimal: '<circle cx="40" cy="16" r="6" fill="currentColor"/><rect x="26" y="27" width="28" height="5" fill="currentColor"/><rect x="30" y="40" width="20" height="2" fill="currentColor" opacity=".6"/><rect x="30" y="47" width="20" height="2" fill="currentColor" opacity=".6"/>',
     terminal: '<rect x="20" y="6" width="40" height="52" rx="2" fill="none" stroke="currentColor"/><path d="M25 16l4 3-4 3" fill="none" stroke="currentColor"/><rect x="31" y="18" width="14" height="3" fill="currentColor"/><rect x="25" y="30" width="22" height="2" fill="currentColor" opacity=".6"/><rect x="25" y="40" width="30" height="5" fill="none" stroke="currentColor" opacity=".7"/><rect x="25" y="48" width="30" height="5" fill="none" stroke="currentColor" opacity=".7"/>'
   };
+  // Font: first WHERE (name, description, player…), then which font
+  const FONT_WHERE = [["name", "Nome"], ["handle", "Sottonome (@)"], ["aka", "Alias"], ["bio", "Descrizione"], ["links", "Bottoni"], ["player", "Player musica"], ["badge", "Badge"], ["widgets", "Widget"], ["body", "Tutto il resto"]];
+  let fontTarget = "name";
+  const fontPath = t => t === "name" ? "appearance.font.name" : t === "body" ? "appearance.font.body" : "appearance.font.parts." + t;
+  const fontLabel = id => id === "custom" ? "il tuo font" : (FONTS.find(f => f[0] === id) || [, "Geist"])[1];
+  function renderFontWhere() {
+    const box = $("fontWhere"); if (!box || !draft) return;
+    const parts = (draft.appearance.font.parts = draft.appearance.font.parts || {});
+    box.innerHTML = FONT_WHERE.map(([k, l]) => {
+      const v = k === "name" ? draft.appearance.font.name : k === "body" ? draft.appearance.font.body : parts[k];
+      return `<button type="button" role="tab" data-ft="${k}" class="${k === fontTarget ? "on" : ""}" aria-selected="${k === fontTarget}">${l}${v ? `<small>${escTxt(fontLabel(v))}</small>` : '<small>come il resto</small>'}</button>`;
+    }).join("");
+    $("fontPick").dataset.pickfor = fontPath(fontTarget);
+    // "Come il resto" only makes sense for the single parts
+    const same = $("fontPick").querySelector('.pick[data-v=""]'); if (same) same.hidden = fontTarget === "name" || fontTarget === "body";
+    const now = FONT_WHERE.find(x => x[0] === fontTarget)[1];
+    $("fontNow").textContent = `Tocca un font qui sotto: va su «${now}».`;
+    $$("[data-pickfor]").forEach(g => $$(".pick", g).forEach(b => b.classList.toggle("on", String(getPath(draft, g.dataset.pickfor) ?? "") === b.dataset.v)));
+  }
+  document.addEventListener("click", e => { const b = e.target.closest("#fontWhere [data-ft]"); if (!b) return; fontTarget = b.dataset.ft; renderFontWhere(); });
   function pickGrid(box, path, items, render) {
     box.dataset.pickfor = path;
     box.innerHTML = items.map(([v, label]) => `<button type="button" class="pick" data-v="${v}">${render ? render(v, label) : label}</button>`).join("");
@@ -3474,9 +3509,10 @@
       const b = e.target.closest(".pick");
       if (!b) return;
       let v = b.dataset.v;
-      const cur = getPath(draft, path);
-      if (String(cur) === v) { const off = offValue(path, items.map(i => i[0]), cur); if (off === undefined) return; v = off; } // tap again = take it away
-      setPath(draft, path, v);
+      const p = box.dataset.pickfor || path; // the font grid changes target (name, description, player…)
+      const cur = getPath(draft, p);
+      if (String(cur) === v) { const off = offValue(p, items.map(i => i[0]), cur); if (off === undefined) return; v = off; } // tap again = take it away
+      setPath(draft, p, v);
       changed();
     });
   }
@@ -3496,7 +3532,8 @@
   function buildPickers() {
     pickGrid($("layoutPick"), "appearance.layout", LAYOUTS, (v, l) => `<svg viewBox="0 0 80 64">${LAYOUT_SVG[v]}</svg>${l}`);
     $$("select[data-opts]").forEach(sel => { sel.innerHTML = (OPTS[sel.dataset.opts] || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join(""); });
-    pickGrid($("fontPick"), "appearance.font.name", [...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "404").slice(0, 9)}</span><small>${l}</small>`);
+    pickGrid($("fontPick"), "appearance.font.name", [["", "Come il resto"], ...FONTS.map(f => [f[0], f[1]]), ["custom", "Il tuo font"]], (v, l) => v === "" ? `<span>Aa</span><small>${l}</small>` : v === "custom" ? `<span>Aa ↑</span><small>${l}</small>` : `<span style="font-family:${FONTS.find(f => f[0] === v)[2]}">Aa ${(handle && handle !== "ospite" ? handle : "404").slice(0, 9)}</span><small>${l}</small>`);
+    renderFontWhere();
     // the ~20 font previews are heavy: load them only when the font list comes on screen
     const allFonts = () => ensureFonts(FONTS.map(f => f[0]));
     if ("IntersectionObserver" in window) { const io = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { allFonts(); io.disconnect(); } }); io.observe($("fontPick")); io.observe($("bodyFont")); } else allFonts();
