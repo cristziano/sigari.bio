@@ -342,6 +342,7 @@ export function normalizeAppearance(raw) {
   a.socialsStyle.position = a.socialsStyle.position === "bottom" ? "bottom" : "top";
   a.socialsStyle.align = ["left", "center", "right"].includes(a.socialsStyle.align) ? a.socialsStyle.align : "center";
   a.socialsStyle.place = ["profile", "card", "both"].includes(a.socialsStyle.place) ? a.socialsStyle.place : "profile";
+  a.spotify = { show: !!(a.spotify && a.spotify.show) };
   a.crypto = (Array.isArray(a.crypto) ? a.crypto : []).filter(x => x && CRYPTOS.some(c => c[0] === x.c) && /^[A-Za-z0-9:._-]{8,120}$/.test(String(x.a || "").trim()))
     .map(x => ({ c: x.c, a: String(x.a).trim() })).slice(0, 12);
   const b = a.buttons;
@@ -1352,6 +1353,23 @@ function robloxWidget(user) {
   }).catch(() => {});
   return w;
 }
+function spotifyWidget(handle) {
+  const { w, pic, txt } = widgetShell(null, "sp");
+  w.classList.add("pk-w-lf");
+  setLines(txt, "spotify", "Carico…", "");
+  const load = () => cached("sp:" + handle, 20000, () => getJSON(`/api/music-search?spotify=now&h=${encodeURIComponent(handle)}`)).then(j => {
+    const t = j && j.track;
+    if (!t) return setLines(txt, "spotify", "Niente in ascolto", "");
+    setPic(pic, t.image);
+    if (t.url) { w.style.cursor = "pointer"; w.onclick = () => window.open(t.url, "_blank", "noopener"); }
+    setLines(txt, t.now ? "spotify · in ascolto ora" : "spotify · ultimo ascolto", t.name, t.artist);
+    w.querySelector(".pk-eq")?.remove();
+    if (t.now) { const eq = el("div", "pk-eq"); eq.innerHTML = "<i></i><i></i><i></i>"; w.appendChild(eq); }
+  }).catch(() => setLines(txt, "spotify", "Non disponibile", ""));
+  load();
+  const iv = setInterval(() => { if (!w.isConnected) return clearInterval(iv); if (!document.hidden) { cache.delete("sp:" + handle); load(); } }, 30000);
+  return w;
+}
 function lastfmWidget(user) {
   const { w, pic, txt } = widgetShell(`https://www.last.fm/user/${user}`, "lf");
   w.classList.add("pk-w-lf");
@@ -2130,6 +2148,7 @@ export function mountProfile(root, input, opts = {}) {
     const wk = (k, v) => picKey(k, PO[k]) + ":" + v;
     if (W.discordPresence && W.discordId) widgets.push(keyedNode(wk("dc", W.discordId), () => discordWidget(W.discordId)));
     if (a.lastfm.show && a.lastfm.user) widgets.push(keyedNode(wk("lf", a.lastfm.user), () => lastfmWidget(a.lastfm.user)));
+    if (a.spotify.show && p.handle) widgets.push(keyedNode(wk("sp", p.handle), () => spotifyWidget(p.handle)));
     if (W.github) widgets.push(keyedNode(wk("gh", W.github), () => githubWidget(W.github)));
     if (W.discordServer) widgets.push(keyedNode(wk("ds", W.discordServer), () => discordServerWidget(W.discordServer)));
     if (W.roblox) widgets.push(keyedNode(wk("rb", W.roblox), () => robloxWidget(W.roblox)));

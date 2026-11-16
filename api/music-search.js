@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
   if (limited(req, res, "music", 60)) return; // traffic guard (see _limit.js)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const url = new URL(req.url, "https://x");
+  if (url.searchParams.get("spotify")) return require("./_spotify").handle(req, res, url); // "Collega Spotify" (see _spotify.js)
   const q = String(url.searchParams.get("q") || "").trim().slice(0, 80);
   const resolve = String(url.searchParams.get("resolve") || "");
   const prev = String(url.searchParams.get("preview") || "");

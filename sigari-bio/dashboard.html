@@ -151,6 +151,8 @@
   .st-n b { font-size:30px; font-weight:700; letter-spacing:-.03em; }
   .st-n span { font-size:13px; color:var(--m); }
   /* smart search, top right */
+  .ph-more { width:100%; } .ph-more summary { cursor:pointer; font-size:13px; color:var(--m); padding:6px 2px; list-style:none; } .ph-more summary::-webkit-details-marker { display:none; } .ph-more summary::after { content:" ▾"; } .ph-more[open] summary::after { content:" ▴"; }
+  .ph-more-in { display:flex; flex-wrap:wrap; gap:6px; padding-top:4px; }
   .cmdk-btn { position:fixed; top:92px; right:calc(var(--pvw, 0px) + 18px); z-index:60; display:flex; align-items:center; gap:8px; height:36px; padding:0 10px 0 12px; border:1px solid var(--line, #262626); border-radius:999px; background:#0a0a0a; color:var(--m, #9a9a9a); font:500 13px "Geist", system-ui, sans-serif; cursor:pointer; }
   .cmdk-btn:hover { color:#fff; border-color:#3a3a3a; } .cmdk-btn:active { transform:scale(.97); }
   .cmdk-btn kbd { font:500 10.5px "Geist Mono", monospace; padding:2px 6px; border-radius:6px; border:1px solid var(--line, #262626); color:var(--m, #9a9a9a); }
@@ -1560,6 +1562,17 @@
         <p class="hint" data-when="appearance.music.showPlayer=false">Il player è nascosto: la canzone si sente ma non si vede niente.</p>
       </div>
 
+      <div class="label section-label">spotify</div>
+      <div class="card lf-card sp-card soon-card">
+        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Spotify arriva presto.</span></div>
+        <div class="lf-row">
+          <div class="lf-logo" aria-hidden="true" style="background:#1db954;color:#000">sp</div>
+          <div class="lf-txt"><b id="spState">Spotify non collegato</b><span>Collegalo: sul profilo appare la canzone che stai ascoltando adesso.</span></div>
+          <button class="save-btn" id="spConnect" type="button">Collega Spotify</button>
+        </div>
+        <div class="toggle-row"><span>Mostra cosa ascolto su Spotify</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.spotify.show"><span class="track"><span class="knob"></span></span></label></div>
+      </div>
+
       <div class="label section-label">last.fm</div>
       <div class="card lf-card soon-card">
         <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Last.fm arriva presto.</span></div>
@@ -1909,9 +1922,11 @@
     <div class="ph-acts">
       <button class="save-btn sm" type="button" data-use="bg">Usa come sfondo</button>
       <button class="ghost-btn sm" type="button" data-use="avatar">Come foto profilo</button>
-      <button class="ghost-btn sm" type="button" data-use="cardbg">Come sfondo della carta</button>
-      <button class="ghost-btn sm" type="button" data-use="sticker">Sulla carta come sticker</button>
-      <button class="ghost-btn sm" type="button" data-use="banner">Come banner</button>
+      <details class="ph-more"><summary>Altri usi</summary><div class="ph-more-in">
+        <button class="ghost-btn sm" type="button" data-use="banner">Come banner</button>
+        <button class="ghost-btn sm" type="button" data-use="cardbg">Come sfondo della carta</button>
+        <button class="ghost-btn sm" type="button" data-use="sticker">Sulla carta come sticker</button>
+      </div></details>
     </div>
     <div class="row" style="flex-wrap:wrap;margin-top:6px"><a class="ghost-btn sm" id="phLbOpen" target="_blank" rel="noopener">Apri originale</a><a class="ghost-btn sm" id="phLbDiscord" target="_blank" rel="noopener">Apri su Discord</a></div>
     <button class="ghost-btn sm ph-del" id="phLbDel" type="button" hidden>Elimina (staff)</button>
@@ -3498,8 +3513,33 @@
     lfReady = false;
     fetch("/api/lastfm?ping=1").then(r => r.json()).then(j => { if (!j.ready) return; lfReady = true; const c = document.querySelector(".lf-card"); c.classList.remove("soon-card"); c.querySelector(".soon-veil")?.remove(); }).catch(() => {});
   }
+  // Spotify: "coming soon" until its keys are on Vercel
+  let spReady = null;
+  function spotifyReady() {
+    if (spReady !== null) return;
+    spReady = false;
+    fetch("/api/music-search?spotify=ping").then(r => r.json()).then(j => { if (!j.ready) return; spReady = true; const c = document.querySelector(".sp-card"); c.classList.remove("soon-card"); c.querySelector(".soon-veil")?.remove(); }).catch(() => {});
+  }
+  $("spConnect").addEventListener("click", async () => {
+    if (mode === "guest") return setStatus("Per collegare Spotify serve un account (è gratis).", "err");
+    if (isDirty() && !confirm("Hai modifiche non salvate: salvale prima, altrimenti si perdono. Andare su Spotify lo stesso?")) return;
+    try {
+      const { auth } = await firebase();
+      const j = await fetch("/api/music-search?spotify=start", { method: "POST", headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken() } }).then(r => r.json());
+      if (!j.url) throw new Error(j.error || "Non riuscito.");
+      location.href = j.url;
+    } catch (err) { setStatus(err.message, "err"); }
+  });
+  function spotifyReturn() {
+    const h = new URLSearchParams((location.hash || "").slice(1));
+    if (h.has("spotify")) { draft.appearance.spotify = { show: true }; changed(); syncControls(); $("spState").textContent = "Collegato: " + h.get("spotify"); setStatus("Spotify collegato. Premi Salva.", "ok"); }
+    else if (h.has("spotify-error")) setStatus(h.get("spotify-error"), "err");
+    else return false;
+    history.replaceState(null, "", location.pathname + location.search + "#music");
+    return true;
+  }
   function renderLastfm() {
-    lastfmReady();
+    lastfmReady(); spotifyReady();
     const u = draft.appearance.lastfm.user;
     $("lfState").textContent = u ? `Collegato: ${u}` : "Last.fm non collegato";
     $("lfSub").textContent = u ? "Sul profilo: la tua foto Last.fm, i tuoi ascolti e cosa stai ascoltando adesso." : "Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.";
@@ -5404,7 +5444,7 @@
     updateSaveBar();
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     buildSearchIndex();
-    const fromLastfm = lastfmReturn(), fromDiscord = discordReturn();
+    const fromLastfm = lastfmReturn() || spotifyReturn(), fromDiscord = discordReturn();
     renderDcLink(); renderCrypto();
     const first = fromLastfm ? "music" : fromDiscord ? "links" : ((location.hash || "").slice(1) || "overview").replace(/-c-/, "#c-");
     showView(first);
