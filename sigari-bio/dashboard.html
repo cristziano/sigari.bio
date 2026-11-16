@@ -1055,7 +1055,7 @@
           <div class="field"><div class="label">altezza · allunga in giù <span class="val" data-show="appearance.card.minH" data-unit="px"></span></div><input type="range" min="0" max="1200" step="10" data-k="appearance.card.minH"><p class="hint" style="margin:6px 0 0">0 = alto quanto serve. Sul telefono si ferma all'altezza dello schermo.</p></div>
           <div class="field" id="cardMove">
             <button type="button" class="save-btn" id="editHand" style="width:100%;justify-content:center">Modifica a mano sul profilo</button>
-            <p class="hint" style="margin:6px 0 4px">Si apre a schermo intero: trascini il profilo, lo allarghi dai quadratini e lo ruoti, come una casella di testo su Canva.</p>
+            <p class="hint" style="margin:6px 0 4px">Si apre a schermo intero: trascini il profilo, lo allarghi dai quadratini e lo ruoti. Clicca un pezzo (foto, nome, bottoni…) per spostarlo e ingrandirlo.</p>
             <div class="label" style="margin-top:8px">orizzontale <span class="val" data-show="appearance.card.x" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.x">
             <div class="label" style="margin-top:8px">verticale <span class="val" data-show="appearance.card.y" data-unit="%"></span></div><input type="range" min="-50" max="50" step="1" data-k="appearance.card.y">
             <div class="label" style="margin-top:8px">zoom <span class="val" data-show="appearance.card.zoom" data-unit="%"></span></div><input type="range" min="50" max="160" step="1" data-k="appearance.card.zoom">
@@ -2211,7 +2211,7 @@
   }
   // Smart search: every feature with words people really type (synonyms, english, typos are tolerated) and what it does
   const FEATURES = [
-    ["Modifica a mano (tipo Canva)", "Sposti e ingrandisci ogni pezzo del profilo trascinandolo: foto, nome, bottoni, icone.", "canva trascina sposta ridimensiona grandezza larghezza altezza posizione mano drag resize muovi", "customize", "#editHand"],
+    ["Modifica a mano", "Sposti e ingrandisci ogni pezzo del profilo trascinandolo: foto, nome, bottoni, icone.", "canva trascina sposta ridimensiona grandezza larghezza altezza posizione mano drag resize muovi", "customize", "#editHand"],
     ["Inclinazione 3D del profilo", "Il profilo si inclina in 3D seguendo il mouse.", "3d tridimensionale tilt inclina inclinazione prospettiva mouse movimento", "customize", "appearance.card.tilt"],
     ["Rotazione del profilo", "Gira il profilo di qualche grado.", "ruota rotazione storto girato angolo 3d", "customize", "appearance.card.rot"],
     ["Sfondo: foto, GIF o video", "Metti una tua foto, una GIF o un video (fino a 40 MB) dietro al profilo.", "sfondo background wallpaper foto video gif immagine mp4 dietro", "customize", "appearance.bg.type"],
@@ -2659,7 +2659,7 @@
   }
   $("cardMoveReset").addEventListener("click", centerCard);
 
-  /* ---------- Hand-edit mode: full screen, drag / resize / rotate the profile like a Canva box ---------- */
+  /* ---------- Hand-edit mode: full screen, drag / resize / rotate the profile by hand ---------- */
   let handEditing = false;
   $("editHand").addEventListener("click", () => openHandEdit());
   function openHandEdit() {

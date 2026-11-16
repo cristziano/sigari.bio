@@ -321,7 +321,7 @@ export function mountCard(root, card, data, opts = {}) {
     for (const [id, n] of nodes) if (!seen.has(id)) { n.remove(); nodes.delete(id); }
   }
 
-  /* ---------- Snapping guides (like Canva): edges and centres line up with the card and with each other ---------- */
+  /* ---------- Snapping guides : edges and centres line up with the card and with each other ---------- */
   let guides = null;
   const SNAP = 1.4; // % of the card
   function showGuides(vs, hs) {
