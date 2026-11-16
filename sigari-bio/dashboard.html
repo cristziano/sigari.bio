@@ -153,10 +153,10 @@
   /* smart search, top right */
   .ph-more { width:100%; } .ph-more summary { cursor:pointer; font-size:13px; color:var(--m); padding:6px 2px; list-style:none; } .ph-more summary::-webkit-details-marker { display:none; } .ph-more summary::after { content:" ▾"; } .ph-more[open] summary::after { content:" ▴"; }
   .ph-more-in { display:flex; flex-wrap:wrap; gap:6px; padding-top:4px; }
-  .cmdk-btn { position:fixed; top:92px; right:calc(var(--pvw, 0px) + 18px); z-index:60; display:flex; align-items:center; gap:8px; height:36px; padding:0 10px 0 12px; border:1px solid var(--line, #262626); border-radius:999px; background:#0a0a0a; color:var(--m, #9a9a9a); font:500 13px "Geist", system-ui, sans-serif; cursor:pointer; }
+  .cmdk-btn { flex:none; display:flex; align-items:center; gap:8px; height:36px; padding:0 10px 0 12px; border:1px solid var(--line, #262626); border-radius:999px; background:#0a0a0a; color:var(--m, #9a9a9a); font:500 13px "Geist", system-ui, sans-serif; cursor:pointer; }
   .cmdk-btn:hover { color:#fff; border-color:#3a3a3a; } .cmdk-btn:active { transform:scale(.97); }
   .cmdk-btn kbd { font:500 10.5px "Geist Mono", monospace; padding:2px 6px; border-radius:6px; border:1px solid var(--line, #262626); color:var(--m, #9a9a9a); }
-  @media (max-width:1100px){ .cmdk-btn { display:none; } }
+  @media (max-width:760px){ .cmdk-btn span, .cmdk-btn kbd { display:none; } }
   .cmdk { position:fixed; inset:0; z-index:4000; background:rgba(0,0,0,.6); display:flex; justify-content:center; align-items:flex-start; padding:10vh 16px 16px; }
   .cmdk-box { width:min(640px, 100%); max-height:72vh; display:flex; flex-direction:column; border:1px solid #2a2a2a; border-radius:16px; background:#0b0b0b; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.6); }
   .cmdk-top { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid #222; color:var(--m, #9a9a9a); }
@@ -856,7 +856,6 @@
 <link rel="stylesheet" href="ui.css">
 </head>
 <body>
-<button type="button" class="cmdk-btn" id="cmdkBtn" aria-label="Cerca una funzione"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Cerca una funzione</span><kbd>Ctrl K</kbd></button>
 <div class="cmdk hidden" id="cmdk" role="dialog" aria-label="Cerca una funzione"><div class="cmdk-box"><div class="cmdk-top"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="cmdkIn" type="text" placeholder="Cosa vuoi fare? Es. 3d, sfondo video, crypto, musica…" autocomplete="off" aria-label="Cerca una funzione"></div><div class="cmdk-res" id="cmdkRes"></div></div></div>
 
 
@@ -908,7 +907,7 @@
         <a class="save-btn" id="guestClaim" href="login.html">Registrati e salva</a>
       </div>
       <input type="checkbox" id="themeToggle" class="sr-only" aria-label="Tema chiaro">
-      <label class="ghost-btn sm theme-btn" for="themeToggle" title="Tema chiaro o scuro">tema</label>
+      <button type="button" class="cmdk-btn" id="cmdkBtn" aria-label="Cerca una funzione"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Cerca una funzione</span><kbd>Ctrl K</kbd></button>
     </div>
 
     <!-- OVERVIEW (guns.lol: Account > Overview) -->
@@ -2258,6 +2257,7 @@
     ["Anteprima del link", "Titolo e immagine quando condividi il link su Discord o WhatsApp.", "anteprima link condividi seo discord whatsapp titolo immagine embed", "page", "appearance.seo.description"],
     ["Template", "Stili pronti da usare con un clic.", "template stili pronti temi preset", "templates", ""],
     ["Pubblica il profilo", "Metti online il profilo.", "pubblica online live metti", "publish", ""],
+    ["Tema chiaro o scuro della dashboard", "Cambia i colori della dashboard (non del profilo).", "tema chiaro scuro light dark colori dashboard notte", "@theme", ""],
   ];
   // small typos are fine: "spotfy", "sfnodo"
   const dist = (a, b) => { if (Math.abs(a.length - b.length) > 1) return 2; const m = a.length, n = b.length; let prev = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; };
@@ -2279,6 +2279,7 @@
   }
   function openFeature(f) {
     closePalette();
+    if (f[3] === "@theme") { $("themeToggle").click(); return; }
     $("preview").classList.remove("open"); closeSheet();
     showView(f[3]);
     const el = !f[4] ? null : f[4].startsWith("#") ? document.querySelector(f[4]) : (document.querySelector(`[data-k="${f[4]}"],[data-seg="${f[4]}"]`));
@@ -2304,13 +2305,6 @@
     box._hits = hits;
   }
   $("cmdkBtn").addEventListener("click", openPalette);
-  // keep the search button at the top right of the editing area, just left of the live preview
-  function placeCmdk() {
-    const pv = $("preview"), Z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1, r = pv.getBoundingClientRect();
-    const visible = r.width > 0 && r.width < innerWidth * .6 && r.left > innerWidth / 2;
-    $("cmdkBtn").style.right = (visible ? (innerWidth - r.left) / Z + 18 : 18) + "px";
-  }
-  placeCmdk(); setTimeout(placeCmdk, 400); setTimeout(placeCmdk, 1500); addEventListener("resize", placeCmdk);
   $("cmdkIn").addEventListener("input", renderPalette);
   $("cmdk").addEventListener("click", e => { if (e.target === $("cmdk")) closePalette(); });
   $("cmdkIn").addEventListener("keydown", e => {
