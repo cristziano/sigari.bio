@@ -352,6 +352,11 @@
   .hand-bar b { color:#fff; }
   .hand-btns { display:flex; gap:8px; }
   .hand-box { position:fixed; z-index:4; border:1.5px solid #fff; border-radius:6px; cursor:move; touch-action:none; outline:none; }
+  .sel-box { position:fixed; z-index:6; border:1.5px solid #4da3ff; cursor:move; touch-action:none; }
+  .sel-box.dragging { border-style:dashed; }
+  .sel-box .hh { background:#4da3ff; border-color:#000; }
+  .sel-box:not(.is-links) .hh-n, .sel-box:not(.is-links) .hh-s, .sel-box:not(.is-links) .hh-e, .sel-box:not(.is-links) .hh-w { display:none; }
+  .sel-name { position:absolute; left:0; top:-24px; padding:2px 8px; border-radius:6px; background:#4da3ff; color:#000; font:600 11px/1.5 "Geist", system-ui, sans-serif; white-space:nowrap; pointer-events:none; }
   .hand-box:focus-visible { box-shadow:0 0 0 3px rgba(255,255,255,.35); }
   .hand-box.dragging { border-style:dashed; }
   .hh { position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; background:#fff; border:2px solid #000; border-radius:3px; }
@@ -2473,8 +2478,9 @@
     const root = $("pvRoot"), home = root.parentNode, next = root.nextSibling;
     const ov = document.createElement("div"); ov.className = "hand-ov"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Modifica a mano del profilo");
     ov.innerHTML = `<div class="hand-stage"></div><div class="hand-glow" aria-hidden="true"></div>
-      <div class="hand-bar"><span><b>Modalità modifica</b> · trascina il profilo per spostarlo, tira i quadratini per allungarlo, gli angoli per ingrandirlo, il pallino per ruotarlo</span>
-      <span class="hand-btns"><button type="button" class="ghost-btn sm" data-h="center">Rimetti al centro</button><button type="button" class="save-btn sm" data-h="done">Fatto</button></span></div>
+      <div class="hand-bar"><span class="hand-tip"><b>Modifica a mano</b> · <span data-tip>clicca un pezzo (foto, nome, bottoni…) per spostarlo e ingrandirlo, oppure trascina il profilo</span></span>
+      <span class="hand-btns"><button type="button" class="ghost-btn sm" data-h="undo" title="Indietro (Ctrl+Z)" disabled>&larr; Indietro</button><button type="button" class="ghost-btn sm" data-h="reset" disabled>Annulla tutto</button><button type="button" class="ghost-btn sm" data-h="center">Rimetti al centro</button><button type="button" class="save-btn sm" data-h="done">Fatto</button></span></div>
+      <div class="sel-box" hidden><span class="sel-name"></span>${["n", "s", "e", "w", "ne", "nw", "se", "sw"].map(h => `<i class="hh hh-${h}" data-h="${h}"></i>`).join("")}</div>
       <div class="hand-box" tabindex="0" aria-label="Profilo: trascina per spostare, frecce per spostare di poco">
         ${["n", "s", "e", "w", "ne", "nw", "se", "sw"].map(h => `<i class="hh hh-${h}" data-h="${h}"></i>`).join("")}<i class="hh-rot" data-h="rot"></i></div>`;
     document.body.appendChild(ov);
@@ -2486,21 +2492,89 @@
     const cardEl = () => root.querySelector(".pk-card");
     // the box follows the card (its real size, centre and angle)
     let raf = 0;
+    // the page is shown at 90% on computers: screen pixels / Z = page pixels
+    const Z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+    const sel = ov.querySelector(".sel-box"), tip = ov.querySelector("[data-tip]");
+    const NAMES = { av: "foto profilo", name: "nome", badges: "badge", bio: "descrizione", meta: "info", soc: "icone social", widgets: "widget", music: "musica", embeds: "video", links: "bottoni", gallery: "galleria", tags: "tag", banner: "banner" };
+    let selKey = "";
+    const elOf = k => k === "av" ? root.querySelector(".pk-av") : k === "name" ? root.querySelector(".pk-name-wrap") : k === "soc" ? (root.querySelector(".pk-s-soctop .pk-soc") ? root.querySelector(".pk-s-soctop") : root.querySelector(".pk-s-socbot")) : root.querySelector(".pk-s-" + k);
+    const E = k => { const els = C().els || (C().els = {}); return els[k] || (els[k] = { x: 0, y: 0, s: 1, ...(k === "links" ? { w: 100, h: 1 } : {}) }); };
     const place = () => {
       const c = cardEl(); if (c) {
         const b = c.getBoundingClientRect(), z = C().zoom / 100;
         const w = c.offsetWidth * z, h = c.offsetHeight * z;
+        // w, h are page pixels already (offsetWidth); the rect is in screen pixels, so only that is divided by Z
         box.style.width = w + "px"; box.style.height = h + "px";
-        box.style.left = (b.left + b.width / 2 - w / 2) + "px"; box.style.top = (b.top + b.height / 2 - h / 2) + "px";
+        box.style.left = (b.left + b.width / 2) / Z - w / 2 + "px"; box.style.top = (b.top + b.height / 2) / Z - h / 2 + "px";
         box.style.transform = `rotate(${C().rot}deg)`;
+        box.style.borderRadius = (parseFloat(getComputedStyle(c).borderTopLeftRadius) || 0) * z + "px";
       }
+      const t = selKey && elOf(selKey);
+      if (t && t.offsetParent) {
+        const b = t.getBoundingClientRect();
+        sel.hidden = false;
+        sel.style.left = b.left / Z - 4 + "px"; sel.style.top = b.top / Z - 4 + "px"; sel.style.width = b.width / Z + 8 + "px"; sel.style.height = b.height / Z + 8 + "px";
+        sel.style.borderRadius = selKey === "av" ? getComputedStyle(t).borderRadius : "8px";
+      } else sel.hidden = true;
       raf = requestAnimationFrame(place);
     };
     place();
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const apply = () => { syncDerived(); changed(); };
-    let drag = null;
+    // history: one step per drag, "Indietro" goes back one, "Annulla tutto" back to how it was when you opened
+    const first = JSON.stringify(C()), hist = [];
+    const bUndo = ov.querySelector('[data-h="undo"]'), bReset = ov.querySelector('[data-h="reset"]');
+    const snap = () => { hist.push(JSON.stringify(C())); if (hist.length > 60) hist.shift(); bUndo.disabled = false; bReset.disabled = false; };
+    const restore = json => { draft.appearance.card = JSON.parse(json); apply(); };
+    const undo = () => { if (!hist.length) return; restore(hist.pop()); bUndo.disabled = !hist.length; };
+    bUndo.addEventListener("click", undo);
+    bReset.addEventListener("click", () => { if (!confirm("Annullare tutte le modifiche fatte a mano?")) return; restore(first); hist.length = 0; bUndo.disabled = true; bReset.disabled = true; select(""); });
+    function select(k) {
+      selKey = k;
+      ov.querySelector(".sel-name").textContent = NAMES[k] || "";
+      sel.classList.toggle("is-links", k === "links");
+      tip.textContent = k ? `${NAMES[k]}: trascina per spostare, angoli per ingrandire${k === "links" ? ", lati per larghezza e altezza dei bottoni" : ""}. Clicca fuori per tornare al profilo.` : "clicca un pezzo (foto, nome, bottoni…) per spostarlo e ingrandirlo, oppure trascina il profilo";
+    }
+    // which piece is under the pointer (the boxes are above the profile, so look through them)
+    const pick = (x, y) => {
+      const under = document.elementsFromPoint(x, y).find(n => root.contains(n));
+      if (!under) return "";
+      if (under.closest(".pk-av")) return "av";
+      if (under.closest(".pk-name-wrap")) return "name";
+      const sl = under.closest(".pk-s"); if (!sl) return "";
+      const m = /pk-s-(\w+)/.exec(sl.className); const k = m ? m[1] : "";
+      return k === "soctop" || k === "socbot" ? "soc" : k === "head" ? "" : k;
+    };
+    let edrag = null;
+    sel.addEventListener("pointerdown", e => {
+      if (!selKey) return;
+      snap();
+      edrag = { kind: e.target.dataset.h || "move", x0: e.clientX, y0: e.clientY, e: { ...E(selKey) }, z: C().zoom / 100 };
+      const b = sel.getBoundingClientRect(); edrag.cx = b.left + b.width / 2; edrag.cy = b.top + b.height / 2;
+      edrag.d0 = Math.hypot(e.clientX - edrag.cx, e.clientY - edrag.cy) || 1;
+      sel.setPointerCapture(e.pointerId); sel.classList.add("dragging"); e.preventDefault(); e.stopPropagation();
+    });
+    sel.addEventListener("pointermove", e => {
+      if (!edrag) return;
+      const k = edrag.kind, o = edrag.e, t = E(selKey), f = edrag.z * Z; // screen px -> profile px
+      const dx = (e.clientX - edrag.x0) / f, dy = (e.clientY - edrag.y0) / f;
+      if (k === "move") { t.x = clamp(Math.round(o.x + dx), -600, 600); t.y = clamp(Math.round(o.y + dy), -900, 900); }
+      else if (selKey === "links" && (k === "e" || k === "w")) { const cw = cardEl().offsetWidth || 400; t.w = clamp(Math.round(o.w + (k === "e" ? dx : -dx) * 2 / cw * 100), 30, 100); }
+      else if (selKey === "links" && (k === "n" || k === "s")) { t.h = clamp(Math.round((o.h + (k === "s" ? dy : -dy) / 50) * 100) / 100, .6, 2.5); }
+      else { const d = Math.hypot(e.clientX - edrag.cx, e.clientY - edrag.cy); t.s = clamp(Math.round(o.s * d / edrag.d0 * 100) / 100, .3, 3); }
+      apply();
+    });
+    const eend = () => { if (!edrag) return; edrag = null; sel.classList.remove("dragging"); };
+    sel.addEventListener("pointerup", eend); sel.addEventListener("pointercancel", eend);
+    sel.addEventListener("dblclick", () => { if (!selKey) return; snap(); delete C().els[selKey]; apply(); });
+    let drag = null, down = null;
+    box.addEventListener("pointerup", e => {
+      // a click (no drag) on the profile: select the piece under the pointer
+      if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 4) select(pick(e.clientX, e.clientY));
+      down = null;
+    });
     box.addEventListener("pointerdown", e => {
+      down = [e.clientX, e.clientY]; snap();
       const kind = e.target.dataset.h || "move";
       const c = cardEl(); if (!c) return;
       const b = box.getBoundingClientRect();
@@ -2536,7 +2610,12 @@
       handEditing = false; syncControls(); changed();
       flashEl($("editHand"));
     };
-    const onKey = e => { if (e.key === "Escape") close(); };
+    const onKey = e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); return; }
+      if (e.key === "Escape") { if (selKey) select(""); else close(); return; }
+      const m = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (m && selKey) { e.preventDefault(); e.stopPropagation(); snap(); const t = E(selKey), st = e.shiftKey ? 10 : 1; t.x += m[0] * st; t.y += m[1] * st; apply(); }
+    };
     document.addEventListener("keydown", onKey);
     ov.querySelector('[data-h="done"]').addEventListener("click", close);
     ov.querySelector('[data-h="center"]').addEventListener("click", centerCard);

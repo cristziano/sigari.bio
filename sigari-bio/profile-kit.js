@@ -192,6 +192,8 @@ const pickOne = (v, list, f) => list.some(x => x[0] === v) ? v : f;
 
 // Music that starts by itself needs one tap (browsers never play sound before it): the "clicca per entrare" screen gives it
 const needsEnter = a => a.enter.on || (a.music.autoplay && ["audio", "deezer", "youtube", "soundcloud"].includes(a.music.type) && (a.music.type !== "audio" || a.music.tracks.length > 0) && (a.music.type === "audio" || !!a.music.url));
+// pieces of the profile that "Modifica a mano" can move and resize
+export const EDIT_KEYS = ["av", "name", "badges", "bio", "meta", "soc", "widgets", "music", "embeds", "links", "gallery", "tags", "banner"];
 export function safeUrl(u, allowData = false) {
   const s = String(u || "").trim();
   if (!s) return null;
@@ -281,6 +283,15 @@ export function normalizeAppearance(raw) {
   a.card.grad2 = safeColor(a.card.grad2, "") || "";
   a.card.gradAngle = clamp(a.card.gradAngle, 0, 360, 160);
   a.card.tilt = !!a.card.tilt;
+  // "Modifica a mano" like Canva: each piece of the profile moved / resized by hand
+  const els = a.card.els && typeof a.card.els === "object" ? a.card.els : {};
+  a.card.els = {};
+  EDIT_KEYS.forEach(k => {
+    const e = els[k]; if (!e || typeof e !== "object") return;
+    const o = { x: clamp(e.x, -600, 600, 0), y: clamp(e.y, -900, 900, 0), s: clamp(e.s, .3, 3, 1) };
+    if (k === "links") { o.w = clamp(e.w, 30, 100, 100); o.h = clamp(e.h, .6, 2.5, 1); }
+    if (o.x || o.y || o.s !== 1 || (o.w && o.w !== 100) || (o.h && o.h !== 1)) a.card.els[k] = o;
+  });
   for (const k of Object.keys(d.colors)) a.colors[k] = safeColor(a.colors[k], d.colors[k]);
   a.font.custom = safeFontUrl(a.font.custom) || "";
   a.font.name = FONT[a.font.name] || (a.font.name === "custom" && a.font.custom) ? a.font.name : "geist";
@@ -749,7 +760,7 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 .pk[data-cpos=top] .pk-card{margin:6vh 0 auto}
 .pk[data-tilt="1"] .pk-card{will-change:transform}
 .pk-head{display:flex;flex-direction:column;align-items:center}
-.pk-av{position:relative;width:var(--pk-av);height:var(--pk-av);border-radius:50%;background:#1a1a1a;display:grid;place-items:center;flex-shrink:0;font:700 calc(var(--pk-av)*.38)/1 var(--pk-name-font);color:#fff}
+.pk-av{position:relative;width:calc(var(--pk-av)*var(--e-av-s,1));height:calc(var(--pk-av)*var(--e-av-s,1));translate:var(--e-av-x,0px) var(--e-av-y,0px);border-radius:50%;background:#1a1a1a;display:grid;place-items:center;flex-shrink:0;font:700 calc(var(--pk-av)*.38)/1 var(--pk-name-font);color:#fff}
 .pk-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
 .pk[data-avshape=rounded] .pk-av{border-radius:26%}
 .pk[data-avshape=square] .pk-av{border-radius:6px}
@@ -882,6 +893,20 @@ position:relative;width:100%;height:100%;overflow:hidden;color:var(--pk-text);fo
 @keyframes pk-pop{from{opacity:0;transform:scale(.92)}}
 .pk-card.in-glitch{animation:pk-glin .5s steps(1,end) both}
 @keyframes pk-glin{0%{opacity:0}20%{opacity:1;transform:translate(-6px,2px);clip-path:inset(20% 0 40% 0)}40%{transform:translate(5px,-2px);clip-path:inset(60% 0 10% 0)}60%{transform:translate(-3px,0);clip-path:inset(0 0 70% 0)}80%{transform:translate(2px,1px);clip-path:inset(40% 0 0 0)}100%{transform:none;clip-path:none}}
+.pk-name-wrap{translate:var(--e-name-x,0px) var(--e-name-y,0px);scale:var(--e-name-s,1)}
+.pk-s-badges{translate:var(--e-badges-x,0px) var(--e-badges-y,0px);scale:var(--e-badges-s,1)}
+.pk-s-bio{translate:var(--e-bio-x,0px) var(--e-bio-y,0px);scale:var(--e-bio-s,1)}
+.pk-s-meta{translate:var(--e-meta-x,0px) var(--e-meta-y,0px);scale:var(--e-meta-s,1)}
+.pk-s-soctop,.pk-s-socbot{translate:var(--e-soc-x,0px) var(--e-soc-y,0px);scale:var(--e-soc-s,1)}
+.pk-s-widgets{translate:var(--e-widgets-x,0px) var(--e-widgets-y,0px);scale:var(--e-widgets-s,1)}
+.pk-s-music{translate:var(--e-music-x,0px) var(--e-music-y,0px);scale:var(--e-music-s,1)}
+.pk-s-embeds{translate:var(--e-embeds-x,0px) var(--e-embeds-y,0px);scale:var(--e-embeds-s,1)}
+.pk-s-links{translate:var(--e-links-x,0px) var(--e-links-y,0px);scale:var(--e-links-s,1)}
+.pk-s-links .pk-links{width:var(--e-links-w,100%);margin-inline:auto}
+.pk-s-links .pk-link{min-height:calc(50px*var(--e-links-h,1))}
+.pk-s-gallery{translate:var(--e-gallery-x,0px) var(--e-gallery-y,0px);scale:var(--e-gallery-s,1)}
+.pk-s-tags{translate:var(--e-tags-x,0px) var(--e-tags-y,0px);scale:var(--e-tags-s,1)}
+.pk-s-banner{translate:var(--e-banner-x,0px) var(--e-banner-y,0px);scale:var(--e-banner-s,1)}
 .pk-trail{position:absolute;left:0;top:0;z-index:7;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pk-accent)}
 .pk-trail.sparkle{border-radius:0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .pk-trail.ghost{width:22px;height:22px;margin:-11px 0 0 -11px;background:none;border:1px solid var(--pk-accent)}
@@ -1849,6 +1874,11 @@ export function mountProfile(root, input, opts = {}) {
     s.setProperty("--pk-av", a.avatar.size + "px"); s.setProperty("--pk-dsz", String(a.avatar.decoSize / 100));
     s.setProperty("--pk-cx", `calc(${a.card.x / 100} * var(--pk-rw, 100vw))`); s.setProperty("--pk-cy", `calc(${a.card.y / 100} * var(--pk-rh, 100vh))`); s.setProperty("--pk-cz", String(a.card.zoom / 100)); s.setProperty("--pk-cr", a.card.rot + "deg"); s.setProperty("--pk-soc", a.socialsStyle.size + "px");
     s.setProperty("--pk-soc-align", { left: "flex-start", center: "center", right: "flex-end" }[a.socialsStyle.align]);
+    EDIT_KEYS.forEach(k => {
+      const e = a.card.els[k] || {};
+      s.setProperty(`--e-${k}-x`, (e.x || 0) + "px"); s.setProperty(`--e-${k}-y`, (e.y || 0) + "px"); s.setProperty(`--e-${k}-s`, String(e.s || 1));
+      if (k === "links") { s.setProperty("--e-links-w", (e.w || 100) + "%"); s.setProperty("--e-links-h", String(e.h || 1)); }
+    });
     s.setProperty("--pk-link-align", a.buttons.align === "left" ? "flex-start" : "center");
     s.setProperty("--pk-w-radius", a.widgetStyle.radius + "px");
     s.setProperty("--pk-accent-on", readableOn(a.colors.accent));
