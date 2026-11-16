@@ -135,6 +135,10 @@
 </style>
 <script src="alert.js"></script>
 <link rel="stylesheet" href="ui.css">
+<script>
+  // Referral: 18kbio.xyz/?ref=name (or any page with ?ref=name) remembers who invited you for 30 days
+  (function () { try { var r = new URLSearchParams(location.search).get("ref"); if (r && /^[a-z0-9_]{1,20}$/i.test(r)) localStorage.setItem("18k-ref", JSON.stringify({ h: r.toLowerCase(), t: Date.now() })); } catch (_) {} })();
+</script>
 </head>
 <body>
 
@@ -249,7 +253,7 @@
     createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser,
     sendPasswordResetEmail, sendEmailVerification, signInWithCustomToken
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCoT9dNoX36cQfvOHDn2d-d-N2_m_MdMzM",
@@ -369,6 +373,12 @@
       }, { merge: true });
     });
     if (carried) { try { localStorage.removeItem("sigari-draft"); } catch (_) { /* storage blocked */ } }
+    // invited by someone's link (?ref=name, last 30 days): count this account for them
+    try {
+      const ref = JSON.parse(localStorage.getItem("18k-ref") || "null");
+      if (ref && ref.h && ref.h !== handle && Date.now() - ref.t < 30 * 864e5) await setDoc(doc(db, "referrals", uid), { by: ref.h, handle, createdAt: serverTimestamp() });
+      localStorage.removeItem("18k-ref");
+    } catch (_) { /* no invite, or not allowed */ }
   }
 
   // Goes to the dashboard only when the user has a profile in Firestore.

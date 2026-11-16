@@ -166,6 +166,13 @@
   .ck-item b { font-size:14px; font-weight:600; } .ck-item span { grid-column:1; font-size:12.5px; color:var(--m, #9a9a9a); line-height:1.4; }
   .ck-item small { grid-column:2; grid-row:1; font-size:11px; color:var(--m, #9a9a9a); align-self:center; }
   .ck-item.on, .ck-item:hover { background:#161616; }
+  .ref-card { padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+  .ref-top { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+  .ref-top > div:first-child { display:flex; flex-direction:column; gap:3px; } .ref-top span { font-size:13px; color:var(--m); }
+  .ref-n { text-align:right; display:flex; flex-direction:column; } .ref-n b { font-size:28px; font-weight:700; letter-spacing:-.03em; line-height:1; } .ref-n span { font-size:12px; color:var(--m); }
+  .ref-row { display:flex; gap:8px; } .ref-row .text { flex:1; min-width:0; font-family:"Geist Mono", ui-monospace, monospace; font-size:13px; }
+  .ref-list { display:flex; flex-wrap:wrap; gap:6px; font-size:13px; color:var(--m); }
+  .ref-chip { padding:4px 10px; border:1px solid var(--line, #262626); border-radius:999px; color:#fff; text-decoration:none; font-size:12.5px; }
   .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
   .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .dc-link-t span { font-size:13px; color:var(--m); }
@@ -918,6 +925,13 @@
         <div class="acc-card"><span class="acc-k">visite al profilo</span><b class="acc-v" id="ovViews">—</b><span class="acc-n" id="ovViewsNote">Contate sulla pagina pubblica.</span><button type="button" class="acc-go" data-go="analytics">Statistiche</button></div>
         <div class="acc-card"><span class="acc-k">link e social</span><b class="acc-v"><span id="ovLinks">0</span> · <span id="ovSocials">0</span></b><span class="acc-n">link attivi · social collegati</span><button type="button" class="acc-go" data-go="links">Link</button></div>
       </div>
+      <div class="label section-label">invita amici</div>
+      <div class="card ref-card">
+        <div class="ref-top"><div><b>Il tuo link per invitare</b><span>Chi si registra da questo link conta come tuo invito.</span></div><div class="ref-n"><b id="refCount">0</b><span>invitati</span></div></div>
+        <div class="ref-row"><input class="text" id="refLink" readonly><button class="save-btn sm" id="refCopy" type="button">Copia</button></div>
+        <div class="ref-list" id="refList"></div>
+      </div>
+
       <div class="label section-label">gestisci il tuo profilo</div>
       <div class="manage-grid">
         <button type="button" class="manage" data-go="customize#avatarPick"><b>Foto profilo</b><span>Carica la tua pfp</span></button>
@@ -2111,7 +2125,7 @@
     $("main").scrollTop = 0;
     setStatus("");
     $("crumb").textContent = VIEW_NAMES[name] || "";
-    if (name === "overview") renderOverview();
+    if (name === "overview") { renderOverview(); renderRefs(); }
     if (name === "analytics") renderAnalytics();
     if (name === "badges") renderBadges();
     if (name === "templates") renderTemplates();
@@ -3583,6 +3597,26 @@
   });
   $("crList").addEventListener("input", e => { const i = e.target.dataset.cr; if (i == null) return; draft.appearance.crypto[+i].a = e.target.value.trim(); changed(); });
   $("crList").addEventListener("click", e => { const i = e.target.dataset.crdel; if (i == null) return; draft.appearance.crypto.splice(+i, 1); renderCrypto(); changed(); });
+  /* ---------- Invite link (referral) ---------- */
+  let refsLoaded = false;
+  async function renderRefs() {
+    const link = "https://18kbio.xyz/?ref=" + (handle || "tuonome");
+    $("refLink").value = link;
+    if (mode === "guest") { $("refList").textContent = "Registrati per avere il tuo link e vedere chi inviti."; return; }
+    if (refsLoaded) return; refsLoaded = true;
+    try {
+      const { auth } = await firebase();
+      const j = await fetch("/api/request?refs=1&h=" + encodeURIComponent(handle), { headers: { Authorization: "Bearer " + await auth.currentUser.getIdToken() } }).then(r => r.json());
+      if (j.error) throw new Error(j.error);
+      $("refCount").textContent = j.count;
+      $("refList").replaceChildren(...j.latest.filter(x => x.handle).map(x => { const a = document.createElement("a"); a.className = "ref-chip"; a.href = "/" + x.handle; a.target = "_blank"; a.rel = "noopener"; a.textContent = "@" + x.handle; return a; }));
+      if (!j.count) $("refList").textContent = "Ancora nessuno: manda il link ai tuoi amici.";
+    } catch (_) { refsLoaded = false; $("refList").textContent = "Non riesco a contare gli inviti adesso."; }
+  }
+  $("refCopy").addEventListener("click", () => {
+    const v = $("refLink").value;
+    (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => { $("refCopy").textContent = "Copiato"; setTimeout(() => { $("refCopy").textContent = "Copia"; }, 1500); }, () => { $("refLink").select(); });
+  });
   function discordReturn() {
     const h = new URLSearchParams((location.hash || "").slice(1));
     if (!h.has("dlink")) return false;

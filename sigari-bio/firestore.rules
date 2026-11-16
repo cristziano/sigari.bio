@@ -62,6 +62,19 @@ service cloud.firestore {
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
+    // Referrals: who invited this account (one per account, set once at sign-up). The counts are read by the server.
+    match /referrals/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid
+                    && request.resource.data.keys().hasOnly(['by', 'handle', 'createdAt'])
+                    && request.resource.data.by is string && request.resource.data.by.matches('^[a-z0-9_]{1,20}$')
+                    && exists(/databases/$(database)/documents/usernames/$(request.resource.data.by))
+                    && get(/databases/$(database)/documents/usernames/$(request.resource.data.by)).data.uid != uid
+                    && ownsHandle(request.resource.data.handle)
+                    && request.resource.data.createdAt == request.time;
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow update, delete: if false;
+    }
+
     // Spotify keys of each account: only the server reads and writes them (with its own key)
     match /spotify/{uid} {
       allow read, write: if false;

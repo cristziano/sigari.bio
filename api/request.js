@@ -95,11 +95,31 @@ async function counts(req, res) {
   } catch (e) { res.statusCode = e.status || 500; res.end(JSON.stringify({ error: e.status === 401 ? "Accedi." : "Non riesco a contare adesso." })); }
 }
 
+// GET /api/request?refs=1&h=<your @> : the accounts that signed up with your invite link
+async function refs(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  try {
+    const uid = await verifyUser(req);
+    const h = String(new URL(req.url, "https://x").searchParams.get("h") || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+    const token = await adminToken(), H = { Authorization: "Bearer " + token, "Content-Type": "application/json" };
+    const base = "https://firestore.googleapis.com/v1/projects/kbio-c6126/databases/(default)/documents";
+    const u = await fetch(`${base}/usernames/${h}`, { headers: H }).then(r => r.ok ? r.json() : null);
+    if (!h || !u || !u.fields || !u.fields.uid || u.fields.uid.stringValue !== uid) { res.statusCode = 403; return res.end(JSON.stringify({ error: "Non è la tua @." })); }
+    const rows = await fetch(`${base}:runQuery`, { method: "POST", headers: H, signal: AbortSignal.timeout(8000),
+      body: JSON.stringify({ structuredQuery: { from: [{ collectionId: "referrals" }], where: { fieldFilter: { field: { fieldPath: "by" }, op: "EQUAL", value: { stringValue: h } } }, limit: 500 } }) }).then(r => r.json());
+    const list = (Array.isArray(rows) ? rows : []).filter(x => x.document).map(x => ({ handle: x.document.fields.handle && x.document.fields.handle.stringValue || "", at: x.document.fields.createdAt && x.document.fields.createdAt.timestampValue || "" }))
+      .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    res.end(JSON.stringify({ count: list.length, latest: list.slice(0, 20) }));
+  } catch (e) { res.statusCode = e.status || 500; res.end(JSON.stringify({ error: e.status === 401 ? "Accedi." : "Non riesco a contarli adesso." })); }
+}
+
 module.exports = async (req, res) => {
   if (limited(req, res, (/[?&]bug=1/.test(req.url || "") ? "bug" : /[?&]sys=1/.test(req.url || "") ? "sys" : "request"), /[?&]bug=1/.test(req.url || "") ? 5 : 20, /[?&]bug=1/.test(req.url || "") ? 600 : 300)) return; // traffic guard (see _limit.js)
   if (/[?&]bug=1/.test(req.url || "")) return bugReport(req, res);
   if (/[?&]sys=1/.test(req.url || "")) return sysError(req, res);
   if (/[?&]count=1/.test(req.url || "")) return counts(req, res);
+  if (/[?&]refs=1/.test(req.url || "")) return refs(req, res);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") { res.statusCode = 405; return res.end(JSON.stringify({ error: "Usa POST." })); }
