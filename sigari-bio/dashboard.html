@@ -173,6 +173,17 @@
   .ref-row { display:flex; gap:8px; } .ref-row .text { flex:1; min-width:0; font-family:"Geist Mono", ui-monospace, monospace; font-size:13px; }
   .ref-list { display:flex; flex-wrap:wrap; gap:6px; font-size:13px; color:var(--m); }
   .ref-chip { padding:4px 10px; border:1px solid var(--line, #262626); border-radius:999px; color:#fff; text-decoration:none; font-size:12.5px; }
+  /* accordions */
+  .acc > .pz-h, .acc > .acc-h { cursor:pointer; user-select:none; position:relative; padding-right:28px; }
+  .acc > .pz-h::after, .acc > .acc-h::after { content:""; position:absolute; right:4px; top:50%; width:8px; height:8px; margin-top:-6px; border-right:1.6px solid currentColor; border-bottom:1.6px solid currentColor; transform:rotate(45deg); transition:transform .2s cubic-bezier(.23,1,.32,1); opacity:.6; }
+  .acc.acc-closed > .pz-h::after, .acc.acc-closed > .acc-h::after { transform:rotate(-45deg); margin-top:-4px; }
+  .acc.acc-closed > :not(.pz-h):not(.acc-h) { display:none !important; }
+  .acc.pz.acc-closed > .pz-h { margin-bottom:0; padding-bottom:0; border-bottom:0; }
+  .acc-sec { margin-top:10px; }
+  .acc-sec > .acc-h { display:block; margin:0; padding:16px 40px 16px 18px; border:1px solid var(--b); border-radius:14px; background:var(--s1, #0d0d0d); font-size:12.5px; }
+  .acc-sec > .acc-h::after { right:18px; }
+  .acc-sec:not(.acc-closed) > .acc-h { margin-bottom:10px; }
+  .acc > .pz-h:hover, .acc > .acc-h:hover { opacity:.85; }
   .dc-link { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding:14px 16px; max-width:820px; }
   .dc-link-t { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .dc-link-t span { font-size:13px; color:var(--m); }
@@ -1182,7 +1193,7 @@
       <div class="card pz" id="c-more">
         <div class="pz-h"><b>Tutte le altre opzioni</b><span>qui sopra c'è la base: il resto è diviso in queste pagine</span></div>
         <div class="more-grid">
-          <button type="button" class="more-go" data-go="layout"><b>Layout</b><span>disposizione, banner, forma e decorazione della foto</span></button>
+          <button type="button" class="more-go" data-go="layout"><b>Layout</b><span>disposizione, banner e forma della foto</span></button>
           <button type="button" class="more-go" data-go="effects"><b>Font ed effetti</b><span>font, scia del cursore, suoni, schermata d'ingresso</span></button>
           <button type="button" class="more-go" data-go="links"><b>Link e social</b><span>icone, pulsanti e il loro stile</span></button>
           <button type="button" class="more-go" data-go="music"><b>Musica</b><span>playlist, player, Last.fm</span></button>
@@ -1424,15 +1435,17 @@
           <div class="field"><div class="label">bordo</div><div class="seg" data-seg="appearance.avatar.ring" data-o="avRing"></div></div>
           <div class="field span-2"><div class="label">grandezza <span class="val" data-show="appearance.avatar.size" data-unit="px"></span></div><input type="range" min="56" max="150" data-k="appearance.avatar.size"></div>
         </div>
-        <div class="label">decorazione <span class="val" id="decoCount"></span></div>
+        <div id="decoBox" hidden>
+        <div class="label">decorazione <span class="val">solo staff</span> <span class="val" id="decoCount"></span></div>
         <div class="field"><div class="label">grandezza della decorazione <span class="val" data-show="appearance.avatar.decoSize" data-unit="%"></span></div><input type="range" min="50" max="200" step="5" data-k="appearance.avatar.decoSize"></div>
         <div class="tag-chips" id="decoGroups"></div>
         <div class="decogrid" id="decoPick"></div>
         <div class="field">
-          <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(come su Discord: un'immagine trasparente sopra la pfp)</small></div>
+          <div class="label">la tua decorazione <small style="text-transform:none;letter-spacing:0">(un'immagine trasparente sopra la pfp)</small></div>
           <div class="row"><button class="save-btn sm" id="decoUpload" type="button">Carica PNG, GIF o APNG</button><input class="text" type="url" data-k="appearance.avatar.decoUrl" placeholder="oppure il link dell'immagine" style="flex:1;min-width:160px"></div>
           <input type="file" id="decoInput" accept="image/png,image/gif,image/webp,image/apng" hidden>
           <p class="hint">Usa un'immagine quadrata e trasparente al centro (tipo 240×240): viene messa sopra la pfp, un po' più grande, e le animazioni restano.</p>
+        </div>
         </div>
       </div>
     </section>
@@ -1657,7 +1670,7 @@
         <div class="toggle-row"><span>Mostra il mio stato Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.widgets.discordPresence"><span class="track"><span class="knob"></span></span></label></div>
         <div class="field" data-when="appearance.widgets.discordPresence=true"><div class="label">il tuo ID utente discord</div><input class="text" data-k="appearance.widgets.discordId" inputmode="numeric" maxlength="20" placeholder="es. 123456789012345678"><p class="hint">Discord, Impostazioni, Avanzate, Modalità sviluppatore; poi tasto destro sul tuo nome, "Copia ID utente". Chi entra con Discord ce l'ha già.</p></div>
         <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Usa l'avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discord"><span class="track"><span class="knob"></span></span></label></div>
-        <div class="toggle-row" data-when="appearance.widgets.discordPresence=true"><span>Decorazione avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discordDeco"><span class="track"><span class="knob"></span></span></label></div>
+        <div class="toggle-row" data-when="appearance.widgets.discordPresence=true" hidden><span>Decorazione avatar di Discord</span><label class="ios"><input class="sr-only" type="checkbox" data-k="appearance.avatar.discordDeco"><span class="track"><span class="knob"></span></span></label></div>
         <div class="row" data-when="appearance.widgets.discordPresence=true" style="flex-wrap:wrap;gap:8px;margin-top:8px"><a class="ghost-btn sm" href="https://discord.gg/lanyard" target="_blank" rel="noopener">1. Entra nel server Lanyard</a><button class="save-btn sm" id="dcCheck" type="button">2. Verifica</button></div>
         <p class="hint" id="dcCheckOut" data-when="appearance.widgets.discordPresence=true"></p>
       </details>
@@ -2148,7 +2161,48 @@
     if (anchor) setTimeout(() => focusTarget($(anchor)), 60);
     history.replaceState(null, "", "#" + name + (anchor ? "-" + anchor : ""));
   }
+  /* ---------- Accordions: on pages with many options every part starts closed ---------- */
+  const ACC_VIEWS = ["customize", "effects", "music", "widgets", "settings"];
+  function setAcc(box, open) {
+    box.classList.toggle("acc-closed", !open);
+    const h = box.querySelector(":scope > .acc-h, :scope > .pz-h"); if (h) h.setAttribute("aria-expanded", String(open));
+  }
+  function setupAccordions() {
+    ACC_VIEWS.forEach(v => {
+      const view = $("view-" + v); if (!view) return;
+      // Personalizza: the big cards with a title (.pz-h)
+      $$(":scope > .card.pz", view).forEach(card => {
+        const h = card.querySelector(":scope > .pz-h"); if (!h) return;
+        card.classList.add("acc"); h.setAttribute("role", "button"); h.tabIndex = 0;
+        setAcc(card, false);
+      });
+      // other pages: a small title (.section-label) + what follows it, until the next title
+      const kids = [...view.children];
+      kids.forEach((k, i) => {
+        if (!k.classList.contains("section-label")) return;
+        const box = document.createElement("div"); box.className = "acc acc-sec";
+        const body = document.createElement("div"); body.className = "acc-b";
+        k.parentNode.insertBefore(box, k);
+        box.appendChild(k); k.classList.add("acc-h"); k.setAttribute("role", "button"); k.tabIndex = 0;
+        for (let j = i + 1; j < kids.length && !kids[j].classList.contains("section-label") && !kids[j].classList.contains("soon-veil"); j++) body.appendChild(kids[j]);
+        box.appendChild(body);
+        setAcc(box, false);
+      });
+    });
+  }
+  document.addEventListener("click", e => {
+    const h = e.target.closest(".acc > .acc-h, .acc > .pz-h"); if (!h || e.target.closest("button, a, input, select, label")) return;
+    const box = h.parentNode; setAcc(box, box.classList.contains("acc-closed"));
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const h = e.target.closest && e.target.closest(".acc > .acc-h, .acc > .pz-h"); if (!h || h !== e.target) return;
+    e.preventDefault(); const box = h.parentNode; setAcc(box, box.classList.contains("acc-closed"));
+  });
+  // jumping to a setting (search, tap on the preview) opens the part that holds it
+  const openAccOf = el => { for (let b = el && el.closest(".acc"); b; b = b.parentNode && b.parentNode.closest && b.parentNode.closest(".acc")) setAcc(b, true); };
   function focusTarget(el) {
+    openAccOf(el);
     if (el) { const d = el.closest("details"); if (d && !d.open) d.open = true; }
     if (!el) return;
     el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
@@ -2231,7 +2285,7 @@
     ["Scia del mouse", "Puntini, scintille o fantasma dietro al mouse.", "scia mouse trail puntini scintille fantasma", "effects", "appearance.cursor.trail"],
     ["Suoni", "Un suono quando passi o clicchi sui bottoni.", "suono suoni audio click hover effetti sonori sfx", "effects", "appearance.sfx.click"],
     ["Foto profilo", "Forma, grandezza, anello e decorazione della pfp.", "foto profilo pfp avatar immagine tonda cerchio anello", "customize", "appearance.avatar.size"],
-    ["Decorazione della foto (stile Discord)", "Cornici animate intorno alla foto profilo, o la tua.", "decorazione cornice discord avatar deco anello pfp", "customize", "appearance.avatar.decoSize"],
+    ["Decorazione della foto (staff)", "Cornici animate intorno alla foto profilo, o la tua. Solo per lo staff.", "decorazione cornice discord avatar deco anello pfp", "customize", "appearance.avatar.decoSize"],
     ["Banner", "Un'immagine o un video sopra al profilo.", "banner copertina header immagine sopra", "customize", "appearance.banner.type"],
     ["Bottoni dei link", "Stile, forma, ombra, animazione e grandezza dei bottoni.", "bottoni pulsanti link forma stile ombra hover tasti", "links", "appearance.buttons.variant"],
     ["Social", "Instagram, TikTok, Discord e altre 35 piattaforme.", "social instagram tiktok discord youtube x twitter twitch snapchat icone", "links", "#socialSearch"],
@@ -2600,6 +2654,7 @@
   const WIDGET_FIELD = { gh: "appearance.widgets.github", ds: "appearance.widgets.discordServer", rb: "appearance.widgets.roblox", wx: "appearance.widgets.weather", cd: "appearance.widgets.countdown.date", md: "appearance.widgets.mood", nt: "appearance.widgets.note", lf: "appearance.lastfm.show", dc: "appearance.widgets.discordPresence" };
   function flashEl(el) {
     if (!el) return;
+    openAccOf(el);
     const d = el.closest("details"); if (d && !d.open) d.open = true;
     el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
     const box = el.closest(".gc, .asset, .toggle-row, .field, .link-item, .active-card, .card") || el;
@@ -4553,6 +4608,7 @@
       isStaff = owners.includes(uid) || (await F.getDoc(F.doc(db, "staff", uid))).exists();
     } catch (_) { isStaff = false; }
     $$('[data-view="staff"]').forEach(b => { b.hidden = !isStaff; });
+    $("decoBox").hidden = !isStaff; // avatar decorations: staff only for now
     $$('#mnav option[value="staff"]').forEach(o => { o.hidden = !isStaff; o.disabled = !isStaff; });
     if (isStaff) staffNews();
   }
@@ -5487,6 +5543,7 @@
     syncControls(); renderLinks(); renderSocials(); renderStops(); renderAvatarBox(); renderTracks(); renderPreview();
     updateSaveBar();
     if (params.get("join")) $("joinTag").value = params.get("join").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+    setupAccordions();
     buildSearchIndex();
     const fromLastfm = lastfmReturn() || spotifyReturn(), fromDiscord = discordReturn();
     renderDcLink(); renderCrypto(); renderBioNote();
