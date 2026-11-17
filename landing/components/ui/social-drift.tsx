@@ -1,14 +1,12 @@
 "use client";
 // Glass spheres with social logos scattered along the whole page (behind the sections, mostly on the sides).
 // They float slowly and keep changing: every few seconds one sphere takes a logo that is not on screen yet.
-// Logos are different from the hero's. Only transform/opacity animate, so scrolling stays smooth.
+// Logos are different from the hero's (none of them repeats up there). Only transform/opacity animate, so scrolling stays smooth.
 import { useEffect, useState } from "react";
 import { reducedMotion } from "@/lib/site";
 
 const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
-const POOL = ["kick", "roblox", "playstation", "steam", "riotgames", "epicgames", "soundcloud", "applemusic", "tidal", "lastdotfm", "nintendoswitch", "bandcamp",
-  "shazam", "genius", "github", "reddit", "snapchat", "pinterest", "threads", "whatsapp", "bluesky", "tumblr", "patreon", "kofi", "paypal",
-  "letterboxd", "anilist", "myanimelist", "crunchyroll", "vimeo", "behance", "dribbble", "mastodon", "signal", "cashapp", "bereal", "xbox", "vk", "twitter", "messenger", "line", "wechat", "flickr", "unsplash", "artstation", "deviantart"];
+const POOL = ["steam", "riotgames", "epicgames", "soundcloud", "applemusic", "tidal", "lastdotfm", "nintendoswitch", "bandcamp", "genius", "github", "reddit", "snapchat", "pinterest", "threads", "kofi", "paypal", "anilist", "myanimelist", "crunchyroll", "behance", "dribbble", "mastodon", "signal", "cashapp", "bereal", "xbox", "vk", "twitter", "messenger", "line", "wechat", "flickr", "unsplash", "artstation", "deviantart"];
 
 // [left %, top % of the page below the hero, size px, float seconds, opacity, phone too?]
 // [left %, top % of the page below the hero, size px, float seconds, opacity, phone too?] — only in the side margins

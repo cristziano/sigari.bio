@@ -1,7 +1,6 @@
 "use client";
-// Hero. Base: "Shape Landing Hero" by Kokonut UI (21st.dev, MIT): soft pill shapes that drop in and float.
-// Rebuilt in black and white for 18kbio, with glass spheres carrying social logos on the sides
-// (they float and move a little with the mouse; each moving piece has its own layer, so scrolling stays smooth) and a fine dot grid behind.
+// Hero: the title, the claim box and glass spheres with social logos all around
+// (near ones big and sharp, far ones small and faint; they float and move a little with the mouse; each moving piece has its own layer, so scrolling stays smooth) and a fine dot grid behind.
 import { useEffect, useRef } from "react";
 import { motion, useInView, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import Claim from "./Claim";
@@ -20,29 +19,27 @@ function Word({ children, i }: { children: React.ReactNode; i: number }) {
   );
 }
 
-/** a soft pill that drops in, then floats (Kokonut UI's ElegantShape, in greys) */
-function Pill({ className, delay, w, h, rotate, tint, live }: { className: string; delay: number; w: number; h: number; rotate: number; tint: string; live: boolean }) {
-  return (
-    <motion.div aria-hidden className={`absolute will-change-transform ${className}`} initial={{ opacity: 0, y: -150, rotate: rotate - 15 }} animate={{ opacity: 1, y: 0, rotate }}
-      transition={{ duration: 2.4, delay, ease: [0.23, 0.86, 0.39, 0.96], opacity: { duration: 1.2 } }}>
-      <motion.div animate={live ? { y: [0, 15, 0] } : { y: 0 }} transition={{ duration: 12, repeat: live ? Infinity : 0, ease: "easeInOut" }} style={{ width: w, height: h }} className="relative will-change-transform">
-        <div className={`absolute inset-0 rounded-full border-2 border-white/[.12] bg-gradient-to-r to-transparent shadow-[0_8px_32px_0_rgba(255,255,255,.06)] after:absolute after:inset-0 after:rounded-full after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,.16),transparent_70%)] ${tint}`} />
-      </motion.div>
-    </motion.div>
-  );
-}
-
 type Orb = { icon: string; x: string; y: string; size: number; depth: number; dur: number; mobile?: boolean };
 // near = big and sharp, far = small, blurred, faint
 const ORBS: Orb[] = [
   { icon: "discord", x: "6%", y: "22%", size: 84, depth: 1, dur: 7, mobile: true },
   { icon: "spotify", x: "14%", y: "68%", size: 58, depth: .6, dur: 9 },
-  { icon: "tiktok", x: "3%", y: "84%", size: 40, depth: .3, dur: 11 },
+  { icon: "tiktok", x: "3%", y: "84%", size: 40, depth: .3, dur: 11, mobile: true },
   { icon: "instagram", x: "88%", y: "18%", size: 72, depth: .9, dur: 8, mobile: true },
   { icon: "youtube", x: "80%", y: "74%", size: 92, depth: 1, dur: 10 },
   { icon: "twitch", x: "93%", y: "52%", size: 44, depth: .35, dur: 12 },
-  { icon: "x", x: "24%", y: "10%", size: 36, depth: .25, dur: 13 },
+  { icon: "x", x: "24%", y: "12%", size: 36, depth: .25, dur: 13, mobile: true },
   { icon: "telegram", x: "70%", y: "8%", size: 40, depth: .3, dur: 9 },
+  { icon: "whatsapp", x: "17%", y: "40%", size: 62, depth: .8, dur: 10 },
+  { icon: "kick", x: "83%", y: "40%", size: 56, depth: .7, dur: 11 },
+  { icon: "roblox", x: "27%", y: "88%", size: 50, depth: .55, dur: 9, mobile: true },
+  { icon: "playstation", x: "68%", y: "90%", size: 54, depth: .6, dur: 12, mobile: true },
+  { icon: "tumblr", x: "38%", y: "15%", size: 34, depth: .25, dur: 13 },
+  { icon: "bluesky", x: "96%", y: "88%", size: 46, depth: .45, dur: 10, mobile: true },
+  { icon: "shazam", x: "4%", y: "50%", size: 48, depth: .5, dur: 12 },
+  { icon: "letterboxd", x: "57%", y: "95%", size: 36, depth: .3, dur: 11 },
+  { icon: "patreon", x: "60%", y: "16%", size: 30, depth: .2, dur: 14 },
+  { icon: "vimeo", x: "96%", y: "28%", size: 34, depth: .25, dur: 13 },
 ];
 
 function GlassOrb({ o, mx, my, live }: { o: Orb; mx: MotionValue<number>; my: MotionValue<number>; live: boolean }) {
@@ -89,11 +86,6 @@ export default function Hero() {
       ))}
 
       <div aria-hidden className="absolute inset-0 overflow-hidden">
-        <Pill delay={.3} w={600} h={140} rotate={12} tint="from-white/[.10]" className="left-[-12%] top-[16%] md:left-[-5%] md:top-[20%]" live={live} />
-        <Pill delay={.5} w={500} h={120} rotate={-15} tint="from-white/[.07]" className="right-[-8%] top-[72%] md:right-[0%] md:top-[76%]" live={live} />
-        <Pill delay={.4} w={300} h={80} rotate={-8} tint="from-white/[.08]" className="bottom-[5%] left-[4%] md:bottom-[9%] md:left-[10%]" live={live} />
-        <Pill delay={.6} w={200} h={60} rotate={20} tint="from-white/[.10]" className="right-[14%] top-[10%] md:right-[20%] md:top-[14%]" live={live} />
-        <Pill delay={.7} w={150} h={40} rotate={-25} tint="from-white/[.06]" className="left-[20%] top-[5%] md:left-[24%] md:top-[9%]" live={live} />
         {ORBS.map(o => <GlassOrb key={o.icon} o={o} mx={mx} my={my} live={live} />)}
       </div>
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
