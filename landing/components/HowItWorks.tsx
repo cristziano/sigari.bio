@@ -159,19 +159,16 @@ export default function HowItWorks() {
     return () => { removeEventListener("scroll", onScroll); clearTimeout(idle); };
   }, []);
 
-  const go = (i: number) => marks.current[i]?.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
-
   return (
-    <section aria-label={`${t("howT1")} ${t("howT2")}`} className="px-4 pt-14 sm:px-[clamp(16px,6vw,96px)] md:pt-24">
-      <div className="mx-auto max-w-[1180px]">
-        <h2 className="text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("howT1")} <span className="chrome">{t("howT2")}</span></h2>
-      </div>
+    <section aria-label={`${t("howT1")} ${t("howT2")}`} className="px-4 sm:px-[clamp(16px,6vw,96px)]">
       {/* three screens of scroll; the stage stays still while you go through them */}
       <div ref={wrap} className="relative mx-auto max-w-[1180px]" style={{ height: "calc(300svh * var(--vz, 1))" }}>
         {[0, 1, 2].map(i => <div key={i} ref={el => { marks.current[i] = el; }} aria-hidden className="absolute inset-x-0 h-px" style={{ top: `calc(${i * 100}svh * var(--vz, 1))` }} />)}
-        <div className="sticky top-0 flex flex-col justify-center gap-4 pb-5 pt-[68px] md:gap-6 md:pb-6 md:pt-[72px] md:grid md:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] md:items-center md:gap-12"
+        <div className="sticky top-0 flex flex-col justify-center gap-4 pb-5 pt-[68px] md:gap-6 md:pb-6 md:pt-[72px] md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] md:items-center md:gap-12"
           style={{ height: "calc(100svh * var(--vz, 1))" }}>
-          {/* the steps: the current one is open */}
+          {/* right: the title on top, the steps under it (the current one is open); left: the scene of that step */}
+          <div className="flex flex-col gap-4 md:col-start-2 md:row-start-1 md:gap-6">
+          <h2 className="text-[clamp(28px,4.2vw,56px)] font-bold leading-[1.02] tracking-[-.045em]">{t("howT1")} <span className="chrome">{t("howT2")}</span></h2>
           {/* phones: the three numbers in a row, the current one white */}
           <div aria-hidden className="flex items-center gap-2 md:hidden">
             {steps.map((_, i) => <span key={i} className="flex items-center gap-2"><i className={`grid size-7 place-items-center rounded-full border text-[12px] font-semibold not-italic transition-colors duration-300 ${i <= active ? "border-white bg-white text-black" : "border-white/20 text-[#8a8a8a]"}`}>{i + 1}</i>{i < 2 && <i className={`h-px w-8 transition-colors duration-300 ${i < active ? "bg-white" : "bg-white/15"}`} />}</span>)}
@@ -183,15 +180,15 @@ export default function HowItWorks() {
               const on = i === active;
               return (
                 <li key={i} className={`relative pl-12 max-md:pl-0 ${on ? "" : "max-md:hidden"}`}>
-                  <button type="button" onClick={() => go(i)} aria-current={on ? "step" : undefined} className="block w-full py-2 text-left">
+                  <div aria-current={on ? "step" : undefined} className="block w-full py-2 text-left">
                     <span aria-hidden className={`absolute left-0 top-2.5 grid size-[31px] max-md:hidden place-items-center rounded-full border text-[13px] font-semibold transition-colors duration-300 ${i <= active ? "border-white bg-white text-black" : "border-white/20 bg-black text-[#8a8a8a]"}`}>{i + 1}</span>
-                    <b className={`block text-[clamp(22px,2.6vw,34px)] font-semibold leading-[1.1] tracking-[-.035em] transition-colors duration-300 ${on ? "text-white" : "text-[#5f5f5f]"}`}>{title}</b>
-                  </button>
+                    <b className={`block text-[clamp(20px,2.2vw,30px)] font-semibold leading-[1.1] tracking-[-.035em] transition-colors duration-300 ${on ? "text-white" : "text-[#5f5f5f]"}`}>{title}</b>
+                  </div>
                   <AnimatePresence initial={false}>
                     {on && (
                       <motion.div key="open" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .35, ease }} className="overflow-hidden">
                         <p className="max-w-[40ch] pb-3 text-[15px] leading-[1.55] text-[#bdbdbd] max-md:text-[14px]">{text}</p>
-                        <div className="flex flex-wrap gap-2 pb-3">
+                        <div className="flex flex-wrap gap-2 pb-3 max-md:hidden">
                           {facts[i].map(f => <span key={f} className="rounded-lg border border-white/15 bg-white/[.04] px-2.5 py-1.5 text-[12.5px] font-medium">{f}</span>)}
                         </div>
                       </motion.div>
@@ -201,10 +198,11 @@ export default function HowItWorks() {
               );
             })}
           </ol>
+          </div>
           {/* the scene of the current step */}
-          <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[28px] border border-white/10 bg-[#080808] p-5 md:h-[min(560px,70%)] md:flex-none md:p-10">
+          <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[28px] border border-white/10 bg-[#080808]/80 p-5 md:col-start-1 md:row-start-1 md:h-[min(560px,74%)] md:flex-none md:p-10">
             <AnimatePresence mode="wait">
-              <motion.div key={active} className="grid w-full place-items-center max-md:scale-[.68]" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              <motion.div key={active} className="grid w-full place-items-center max-md:scale-[.6]" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -14 }} transition={{ duration: .3, ease }}>
                 <Scene />
               </motion.div>

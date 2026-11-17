@@ -47,7 +47,7 @@ export default function AuroraBackground() {
     const size = () => { c.width = Math.max(2, Math.round(innerWidth * scale)); c.height = Math.max(2, Math.round(innerHeight * scale)); gl.viewport(0, 0, c.width, c.height); gl.uniform2f(uRes, c.width, c.height); };
     size();
     // more visible behind the hero, very dark and delicate everywhere else
-    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .24 + (.07 - .24) * k; };
+    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .32 + (.13 - .32) * k; };
     const t0 = performance.now();
     const draw = () => { gl.uniform1f(uT, (performance.now() - t0) / 1000); gl.uniform1f(uAmp, amp()); gl.drawArrays(gl.TRIANGLES, 0, 3); };
 

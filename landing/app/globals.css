@@ -96,6 +96,7 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 }
 /* the profile is drawn bigger and shrunk, so it fits the phone like on a real one */
 .demo-pv { position: absolute; width: 151.5%; height: 151.5%; transform: scale(.66); transform-origin: 0 0; }
+@media (max-width: 767px) { .demo-pv { width: 181.8%; height: 181.8%; transform: scale(.55); } }
 .demo-pv a, .demo-pv button { pointer-events: none; }
 
 /* ---------- cards: film grain ---------- */

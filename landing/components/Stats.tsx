@@ -16,6 +16,7 @@ export default function Stats() {
         <p className="max-w-[40ch] text-[15px] leading-[1.55] text-muted">{t("statsSub")}</p>
       </div>
       {near ? <AdvancedStats /> : <div className="min-h-[640px]" />}
+      <p className="mx-auto mt-4 max-w-[1180px] text-[12.5px] text-[#8a8a8a]">{t("statsFake")}</p>
     </section>
   );
 }

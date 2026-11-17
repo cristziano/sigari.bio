@@ -3,7 +3,7 @@
 // the four steps (colours, background, fonts, socials) build the style in stop motion.
 // The style is @1's when it has a photo or a background, otherwise a ready-made one.
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
+import { useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
@@ -16,10 +16,7 @@ const ease = [0.23, 1, 0.32, 1] as const;
 /** a small picture of the tool each step uses in the dashboard */
 function Tool({ i }: { i: number }) {
   const chip = "rounded-lg border border-line-2 px-2.5 py-1 text-[12px] text-muted";
-  if (i === 0) return (
-    <div className="flex flex-wrap gap-1.5">{["#ffffff", "#ff3b6b", "#3b82f6", "#3ddc84", "#ffb547"].map(c => (
-      <span key={c} className="size-6 rounded-full border border-white/20" style={{ background: c }} />))}</div>
-  );
+  if (i === 0) return null;
   if (i === 1) return <div className="flex flex-wrap gap-2">{["foto", "GIF", "video", "colore"].map(x => <span key={x} className={chip}>{x}</span>)}</div>;
   if (i === 2) return (
     <div className="flex flex-wrap gap-1.5">{[["Aa", "Geist"], ["Aa", "Instrument Serif"], ["Aa", "Unbounded"], ["Aa", "Geist Mono"]].map(([a, f]) => (
@@ -122,85 +119,74 @@ export default function EditDemo() {
   useEffect(() => {
     if (!inView || reducedMotion()) return;
     if (step < 0) { const id = setTimeout(() => setStep(0), 400); return () => clearTimeout(id); }
-    const id = setTimeout(() => { setAuto(true); setStep(s => (s + 1) % 4); }, auto ? STEP_MS : STEP_MS * 2);
+    if (step >= 3) return; // it stops on the last step: never back to the start by itself
+    const id = setTimeout(() => { setAuto(true); setStep(s => Math.min(3, s + 1)); }, auto ? STEP_MS : STEP_MS * 2);
     return () => clearTimeout(id);
   }, [inView, step, auto]);
 
   const cur = Math.max(0, step);
-  const pick = (i: number) => { setAuto(false); setStep(((i % 4) + 4) % 4); };
+  // forward only, one step at a time: no jumping ahead, no going back
+  const next = () => { if (cur < 3) { setAuto(false); setStep(cur + 1); } };
 
-  // the arrow keys move the carousel while this section is on screen (not while typing in a field)
+  // the → key moves to the next step while this section is on screen (not while typing in a field)
   useEffect(() => {
     if (!inView) return;
     const key = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
-      if (e.key === "ArrowRight") { e.preventDefault(); pick(cur + 1); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); pick(cur - 1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); next(); }
     };
     addEventListener("keydown", key);
     return () => removeEventListener("keydown", key);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, cur]);
 
-  // the four tiles sit on a ring seen from the front: the current one in front, the two next ones tilted on the sides, the last one behind
-  const [ring, setRing] = useState(300);
-  useEffect(() => { const r = () => setRing(Math.min(300, innerWidth * .34)); r(); addEventListener("resize", r); return () => removeEventListener("resize", r); }, []);
-  const place = (i: number) => {
-    const a = (((i - cur) % 4) + 4) % 4 * (Math.PI / 2); // 0 front, 90 right, 180 back, 270 left
-    const c = Math.cos(a), sn = Math.sin(a);
-    return { x: sn * ring, y: (1 - c) * (c < -.5 ? -14 : 26), rotate: sn * 12, scale: .78 + .22 * (c + 1) / 2 + (c > .5 ? .04 : 0), opacity: c < -.5 ? .22 : c > .5 ? 1 : .7, zIndex: Math.round(10 + c * 10) };
-  };
-
   return (
-    <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="overflow-x-clip px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
-      <div className="mx-auto max-w-[1180px]">
-        <h2 className="text-center text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
+    <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="px-4 py-12 sm:px-[clamp(16px,6vw,96px)] md:py-16">
+      {/* left: the phone that changes; right: the title on top and the steps under it. The whole block fits one screen. */}
+      <div className="mx-auto grid max-w-[1080px] items-center gap-x-[clamp(24px,5vw,72px)] gap-y-6 max-md:grid-cols-[minmax(0,.85fr)_minmax(0,1fr)] md:grid-cols-[auto_minmax(0,1fr)]">
+        <h2 className="text-[clamp(30px,4.4vw,56px)] font-bold leading-[1.02] tracking-[-.045em] max-md:col-span-2 md:col-start-2 md:row-start-1 md:self-end">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
 
-        {/* the phone, on top in the middle */}
-        <div className="mt-10 grid place-items-center">
-          <div ref={phone} className="demo-phone relative w-[min(240px,62vw,calc(56svh*.53))] rounded-[46px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[9px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] min-[901px]:w-[min(300px,calc(58svh*.53))]">
+        {/* the phone */}
+        <div className="grid place-items-center md:col-start-1 md:row-span-2 md:row-start-1">
+          <div ref={phone} className="demo-phone relative w-[min(190px,44vw)] rounded-[40px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[8px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] md:w-[min(290px,calc(66svh*.53))] md:rounded-[46px] md:p-[9px]">
             <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
             <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
-            <div className="relative aspect-[9/16.5] overflow-hidden rounded-[38px] bg-[#050505]">
+            <div className="relative aspect-[9/16.5] overflow-hidden rounded-[32px] bg-[#050505] md:rounded-[38px]">
               <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
-              <span aria-hidden className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-[22px] w-[34%] -translate-x-1/2 rounded-full bg-black" />
+              <span aria-hidden className="pointer-events-none absolute left-1/2 top-2 z-10 h-[18px] w-[34%] -translate-x-1/2 rounded-full bg-black md:top-2.5 md:h-[22px]" />
               <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />
             </div>
           </div>
         </div>
 
-        {/* the four steps on a ring under the phone; the current one has a moving chrome frame */}
-        <div role="tablist" aria-label={t("demoT1")} className="relative mx-auto -mt-6 h-[210px] w-full max-w-[900px] md:h-[200px]">
-          {steps.map(([title], i) => {
-            const on = i === cur, p = place(i);
-            return (
-              <motion.button key={i} type="button" role="tab" aria-selected={on} tabIndex={on ? 0 : -1} onClick={() => pick(i)}
-                initial={false} animate={{ x: p.x, y: p.y, rotate: p.rotate, scale: p.scale, opacity: p.opacity }} transition={reducedMotion() ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 20 }}
-                style={{ zIndex: p.zIndex }}
-                className={`demo-tile absolute left-1/2 top-6 -ml-[100px] flex w-[200px] flex-col gap-4 rounded-2xl border p-4 text-left md:-ml-[120px] md:w-[240px] ${on ? "chrome-frame border-transparent bg-[#141414]" : "border-white/10 bg-[#0d0d0d]"}`}>
-                {on && <><i aria-hidden className="spark left-2 top-1.5" /><i aria-hidden className="spark spark-2 bottom-2 right-3" /></>}
-                <span className="flex items-center gap-2.5">
-                  <span aria-hidden className={`grid size-8 shrink-0 place-items-center rounded-lg ${on ? "bg-white text-black" : "border border-white/15 text-[#bdbdbd]"}`}><StepIcon i={i} /></span>
-                  <b className={`text-[17px] font-semibold tracking-[-.02em] ${on ? "text-white" : "text-[#9a9a9a]"}`}>{title}</b>
-                </span>
-                <span className="block"><Tool i={i} /></span>
-                <i aria-hidden key={on ? `${step}${auto}` : "x"} className={`absolute bottom-0 left-4 right-4 h-[2px] origin-left rounded bg-white/80 ${on && auto && step >= 0 ? "tile-bar" : "scale-x-0"}`} />
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* arrows (also ← → on the keyboard) and the try button */}
-        <div className="mt-2 flex flex-col items-center gap-5">
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => pick(cur - 1)} aria-label={t("demoPrev")} className="grid size-11 place-items-center rounded-full border border-white/15 text-[18px] transition-colors hover:border-white/50">←</button>
-            <span className="min-w-[64px] text-center text-[13px] text-[#8a8a8a]">{cur + 1} / 4</span>
-            <button type="button" onClick={() => pick(cur + 1)} aria-label={t("demoNext")} className="grid size-11 place-items-center rounded-full border border-white/15 text-[18px] transition-colors hover:border-white/50">→</button>
+        {/* the steps, one line each; the current one is open and has the moving chrome frame */}
+        <div className="min-w-0 md:col-start-2 md:row-start-2 md:self-start">
+          <ol className="grid gap-2">
+            {steps.map(([title], i) => {
+              const on = i === cur, done = i < cur;
+              return (
+                <li key={i} aria-current={on ? "step" : undefined}
+                  className={`relative rounded-2xl border px-3.5 py-3 transition-colors duration-300 md:px-4 ${on ? "chrome-frame border-transparent bg-[#141414]" : "border-white/10 bg-[#0d0d0d]/80"}`}>
+                  {on && <><i aria-hidden className="spark left-2 top-1.5" /><i aria-hidden className="spark spark-2 bottom-2 right-3" /></>}
+                  <span className="flex items-center gap-2.5">
+                    <span aria-hidden className={`grid size-7 shrink-0 place-items-center rounded-lg md:size-8 ${on ? "bg-white text-black" : done ? "border border-white/30 text-white" : "border border-white/12 text-[#6f6f6f]"}`}>{done ? "✓" : <StepIcon i={i} />}</span>
+                    <b className={`text-[15px] font-semibold tracking-[-.02em] md:text-[17px] ${on ? "text-white" : done ? "text-[#bdbdbd]" : "text-[#6f6f6f]"}`}>{title}</b>
+                  </span>
+                  {on && i > 0 && <span className="mt-3 block max-md:hidden"><Tool i={i} /></span>}
+                  <i aria-hidden key={on ? `${step}${auto}` : "x"} className={`absolute bottom-0 left-4 right-4 h-[2px] origin-left rounded bg-white/80 ${on && auto && step >= 0 && i < 3 ? "tile-bar" : "scale-x-0"}`} />
+                </li>
+              );
+            })}
+          </ol>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            {cur < 3
+              ? <button type="button" onClick={next} className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/20 px-4 text-[14px] font-semibold transition-colors hover:border-white/60">{t("demoNext")} <span aria-hidden>→</span></button>
+              : null}
+            <a href={guestHref("/dashboard")} className={`group inline-flex min-h-[44px] items-center gap-2.5 rounded-xl px-4 text-[14px] font-semibold transition-transform active:scale-[.97] ${cur === 3 ? "bg-white text-black" : "border border-white/20 text-white"}`}>
+              {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+            </a>
           </div>
-          <a href={guestHref("/dashboard")} className="group inline-flex min-h-[48px] items-center gap-2.5 rounded-xl bg-white px-5 text-[15px] font-semibold text-black transition-transform active:scale-[.97]">
-            {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-          </a>
         </div>
       </div>
     </section>
