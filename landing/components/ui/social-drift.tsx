@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { reducedMotion } from "@/lib/site";
 
 const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
-const POOL = ["steam", "riotgames", "epicgames", "soundcloud", "applemusic", "tidal", "lastdotfm", "nintendoswitch", "bandcamp", "genius", "github", "reddit", "snapchat", "pinterest", "threads", "kofi", "paypal", "anilist", "myanimelist", "crunchyroll", "behance", "dribbble", "mastodon", "signal", "cashapp", "bereal", "xbox", "vk", "twitter", "messenger", "line", "wechat", "flickr", "unsplash", "artstation", "deviantart"];
+const POOL = ["roblox", "playstation", "tumblr", "bluesky", "shazam", "letterboxd", "patreon", "vimeo", "steam", "riotgames", "epicgames", "soundcloud", "applemusic", "tidal", "lastdotfm", "nintendoswitch", "bandcamp", "genius", "github", "reddit", "snapchat", "pinterest", "threads", "kofi", "paypal", "anilist", "myanimelist", "crunchyroll", "behance", "dribbble", "mastodon", "signal", "cashapp", "bereal", "xbox", "vk", "twitter", "messenger", "line", "wechat", "flickr", "unsplash", "artstation", "deviantart"];
 
 // [left %, top % of the page below the hero, size px, float seconds, opacity, phone too?]
 // [left %, top % of the page below the hero, size px, float seconds, opacity, phone too?] — only in the side margins

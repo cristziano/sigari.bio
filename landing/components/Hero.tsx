@@ -24,22 +24,14 @@ type Orb = { icon: string; x: string; y: string; size: number; depth: number; du
 const ORBS: Orb[] = [
   { icon: "discord", x: "6%", y: "22%", size: 84, depth: 1, dur: 7, mobile: true },
   { icon: "spotify", x: "14%", y: "68%", size: 58, depth: .6, dur: 9 },
-  { icon: "tiktok", x: "3%", y: "84%", size: 40, depth: .3, dur: 11, mobile: true },
+  { icon: "tiktok", x: "3%", y: "84%", size: 40, depth: .3, dur: 11 },
   { icon: "instagram", x: "88%", y: "18%", size: 72, depth: .9, dur: 8, mobile: true },
   { icon: "youtube", x: "80%", y: "74%", size: 92, depth: 1, dur: 10 },
   { icon: "twitch", x: "93%", y: "52%", size: 44, depth: .35, dur: 12 },
-  { icon: "x", x: "24%", y: "12%", size: 36, depth: .25, dur: 13, mobile: true },
+  { icon: "x", x: "24%", y: "10%", size: 36, depth: .25, dur: 13 },
   { icon: "telegram", x: "70%", y: "8%", size: 40, depth: .3, dur: 9 },
   { icon: "whatsapp", x: "17%", y: "40%", size: 62, depth: .8, dur: 10 },
   { icon: "kick", x: "83%", y: "40%", size: 56, depth: .7, dur: 11 },
-  { icon: "roblox", x: "27%", y: "88%", size: 50, depth: .55, dur: 9, mobile: true },
-  { icon: "playstation", x: "68%", y: "90%", size: 54, depth: .6, dur: 12, mobile: true },
-  { icon: "tumblr", x: "38%", y: "15%", size: 34, depth: .25, dur: 13 },
-  { icon: "bluesky", x: "96%", y: "88%", size: 46, depth: .45, dur: 10, mobile: true },
-  { icon: "shazam", x: "4%", y: "50%", size: 48, depth: .5, dur: 12 },
-  { icon: "letterboxd", x: "57%", y: "95%", size: 36, depth: .3, dur: 11 },
-  { icon: "patreon", x: "60%", y: "16%", size: 30, depth: .2, dur: 14 },
-  { icon: "vimeo", x: "96%", y: "28%", size: 34, depth: .25, dur: 13 },
 ];
 
 function GlassOrb({ o, mx, my, live }: { o: Orb; mx: MotionValue<number>; my: MotionValue<number>; live: boolean }) {
