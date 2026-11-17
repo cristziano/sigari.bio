@@ -4,7 +4,7 @@
 // - while you type your @ they are pulled towards the field;
 // - when the name is free they snap into a profile card with your @ (avatar, name, the bubbles become its links);
 // - if you clear the name the card melts and the bubbles go back to floating.
-// A soft light follows the mouse; the placeholder types example names by itself while the field is empty.
+// The background is plain matte black; the placeholder types example names by itself while the field is empty.
 // Animations: GSAP, transform/opacity only. With prefers-reduced-motion it all works the same, without movement.
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
@@ -81,7 +81,6 @@ export default function Hero() {
   const field = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const card = useRef<HTMLDivElement>(null);
-  const light = useRef<HTMLDivElement>(null);
   const els = useRef<(HTMLSpanElement | null)[]>([]);
   const slots = useRef<(HTMLSpanElement | null)[]>([]);
   const floats = useRef<gsap.core.Tween[]>([]);
@@ -159,18 +158,6 @@ export default function Hero() {
     });
   }, [mode, handle.length, shown, size]);
 
-  // a soft light that follows the mouse (on phones it rests behind the field)
-  useEffect(() => {
-    const l = light.current, s = sec.current;
-    if (!l || !s) return;
-    gsap.set(l, { xPercent: -50, yPercent: -50, x: s.offsetWidth / 2, y: s.offsetHeight * .62 });
-    if (reducedMotion() || !matchMedia("(pointer: fine)").matches) return;
-    const qx = gsap.quickTo(l, "x", { duration: .9, ease: "power3" }), qy = gsap.quickTo(l, "y", { duration: .9, ease: "power3" });
-    const move = (e: PointerEvent) => { const r = s.getBoundingClientRect(), z = r.width / s.offsetWidth || 1; qx((e.clientX - r.left) / z); qy((e.clientY - r.top) / z); };
-    s.addEventListener("pointermove", move);
-    return () => s.removeEventListener("pointermove", move);
-  }, [size]);
-
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!valid || avail === false) {
@@ -185,8 +172,6 @@ export default function Hero() {
 
   return (
     <section ref={sec} id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[740px]">
-      <div aria-hidden className="absolute inset-0 -z-10 opacity-60 [background-image:radial-gradient(rgba(255,255,255,.09)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(70%_60%_at_50%_45%,#000,transparent)]" />
-      <div ref={light} aria-hidden className="pointer-events-none absolute left-0 top-0 -z-10 size-[min(760px,140vw)] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,.12),rgba(255,255,255,.04)_45%,transparent)] will-change-transform" />
 
       {/* the social bubbles: above the card when they snap into it */}
       <div aria-hidden className={`pointer-events-none absolute inset-0 ${mode === "card" ? "z-[3]" : "z-[1]"}`}>

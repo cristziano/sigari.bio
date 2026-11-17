@@ -683,7 +683,13 @@
   .nav-foot { margin-top:auto; padding-top:10px; }
   .nav { display:flex; flex-direction:column; flex:1; }
   .nav-foot button[data-view="share"] { border:0; }
-  .crumb { margin-right:auto; font:500 11px "Geist Mono",monospace; color:var(--d); text-transform:lowercase; }
+  /* breadcrumb: home > group > page (the current page bright, the rest grey) */
+  .crumb { margin-right:auto; display:flex; align-items:center; gap:10px; font:500 13.5px "Geist",system-ui,sans-serif; color:var(--d); }
+  .crumb button { display:inline-flex; align-items:center; padding:4px 2px; border:0; background:none; color:inherit; font:inherit; cursor:pointer; border-radius:6px; transition:color .15s; }
+  .crumb button:hover { color:var(--fg); }
+  .crumb .cr-home svg { width:19px; height:19px; }
+  .crumb .cr-sep { width:14px; height:14px; color:var(--b); flex:none; }
+  .crumb .cr-now { color:var(--fg); font-weight:600; }
   .topbar .guestbar { order:2; }
   .m-search { display:none; }
   .flash { animation:flash 1.4s ease; }
@@ -1025,7 +1031,7 @@
     </div>
     <div class="topbar">
       <button type="button" class="side-tog side-open" id="sideOpen" aria-label="Apri il menu" title="Apri il menu (Ctrl B)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M14 9l3 3-3 3"/></svg></button>
-      <span class="crumb" id="crumb"></span>
+      <nav class="crumb" id="crumb" aria-label="Sei qui"></nav>
       <div class="guestbar hidden" id="guestbar">
         <span class="gb-short">Modalità prova: le modifiche restano su questo telefono.</span>
         <span class="gb-long">Stai provando senza account. <b id="guestHandle">@ospite</b> non è ancora tua e le modifiche restano solo su questo dispositivo.</span>
@@ -2232,6 +2238,18 @@
     }));
     $("mnav").addEventListener("change", e => showView(e.target.value));
   }
+  // breadcrumb on top: home > menu group > current page (home and the group can be clicked)
+  const GROUP_OF = Object.fromEntries([...NAV.flatMap(([g, items]) => items.map(([v]) => [v, g])), ...FOOT.map(([v]) => [v, "altro"])]);
+  function renderCrumb(name) {
+    const sep = '<svg class="cr-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+    const g = GROUP_OF[name] || "";
+    const first = (NAV.find(([gr]) => gr === g)?.[1] || [])[0]?.[0];
+    const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+    $("crumb").innerHTML = '<button type="button" class="cr-home" data-cr="overview" aria-label="Panoramica" title="Panoramica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></button>'
+      + (g ? sep + (first && first !== name ? `<button type="button" data-cr="${first}">${cap(g)}</button>` : `<span>${cap(g)}</span>`) : "")
+      + sep + `<span class="cr-now" aria-current="page">${VIEW_NAMES[name] || ""}</span>`;
+    $$("#crumb [data-cr]").forEach(b => b.addEventListener("click", () => showView(b.dataset.cr)));
+  }
   // showView("customize#c-colors") opens the page and scrolls to that part
   function showView(target) {
     let [name, anchor] = String(target || "").split("#");
@@ -2253,7 +2271,7 @@
     if (!reduce) { v.classList.remove("pix"); void v.offsetWidth; v.classList.add("pix"); }
     $("main").scrollTop = 0;
     setStatus("");
-    $("crumb").textContent = VIEW_NAMES[name] || "";
+    renderCrumb(name);
     if (name === "overview") { renderOverview(); renderRefs(); }
     if (name === "analytics") renderAnalytics();
     if (name === "badges") renderBadges();
