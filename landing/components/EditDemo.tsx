@@ -7,7 +7,6 @@ import { AnimatePresence, motion, useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
-import { topProfiles, type Pro } from "./Proof";
 
 const STEP_MS = 3400;
 const EXAMPLE_STYLE = "night-drive";
@@ -51,24 +50,25 @@ export default function EditDemo() {
   const pv = useRef<HTMLDivElement>(null);
   const phone = useRef<HTMLDivElement>(null);
   const inView = useInView(sec, { amount: .25 });
+  const near = useInView(sec, { once: true, margin: "600px 0px" }); // the profile is built only when you get close (lighter page load)
   const [step, setStep] = useState(-1);
   const [auto, setAuto] = useState(true);
   const view = useRef<any>(null);
   const frames = useRef<any[]>([]);
   const base = useRef<any>(null); // @1, when it has something to show
-  const real = useRef<Pro | null>(null); // the most visited real profile
   const { handle, guestHref } = useHandle();
   const { t } = useT();
   const steps = t("demoSteps").split("\n").map(s => s.split("|"));
 
-  // whose profile is shown: the name typed at the top, else @1 (when it has something to show), else the most visited real profile
+  // whose profile is shown: the name typed at the top, else @1 (the owner's, when it has something to show), else "iltuonome".
+  // No other user's profile on the home page.
   const who = () => {
     const h = HANDLE_RE.test(handle) ? handle : null;
-    const b = base.current, r = real.current;
-    const name = h || (b ? b.displayName || "1" : r?.name || "");
+    const b = base.current, ph = t("placeholder");
+    const name = h || (b ? b.displayName || "1" : ph);
     return {
-      handle: h || (b ? "1" : r?.handle || ""), displayName: name,
-      bio: b?.bio || "", avatarUrl: h ? "" : b?.avatarUrl || r?.avatar || "", badges: b?.badges || [], views: b?.views || r?.views || 0,
+      handle: h || (b ? "1" : ph), displayName: name,
+      bio: b?.bio || "", avatarUrl: h ? "" : b?.avatarUrl || "", badges: b?.badges || [], views: b?.views || 0,
       socials: b && Object.keys(b.socials || {}).length ? b.socials : {},
     };
   };
@@ -81,11 +81,11 @@ export default function EditDemo() {
 
   // build the four frames once: colours, then background, then fonts, then everything
   useEffect(() => {
+    if (!near) return;
     let alive = true;
     (async () => {
       const k = await kit.profile();
-      const [p, top] = await Promise.all([profileOfOne(), topProfiles().catch(() => null)]);
-      real.current = top?.list[0] || null;
+      const p = await profileOfOne();
       if (p && (p.avatarUrl || (p.appearance?.bg?.type && p.appearance.bg.type !== "color"))) base.current = p;
       const plain = k.normalizeAppearance({ ...k.DEFAULT_APPEARANCE, effect: "none" });
       const full = base.current
@@ -100,7 +100,7 @@ export default function EditDemo() {
     })().catch(() => {});
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [near]);
 
   // a step: the phone jumps a few still frames while the profile changes
   useEffect(() => {

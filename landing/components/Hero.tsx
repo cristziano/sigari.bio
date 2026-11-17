@@ -208,7 +208,7 @@ export default function Hero() {
           <i aria-hidden className="size-2 rounded-full bg-white/80" /> {t("exploreBtn")} <span aria-hidden>→</span>
         </motion.a>
         <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="text-[clamp(42px,7vw,100px)] font-bold leading-[1.02] tracking-[-.045em]">
-          <span aria-hidden className="block">{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{i < words.length - 1 ? " " : ""}</span>)}</span>
+          <span aria-hidden className="block">{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{" "}</span>)}</span>
           <span aria-hidden className="block">
             <Word i={words.length}>{t("h1b")}</Word>{" "}
             <b className="hx-name">{[..."18kbio"].map((ch, i) => <i key={i} style={{ ["--d" as string]: `${(.7 + i * .07).toFixed(2)}s` }}>{ch}</i>)}</b>
@@ -244,6 +244,7 @@ export default function Hero() {
             <div className="mt-4 flex justify-center gap-1.5 border-t border-white/10 pt-4">
               {shown.map((b, i) => <span key={b.icon} ref={el => { slots.current[i] = el; }} className="size-7 shrink-0 rounded-full" />)}
             </div>
+            <a href="#cards" tabIndex={mode === "card" ? 0 : -1} className={`mt-3 block text-center text-[13px] font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white ${mode === "card" ? "pointer-events-auto" : ""}`}>{t("heroCard")}</a>
           </div>
         </motion.form>
       </div>

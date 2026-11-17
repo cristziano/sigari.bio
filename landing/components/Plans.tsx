@@ -11,7 +11,7 @@ export default function Plans() {
   const free = t("freeList").split("\n").map(s => s.split("|"));
   const pro = t("proList").split("\n");
   return (
-    <section id="plans" aria-label={t("plansT")} className="px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
+    <section id="plans" aria-label={t("plansT")} className="px-4 pb-10 pt-14 sm:px-[clamp(16px,6vw,96px)] md:pb-14 md:pt-24">
       <div className="mx-auto max-w-[1180px]">
         <h2 className="text-center text-[clamp(36px,5vw,56px)] font-bold tracking-[-.045em]">{t("plansT")}</h2>
         <p className="mx-auto mt-3 max-w-[64ch] text-center leading-[1.55] text-muted">{t("plansLead")}</p>
@@ -36,7 +36,7 @@ export default function Plans() {
           <div className="shine-border flex flex-col rounded-[18px] border border-line bg-[linear-gradient(160deg,rgba(255,255,255,.06),transparent_45%)] p-6">
             <div className="flex items-center justify-between"><b className="text-lg">{t("proName")}</b><span className="rounded-md border border-line-2 px-2 py-1 font-mono text-[11px] text-muted">{t("proTag")}</span></div>
             <p className="mt-2 text-sm leading-[1.5] text-muted">{t("proSub")}</p>
-            <div className="mt-5 text-[32px] font-extrabold tracking-[-.04em] text-quiet">{t("proPrice")}</div>
+            <div className="mt-5 text-[32px] font-extrabold tracking-[-.04em]">{t("proPrice")}</div>
             <ul className="mb-6 mt-4 grid gap-2.5 border-t border-line pt-4">
               {pro.map((b, i) => <li key={b} className="flex items-center gap-3 text-sm text-[#d4d4d4]"><span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg border border-line-2 text-[13px]">{["✦", "◎", "↗"][i] || "✦"}</span>{b}</li>)}
             </ul>

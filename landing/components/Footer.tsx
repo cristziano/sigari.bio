@@ -8,13 +8,13 @@ export function Footer() {
   const { t } = useT();
   const claim = (e: React.MouseEvent) => { e.preventDefault(); focusClaim(); };
   const col = "grid content-start gap-1 text-sm";
-  const link = "py-1.5 text-muted capitalize transition-colors hover:text-white";
+  const link = "py-1.5 text-[#c8c8c8] capitalize transition-colors hover:text-white";
   return (
-    <footer id="footer" className="relative overflow-hidden border-t border-line px-4 pt-16 sm:px-[clamp(16px,6vw,96px)]">
+    <footer id="footer" className="relative overflow-hidden border-t border-line px-4 pt-12 sm:px-[clamp(16px,6vw,96px)]">
       <div className="mx-auto grid max-w-[1180px] grid-cols-3 gap-x-4 gap-y-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div className="col-span-3 md:col-span-1">
-          <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]">18k<span className="font-normal text-[#8a8a8a]">bio</span></a>
-          <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-muted">{t("footTag")}</p>
+          <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]">18k<span className="font-normal text-[#b0b0b0]">bio</span></a>
+          <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-[#c8c8c8]">{t("footTag")}</p>
           <a href="#top" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
         </div>
         <nav aria-label={t("footProduct")} className={col}>
@@ -35,7 +35,7 @@ export function Footer() {
           <a href="/termini" className={link}>{t("terms")}</a>
         </nav>
       </div>
-      <div className="mx-auto mt-14 flex max-w-[1180px] flex-wrap justify-between gap-3 border-t border-line py-6 text-[13px] text-quiet">
+      <div className="mx-auto mt-14 flex max-w-[1180px] flex-wrap justify-between gap-3 border-t border-line py-6 text-[13px] text-[#b0b0b0]">
         <span>{t("rights")}</span><span>18kbio.xyz</span>
       </div>
     </footer>
