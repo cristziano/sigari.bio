@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Cards from "@/components/Cards";
 import EditDemo from "@/components/EditDemo";
+import HowItWorks from "@/components/HowItWorks";
 import Stats from "@/components/Stats";
 import Plans from "@/components/Plans";
 import { Footer, PageEffects } from "@/components/Footer";
@@ -23,6 +24,7 @@ function Page() {
       <main id="main">
         <Hero />
         <Cards />
+        <HowItWorks />
         <EditDemo />
         <Stats />
         <Proof />
