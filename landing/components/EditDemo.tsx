@@ -1,10 +1,10 @@
 "use client";
-// "Lo cambi come vuoi": the visitor composes a profile here. Name and bio typed in this section appear
-// on the phone at once; the four steps (colours, background, fonts, socials) build the style in stop motion.
+// "Lo cambi come vuoi": a profile composed on a phone (with the name typed in the hero);
+// the four steps (colours, background, fonts, socials) build the style in stop motion.
 // The style is @1's when it has a photo or a background, otherwise a ready-made one.
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
-import { HANDLE_RE, kit, profileOfOne, reducedMotion, sanitize } from "@/lib/site";
+import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
@@ -41,11 +41,10 @@ export default function EditDemo() {
   const inView = useInView(sec, { amount: .25 });
   const [step, setStep] = useState(-1);
   const [auto, setAuto] = useState(true);
-  const [bio, setBio] = useState("");
   const view = useRef<any>(null);
   const frames = useRef<any[]>([]);
   const base = useRef<any>(null); // @1, when it has something to show
-  const { handle, setHandle, guestHref } = useHandle();
+  const { handle, guestHref } = useHandle();
   const { t } = useT();
   const steps = t("demoSteps").split("\n").map(s => s.split("|"));
 
@@ -54,7 +53,7 @@ export default function EditDemo() {
     const b = base.current;
     return {
       handle: h || (b ? "1" : "tuonome"), displayName: h || (b ? b.displayName || "1" : "tuonome"),
-      bio: bio.trim() || b?.bio || t("demoBio"), avatarUrl: h ? "" : b?.avatarUrl || "", badges: b?.badges || ["beta"], views: b?.views || 3200,
+      bio: b?.bio || t("demoBio"), avatarUrl: h ? "" : b?.avatarUrl || "", badges: b?.badges || ["beta"], views: b?.views || 3200,
       socials: b && Object.keys(b.socials || {}).length ? b.socials : EXAMPLE_SOCIALS,
     };
   };
@@ -96,12 +95,12 @@ export default function EditDemo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
-  // name and bio are written on the phone while you type
+  // the name typed in the hero is written on the phone
   useEffect(() => {
     const id = setTimeout(() => show(step), 200);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handle, bio, t]);
+  }, [handle, t]);
 
   // auto play while on screen; a click (or typing) pauses it for one extra step
   useEffect(() => {
@@ -111,7 +110,6 @@ export default function EditDemo() {
     return () => clearTimeout(id);
   }, [inView, step, auto]);
 
-  const field = "w-full min-w-0 bg-transparent py-3 text-[15px] text-white outline-none focus-visible:outline-none placeholder:text-[#4d4d4d]";
   const cur = Math.max(0, step);
 
   return (
@@ -121,20 +119,8 @@ export default function EditDemo() {
 
         <div className="mt-10 grid items-center gap-10 min-[901px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] min-[901px]:gap-[clamp(32px,6vw,96px)]">
           <div className="min-w-0 max-[900px]:order-2">
-            {/* compose: your name and bio go straight onto the phone */}
-            <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
-              <label className="flex items-center gap-1 bg-black px-4 transition-colors focus-within:bg-[#0d0d0d]">
-                <span className="shrink-0 font-mono text-[13px] text-quiet">18kbio.xyz/</span>
-                <input className={field} value={handle} maxLength={20} placeholder={t("placeholder")} autoComplete="off" autoCapitalize="off" spellCheck={false}
-                  aria-label={t("claimLabel")} onChange={e => { setHandle(sanitize(e.target.value)); setAuto(false); }} />
-              </label>
-              <label className="flex items-center bg-black px-4 transition-colors focus-within:bg-[#0d0d0d]">
-                <input className={field} value={bio} maxLength={60} placeholder={t("demoBioField")} aria-label={t("demoBioField")} onChange={e => { setBio(e.target.value); setAuto(false); }} />
-              </label>
-            </div>
-
             {/* the four steps: tabs on phones, a list on computers */}
-            <div role="tablist" aria-label={t("demoT1")} className="mt-6 grid grid-cols-4 gap-1 rounded-2xl border border-line p-1 min-[901px]:hidden">
+            <div role="tablist" aria-label={t("demoT1")} className="grid grid-cols-4 gap-1 rounded-2xl border border-line p-1 min-[901px]:hidden">
               {steps.map(([b], i) => (
                 <button key={i} type="button" role="tab" aria-selected={i === cur} onClick={() => { setAuto(false); setStep(i); }}
                   className={`relative min-h-11 overflow-hidden rounded-xl px-1 text-[13px] font-medium transition-colors ${i === cur ? "bg-white text-black" : "text-muted"}`}>
@@ -151,7 +137,7 @@ export default function EditDemo() {
               </AnimatePresence>
             </div>
 
-            <ol className="demo-steps mt-8 hidden min-[901px]:grid">
+            <ol className="demo-steps hidden min-[901px]:grid">
               {steps.map(([b, s], i) => (
                 <li key={i}>
                   <button type="button" aria-pressed={i === step} className={`${i === step ? "on" : ""} ${i === step && auto ? "run" : ""}`}
