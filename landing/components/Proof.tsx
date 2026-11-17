@@ -41,8 +41,7 @@ export default function Proof() {
   // one button: the faces of real profiles, how many there are, and the way to explore them
   return (
     <section aria-label={t("proofTitle")} className="flex justify-center px-4 py-12">
-      <motion.a href="/esplora" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .6 }}
-        whileHover={{ y: -2 }} whileTap={{ scale: .97 }}
+      <motion.a href="/esplora" whileHover={{ y: -2 }} whileTap={{ scale: .97 }}
         className="group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02))] py-2 pl-2 pr-5 shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_14px_40px_-18px_rgba(0,0,0,.9)] transition-colors hover:border-white/35">
         {/* a light that slides across on hover */}
         <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-[left,opacity] duration-700 group-hover:left-[110%] group-hover:opacity-100" />

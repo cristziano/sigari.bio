@@ -18,7 +18,7 @@ const ease = [0.23, 1, 0.32, 1] as const;
 function Tool({ i }: { i: number }) {
   const chip = "rounded-lg border border-line-2 px-2.5 py-1 text-[12px] text-muted";
   if (i === 0) return (
-    <div className="flex gap-2">{["#ffffff", "#ff3b6b", "#7c5cff", "#3ddc84", "#ffb547", "#111111"].map(c => (
+    <div className="flex gap-2">{["#ffffff", "#ff3b6b", "#3b82f6", "#3ddc84", "#ffb547", "#111111"].map(c => (
       <span key={c} className="size-7 rounded-full border border-white/20" style={{ background: c }} />))}</div>
   );
   if (i === 1) return <div className="flex flex-wrap gap-2">{["foto", "GIF", "video", "colore"].map(x => <span key={x} className={chip}>{x}</span>)}</div>;
