@@ -4,26 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
 import Claim from "./Claim";
 import { focusClaim, useHandle } from "@/lib/handle";
-import { useT, type Lang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
   const ref = useRef<HTMLElement>(null);
-  const seen = useInView(ref, { once: true, amount: .3 });
   const inView = useInView(ref, { amount: .2 });
   useEffect(() => onSeen(inView), [inView, onSeen]);
   const { t } = useT();
   return (
-    <section ref={ref} id="final" className="flex flex-col items-center px-4 pb-28 pt-20 text-center">
-      <h2 className="text-[clamp(36px,5.6vw,72px)] font-bold leading-[1.05] tracking-[-.045em]">
-        {t("finalT")} <b className="hx-name">{seen ? [..."18kbio"].map((c, i) => <i key={i} style={{ ["--d" as string]: `${(.1 + i * .07).toFixed(2)}s` }}>{c}</i>) : <span className="opacity-0">18kbio</span>}</b>
-      </h2>
-      <Claim id="h2in" className="mt-8 text-left" />
+    <section ref={ref} id="final" aria-label={t("finalT")} className="vh flex flex-col justify-center px-4 py-24 sm:px-[clamp(16px,6vw,96px)]">
+      <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .6 }}
+        className="mb-8 max-w-[30ch] text-[clamp(20px,2.2vw,28px)] font-semibold leading-[1.2] tracking-[-.03em] text-muted">{t("finalT")}</motion.p>
+      <Claim id="h2in" big />
     </section>
   );
 }
 
 export function Footer() {
-  const { t, lang, setLang } = useT();
+  const { t } = useT();
   return (
     <footer className="border-t border-line px-4 py-7 font-mono text-xs text-muted sm:px-[clamp(16px,10vw,144px)]">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -32,9 +30,6 @@ export function Footer() {
           <a href="/accedi" className="hover:text-white">{t("login")}</a>
           <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="hover:text-white">{t("footClaim")}</a>
           <a href="https://discord.gg/18k" target="_blank" rel="noopener" className="hover:text-white">discord</a>
-          <span role="group" aria-label={t("langSwitch")} className="flex gap-1">
-            {(["it", "en"] as Lang[]).map(l => <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={`uppercase ${lang === l ? "text-white underline underline-offset-4" : "hover:text-white"}`}>{l}</button>)}
-          </span>
         </nav>
       </div>
     </footer>

@@ -14,7 +14,7 @@
   --font-sans: "Geist", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-brand: "Unbounded", "Geist", system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-bubble: "Bagel Fat One", "Geist", system-ui, sans-serif;
   --font-wide: "Syncopate", "Unbounded", sans-serif;
   --ease-out: cubic-bezier(.23, 1, .32, 1);
   --ease-in-out: cubic-bezier(.77, 0, .175, 1);
@@ -51,15 +51,32 @@ body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: 
 .claim-bar input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 15px var(--font-mono); padding: 10px 0; caret-color: #fff; }
 .claim-bar input::placeholder { color: #4d4d4d; }
 .claim-bar .pre { font: 400 15px var(--font-mono); color: #8a8a8a; }
+.claim-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 0; border-bottom: 2px solid var(--color-line-2); padding-bottom: 14px; transition: border-color 200ms; }
+.claim-big:focus-within { border-color: #fff; }
+.claim-big[data-kind="ok"] { border-color: #fff; }
+.claim-big[data-kind="no"] { border-color: #ff5a5a; }
+.claim-big .pre, .claim-big input { font: 600 clamp(30px, 6.4vw, 92px)/1.05 var(--font-sans); letter-spacing: -.045em; }
+.claim-big .pre { color: var(--color-quiet); }
+.claim-big input { flex: 1 1 4ch; min-width: 4ch; background: transparent; border: 0; outline: 0; color: #fff; padding: 0; caret-color: #fff; }
+.claim-big input::placeholder { color: #2e2e2e; }
+.claim-big .btn { align-self: center; margin-left: auto; min-height: 52px; padding: 0 26px; font-size: 16px; }
 .shake { animation: shake 360ms var(--ease-out); }
 @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 
-/* ---------- hero: the name "18kbio" in italic serif, letters in one by one, then a slow wave of light ---------- */
-.hx-name { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
-.hx-name i { display: inline-block; font-style: inherit; opacity: 0; transform: translateY(.35em) rotate(6deg); filter: blur(6px);
-  animation: hxIn 900ms var(--ease-out) forwards, hxWave 5.5s ease-in-out infinite; animation-delay: var(--d), calc(var(--d) + 1.6s); }
-@keyframes hxIn { to { opacity: 1; transform: none; filter: none; } }
-@keyframes hxWave { 0%, 70%, 100% { text-shadow: none; } 80% { text-shadow: 0 0 18px rgb(255 255 255 / .55); } }
+/* ---------- "18kbio" in liquid chrome: bubbly Y2K letters, a cold metal gradient,
+   a thin dark rim, and a light that slides across one letter after the other ---------- */
+.chrome { font-family: var(--font-bubble); font-weight: 400; letter-spacing: -.01em; font-size: 1.04em; white-space: nowrap; }
+.chrome i { display: inline-block; font-style: normal; color: transparent; -webkit-text-stroke: .012em rgb(255 255 255 / .35);
+  background-image:
+    linear-gradient(105deg, transparent 38%, rgb(255 255 255 / .95) 48%, transparent 58%),
+    linear-gradient(180deg, #ffffff 0%, #e4e9ef 20%, #9aa4b0 42%, #20252c 50%, #4d5560 56%, #c9d1da 74%, #f6f8fa 88%, #8e98a4 100%);
+  background-size: 260% 100%, 100% 100%; background-position: 160% 0, 0 0; background-repeat: no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  opacity: 0; transform: translateY(.35em) scale(.92);
+  animation: chromeIn 900ms var(--ease-out) forwards, chromeSweep 6s var(--ease-in-out) infinite;
+  animation-delay: var(--d), calc(var(--d) + 1.4s); }
+@keyframes chromeIn { to { opacity: 1; transform: none; } }
+@keyframes chromeSweep { 0% { background-position: 160% 0, 0 0; } 30%, 100% { background-position: -60% 0, 0 0; } }
 
 /* ---------- live demo: the steps list and the phone (stop motion) ---------- */
 .demo-steps button { position: relative; display: grid; gap: 4px; width: 100%; text-align: left; padding: 18px 0 20px; border-top: 1px solid var(--color-line);
@@ -95,5 +112,5 @@ body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: 
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
-  .hx-name i { opacity: 1; transform: none; filter: none; }
+  .chrome i { opacity: 1; transform: none; }
 }

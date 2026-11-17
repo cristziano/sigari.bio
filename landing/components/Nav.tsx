@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
 import { firebase } from "@/lib/site";
 import { focusClaim } from "@/lib/handle";
-import { useT, type Lang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 export default function Nav() {
   const [solid, setSolid] = useState(false);
   const [logged, setLogged] = useState(false);
-  const { t, lang, setLang } = useT();
+  const { t } = useT();
   const { scrollYProgress } = useScroll();
   const bar = useSpring(scrollYProgress, { stiffness: 200, damping: 40, restDelta: .001 });
 
@@ -36,12 +36,6 @@ export default function Nav() {
           <a href="#plans" className="transition-colors hover:text-white">{t("navPlans")}</a>
         </nav>
         <div className="col-start-3 flex items-center gap-2 justify-self-end sm:gap-3">
-          <div role="group" aria-label={t("langSwitch")} className="hidden rounded-lg border border-line p-0.5 font-mono text-[11px] sm:flex">
-            {(["it", "en"] as Lang[]).map(l => (
-              <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}
-                className={`rounded-md px-1.5 py-1 uppercase transition-colors ${lang === l ? "bg-white text-black" : "text-muted hover:text-white"}`}>{l}</button>
-            ))}
-          </div>
           <a href="/esplora" className="btn-2 !min-h-8 !px-3 !text-[13px]">{t("explore")}</a>
           {!logged && <a href="/accedi" className="hidden px-2 text-[13px] text-muted transition-colors hover:text-white sm:inline">{t("login")}</a>}
           {logged

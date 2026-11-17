@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#000000", colorScheme: "dark", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-const FONTS = "https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Unbounded:wght@400;600;700&family=Syncopate:wght@700&family=Instrument+Serif:ital@0;1&display=swap";
+const FONTS = "https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Unbounded:wght@400;600;700&family=Syncopate:wght@700&family=Bagel+Fat+One&display=swap";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

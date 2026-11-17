@@ -5,7 +5,8 @@ import { HANDLE_RE, rarity, sanitize } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
-export default function Claim({ id, className = "" }: { id: string; className?: string }) {
+/** big = the end of the page: the address itself, huge, is the box you type in */
+export default function Claim({ id, className = "", big = false }: { id: string; className?: string; big?: boolean }) {
   const { handle, setHandle, status, setStatus, avail } = useHandle();
   const { t, list } = useT();
   const bar = useRef<HTMLDivElement>(null);
@@ -26,9 +27,9 @@ export default function Claim({ id, className = "" }: { id: string; className?: 
   };
 
   return (
-    <form className={`w-full max-w-[470px] ${className}`} onSubmit={submit} noValidate>
+    <form className={`w-full ${big ? "max-w-[1100px]" : "max-w-[470px]"} ${className}`} onSubmit={submit} noValidate>
       <label className="sr-only" htmlFor={id}>{t("claimLabel")}</label>
-      <div ref={bar} className="claim-bar" data-kind={status.kind}>
+      <div ref={bar} className={big ? "claim-big" : "claim-bar"} data-kind={status.kind}>
         <span className="pre">18kbio.xyz/</span>
         <input ref={input} id={id} type="text" autoComplete="off" autoCapitalize="off" spellCheck={false} maxLength={20} placeholder={t("placeholder")}
           value={handle} onChange={e => setHandle(sanitize(e.target.value))} />
