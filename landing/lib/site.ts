@@ -56,6 +56,7 @@ export function profileOfOne(): Promise<any | null> {
 export const kit = {
   profile: () => runtimeImport("/sigari-bio/profile-kit.js"),
   card: () => runtimeImport("/sigari-bio/card-kit.js"),
+  globe: () => runtimeImport("/sigari-bio/globe.js"),
 };
 
 export const reducedMotion = () => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -5,6 +5,7 @@ import { LangProvider, useT } from "@/lib/i18n";
 import Proof from "@/components/Proof";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import Cards from "@/components/Cards";
 import EditDemo from "@/components/EditDemo";
 import Stats from "@/components/Stats";
 import Weekly from "@/components/Weekly";
@@ -25,6 +26,7 @@ function Page() {
       <main id="main">
         <Hero />
         <Proof />
+        <Cards />
         <EditDemo />
         <Stats />
         <Weekly />

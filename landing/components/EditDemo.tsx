@@ -1,6 +1,6 @@
 "use client";
 // "Lo cambi come vuoi": a profile built step by step on a phone, in stop motion.
-// It uses @1 when it has a photo or a background, otherwise a ready-made style; the phone shows the name typed in the hero.
+// The visitor picks a vibe (our real templates, with real video backgrounds) and the phone shows THEIR typed name.
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
@@ -8,7 +8,7 @@ import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
 const STEP_MS = 3200;
-const EXAMPLE_STYLE = "night-drive";
+const VIBES = ["night-drive", "pioggia", "sakura", "matrix", "inverno", "synthwave"];
 const EXAMPLE_SOCIALS = { discord: "18k", instagram: "18k", tiktok: "18k", spotify: "18k" };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -19,7 +19,8 @@ export default function EditDemo() {
   const inView = useInView(sec, { amount: .25 });
   const [step, setStep] = useState(-1);
   const [auto, setAuto] = useState(true);
-  const [vibe, setVibe] = useState(EXAMPLE_STYLE);
+  const [vibe, setVibe] = useState(VIBES[0]);
+  const [names, setNames] = useState<Record<string, string>>({});
   const pk = useRef<any>(null);
   const view = useRef<any>(null);
   const frames = useRef<any[]>([]);
@@ -64,9 +65,10 @@ export default function EditDemo() {
     let alive = true;
     (async () => {
       const k = await kit.profile(); pk.current = k;
+      setNames(Object.fromEntries(VIBES.map(id => [id, (k.TEMPLATES.find((x: any) => x.id === id) || {}).name || id])));
       const p = await profileOfOne();
       // @1 is used only if it has something to show (a photo or a background)
-      if (p && (p.avatarUrl || (p.appearance?.bg?.type && p.appearance.bg.type !== "color"))) { base.current = p; setVibe("one"); build("one"); } else build(EXAMPLE_STYLE);
+      if (p && (p.avatarUrl || (p.appearance?.bg?.type && p.appearance.bg.type !== "color"))) { base.current = p; setVibe("one"); build("one"); } else build(VIBES[0]);
       if (!alive || !pv.current) return;
       view.current = k.mountProfile(pv.current, { ...who(), links: [], socials: {}, appearance: frames.current[0] }, { preview: true, entrance: false });
     })().catch(() => {});
@@ -98,6 +100,8 @@ export default function EditDemo() {
     return () => clearTimeout(id);
   }, [inView, step, auto]);
 
+  const pickVibe = (id: string) => { build(id); setVibe(id); setAuto(false); setStep(3); };
+
   return (
     <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="flex items-center px-4 py-24 sm:px-[clamp(16px,6vw,96px)] min-[901px]:vh">
       <div className="mx-auto grid w-full max-w-[1180px] items-center gap-[clamp(32px,6vw,96px)] min-[901px]:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
@@ -113,6 +117,15 @@ export default function EditDemo() {
               </li>
             ))}
           </ol>
+          {Object.keys(names).length > 0 && (
+            <div className="mt-6">
+              <p className="font-mono text-[11.5px] text-muted">{t("demoVibe")}</p>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {base.current && <VibeChip on={vibe === "one"} onClick={() => pickVibe("one")}>@1</VibeChip>}
+                {VIBES.map(id => <VibeChip key={id} on={vibe === id} onClick={() => pickVibe(id)}>{names[id]}</VibeChip>)}
+              </div>
+            </div>
+          )}
           <a href={guestHref("/dashboard")} className="group mt-7 inline-flex min-h-[46px] items-center gap-2.5 rounded-xl border border-white/55 px-5 text-[15px] font-semibold transition-colors active:scale-[.97] hover:border-white hover:bg-white/14">
             {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
           </a>
@@ -124,5 +137,14 @@ export default function EditDemo() {
         </div>
       </div>
     </section>
+  );
+}
+
+function VibeChip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" aria-pressed={on} onClick={onClick}
+      className={`min-h-9 rounded-lg border px-3 text-[13px] transition-[background,border-color,transform] duration-200 active:scale-[.97] ${on ? "border-white bg-white text-black" : "border-line-2 text-muted hover:border-white/50 hover:text-white"}`}>
+      {children}
+    </button>
   );
 }
