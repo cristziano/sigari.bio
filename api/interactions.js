@@ -1,6 +1,6 @@
 // Discord slash commands for the 18k bot. Discord calls this address
 // (Developer Portal > General Information > Interactions Endpoint URL).
-//   /pfp            -> your 18k.bio profile (the one with your Discord id in "presenza discord")
+//   /pfp            -> your 18kbio profile (the one with your Discord id in "presenza discord")
 //   /pfp nome:xyz   -> the profile 18kbio.xyz/xyz
 //   /pfp utente:@x  -> the profile of that Discord user
 //   /condividi      -> posts your own profile in the "profili" channel, with ✅ and ❌ to vote (once every 12 hours)
@@ -12,7 +12,7 @@ const crypto = require("crypto");
 const { discord, ALBUMS } = require("./_discord");
 const { profileByDiscord, profileByName } = require("./_firestore");
 
-// The real address until the 18k.bio domain is live (set SITE_URL in Vercel to change it)
+// The real address until the 18kbio domain is live (set SITE_URL in Vercel to change it)
 const SITE = process.env.SITE_URL || "https://18kbio.xyz";
 let keyP = null;
 const publicKey = () => keyP || (keyP = discord("/applications/@me").then(a => crypto.createPublicKey({
@@ -199,12 +199,12 @@ module.exports = async (req, res) => {
     if (!p) {
       return secret(res, opt.nome
         ? `Nessun profilo **18kbio.xyz/${String(opt.nome).toLowerCase().replace(/[^a-z0-9_@]/g, "").replace(/^@/, "")}**.`
-        : (opt.utente ? "Questa persona non ha collegato Discord al suo profilo 18k.bio." : "Non trovo il tuo profilo. Entra su 18k.bio con Discord (il collegamento è automatico), oppure in Widget > Stato Discord metti il tuo ID e salva. Oppure usa `/pfp nome:tuonome`."));
+        : (opt.utente ? "Questa persona non ha collegato Discord al suo profilo 18kbio." : "Non trovo il tuo profilo. Entra su 18kbio con Discord (il collegamento è automatico), oppure in Widget > Stato Discord metti il tuo ID e salva. Oppure usa `/pfp nome:tuonome`."));
     }
     if (p.private) return secret(res, "Questo profilo è privato.");
     return reply(res, card(p));
   } catch (_) {
-    return secret(res, "18k.bio non risponde adesso, riprova tra poco.");
+    return secret(res, "18kbio non risponde adesso, riprova tra poco.");
   }
 };
 

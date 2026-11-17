@@ -1,4 +1,4 @@
-/* 18k.bio card kit.
+/* 18kbio card kit.
    The identity card people design in the dashboard (Carta) and show on their profile.
    One renderer for the editor, the profile button and the full screen view. */
 

@@ -7,8 +7,8 @@
 <link rel="manifest" href="/manifest.webmanifest">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>18k.bio</title>
-<meta name="description" content="Un profilo su 18k.bio">
+<title>18kbio</title>
+<meta name="description" content="Un profilo su 18kbio">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
 <body>
 <div id="root"></div>
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
-<div class="dock"><a class="brand" href="/" id="brand" aria-label="Vai a 18k.bio e crea il tuo profilo"><i>18k.bio</i><span>· crea il tuo profilo →</span></a>
+<div class="dock"><a class="brand" href="/" id="brand" aria-label="Vai a 18kbio e crea il tuo profilo"><i>18kbio</i><span>· crea il tuo profilo →</span></a>
 <button class="like-btn hidden" id="likeBtn" type="button" aria-pressed="false" aria-label="Metti like"><span class="lh"></span><b id="likeN">0</b></button><button class="report-btn hidden" id="reportBtn" type="button">segnala</button></div>
 <div class="like-tip hidden" id="likeTip">Accedi per mettere like. <a id="likeLogin" href="/login">Accedi</a></div>
 <dialog class="report" id="reportDlg">
@@ -133,7 +133,7 @@
   }
 
   (async () => {
-    if (!handle) return show("Profilo non trovato", "Questo link non porta a nessun profilo.", ["Vai a 18k.bio", "/"]);
+    if (!handle) return show("Profilo non trovato", "Questo link non porta a nessun profilo.", ["Vai a 18kbio", "/"]);
     let lite;
     try {
       const base = "https://www.gstatic.com/firebasejs/10.12.5/";
@@ -182,17 +182,17 @@
         if (alias && /^[a-z0-9_]{1,20}$/.test(alias)) return location.replace(fromPath ? "/" + alias + location.search : "?u=" + alias);
       } catch (_) { /* unknown */ }
       return taken
-        ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"])
+        ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18kbio", "/"])
         : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login?handle=" + encodeURIComponent(handle)]);
     }
-    if (!preview && data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18k.bio", "/"]);
-    if (!preview && data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"]);
-    if (!preview && data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 18k.bio", "/"]);
+    if (!preview && data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18kbio", "/"]);
+    if (!preview && data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18kbio", "/"]);
+    if (!preview && data.private) return show("Profilo privato", "@" + handle + " ha scelto di non mostrare il profilo.", ["Vai a 18kbio", "/"]);
 
     msg.hidden = true;
     const p = normalizeProfile({ ...data, handle });
     const a = p.appearance;
-    const title = a.title.text || `${p.displayName} · 18k.bio`;
+    const title = a.title.text || `${p.displayName} · 18kbio`;
     document.title = title;
     if (a.title.animated && !matchMedia("(prefers-reduced-motion: reduce)").matches) animateTitle(title);
     const desc = a.seo.description || p.bio;

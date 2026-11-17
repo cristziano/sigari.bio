@@ -1,6 +1,6 @@
 import { DECO, DECO_LIST, DECO_GROUPS, DECO_GROUP_OF, DECO_IMG_BY, decoImgSrc } from "./decos.js";
 /*
-  18k.bio profile kit.
+  18kbio profile kit.
   One renderer for every place a profile is drawn: the public page (profile.html),
   the dashboard preview and the landing demo. Data in, DOM out; nothing here talks to Firebase.
 */
@@ -74,7 +74,7 @@ export function socialHref(sd, value) {
 }
 
 export const LINK_DOMAINS = [["18kbio.xyz", "il tuo link vero"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
-  ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
+  ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18kbio", "collab"]];
 
 export const MUSIC_POS = [["top", "In cima"], ["name", "Sotto il nome"], ["bio", "Sotto la descrizione"], ["bottom", "In fondo"], ["float-r", "Fluttuante a destra"], ["float-l", "Fluttuante a sinistra"]];
 export const PLAYER_STYLES = [["card", "Scheda"], ["glass", "Vetro"], ["minimal", "Minimal"], ["pill", "Pillola"], ["vinyl", "Vinile"], ["retro", "Retro"], ["neon", "Neon"], ["cassette", "Cassetta"]];

@@ -6,13 +6,13 @@ const { deployRules } = require("./_admin");
 const fs = require("fs"), path = require("path");
 
 const COMMANDS = [{
-  name: "pfp", type: 1, description: "Mostra un profilo 18k.bio: pfp, banner, badge e link",
+  name: "pfp", type: 1, description: "Mostra un profilo 18kbio: pfp, banner, badge e link",
   options: [
-    { type: 3, name: "nome", description: "Il nome su 18k.bio (18kbio.xyz/nome)", required: false, max_length: 21 },
+    { type: 3, name: "nome", description: "Il nome su 18kbio (18kbio.xyz/nome)", required: false, max_length: 21 },
     { type: 6, name: "utente", description: "Una persona del server", required: false }
   ]
 }, {
-  name: "condividi", type: 1, description: "Condividi il tuo profilo 18k.bio nel canale profili: gli altri lo votano con ✅ e ❌",
+  name: "condividi", type: 1, description: "Condividi il tuo profilo 18kbio nel canale profili: gli altri lo votano con ✅ e ❌",
   dm_permission: false
 }, {
   name: "posta", type: 1, description: "Posta pfp e banner nel canale, con anteprima e bottone per scaricarli (admin e ruolo pfps)",

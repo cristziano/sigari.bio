@@ -94,7 +94,7 @@ async function fileChannel() {
     } catch (_) { /* no threads at all: try a channel */ }
     const me = await discord("/users/@me");
     const c = await discord(`/guilds/${guild}/channels`, { method: "POST", body: JSON.stringify({
-      name: "18k-file", type: 0, topic: "File caricati dal sito 18k.bio. Non cancellare: i profili li usano.",
+      name: "18k-file", type: 0, topic: "File caricati dal sito 18kbio. Non cancellare: i profili li usano.",
       permission_overwrites: [{ id: guild, type: 0, deny: "1024" }, { id: me.id, type: 1, allow: String(1024 + 2048 + 32768 + 65536) }]
     }) });
     return c.id;

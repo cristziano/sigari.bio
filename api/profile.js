@@ -60,8 +60,8 @@ module.exports = async (req, res) => {
         const ln = fields(a.link), dom = str(ln.domain), fmt = str(ln.format) === "/@" ? "/@" : "/";
         const shown = /^[a-z0-9]{2,10}\.[a-z]{2,4}$/.test(dom) ? `${dom}${fmt}${handle}` : `18kbio.xyz/${handle}`;
         const name = str(f.displayName) || handle;
-        const t = str(title.text) || `${name} · 18k.bio`;
-        const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 18k.bio`;
+        const t = str(title.text) || `${name} · 18kbio`;
+        const d = str(seo.description) || plain(str(f.bio)) || `@${handle} su 18kbio`;
         const img = httpsUrl(str(seo.image)) || httpsUrl(str(f.avatarUrl)) || origin + "/og.png";
         const color = /^#[0-9a-f]{6}$/i.test(str(colors.accent)) ? str(colors.accent) : "#ffffff";
         const tags = [

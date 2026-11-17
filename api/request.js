@@ -154,7 +154,7 @@ module.exports = async (req, res) => {
       title: `Nuova richiesta · ${TYPES[type]}`, url: search, description: text, color: 0xffffff,
       fields: [{ name: "Da", value: `[@${handle}](${process.env.SITE_URL || "https://18kbio.xyz"}/${handle})`, inline: true }, ...(link ? [{ name: "Riferimento", value: link, inline: true }] : [])],
       ...(found[0] ? { image: { url: found[0] } } : {}),
-      footer: { text: `dall'app 18k.bio · ${found.length ? "3 foto trovate dal bot" : "nessuna foto trovata"} · #${code}` },
+      footer: { text: `dall'app 18kbio · ${found.length ? "3 foto trovate dal bot" : "nessuna foto trovata"} · #${code}` },
       timestamp: new Date().toISOString()
     }, ...found.slice(1).map(u => ({ url: search, image: { url: u } }))];
     await discord(`/channels/${REQUEST_CHANNEL}/messages`, { method: "POST", body: JSON.stringify({ allowed_mentions: { parse: [] }, embeds }) });
