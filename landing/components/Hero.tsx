@@ -77,7 +77,7 @@ export default function Hero() {
   }, [mxRaw, myRaw]);
 
   return (
-    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden bg-black max-md:min-h-[720px]">
+    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[720px]">
       {/* dot grid + a soft light in the middle + two big blurred spheres that breathe on the sides */}
       <div aria-hidden className="absolute inset-0 -z-10 opacity-60 [background-image:radial-gradient(rgba(255,255,255,.09)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(70%_60%_at_50%_45%,#000,transparent)]" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_42%,rgba(255,255,255,.07),transparent_70%)]" />
@@ -94,7 +94,7 @@ export default function Hero() {
         <Pill delay={.7} w={150} h={40} rotate={-25} tint="from-white/[.06]" className="left-[20%] top-[5%] md:left-[24%] md:top-[9%]" />
         {ORBS.map(o => <GlassOrb key={o.icon} o={o} mx={mx} my={my} />)}
       </div>
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
       <div className="relative z-[2] flex w-full flex-col items-center px-4 pb-20 pt-[110px] text-center">
         <motion.a href="/esplora" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: .2 }}

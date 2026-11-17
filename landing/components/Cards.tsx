@@ -1,9 +1,9 @@
 "use client";
-// "La tua carta": the 18k card on a 3D table, with the @ typed in the hero written on it (or @1's real card). It rises from flat when you get here,
+// "La tua carta": the real card of @1 on a 3D table. It rises from flat when you get here,
 // then follows the mouse and turns a little while you scroll past it.
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
-import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
+import { kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
@@ -14,10 +14,7 @@ export default function Cards() {
   const cardBox = useRef<HTMLDivElement>(null);
   const seen = useInView(sec, { once: true, amount: .15 });
   const [live, setLive] = useState(false);
-  const { guestHref, handle } = useHandle();
-  const handleRef = useRef(handle); handleRef.current = handle;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const card = useRef<{ api: any; one: any } | null>(null);
+  const { guestHref } = useHandle();
   const { t } = useT();
 
   // tilt: starts flat (80°) and lands on 24° / -10°, then the mouse adds a little
@@ -35,24 +32,12 @@ export default function Cards() {
     (async () => {
       const [k, p] = await Promise.all([kit.card(), profileOfOne()]);
       if (cardBox.current && !cardBox.current.childElementCount) {
-        const one = { card: p?.card || k.DEFAULT_CARD, who: { handle: "1", avatarUrl: p?.avatarUrl || "", displayName: p?.displayName || "1" }, plain: k.DEFAULT_CARD };
-        const h = handleRef.current;
-        card.current = { api: k.mountCard(cardBox.current, HANDLE_RE.test(h) ? one.plain : one.card, HANDLE_RE.test(h) ? { handle: h, avatarUrl: "", displayName: h } : one.who), one };
+        const one = { card: p?.card || k.DEFAULT_CARD, who: { handle: "1", avatarUrl: p?.avatarUrl || "", displayName: p?.displayName || "1" } };
+        k.mountCard(cardBox.current, one.card, one.who);
       }
     })().catch(() => {});
     return () => clearTimeout(t);
   }, [seen, rx, rz]);
-
-  useEffect(() => {
-    const c = card.current; if (!c) return;
-    const id = setTimeout(() => {
-      try {
-        if (HANDLE_RE.test(handle)) c.api.update(c.one.plain, { handle, avatarUrl: "", displayName: handle });
-        else c.api.update(c.one.card, c.one.who);
-      } catch { /* card only */ }
-    }, 150);
-    return () => clearTimeout(id);
-  }, [handle]);
 
   const move = (e: React.PointerEvent) => {
     if (!live || reducedMotion() || e.pointerType !== "mouse") return;
@@ -63,7 +48,7 @@ export default function Cards() {
 
   return (
     <section ref={sec} id="cards" aria-label={`${t("cardsT1")} ${t("cardsT2")}`} onPointerMove={move}
-      className="relative isolate flex flex-col overflow-hidden bg-[#0a0a0a] text-[#e0e0e0] md:block md:h-[calc(82svh*var(--vz,1))] md:min-h-[560px]">
+      className="relative isolate flex flex-col overflow-hidden bg-[#0a0a0a]/75 text-[#e0e0e0] backdrop-blur-[2px] md:block md:h-[calc(82svh*var(--vz,1))] md:min-h-[560px]">
       <div aria-hidden className="tc-grain pointer-events-none absolute inset-0 z-20" />
       <div aria-hidden className="pointer-events-none absolute -inset-[20%] opacity-35 [background-image:repeating-radial-gradient(circle_at_60%_55%,transparent_0,transparent_40px,rgba(255,255,255,.05)_41px,transparent_42px)]" />
 
@@ -79,7 +64,6 @@ export default function Cards() {
           className="pointer-events-auto max-w-[380px] self-start rounded-[18px] max-md:order-3 max-md:mx-4 max-md:mt-2 border border-line-2 bg-[rgba(10,10,10,.82)] px-5 py-[18px] font-sans backdrop-blur-[6px] md:col-start-1 md:mt-7">
           <b className="block text-base tracking-[-.01em] text-white">{t("cardsQ")}</b>
           <p className="mt-1.5 text-sm leading-[1.55] text-muted">{t("cardsA")}</p>
-          <p className="mt-3 flex items-center gap-2 font-mono text-[12px] text-white"><i aria-hidden className="size-1.5 animate-pulse rounded-full bg-white" />{t("cardsLive")}</p>
           <a href="/1" className="mt-1.5 inline-block py-2 text-[13.5px] text-white underline underline-offset-[3px]">{t("cardsSee")}</a>
         </motion.div>
         <div className="flex px-4 pb-12 pt-5 max-md:order-4 md:col-span-2 md:items-end md:justify-end md:p-0">

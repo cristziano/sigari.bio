@@ -7,10 +7,10 @@ import { AnimatePresence, motion, useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
+import { topProfiles, type Pro } from "./Proof";
 
 const STEP_MS = 3400;
 const EXAMPLE_STYLE = "night-drive";
-const EXAMPLE_SOCIALS = { discord: "18k", instagram: "18k", tiktok: "18k", spotify: "18k" };
 const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -44,17 +44,20 @@ export default function EditDemo() {
   const view = useRef<any>(null);
   const frames = useRef<any[]>([]);
   const base = useRef<any>(null); // @1, when it has something to show
+  const real = useRef<Pro | null>(null); // the most visited real profile
   const { handle, guestHref } = useHandle();
   const { t } = useT();
   const steps = t("demoSteps").split("\n").map(s => s.split("|"));
 
+  // whose profile is shown: the name typed at the top, else @1 (when it has something to show), else the most visited real profile
   const who = () => {
     const h = HANDLE_RE.test(handle) ? handle : null;
-    const b = base.current;
+    const b = base.current, r = real.current;
+    const name = h || (b ? b.displayName || "1" : r?.name || "");
     return {
-      handle: h || (b ? "1" : "tuonome"), displayName: h || (b ? b.displayName || "1" : "tuonome"),
-      bio: b?.bio || t("demoBio"), avatarUrl: h ? "" : b?.avatarUrl || "", badges: b?.badges || ["beta"], views: b?.views || 3200,
-      socials: b && Object.keys(b.socials || {}).length ? b.socials : EXAMPLE_SOCIALS,
+      handle: h || (b ? "1" : r?.handle || ""), displayName: name,
+      bio: b?.bio || "", avatarUrl: h ? "" : b?.avatarUrl || r?.avatar || "", badges: b?.badges || [], views: b?.views || r?.views || 0,
+      socials: b && Object.keys(b.socials || {}).length ? b.socials : {},
     };
   };
 
@@ -69,7 +72,8 @@ export default function EditDemo() {
     let alive = true;
     (async () => {
       const k = await kit.profile();
-      const p = await profileOfOne();
+      const [p, top] = await Promise.all([profileOfOne(), topProfiles().catch(() => null)]);
+      real.current = top?.list[0] || null;
       if (p && (p.avatarUrl || (p.appearance?.bg?.type && p.appearance.bg.type !== "color"))) base.current = p;
       const plain = k.normalizeAppearance({ ...k.DEFAULT_APPEARANCE, effect: "none" });
       const full = base.current

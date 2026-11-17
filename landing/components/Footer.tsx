@@ -37,8 +37,6 @@ export function Footer() {
       <div className="mx-auto mt-14 flex max-w-[1180px] flex-wrap justify-between gap-3 border-t border-line py-6 text-[13px] text-quiet">
         <span>{t("rights")}</span><span>18kbio.xyz</span>
       </div>
-      {/* the name, very large and faint, cut by the bottom edge */}
-      <div aria-hidden className="pointer-events-none mx-auto -mb-[3vw] max-w-[1180px] select-none text-center font-brand text-[clamp(80px,19vw,280px)] font-semibold leading-none tracking-[-.04em] text-white/[.04]">18kbio</div>
     </footer>
   );
 }
