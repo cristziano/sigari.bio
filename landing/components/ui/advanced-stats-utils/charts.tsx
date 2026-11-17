@@ -36,7 +36,7 @@ export function ClippedAreaChart({ data, labels, total, badge, loc }: {
             ))}
           </div>
           <p className="mt-5 text-[clamp(30px,3.6vw,44px)] font-semibold leading-none tracking-[-.04em] tabnum">{fmt(at === null ? sum : data[at][metric])}</p>
-          <p className="mt-2 font-mono text-[11px] text-muted-foreground">{at === null ? total : data[at].day}</p>
+          <p className="mt-2 font-mono text-[12px] text-muted-foreground">{at === null ? total : data[at].day}</p>
         </div>
         <Badge variant="secondary" className="font-mono">{badge}</Badge>
       </div>

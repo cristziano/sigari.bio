@@ -1,52 +1,60 @@
 "use client";
-// End of the page: the claim again, the footer, the small bar on phones and the page-wide behaviours.
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView } from "motion/react";
-import Claim from "./Claim";
+// End of the page: the footer, the small "claim" bar on phones and the page-wide behaviours.
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { focusClaim, useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
-export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
-  const ref = useRef<HTMLElement>(null);
-  const seen = useInView(ref, { once: true, amount: .3 });
-  const inView = useInView(ref, { amount: .2 });
-  useEffect(() => onSeen(inView), [inView, onSeen]);
-  const { t } = useT();
-  return (
-    <section ref={ref} id="final" className="flex flex-col items-center px-4 pb-28 pt-20 text-center">
-      <h2 className="text-[clamp(36px,5.6vw,72px)] font-bold leading-[1.05] tracking-[-.045em]">
-        {t("finalT")} <b className="hx-name">{seen ? [..."18kbio"].map((c, i) => <i key={i} style={{ ["--d" as string]: `${(.1 + i * .07).toFixed(2)}s` }}>{c}</i>) : <span className="opacity-0">18kbio</span>}</b>
-      </h2>
-      <Claim id="h2in" className="mt-8 text-left" />
-    </section>
-  );
-}
-
 export function Footer() {
   const { t } = useT();
+  const claim = (e: React.MouseEvent) => { e.preventDefault(); focusClaim(); };
+  const col = "grid content-start gap-2.5 text-sm";
+  const link = "text-muted capitalize transition-colors hover:text-white";
   return (
-    <footer className="border-t border-line px-4 py-7 font-mono text-xs text-muted sm:px-[clamp(16px,10vw,144px)]">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <span>{t("rights")} · <a href="/privacy" className="hover:text-white">{t("privacy")}</a> · <a href="/termini" className="hover:text-white">{t("terms")}</a></span>
-        <nav aria-label={t("footNav")} className="flex flex-wrap items-center gap-5">
-          <a href="/accedi" className="hover:text-white">{t("login")}</a>
-          <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="hover:text-white">{t("footClaim")}</a>
-          <a href="https://discord.gg/18k" target="_blank" rel="noopener" className="hover:text-white">discord</a>
+    <footer id="footer" className="relative overflow-hidden border-t border-line px-4 pt-16 sm:px-[clamp(16px,6vw,96px)]">
+      <div className="mx-auto grid max-w-[1180px] gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+        <div>
+          <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]">18k<span className="font-normal text-[#8a8a8a]">bio</span></a>
+          <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-muted">{t("footTag")}</p>
+          <a href="#top" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
+        </div>
+        <nav aria-label={t("footProduct")} className={col}>
+          <b className="mb-1 text-[13px] font-semibold text-white">{t("footProduct")}</b>
+          <a href="/esplora" className={link}>{t("explore")}</a>
+          <a href="/dashboard" className={link}>{t("dashboard")}</a>
+          <a href="/accedi" className={link}>{t("login")}</a>
+        </nav>
+        <nav aria-label={t("footCommunity")} className={col}>
+          <b className="mb-1 text-[13px] font-semibold text-white">{t("footCommunity")}</b>
+          <a href="https://discord.gg/18k" target="_blank" rel="noopener" className={link}>Discord</a>
+          <a href="/clan" className={link}>Clan</a>
+        </nav>
+        <nav aria-label={t("footNav")} className={col}>
+          <b className="mb-1 text-[13px] font-semibold text-white">{t("footLegal")}</b>
+          <a href="/privacy" className={link}>{t("privacy")}</a>
+          <a href="/termini" className={link}>{t("terms")}</a>
         </nav>
       </div>
+      <div className="mx-auto mt-14 flex max-w-[1180px] flex-wrap justify-between gap-3 border-t border-line py-6 text-[13px] text-quiet">
+        <span>{t("rights")}</span><span>18kbio.xyz</span>
+      </div>
+      {/* the name, very large and faint, cut by the bottom edge */}
+      <div aria-hidden className="pointer-events-none mx-auto -mb-[3vw] max-w-[1180px] select-none text-center font-brand text-[clamp(80px,19vw,280px)] font-semibold leading-none tracking-[-.04em] text-white/[.04]">18kbio</div>
     </footer>
   );
 }
 
 /** Phones: after the hero, a small bar at the bottom brings you back to the claim box */
-export function Dock({ hidden }: { hidden: boolean }) {
+export function Dock() {
   const { handle } = useHandle();
   const { t } = useT();
   const [past, setPast] = useState(false);
+  const [hidden, setHidden] = useState(false);
   useEffect(() => {
-    const el = document.getElementById("h1in"); if (!el) return;
+    const el = document.getElementById("h1in"), foot = document.getElementById("footer"); if (!el || !foot) return;
     const io = new IntersectionObserver(([e]) => setPast(!e.isIntersecting)); io.observe(el);
-    return () => io.disconnect();
+    const io2 = new IntersectionObserver(([e]) => setHidden(e.isIntersecting)); io2.observe(foot);
+    return () => { io.disconnect(); io2.disconnect(); };
   }, []);
   return (
     <AnimatePresence>

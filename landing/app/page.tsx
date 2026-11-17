@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { HandleProvider } from "@/lib/handle";
 import { LangProvider, useT } from "@/lib/i18n";
 import Proof from "@/components/Proof";
@@ -9,14 +8,13 @@ import Cards from "@/components/Cards";
 import EditDemo from "@/components/EditDemo";
 import Stats from "@/components/Stats";
 import Plans from "@/components/Plans";
-import { Dock, Final, Footer, PageEffects } from "@/components/Final";
+import { Dock, Footer, PageEffects } from "@/components/Footer";
 
 export default function Landing() {
   return <LangProvider><HandleProvider><Page /></HandleProvider></LangProvider>;
 }
 
 function Page() {
-  const [atFinal, setAtFinal] = useState(false);
   const { t } = useT();
   return (
     <>
@@ -29,10 +27,9 @@ function Page() {
         <Stats />
         <Proof />
         <Plans />
-        <Final onSeen={setAtFinal} />
       </main>
       <Footer />
-      <Dock hidden={atFinal} />
+      <Dock />
       <PageEffects />
     </>
   );

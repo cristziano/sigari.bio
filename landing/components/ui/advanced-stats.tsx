@@ -53,7 +53,7 @@ function LiveFeed() {
           {shown.map(l => (
             <motion.li key={l.id} layout initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: .35 }}
               className="flex gap-3 text-[13px] leading-[1.4]">
-              <time className="shrink-0 font-mono text-[11px] leading-[1.6] text-quiet">{l.time}</time><span className="text-muted">{l.text}</span>
+              <time className="shrink-0 font-mono text-[12px] leading-[1.6] text-quiet">{l.time}</time><span className="text-muted">{l.text}</span>
             </motion.li>
           ))}
         </AnimatePresence>
@@ -86,7 +86,7 @@ export default function AdvancedStats() {
         <div className="flex flex-col gap-4">
           {/* devices */}
           <TimelineAnimation animationNum={2} timelineRef={timelineRef} className="rounded-3xl bg-white p-6 text-black shadow-lg">
-            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.18em] text-black/45">{t("statsDevices")}</p>
+            <p className="mb-4 text-[12px] font-semibold uppercase tracking-[.18em] text-black/45">{t("statsDevices")}</p>
             <ul className="grid gap-3">
               {DEVICES.map(([k, pct]) => (
                 <li key={k}>
@@ -109,7 +109,7 @@ export default function AdvancedStats() {
         {kpis.map((k, i) => (
           <TimelineAnimation key={i} animationNum={4 + i} timelineRef={timelineRef}
             className={`rounded-2xl border border-line bg-s1 p-5 transition-colors hover:border-white/40 hover:bg-white/[.04] ${i === 4 ? "col-span-2 md:col-span-1" : ""}`}>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[.14em] text-muted">{names[i]}</p>
+            <p className="mb-2 text-[12px] font-semibold uppercase tracking-[.14em] text-muted">{names[i]}</p>
             <p className="text-2xl font-bold tracking-tighter tabnum">{k}</p>
             <p className="mt-1 text-[12px] text-quiet">{subs[i]}</p>
           </TimelineAnimation>

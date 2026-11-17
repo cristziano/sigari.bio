@@ -16,7 +16,7 @@ export default function Plans() {
       <div className="mx-auto max-w-[1120px]">
         <h2 className="text-center text-[clamp(36px,5vw,56px)] font-bold tracking-[-.045em]">{t("plansT")}</h2>
         <p className="mx-auto mt-3 max-w-[64ch] text-center leading-[1.55] text-muted">{t("plansLead")}</p>
-        <div className="mt-8 grid items-start gap-4 lg:grid-cols-[1.7fr_1fr]">
+        <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-[1.7fr_1fr]">
           <div className="rounded-[18px] border border-line-2 bg-s1 p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -35,14 +35,14 @@ export default function Plans() {
             </ul>
             <a href="#top" onClick={claim} className="btn mt-6 w-full sm:w-auto">{t("claimNav")}</a>
           </div>
-          <div className="rounded-[18px] border border-line p-6">
+          <div className="flex flex-col rounded-[18px] border border-line p-6">
             <div className="flex items-center justify-between"><b className="text-lg">{t("proName")}</b><span className="rounded-md border border-line-2 px-2 py-1 font-mono text-[11px] text-muted">{t("proTag")}</span></div>
             <p className="mt-2 text-sm leading-[1.5] text-muted">{t("proSub")}</p>
             <div className="mt-5 text-[32px] font-extrabold tracking-[-.04em] text-quiet">{t("proPrice")}</div>
-            <ul className="mt-4 grid gap-2.5 border-t border-line pt-4">
+            <ul className="mb-6 mt-4 grid gap-2.5 border-t border-line pt-4">
               {pro.map(b => <li key={b} className="flex gap-3 text-sm text-muted"><Check />{b}</li>)}
             </ul>
-            <a href="#top" onClick={claim} className="btn-2 mt-6 w-full">{t("proBtn")}</a>
+            <a href="#top" onClick={claim} className="btn-2 mt-auto w-full">{t("proBtn")}</a>
           </div>
         </div>
       </div>

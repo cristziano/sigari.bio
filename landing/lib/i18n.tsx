@@ -42,7 +42,7 @@ const D = {
   statsLive: ["In diretta, oggi", "Live, today"],
   statsFeed: [["Nuova visita da TikTok, telefono · Lombardia", "Clic su «Ultima uscita»", "Nuova visita da Discord, computer · Lazio", "Clic sul tuo Instagram", "Qualcuno ha fatto partire la tua musica", "Nuova visita, link diretto, telefono · Campania"].join("\n"),
     ["New visit from TikTok, phone · Lombardy", "Click on «New release»", "New visit from Discord, computer · Lazio", "Click on your Instagram", "Someone started your music", "New visit, direct link, phone · Campania"].join("\n")],
-  plansT: ["Piani", "Plans"],
+  plansT: ["Gratis, per sempre.", "Free, forever."],
   plansLead: ["Tutto quello che 18kbio sa fare oggi è gratis. Premium porterà solo cose nuove: niente di quello che è gratis diventerà a pagamento.",
     "Everything 18kbio can do today is free. Premium will only bring new things: nothing free today will become paid."],
   freeName: ["Gratis", "Free"], freeSub: ["Tutto quello che serve per una pagina che parla di te: stile, musica, link e statistiche. Niente carta di credito, niente prova che scade.", "Everything you need for a page that is you: style, music, links and stats. No credit card, no trial that runs out."],
@@ -58,9 +58,9 @@ const D = {
   proSub: ["Per chi vuole un profilo che non ha nessun altro. Chi si iscrive adesso lo saprà per primo.", "For a profile nobody else has. Whoever signs up now hears about it first."],
   proBtn: ["Iscriviti e sarai avvisato", "Sign up to get notified"],
   proList: [["Effetti e stili esclusivi", "Più spazio per i tuoi file", "Novità in anteprima"].join("\n"), ["Exclusive effects and styles", "More space for your files", "New things first"].join("\n")],
-  finalT: ["La tua identità, su", "Your identity, on"],
   rights: ["Fatto da 18k, tutti i diritti riservati.", "Made by 18k, all rights reserved."], privacy: ["Privacy", "Privacy"], terms: ["Termini", "Terms"],
-  footClaim: ["prendila", "claim it"], footNav: ["Piè di pagina", "Footer"], sections: ["Sezioni", "Sections"],
+  footTag: ["Un nome, una pagina, tutto quello che fai.", "One name, one page, everything you do."], footProduct: ["Prodotto", "Product"], footCommunity: ["Community", "Community"], footLegal: ["Legale", "Legal"],
+  footNav: ["Piè di pagina", "Footer"], sections: ["Sezioni", "Sections"],
   bye: ["Account eliminato. Ci dispiace vederti andare: la tua @ adesso è libera.", "Account deleted. Sorry to see you go: your @ is free again."],
 } satisfies Record<string, Pair | Item>;
 
