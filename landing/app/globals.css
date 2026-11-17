@@ -87,12 +87,6 @@ body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: 
 /* ---------- cards: film grain ---------- */
 .tc-grain { opacity: .15; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
 
-/* ---------- stats: odometer ---------- */
-.odo { display: flex; font: 700 clamp(54px, 7vw, 104px)/1 var(--font-sans); letter-spacing: -.06em; font-variant-numeric: tabular-nums; height: 1em; overflow: hidden; }
-.odo .d { display: inline-block; height: 1em; overflow: hidden; }
-.odo .d > span { display: flex; flex-direction: column; transition: transform 900ms var(--ease-out); }
-.odo .d i { font-style: normal; height: 1em; line-height: 1; }
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
   .hx-name i { opacity: 1; transform: none; filter: none; }
