@@ -3,7 +3,7 @@
 // the four steps (colours, background, fonts, socials) build the style in stop motion.
 // The style is @1's when it has a photo or a background, otherwise a ready-made one.
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
@@ -127,49 +127,80 @@ export default function EditDemo() {
   }, [inView, step, auto]);
 
   const cur = Math.max(0, step);
+  const pick = (i: number) => { setAuto(false); setStep(((i % 4) + 4) % 4); };
+
+  // the arrow keys move the carousel while this section is on screen (not while typing in a field)
+  useEffect(() => {
+    if (!inView) return;
+    const key = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+      if (e.key === "ArrowRight") { e.preventDefault(); pick(cur + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); pick(cur - 1); }
+    };
+    addEventListener("keydown", key);
+    return () => removeEventListener("keydown", key);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, cur]);
+
+  // the four tiles sit on a ring seen from the front: the current one in front, the two next ones tilted on the sides, the last one behind
+  const [ring, setRing] = useState(300);
+  useEffect(() => { const r = () => setRing(Math.min(300, innerWidth * .34)); r(); addEventListener("resize", r); return () => removeEventListener("resize", r); }, []);
+  const place = (i: number) => {
+    const a = (((i - cur) % 4) + 4) % 4 * (Math.PI / 2); // 0 front, 90 right, 180 back, 270 left
+    const c = Math.cos(a), sn = Math.sin(a);
+    return { x: sn * ring, y: (1 - c) * (c < -.5 ? -14 : 26), rotate: sn * 12, scale: .78 + .22 * (c + 1) / 2 + (c > .5 ? .04 : 0), opacity: c < -.5 ? .22 : c > .5 ? 1 : .7, zIndex: Math.round(10 + c * 10) };
+  };
 
   return (
-    <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
+    <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="overflow-x-clip px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
       <div className="mx-auto max-w-[1180px]">
-        <h2 className="text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
+        <h2 className="text-center text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
 
-        <div className="mt-10 grid items-center gap-10 min-[901px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] min-[901px]:gap-[clamp(32px,6vw,96px)]">
-          <div className="min-w-0 max-[900px]:order-2">
-            {/* the four steps: four live tiles, each showing its tool; the current one lights up and fills its bar */}
-            <div role="tablist" aria-label={t("demoT1")} className="grid grid-cols-2 gap-3">
-              {steps.map(([title], i) => {
-                const on = i === cur;
-                return (
-                  <button key={i} type="button" role="tab" aria-selected={on} onClick={() => { setAuto(false); setStep(i); }}
-                    className={`demo-tile relative flex min-h-[132px] flex-col justify-between gap-4 overflow-hidden rounded-2xl border p-4 text-left transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 ${on ? "border-white/70 bg-white/[.07]" : "border-white/10 bg-[#0b0b0b]"}`}>
-                    <span className="flex items-center gap-2.5">
-                      <span aria-hidden className={`grid size-8 shrink-0 place-items-center rounded-lg transition-colors duration-300 ${on ? "bg-white text-black" : "border border-white/15 text-[#bdbdbd]"}`}><StepIcon i={i} /></span>
-                      <b className={`text-[17px] font-semibold tracking-[-.02em] transition-colors duration-300 ${on ? "text-white" : "text-[#9a9a9a]"}`}>{title}</b>
-                    </span>
-                    <span className={`block transition-opacity duration-300 ${on ? "opacity-100" : "opacity-45"}`}><Tool i={i} /></span>
-                    <i aria-hidden key={on ? `${step}${auto}` : "x"} className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-white ${on && auto && step >= 0 ? "tile-bar" : on ? "" : "scale-x-0"}`} />
-                  </button>
-                );
-              })}
-            </div>
-
-            <a href={guestHref("/dashboard")} className="group mt-8 inline-flex min-h-[48px] items-center gap-2.5 rounded-xl bg-white px-5 text-[15px] font-semibold text-black transition-transform active:scale-[.97]">
-              {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-            </a>
-          </div>
-
-          {/* the phone */}
-          <div className="grid place-items-center max-[900px]:order-1">
-            <div ref={phone} className="demo-phone relative w-[min(270px,72vw,calc(70svh*.53))] rounded-[46px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[9px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] min-[901px]:w-[min(340px,calc(76svh*.53))]">
-              <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
-              <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
-              <div className="relative aspect-[9/16.5] overflow-hidden rounded-[38px] bg-[#050505]">
-                <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
-                <span aria-hidden className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-[22px] w-[34%] -translate-x-1/2 rounded-full bg-black" />
-                <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />
-              </div>
+        {/* the phone, on top in the middle */}
+        <div className="mt-10 grid place-items-center">
+          <div ref={phone} className="demo-phone relative w-[min(240px,62vw,calc(56svh*.53))] rounded-[46px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[9px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] min-[901px]:w-[min(300px,calc(58svh*.53))]">
+            <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
+            <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
+            <div className="relative aspect-[9/16.5] overflow-hidden rounded-[38px] bg-[#050505]">
+              <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
+              <span aria-hidden className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-[22px] w-[34%] -translate-x-1/2 rounded-full bg-black" />
+              <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />
             </div>
           </div>
+        </div>
+
+        {/* the four steps on a ring under the phone; the current one has a moving chrome frame */}
+        <div role="tablist" aria-label={t("demoT1")} className="relative mx-auto -mt-6 h-[210px] w-full max-w-[900px] md:h-[200px]">
+          {steps.map(([title], i) => {
+            const on = i === cur, p = place(i);
+            return (
+              <motion.button key={i} type="button" role="tab" aria-selected={on} tabIndex={on ? 0 : -1} onClick={() => pick(i)}
+                initial={false} animate={{ x: p.x, y: p.y, rotate: p.rotate, scale: p.scale, opacity: p.opacity }} transition={reducedMotion() ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 20 }}
+                style={{ zIndex: p.zIndex }}
+                className={`demo-tile absolute left-1/2 top-6 -ml-[100px] flex w-[200px] flex-col gap-4 rounded-2xl border p-4 text-left md:-ml-[120px] md:w-[240px] ${on ? "chrome-frame border-transparent bg-[#141414]" : "border-white/10 bg-[#0d0d0d]"}`}>
+                {on && <><i aria-hidden className="spark left-2 top-1.5" /><i aria-hidden className="spark spark-2 bottom-2 right-3" /></>}
+                <span className="flex items-center gap-2.5">
+                  <span aria-hidden className={`grid size-8 shrink-0 place-items-center rounded-lg ${on ? "bg-white text-black" : "border border-white/15 text-[#bdbdbd]"}`}><StepIcon i={i} /></span>
+                  <b className={`text-[17px] font-semibold tracking-[-.02em] ${on ? "text-white" : "text-[#9a9a9a]"}`}>{title}</b>
+                </span>
+                <span className="block"><Tool i={i} /></span>
+                <i aria-hidden key={on ? `${step}${auto}` : "x"} className={`absolute bottom-0 left-4 right-4 h-[2px] origin-left rounded bg-white/80 ${on && auto && step >= 0 ? "tile-bar" : "scale-x-0"}`} />
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* arrows (also ← → on the keyboard) and the try button */}
+        <div className="mt-2 flex flex-col items-center gap-5">
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={() => pick(cur - 1)} aria-label={t("demoPrev")} className="grid size-11 place-items-center rounded-full border border-white/15 text-[18px] transition-colors hover:border-white/50">←</button>
+            <span className="min-w-[64px] text-center text-[13px] text-[#8a8a8a]">{cur + 1} / 4</span>
+            <button type="button" onClick={() => pick(cur + 1)} aria-label={t("demoNext")} className="grid size-11 place-items-center rounded-full border border-white/15 text-[18px] transition-colors hover:border-white/50">→</button>
+          </div>
+          <a href={guestHref("/dashboard")} className="group inline-flex min-h-[48px] items-center gap-2.5 rounded-xl bg-white px-5 text-[15px] font-semibold text-black transition-transform active:scale-[.97]">
+            {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+          </a>
         </div>
       </div>
     </section>

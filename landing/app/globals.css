@@ -95,8 +95,7 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   85%, 100% { transform: none; }
 }
 /* the profile is drawn bigger and shrunk, so it fits the phone like on a real one */
-.demo-pv { position: absolute; width: 121.95%; height: 121.95%; transform: scale(.82); transform-origin: 0 0; }
-@media (max-width: 900px) { .demo-pv { width: 138.9%; height: 138.9%; transform: scale(.72); } }
+.demo-pv { position: absolute; width: 151.5%; height: 151.5%; transform: scale(.66); transform-origin: 0 0; }
 .demo-pv a, .demo-pv button { pointer-events: none; }
 
 /* ---------- cards: film grain ---------- */
@@ -117,3 +116,15 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 
 
 
+
+/* the current step tile: a thin chrome frame that turns, and two little sparkles */
+.chrome-frame::before { content: ""; position: absolute; inset: -1.5px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--ang), #ffffff, #9aa2ad 18%, #2b2f35 32%, #e4e9ef 48%, #ffffff 56%, #6d7580 72%, #d7dde5 88%, #ffffff);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spinBorder 3.2s linear infinite; }
+.chrome-frame { box-shadow: 0 0 0 1px rgb(255 255 255 / .05), 0 18px 40px -18px rgb(255 255 255 / .18); }
+.spark { position: absolute; width: 10px; height: 10px; pointer-events: none; z-index: 2;
+  background: #fff; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2.4s ease-in-out infinite; }
+.spark-2 { width: 7px; height: 7px; animation-delay: -1.2s; }
+@keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.3) rotate(0deg); } 45% { opacity: 1; transform: scale(1) rotate(45deg); } 60% { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { .chrome-frame::before, .spark { animation: none; } .spark { opacity: .8; } }
