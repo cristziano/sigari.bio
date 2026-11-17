@@ -87,14 +87,24 @@ export default function AdvancedStats() {
           {/* devices */}
           <TimelineAnimation animationNum={2} timelineRef={timelineRef} className="rounded-3xl bg-white p-6 text-black shadow-lg">
             <p className="mb-4 text-[12px] font-semibold uppercase tracking-[.18em] text-black/45">{t("statsDevices")}</p>
-            <ul className="grid gap-3">
-              {DEVICES.map(([k, pct]) => (
-                <li key={k}>
-                  <div className="mb-1.5 flex items-baseline justify-between text-sm"><span className="font-medium">{t(k as "devPhone")}</span><span className="font-semibold tabnum">{pct}%</span></div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-black/10"><div className="h-full rounded-full bg-black" style={{ width: `${pct}%` }} /></div>
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center gap-5">
+              <svg viewBox="0 0 42 42" className="size-28 shrink-0 -rotate-90" aria-hidden>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(0,0,0,.08)" strokeWidth="6" />
+                {DEVICES.reduce<{ off: number; el: React.ReactNode[] }>((acc, [k, pct], i) => {
+                  acc.el.push(<circle key={k} cx="21" cy="21" r="15.9" fill="none" stroke={["#000", "#777", "#c4c4c4"][i]} strokeWidth="6"
+                    strokeDasharray={`${pct} ${100 - pct}`} strokeDashoffset={-acc.off} pathLength={100} />);
+                  acc.off += pct; return acc;
+                }, { off: 0, el: [] }).el}
+              </svg>
+              <ul className="grid flex-1 gap-2.5">
+                {DEVICES.map(([k, pct], i) => (
+                  <li key={k} className="flex items-center justify-between gap-2 text-sm">
+                    <span className="flex items-center gap-2 font-medium"><i className="size-2.5 rounded-full" style={{ background: ["#000", "#777", "#c4c4c4"][i] }} />{t(k as "devPhone")}</span>
+                    <span className="font-semibold tabnum">{pct}%</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </TimelineAnimation>
 
           {/* live feed */}

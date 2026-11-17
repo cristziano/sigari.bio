@@ -34,9 +34,9 @@ export default function Claim({ id, className = "" }: { id: string; className?: 
           value={handle} onChange={e => setHandle(sanitize(e.target.value))} />
         <button className="btn" type="submit">{t("take")}</button>
       </div>
-      <div className="mt-2.5 flex min-h-5 items-center justify-between gap-3 font-mono text-[11.5px]">
+      <div className="mt-3 flex min-h-5 items-center justify-between gap-3 font-mono text-[13px]">
         <span aria-live="polite" className={`flex items-center gap-2 ${status.kind === "no" ? "text-[#ff7a7a]" : status.kind === "ok" ? "text-white" : "text-muted"}`}>
-          <i aria-hidden className={`inline-block size-1.5 shrink-0 ${status.kind === "wait" ? "animate-pulse" : ""} ${status.kind === "no" ? "bg-[#ff5a5a]" : "bg-current"}`} />
+          <i aria-hidden className={`inline-block size-2 shrink-0 rounded-full ${status.kind === "wait" ? "animate-pulse" : ""} ${status.kind === "no" ? "bg-[#ff5a5a]" : "bg-current"}`} />
           {t(status.code, { h: handle })}
         </span>
         {HANDLE_RE.test(handle) && (

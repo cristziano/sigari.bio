@@ -58,15 +58,25 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   background-attachment: fixed; mix-blend-mode: difference; animation: aurora 60s linear infinite; }
 @keyframes aurora { from { background-position: 50% 50%, 50% 50%; } to { background-position: 350% 50%, 350% 50%; } }
 
+/* ---------- premium card: a thin light running around its border ---------- */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.shine-border { position: relative; }
+.shine-border::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: conic-gradient(from var(--ang), transparent 0 70%, rgba(255,255,255,.9) 82%, rgba(199,210,254,.8) 88%, transparent 96%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spinBorder 5s linear infinite; }
+@keyframes spinBorder { to { --ang: 360deg; } }
+
 /* ---------- claim box ---------- */
-.claim-bar { display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 14px; border: 1px solid var(--color-line-2); border-radius: 12px; background: #0a0a0a;
+.claim-bar { display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 16px; border: 1px solid var(--color-line-2); border-radius: 12px; background: #0a0a0a;
   transition: border-color 200ms; }
 .claim-bar:focus-within { border-color: rgb(255 255 255 / .5); }
 .claim-bar[data-kind="ok"] { border-color: rgb(255 255 255 / .75); }
 .claim-bar[data-kind="no"] { border-color: #ff5a5a; }
-.claim-bar input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 15px var(--font-mono); padding: 10px 0; caret-color: #fff; }
+.claim-bar input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 16px var(--font-mono); padding: 13px 0; caret-color: #fff; }
 .claim-bar input::placeholder { color: #4d4d4d; }
-.claim-bar .pre { font: 400 15px var(--font-mono); color: #8a8a8a; }
+.claim-bar .pre { font: 400 16px var(--font-mono); color: #8a8a8a; }
+.claim-bar .btn { min-height: 46px; padding: 0 20px; font-size: 15px; }
 .shake { animation: shake 360ms var(--ease-out); }
 @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 

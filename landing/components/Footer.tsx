@@ -22,6 +22,7 @@ export function Footer() {
           <a href="/esplora" className={link}>{t("explore")}</a>
           <a href="/dashboard" className={link}>{t("dashboard")}</a>
           <a href="/accedi" className={link}>{t("login")}</a>
+          <a href="/paste" className={link}>Paste</a>
         </nav>
         <nav aria-label={t("footCommunity")} className={col}>
           <b className="mb-1 text-[13px] font-semibold text-white">{t("footCommunity")}</b>
