@@ -533,7 +533,7 @@ export const BADGES = {
 
 const PX = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1600`;
 const GF = id => `https://media.giphy.com/media/${id}`;
-// Templates built on real media, like the profiles on guns.lol: a looping clip (GIPHY gives an mp4,
+// Templates built on real media: a looping clip (GIPHY gives an mp4,
 // a still frame and a small animated preview for every GIF) or a real photo. "thumb" is what the
 // template lists show, so forty cards never play forty videos at once.
 const clip = (id, name, tags, gif, a = {}) => ({
@@ -546,7 +546,7 @@ const photo = (id, name, tags, src, a = {}) => ({
 });
 // Colours in one call: accent, text, then the rest follows the accent
 const pal = (accent, text = "#ffffff", muted = "#a8a8a8", dark = "#0a0a0a") => ({ accent, text, muted, icon: accent, primary: dark, secondary: dark, border: accent });
-// The glass card most guns.lol profiles use
+// The glass card
 const GLASS = { opacity: 22, blur: 16, radius: 18, border: "solid" };
 const enter = text => ({ on: true, text, style: "blur" });
 export const TEMPLATES = [

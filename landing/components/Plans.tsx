@@ -25,9 +25,6 @@ export default function Plans() {
               </div>
               <div className="text-[44px] font-extrabold leading-none tracking-[-.04em]">0€ <small className="text-sm font-normal tracking-normal text-muted">{t("forever")}</small></div>
             </div>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {t("freeHi").split("|").map(h => <span key={h} className="rounded-md border border-line-2 px-2.5 py-1 font-mono text-[11.5px] text-white">{h}</span>)}
-            </div>
             <ul className="mt-5 grid gap-x-6 gap-y-3.5 border-t border-line pt-5 sm:grid-cols-2">
               {free.map(([b, s], i) => (
                 <motion.li key={b} className="flex gap-3" initial={{ opacity: 0, x: -6 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
