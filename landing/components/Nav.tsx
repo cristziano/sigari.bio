@@ -25,7 +25,7 @@ export default function Nav() {
   return (
     <>
       <motion.div aria-hidden className="fixed left-0 right-0 top-0 z-[60] h-px origin-left bg-white" style={{ scaleX: bar }} />
-      <header className={`fixed inset-x-0 top-0 z-50 grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-2.5 transition-colors duration-300 sm:px-9 ${solid ? "border-b border-line bg-black/85 backdrop-blur-md" : "border-b border-transparent"}`}>
+      <header className={`fixed inset-x-0 top-0 z-50 grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-2.5 transition-colors duration-300 sm:px-9 ${solid ? "border-b border-line bg-black/95" : "border-b border-transparent"}`}>
         <a href="#top" aria-label="18kbio, home" className="flex items-center justify-self-start font-brand text-[18px] font-semibold tracking-[-.02em]">
           <i aria-hidden className="mr-2 inline-block size-[7px] rounded-[1px] bg-white motion-safe:animate-[tick_2.4s_steps(1)_infinite]" />
           18k<span className="font-normal text-[#8a8a8a]">bio</span>

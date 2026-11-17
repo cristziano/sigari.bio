@@ -47,17 +47,6 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 }
 @media (pointer: coarse) { .btn, .btn-2 { min-height: 44px; } }
 
-/* ---------- aurora: the glowing gradient behind the page ---------- */
-.aurora {
-  --stripes: repeating-linear-gradient(100deg, #000 0%, #000 7%, transparent 10%, transparent 12%, #000 16%);
-  --glow: repeating-linear-gradient(100deg, #c7d2fe 10%, #ffffff 15%, #a5b4fc 20%, #e9d5ff 25%, #94a3b8 30%);
-  background-image: var(--stripes), var(--glow); background-size: 300%, 200%; background-position: 50% 50%, 50% 50%;
-  filter: blur(12px); will-change: transform;
-}
-.aurora::after { content: ""; position: absolute; inset: 0; background-image: var(--stripes), var(--glow); background-size: 200%, 100%;
-  background-attachment: fixed; mix-blend-mode: difference; animation: aurora 60s linear infinite; }
-@keyframes aurora { from { background-position: 50% 50%, 50% 50%; } to { background-position: 350% 50%, 350% 50%; } }
-
 /* ---------- premium card: a thin light running around its border ---------- */
 @property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 .shine-border { position: relative; }

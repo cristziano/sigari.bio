@@ -1,9 +1,9 @@
 "use client";
 // Hero. Base: "Shape Landing Hero" by Kokonut UI (21st.dev, MIT): soft pill shapes that drop in and float.
 // Rebuilt in black and white for 18kbio, with glass spheres carrying social logos on the sides
-// (they float and move a little with the mouse, the far ones blurred) and a fine dot grid behind.
-import { useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
+// (they float and move a little with the mouse; each moving piece has its own layer, so scrolling stays smooth) and a fine dot grid behind.
+import { useEffect, useRef } from "react";
+import { motion, useInView, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import Claim from "./Claim";
 import { reducedMotion } from "@/lib/site";
 import { useT } from "@/lib/i18n";
@@ -21,12 +21,12 @@ function Word({ children, i }: { children: React.ReactNode; i: number }) {
 }
 
 /** a soft pill that drops in, then floats (Kokonut UI's ElegantShape, in greys) */
-function Pill({ className, delay, w, h, rotate, tint }: { className: string; delay: number; w: number; h: number; rotate: number; tint: string }) {
+function Pill({ className, delay, w, h, rotate, tint, live }: { className: string; delay: number; w: number; h: number; rotate: number; tint: string; live: boolean }) {
   return (
-    <motion.div aria-hidden className={`absolute ${className}`} initial={{ opacity: 0, y: -150, rotate: rotate - 15 }} animate={{ opacity: 1, y: 0, rotate }}
+    <motion.div aria-hidden className={`absolute will-change-transform ${className}`} initial={{ opacity: 0, y: -150, rotate: rotate - 15 }} animate={{ opacity: 1, y: 0, rotate }}
       transition={{ duration: 2.4, delay, ease: [0.23, 0.86, 0.39, 0.96], opacity: { duration: 1.2 } }}>
-      <motion.div animate={{ y: [0, 15, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} style={{ width: w, height: h }} className="relative">
-        <div className={`absolute inset-0 rounded-full border-2 border-white/[.12] bg-gradient-to-r to-transparent backdrop-blur-[2px] shadow-[0_8px_32px_0_rgba(255,255,255,.06)] after:absolute after:inset-0 after:rounded-full after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,.16),transparent_70%)] ${tint}`} />
+      <motion.div animate={live ? { y: [0, 15, 0] } : { y: 0 }} transition={{ duration: 12, repeat: live ? Infinity : 0, ease: "easeInOut" }} style={{ width: w, height: h }} className="relative will-change-transform">
+        <div className={`absolute inset-0 rounded-full border-2 border-white/[.12] bg-gradient-to-r to-transparent shadow-[0_8px_32px_0_rgba(255,255,255,.06)] after:absolute after:inset-0 after:rounded-full after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,.16),transparent_70%)] ${tint}`} />
       </motion.div>
     </motion.div>
   );
@@ -45,16 +45,16 @@ const ORBS: Orb[] = [
   { icon: "telegram", x: "70%", y: "8%", size: 40, depth: .3, dur: 9 },
 ];
 
-function GlassOrb({ o, mx, my }: { o: Orb; mx: MotionValue<number>; my: MotionValue<number> }) {
+function GlassOrb({ o, mx, my, live }: { o: Orb; mx: MotionValue<number>; my: MotionValue<number>; live: boolean }) {
   const x = useTransform(mx, v => v * 26 * o.depth), y = useTransform(my, v => v * 20 * o.depth);
   const far = o.depth < .5;
   return (
-    <motion.div aria-hidden style={{ left: o.x, top: o.y, x, y, filter: far ? `blur(${(1 - o.depth) * 3}px)` : undefined, opacity: .35 + o.depth * .55 }}
-      className={`absolute -translate-x-1/2 -translate-y-1/2 ${o.mobile ? "" : "max-md:hidden"}`}
+    <motion.div aria-hidden style={{ left: o.x, top: o.y, x, y, opacity: .35 + o.depth * .55 }}
+      className={`absolute -translate-x-1/2 -translate-y-1/2 will-change-transform ${o.mobile ? "" : "max-md:hidden"}`}
       initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1.2, ease: EASE, delay: .4 + o.depth * .5 }}>
-      <motion.div animate={reducedMotion() ? undefined : { y: [0, -14, 0], rotate: [0, 4, 0] }} transition={{ duration: o.dur, repeat: Infinity, ease: "easeInOut" }}
+      <motion.div animate={live && !reducedMotion() ? { y: [0, -14, 0], rotate: [0, 4, 0] } : { y: 0, rotate: 0 }} transition={{ duration: o.dur, repeat: live ? Infinity : 0, ease: "easeInOut" }}
         style={{ width: o.size, height: o.size }}
-        className="grid place-items-center rounded-full border border-white/15 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,.38),rgba(255,255,255,.07)_42%,rgba(0,0,0,.55)_100%)] shadow-[inset_0_-8px_18px_rgba(0,0,0,.6),inset_0_2px_6px_rgba(255,255,255,.25),0_18px_40px_rgba(0,0,0,.6)] backdrop-blur-[3px]">
+        className="grid place-items-center rounded-full border border-white/15 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,.38),rgba(255,255,255,.07)_42%,rgba(0,0,0,.55)_100%)] shadow-[inset_0_-8px_18px_rgba(0,0,0,.6),inset_0_2px_6px_rgba(255,255,255,.25),0_18px_40px_rgba(0,0,0,.6)] ">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={`${ICONS}${o.icon}.svg`} alt="" className="size-[42%] opacity-90 [filter:invert(1)]" loading="lazy" />
       </motion.div>
@@ -66,6 +66,8 @@ export default function Hero() {
   const name = "18kbio";
   const { t } = useT();
   const words = t("h1a").split(" ");
+  const sec = useRef<HTMLElement>(null);
+  const live = useInView(sec, { amount: .1 }); // the floating stops when the hero is off screen
   const mxRaw = useMotionValue(0), myRaw = useMotionValue(0);
   const mx = useSpring(mxRaw, { stiffness: 40, damping: 18 }), my = useSpring(myRaw, { stiffness: 40, damping: 18 });
 
@@ -77,22 +79,22 @@ export default function Hero() {
   }, [mxRaw, myRaw]);
 
   return (
-    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[720px]">
-      {/* dot grid + a soft light in the middle + two big blurred spheres that breathe on the sides */}
+    <section ref={sec} id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[720px]">
+      {/* dot grid + a soft light in the middle + two big soft spheres on the sides (still: no cost while scrolling) */}
       <div aria-hidden className="absolute inset-0 -z-10 opacity-60 [background-image:radial-gradient(rgba(255,255,255,.09)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(70%_60%_at_50%_45%,#000,transparent)]" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_42%,rgba(255,255,255,.07),transparent_70%)]" />
-      {[["-left-[14%] top-[18%]", 0], ["-right-[12%] top-[38%]", 2.5]].map(([pos, d]) => (
-        <motion.div key={pos as string} aria-hidden className={`absolute -z-10 size-[44vw] max-w-[620px] rounded-full bg-[radial-gradient(circle_at_40%_35%,rgba(255,255,255,.14),rgba(255,255,255,.03)_55%,transparent_70%)] blur-[40px] ${pos}`}
-          animate={reducedMotion() ? undefined : { scale: [1, 1.08, 1], opacity: [.8, 1, .8] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: d as number }} />
+      {["-left-[14%] top-[18%]", "-right-[12%] top-[38%]"].map(pos => (
+        <div key={pos} aria-hidden className={`absolute -z-10 size-[44vw] max-w-[620px] rounded-full bg-[radial-gradient(circle_at_40%_35%,rgba(255,255,255,.14),rgba(255,255,255,.03)_55%,transparent_70%)] ${pos}`}
+        />
       ))}
 
       <div aria-hidden className="absolute inset-0 overflow-hidden">
-        <Pill delay={.3} w={600} h={140} rotate={12} tint="from-white/[.10]" className="left-[-12%] top-[16%] md:left-[-5%] md:top-[20%]" />
-        <Pill delay={.5} w={500} h={120} rotate={-15} tint="from-white/[.07]" className="right-[-8%] top-[72%] md:right-[0%] md:top-[76%]" />
-        <Pill delay={.4} w={300} h={80} rotate={-8} tint="from-white/[.08]" className="bottom-[5%] left-[4%] md:bottom-[9%] md:left-[10%]" />
-        <Pill delay={.6} w={200} h={60} rotate={20} tint="from-white/[.10]" className="right-[14%] top-[10%] md:right-[20%] md:top-[14%]" />
-        <Pill delay={.7} w={150} h={40} rotate={-25} tint="from-white/[.06]" className="left-[20%] top-[5%] md:left-[24%] md:top-[9%]" />
-        {ORBS.map(o => <GlassOrb key={o.icon} o={o} mx={mx} my={my} />)}
+        <Pill delay={.3} w={600} h={140} rotate={12} tint="from-white/[.10]" className="left-[-12%] top-[16%] md:left-[-5%] md:top-[20%]" live={live} />
+        <Pill delay={.5} w={500} h={120} rotate={-15} tint="from-white/[.07]" className="right-[-8%] top-[72%] md:right-[0%] md:top-[76%]" live={live} />
+        <Pill delay={.4} w={300} h={80} rotate={-8} tint="from-white/[.08]" className="bottom-[5%] left-[4%] md:bottom-[9%] md:left-[10%]" live={live} />
+        <Pill delay={.6} w={200} h={60} rotate={20} tint="from-white/[.10]" className="right-[14%] top-[10%] md:right-[20%] md:top-[14%]" live={live} />
+        <Pill delay={.7} w={150} h={40} rotate={-25} tint="from-white/[.06]" className="left-[20%] top-[5%] md:left-[24%] md:top-[9%]" live={live} />
+        {ORBS.map(o => <GlassOrb key={o.icon} o={o} mx={mx} my={my} live={live} />)}
       </div>
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 

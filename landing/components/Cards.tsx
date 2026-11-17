@@ -1,8 +1,8 @@
 "use client";
 // "La tua carta": the real card of @1 on a 3D table. It rises from flat when you get here,
-// then follows the mouse and turns a little while you scroll past it.
+// then follows the mouse.
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useInView, useMotionValue, useSpring } from "motion/react";
 import { kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
@@ -20,9 +20,6 @@ export default function Cards() {
   // tilt: starts flat (80°) and lands on 24° / -10°, then the mouse adds a little
   const rx = useMotionValue(80), rz = useMotionValue(0), ry = useMotionValue(0);
   const srx = useSpring(rx, SPRING), srz = useSpring(rz, SPRING), sry = useSpring(ry, SPRING);
-  const { scrollYProgress } = useScroll({ target: sec, offset: ["start end", "end start"] });
-  const scrollTurn = useTransform(scrollYProgress, [0, 1], [6, -6]);
-  const rotateZ = useTransform([srz, scrollTurn], ([a, b]: number[]) => a + b);
 
   useEffect(() => {
     if (!seen) return;
@@ -48,7 +45,7 @@ export default function Cards() {
 
   return (
     <section ref={sec} id="cards" aria-label={`${t("cardsT1")} ${t("cardsT2")}`} onPointerMove={move}
-      className="relative isolate flex flex-col overflow-hidden bg-[#0a0a0a]/75 text-[#e0e0e0] backdrop-blur-[2px] md:block md:h-[calc(82svh*var(--vz,1))] md:min-h-[560px]">
+      className="relative isolate flex flex-col overflow-hidden bg-[#0a0a0a]/80 text-[#e0e0e0] md:block md:h-[calc(82svh*var(--vz,1))] md:min-h-[560px]">
       <div aria-hidden className="tc-grain pointer-events-none absolute inset-0 z-20" />
       <div aria-hidden className="pointer-events-none absolute -inset-[20%] opacity-35 [background-image:repeating-radial-gradient(circle_at_60%_55%,transparent_0,transparent_40px,rgba(255,255,255,.05)_41px,transparent_42px)]" />
 
@@ -61,7 +58,7 @@ export default function Cards() {
           ))}
         </h2>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={seen ? { opacity: 1, y: 0 } : undefined} transition={{ duration: .7, delay: .35 }}
-          className="pointer-events-auto max-w-[380px] self-start rounded-[18px] max-md:order-3 max-md:mx-4 max-md:mt-2 border border-line-2 bg-[rgba(10,10,10,.82)] px-5 py-[18px] font-sans backdrop-blur-[6px] md:col-start-1 md:mt-7">
+          className="pointer-events-auto max-w-[380px] self-start rounded-[18px] max-md:order-3 max-md:mx-4 max-md:mt-2 border border-line-2 bg-[rgba(10,10,10,.82)] px-5 py-[18px] font-sans md:col-start-1 md:mt-7">
           <b className="block text-base tracking-[-.01em] text-white">{t("cardsQ")}</b>
           <p className="mt-1.5 text-sm leading-[1.55] text-muted">{t("cardsA")}</p>
           <a href="/1" className="mt-1.5 inline-block py-2 text-[13.5px] text-white underline underline-offset-[3px]">{t("cardsSee")}</a>
@@ -75,10 +72,10 @@ export default function Cards() {
       </div>
 
       <div className="relative flex h-[300px] items-center max-md:order-2 justify-center overflow-hidden [perspective:1600px] md:absolute md:inset-0 md:h-auto md:justify-end md:pr-[clamp(16px,4vw,72px)]">
-        <motion.div style={{ rotateX: srx, rotateZ, rotateY: sry, transformStyle: "preserve-3d" }}
+        <motion.div style={{ rotateX: srx, rotateZ: srz, rotateY: sry, transformStyle: "preserve-3d" }}
           initial={{ opacity: 0, scale: .85 }} animate={seen ? { opacity: 1, scale: 1 } : undefined} transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-[86vw] md:w-[clamp(320px,48vw,760px)]">
-          <div ref={cardBox} className="aspect-[1.586] w-full [container-type:inline-size] [filter:brightness(.82)_drop-shadow(0_50px_60px_rgba(0,0,0,.7))] [&>*]:size-full" />
+          <div ref={cardBox} className="aspect-[1.586] w-full [container-type:inline-size] rounded-[4.5%] shadow-[0_50px_70px_-20px_rgba(0,0,0,.75)] [&>*]:size-full" />
         </motion.div>
       </div>
     </section>

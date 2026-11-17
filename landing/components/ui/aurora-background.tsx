@@ -1,12 +1,9 @@
 "use client";
-// Aurora background (the 21st.dev / Aceternity "Aurora Background" idea, rebuilt for 18kbio):
-// a soft, glowing gradient that drifts slowly behind the whole page. Cold silver and lilac, so the
-// black and white of the site stays the main thing. Fixed to the screen, cheap: only background-position moves.
+// Background of the whole page: a very soft, still glow (the idea of the 21st.dev "Aurora Background",
+// made minimal). No blur filter and no animation: it costs nothing while scrolling.
 export default function AuroraBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-black">
-      <div className="aurora absolute -inset-[10px] opacity-60 [mask-image:radial-gradient(ellipse_at_70%_0%,#000_15%,transparent_75%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_15%_100%,rgba(165,180,252,.10),transparent_70%)]" />
-    </div>
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black
+      bg-[radial-gradient(55%_40%_at_75%_0%,rgba(199,210,254,.075),transparent_70%),radial-gradient(45%_35%_at_10%_100%,rgba(233,213,255,.05),transparent_70%)]" />
   );
 }
