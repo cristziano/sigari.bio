@@ -12,7 +12,7 @@ export default function Plans() {
   const free = t("freeList").split("\n").map(s => s.split("|"));
   const pro = t("proList").split("\n");
   return (
-    <section id="plans" aria-label={t("plansT")} className="px-4 py-24 sm:px-[clamp(16px,6vw,96px)]">
+    <section id="plans" aria-label={t("plansT")} className="px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
       <div className="mx-auto max-w-[1120px]">
         <h2 className="text-center text-[clamp(36px,5vw,56px)] font-bold tracking-[-.045em]">{t("plansT")}</h2>
         <p className="mx-auto mt-3 max-w-[64ch] text-center leading-[1.55] text-muted">{t("plansLead")}</p>

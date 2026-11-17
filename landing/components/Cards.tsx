@@ -62,7 +62,7 @@ export default function Cards() {
           className="pointer-events-auto max-w-[380px] self-start rounded-[18px] border border-line-2 bg-[rgba(10,10,10,.82)] px-5 py-[18px] font-sans backdrop-blur-[6px] md:col-start-1 md:mt-7">
           <b className="block text-base tracking-[-.01em] text-white">{t("cardsQ")}</b>
           <p className="mt-1.5 text-sm leading-[1.55] text-muted">{t("cardsA")}</p>
-          <a href="/1" className="mt-2.5 inline-block text-[13.5px] text-white underline underline-offset-[3px]">{t("cardsSee")}</a>
+          <a href="/1" className="mt-1.5 inline-block py-2 text-[13.5px] text-white underline underline-offset-[3px]">{t("cardsSee")}</a>
         </motion.div>
         <div className="flex md:col-span-2 md:items-end md:justify-end">
           <a href={guestHref("/dashboard#card")}

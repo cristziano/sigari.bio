@@ -8,7 +8,7 @@ import Cards from "@/components/Cards";
 import EditDemo from "@/components/EditDemo";
 import Stats from "@/components/Stats";
 import Plans from "@/components/Plans";
-import { Dock, Footer, PageEffects } from "@/components/Footer";
+import { Footer, PageEffects } from "@/components/Footer";
 
 export default function Landing() {
   return <LangProvider><HandleProvider><Page /></HandleProvider></LangProvider>;
@@ -29,7 +29,6 @@ function Page() {
         <Plans />
       </main>
       <Footer />
-      <Dock />
       <PageEffects />
     </>
   );

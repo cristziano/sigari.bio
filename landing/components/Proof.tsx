@@ -47,14 +47,14 @@ export default function Proof() {
         {/* a light that slides across on hover */}
         <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-[left,opacity] duration-700 group-hover:left-[110%] group-hover:opacity-100" />
         <span className="flex -space-x-2.5">
-          {data.list.slice(0, 6).map(p => (
-            <span key={p.handle} className="size-10 rounded-full border-2 border-[#0b0b0b] bg-[#1c1c1c] bg-cover bg-center grayscale transition-[filter] duration-300 group-hover:grayscale-0"
+          {data.list.slice(0, 6).map((p, i) => (
+            <span key={p.handle} className={`size-10 rounded-full border-2 border-[#0b0b0b] ${i > 3 ? "max-sm:hidden" : ""} bg-[#1c1c1c] bg-cover bg-center grayscale transition-[filter] duration-300 group-hover:grayscale-0`}
               style={{ backgroundImage: url(p.avatar) }} />
           ))}
         </span>
         <span className="text-left leading-tight">
-          <b className="block text-[15px] font-semibold">{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</b>
-          <span className="text-[13px] text-muted transition-colors group-hover:text-white">{t("proofAll")}</span>
+          <b className="block whitespace-nowrap text-[15px] font-semibold">{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</b>
+          <span className="whitespace-nowrap text-[13px] text-muted transition-colors group-hover:text-white">{t("proofAll")}</span>
         </span>
         <span aria-hidden className="ml-1 grid size-9 place-items-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-1">→</span>
       </motion.a>

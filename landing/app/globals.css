@@ -70,8 +70,8 @@ body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: 
 .demo-steps button { position: relative; display: grid; gap: 4px; width: 100%; text-align: left; padding: 18px 0 20px; border-top: 1px solid var(--color-line);
   color: var(--color-muted); cursor: pointer; transition: color 200ms ease; }
 .demo-steps b { font-size: clamp(20px, 2vw, 26px); letter-spacing: -.03em; color: var(--color-quiet); transition: color 200ms ease; }
-.demo-steps span { font-size: 15px; max-width: 44ch; }
-.demo-steps button.on b, .demo-steps button.on span { color: var(--color-fg); }
+.demo-steps button > span { font-size: 15px; max-width: 44ch; }
+.demo-steps button.on > b, .demo-steps button.on > span { color: var(--color-fg); }
 .demo-steps .dbar { position: absolute; left: 0; top: -1px; height: 1px; width: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
 .demo-steps button.on .dbar { transform: scaleX(1); }
 .demo-steps button.run .dbar { transform: scaleX(0); animation: demobar 3.2s steps(8, end) forwards; }

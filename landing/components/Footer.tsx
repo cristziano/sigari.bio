@@ -1,19 +1,18 @@
 "use client";
-// End of the page: the footer, the small "claim" bar on phones and the page-wide behaviours.
+// End of the page: the footer and the page-wide behaviours.
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { focusClaim, useHandle } from "@/lib/handle";
+import { focusClaim } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
 export function Footer() {
   const { t } = useT();
   const claim = (e: React.MouseEvent) => { e.preventDefault(); focusClaim(); };
-  const col = "grid content-start gap-2.5 text-sm";
-  const link = "text-muted capitalize transition-colors hover:text-white";
+  const col = "grid content-start gap-1 text-sm";
+  const link = "py-1.5 text-muted capitalize transition-colors hover:text-white";
   return (
     <footer id="footer" className="relative overflow-hidden border-t border-line px-4 pt-16 sm:px-[clamp(16px,6vw,96px)]">
-      <div className="mx-auto grid max-w-[1180px] gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
-        <div>
+      <div className="mx-auto grid max-w-[1180px] grid-cols-3 gap-x-4 gap-y-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+        <div className="col-span-3 md:col-span-1">
           <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]">18k<span className="font-normal text-[#8a8a8a]">bio</span></a>
           <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-muted">{t("footTag")}</p>
           <a href="#top" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
@@ -41,34 +40,6 @@ export function Footer() {
       {/* the name, very large and faint, cut by the bottom edge */}
       <div aria-hidden className="pointer-events-none mx-auto -mb-[3vw] max-w-[1180px] select-none text-center font-brand text-[clamp(80px,19vw,280px)] font-semibold leading-none tracking-[-.04em] text-white/[.04]">18kbio</div>
     </footer>
-  );
-}
-
-/** Phones: after the hero, a small bar at the bottom brings you back to the claim box */
-export function Dock() {
-  const { handle } = useHandle();
-  const { t } = useT();
-  const [past, setPast] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    const el = document.getElementById("h1in"), foot = document.getElementById("footer"); if (!el || !foot) return;
-    const io = new IntersectionObserver(([e]) => setPast(!e.isIntersecting)); io.observe(el);
-    const io2 = new IntersectionObserver(([e]) => setHidden(e.isIntersecting)); io2.observe(foot);
-    return () => { io.disconnect(); io2.disconnect(); };
-  }, []);
-  return (
-    <AnimatePresence>
-      {past && !hidden && (
-        <motion.div initial={{ y: 80 }} animate={{ y: 0 }} exit={{ y: 80 }} transition={{ duration: .3, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed inset-x-3 bottom-3 z-40 md:hidden">
-          <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }}
-            className="flex items-center justify-between gap-3 rounded-[14px] border border-line-2 bg-black/90 py-2 pl-4 pr-2 backdrop-blur-md">
-            <span className="truncate font-mono text-[13px] text-muted">18kbio.xyz/{handle || t("placeholder")}</span>
-            <span className="btn !min-h-9">{t("take")}</span>
-          </a>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
 

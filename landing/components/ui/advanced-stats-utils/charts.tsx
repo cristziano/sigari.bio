@@ -32,7 +32,7 @@ export function ClippedAreaChart({ data, labels, total, badge, loc }: {
           <div role="group" className="flex gap-1 rounded-full border border-line p-1 text-[13px]">
             {(Object.keys(labels) as Metric[]).map(m => (
               <button key={m} type="button" aria-pressed={metric === m} onClick={() => setMetric(m)}
-                className={`rounded-full px-3 py-1 transition-colors ${metric === m ? "bg-white text-black" : "text-muted-foreground hover:text-white"}`}>{labels[m]}</button>
+                className={`min-h-9 rounded-full px-3.5 transition-colors ${metric === m ? "bg-white text-black" : "text-muted-foreground hover:text-white"}`}>{labels[m]}</button>
             ))}
           </div>
           <p className="mt-5 text-[clamp(30px,3.6vw,44px)] font-semibold leading-none tracking-[-.04em] tabnum">{fmt(at === null ? sum : data[at][metric])}</p>
