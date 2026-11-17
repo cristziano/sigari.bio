@@ -634,6 +634,55 @@
   .nav .ext { font-size:12px; color:var(--d); }
   .nav-foot { display:flex; flex-direction:column; gap:2px; margin-top:8px; padding-top:10px; border-top:1px solid var(--b); }
   .nav-foot button[data-view="share"] { border:1px solid var(--b); }
+
+  /* ===== Sidebar (from the 21st.dev "dashboard sidebar", in our colours) ===== */
+  .dash { transition:grid-template-columns .3s cubic-bezier(.23,1,.32,1); }
+  .side { padding:12px; gap:2px; }
+  .side-top { display:flex; align-items:center; justify-content:space-between; padding:4px 2px 10px 6px; }
+  .side-top .logo { padding:0; font-size:18px; }
+  .side-tog { display:grid; place-items:center; width:32px; height:32px; border:0; border-radius:8px; background:none; color:var(--m); cursor:pointer; transition:background .2s, color .2s; }
+  .side-tog:hover { background:var(--s2); color:var(--fg); }
+  .topbar .side-open { display:none; margin-right:auto; }
+  .topbar:has(.side-open) .crumb { margin-right:auto; }
+  .dash.side-off { grid-template-columns:0 minmax(0,1fr) 420px; }
+  .dash.side-off .side { padding:0; border-right:0; overflow:hidden; }
+  .dash.side-off .topbar .side-open { display:grid; }
+  @media (max-width:1100px) { .dash.side-off { grid-template-columns:0 minmax(0,1fr) 360px; } }
+  .ws { position:relative; margin:0 0 8px; }
+  .ws-btn { width:100%; display:flex; align-items:center; gap:10px; padding:8px; border:0; border-radius:10px; background:none; color:var(--fg); cursor:pointer; text-align:left; transition:background .2s; }
+  .ws-btn:hover, .ws-btn[aria-expanded="true"] { background:var(--s2); }
+  .ws-av { width:32px; height:32px; flex:none; display:grid; place-items:center; border-radius:7px; background:var(--inv-bg); color:var(--inv-fg); font-weight:600; font-size:13px; background-size:cover; background-position:center; }
+  .ws-t { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .ws-t b { font-size:13px; font-weight:500; line-height:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ws-t small { font-size:11.5px; color:var(--m); line-height:1; }
+  .ws-chev { color:var(--d); flex:none; }
+  .ws-menu { position:absolute; left:0; right:0; top:calc(100% + 4px); z-index:30; display:flex; flex-direction:column; gap:2px; padding:4px; border:1px solid var(--b); border-radius:10px; background:var(--bg); box-shadow:0 16px 40px rgba(0,0,0,.45); animation:wsIn .14s cubic-bezier(.23,1,.32,1); }
+  .ws-menu a, .ws-menu button { display:block; width:100%; padding:8px 10px; border:0; border-radius:7px; background:none; color:var(--fg); font-size:13px; text-align:left; text-decoration:none; cursor:pointer; }
+  .ws-menu a { font:400 12px "Geist Mono",monospace; color:var(--m); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ws-menu a::after { content:" ↗"; }
+  .ws-menu a:hover, .ws-menu button:hover { background:var(--s2); color:var(--fg); }
+  .ws-sep { display:block; height:1px; margin:3px 6px; background:var(--b); }
+  .ws-menu.hidden { display:none; }
+  @keyframes wsIn { from { opacity:0; transform:scale(.97) translateY(-4px); } }
+  .side-search { margin:0 0 12px; height:34px; border-radius:8px; }
+  .side-search kbd { opacity:0; transition:opacity .15s; }
+  .side-search:hover kbd, .side-search:focus-within kbd { opacity:1; }
+  .nav button { height:34px; gap:10px; padding:0 10px; border-radius:7px; font-size:13px; letter-spacing:.01em; }
+  .nav button svg { width:16px; height:16px; stroke-width:1.5; opacity:.75; transition:opacity .2s; }
+  .nav button:hover svg, .nav button.active svg { opacity:1; }
+  .nav button:hover { background:var(--s2); color:var(--fg); }
+  .nav button.active { background:var(--s3); color:var(--fg); font-weight:500; }
+  .nav button.main-item:not(.active) { color:var(--m); }
+  .nav-top { margin-bottom:14px; display:flex; flex-direction:column; gap:1px; }
+  .nav-group { margin-bottom:12px; }
+  .nav-group .group-items { display:flex; flex-direction:column; gap:1px; margin-top:2px; }
+  .nav-group summary { padding:4px 10px; font:600 11px "Geist",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--d); }
+  .nav-group .chev { width:11px; height:11px; transform:rotate(-90deg); }
+  .nav-group[open] .chev { transform:rotate(0deg); }
+  .nbadge { min-width:20px; height:20px; display:inline-grid; place-items:center; padding:0 6px; font-size:10.5px; font-weight:500; }
+  .nav-foot { margin-top:auto; padding-top:10px; }
+  .nav { display:flex; flex-direction:column; flex:1; }
+  .nav-foot button[data-view="share"] { border:0; }
   .crumb { margin-right:auto; font:500 11px "Geist Mono",monospace; color:var(--d); text-transform:lowercase; }
   .topbar .guestbar { order:2; }
   .m-search { display:none; }
@@ -932,8 +981,22 @@
 </div>
 
 <section class="dash hidden" id="dash">
-  <aside class="side">
-    <a class="logo" href="/">18k<span>bio</span></a>
+  <aside class="side" id="side">
+    <div class="side-top"><a class="logo" href="/">18k<span>bio</span></a><button type="button" class="side-tog" id="sideClose" aria-label="Chiudi il menu" title="Chiudi il menu (Ctrl B)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M16 15l-3-3 3-3"/></svg></button></div>
+    <!-- your profile: name, plan and a small menu (open the page, copy the link, log out) -->
+    <div class="ws" id="ws">
+      <button type="button" class="ws-btn" id="wsBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="ws-av" id="wsAv">T</span>
+        <span class="ws-t"><b id="sideHandle">@tuonome</b><small id="wsPlan">Piano gratis</small></span>
+        <svg class="ws-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="ws-menu hidden" id="wsMenu" role="menu">
+        <a class="url" id="sideUrl" role="menuitem" href="#" target="_blank" rel="noopener">18kbio.xyz/tuonome</a>
+        <button type="button" role="menuitem" id="wsCopy">Copia il link</button>
+        <i class="ws-sep" aria-hidden="true"></i>
+        <button class="linkbtn" id="logoutBtn" role="menuitem" type="button">Esci</button>
+      </div>
+    </div>
     <div class="side-search">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="setSearch" type="search" placeholder="Cerca…" autocomplete="off" aria-label="Cerca un'impostazione">
@@ -941,11 +1004,6 @@
       <div class="search-res hidden" id="searchRes"></div>
     </div>
     <nav class="nav" id="nav"></nav>
-    <div class="userbox">
-      <div class="name" id="sideHandle">@tuonome</div>
-      <a class="url" id="sideUrl" href="#" target="_blank" rel="noopener">18kbio.xyz/tuonome</a>
-      <button class="linkbtn" id="logoutBtn" type="button">Esci</button>
-    </div>
   </aside>
 
   <nav class="mtabs" id="mtabs" aria-label="Menu"><button type="button" data-tab="overview"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button type="button" data-tab="customize"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Personalizza</span></button><button type="button" data-tab="links"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span>Link</span></button><button type="button" data-tab="card"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 15h6M6 11h3"/><circle cx="17" cy="11" r="2"/></svg><span>Carta</span></button><button type="button" data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Altro</span></button></nav>
@@ -966,6 +1024,7 @@
       <select class="text" id="mnav" aria-label="Sezione"></select>
     </div>
     <div class="topbar">
+      <button type="button" class="side-tog side-open" id="sideOpen" aria-label="Apri il menu" title="Apri il menu (Ctrl B)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M14 9l3 3-3 3"/></svg></button>
       <span class="crumb" id="crumb"></span>
       <div class="guestbar hidden" id="guestbar">
         <span class="gb-short">Modalità prova: le modifiche restano su questo telefono.</span>
@@ -2471,6 +2530,26 @@
   $("msheetClose").addEventListener("click", closeSheet);
   $("msheet").addEventListener("click", e => { if (e.target === $("msheet")) closeSheet(); });
   $("msheetOut").addEventListener("click", () => $("logoutBtn").click());
+  // profile menu at the top of the sidebar
+  (function sideUi() {
+    const btn = $("wsBtn"), menu = $("wsMenu");
+    const shut = () => { menu.classList.add("hidden"); btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", e => { e.stopPropagation(); const open = menu.classList.toggle("hidden") === false; btn.setAttribute("aria-expanded", String(open)); });
+    document.addEventListener("click", e => { if (!e.target.closest("#ws")) shut(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") shut(); });
+    menu.addEventListener("click", e => { if (e.target.closest("a, button")) shut(); });
+    $("wsCopy").addEventListener("click", () => {
+      const url = $("sideUrl").href && !$("sideUrl").href.endsWith("#") ? $("sideUrl").href : "https://" + $("sideUrl").textContent;
+      navigator.clipboard?.writeText(url).then(() => setStatus("Link copiato.", "ok")).catch(() => {});
+    });
+    // the sidebar can be closed to give the editor more room; remembered on this device
+    const KEY = "sigari-side-off", dash = $("dash");
+    const setSide = off => { dash.classList.toggle("side-off", off); store.set(KEY, off ? "1" : "0"); };
+    setSide(store.get(KEY) === "1");
+    $("sideClose").addEventListener("click", () => setSide(true));
+    $("sideOpen").addEventListener("click", () => setSide(false));
+    document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b" && !e.target.closest("input, textarea, [contenteditable]")) { e.preventDefault(); setSide(!dash.classList.contains("side-off")); } });
+  })();
   $("mSearch").addEventListener("focus", () => { if ($("searchRes").previousElementSibling !== $("mSearch")) $("mSearch").after($("searchRes")); });
   $("mSearch").addEventListener("input", () => { $("setSearch").value = $("mSearch").value; runSearch(); $("searchRes").classList.toggle("m", true); });
   $("mSearch").addEventListener("keydown", e => { if (e.key === "Enter") { const h = $("searchRes")._hits; if (h && h[0]) { $("mSearch").value = ""; openHit(h[0]); } } });
@@ -5680,6 +5759,8 @@
     $$("[data-seg]").forEach(renderSeg);
     const pubHref = `${PUBLIC}/${handle}`;
     $("sideHandle").textContent = "@" + handle;
+    $("wsAv").textContent = (handle || "?")[0].toUpperCase();
+    $("wsPlan").textContent = mode === "guest" ? "Modalità prova" : "Piano gratis";
     $("sideUrl").textContent = `18kbio.xyz/${handle}`;
     $("sideUrl").href = mode === "guest" ? "#" : pubHref;
     renderPubLinks();
