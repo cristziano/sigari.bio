@@ -4714,7 +4714,7 @@
 
   /* ---------- Your data: download everything, delete the account ---------- */
   $("exportData").addEventListener("click", () => {
-    const data = { sito: "18k.bio", esportato: new Date().toISOString(), handle, account: mode === "guest" ? null : { email: account && account.email, uid }, profilo: snapshot(draft) };
+    const data = { sito: "18kbio.xyz", esportato: new Date().toISOString(), handle, account: mode === "guest" ? null : { email: account && account.email, uid }, profilo: snapshot(draft) };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = `18kbio-${handle}-dati.json`;
@@ -5489,7 +5489,7 @@
   const DAY = 864e5;
   const isoDay = t => new Date(t).toISOString().slice(0, 10);
   let anRange = 30, anMetric = "v", anDays = [], feedUnsub = null, feedLast = null;
-  const REF_LABEL = { diretto: "Link diretto", instagram: "Instagram", tiktok: "TikTok", discord: "Discord", x: "X", youtube: "YouTube", google: "Google", whatsapp: "WhatsApp", telegram: "Telegram", reddit: "Reddit", twitch: "Twitch", snapchat: "Snapchat", facebook: "Facebook", spotify: "Spotify", qr: "QR code", sigari: "18k.bio", altro: "Altri siti" };
+  const REF_LABEL = { diretto: "Link diretto", instagram: "Instagram", tiktok: "TikTok", discord: "Discord", x: "X", youtube: "YouTube", google: "Google", whatsapp: "WhatsApp", telegram: "Telegram", reddit: "Reddit", twitch: "Twitch", snapchat: "Snapchat", facebook: "Facebook", spotify: "Spotify", qr: "QR code", sigari: "18kbio.xyz", altro: "Altri siti" };
   const DEV_LABEL = { mobile: "Telefono", desktop: "Computer", tablet: "Tablet" };
   const T_MID = [5, 20, 45, 120, 240];
   function demoDays(n) {

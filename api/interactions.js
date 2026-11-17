@@ -126,7 +126,7 @@ async function doPosta(i, opt) {
     const credit = String(opt.crediti || "").trim().slice(0, 60) || `by ${me.global_name || me.username || "18k"}`;
     const link = `${SITE}/#${Date.now().toString(36)}`;
     // same link on every embed: Discord shows them as one card with a gallery
-    const embeds = files.map(([name], k) => ({ url: link, image: { url: `attachment://${name}` }, ...(k ? {} : { color: 0x111214, description: `*${credit.replace(/[*_~`|]/g, "")}*`, footer: { text: "18k.bio" } }) }));
+    const embeds = files.map(([name], k) => ({ url: link, image: { url: `attachment://${name}` }, ...(k ? {} : { color: 0x111214, description: `*${credit.replace(/[*_~`|]/g, "")}*`, footer: { text: "18kbio.xyz" } }) }));
     const payload = {
       embeds, attachments: files.map(([name], id) => ({ id, filename: name })),
       components: [{ type: 1, components: [{ type: 2, style: 2, custom_id: "18k:dl", emoji: { name: "⬇️" }, label: (pfps.length > 1 ? `${pfps.length} pfp` : "pfp") + (ban ? " e banner" : "") }] }],

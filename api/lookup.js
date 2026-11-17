@@ -2,7 +2,7 @@ const { limited } = require("./_limit");
 // GET /api/lookup?p=<platform>&u=<username>: looks the account up on the platform itself,
 // so the dashboard can show "found: <photo> <name>" before saving the social.
 // Only platforms with a public lookup and no key: roblox, github, bluesky, telegram.
-const UA = "18k.bio (+https://18k.bio)";
+const UA = "18kbio.xyz (+https://18kbio.xyz)";
 const clean = s => String(s || "").trim().replace(/^@/, "").slice(0, 60);
 const getJSON = async (url, init = {}) => { const r = await fetch(url, { ...init, headers: { "User-Agent": UA, Accept: "application/json", ...(init.headers || {}) }, signal: AbortSignal.timeout(5000) }); return { ok: r.ok, status: r.status, j: r.ok ? await r.json() : null }; };
 const ogOf = (html, k) => { const m = new RegExp(`<meta property="og:${k}" content="([^"]*)"`).exec(html); return m ? m[1].replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"') : ""; };

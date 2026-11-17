@@ -136,7 +136,7 @@ async function sendVideo(req, res, url) {
 }
 
 module.exports = async (req, res) => {
-  const url = new URL(req.url, "https://18k.bio");
+  const url = new URL(req.url, "https://18kbio.xyz");
   // traffic guard (see _limit.js): a big video is up to 10 pieces, so pieces have their own, larger allowance
   const piece = req.method === "POST" && url.searchParams.get("chunk") === "1";
   if (limited(req, res, piece ? "upload-piece" : req.method === "POST" ? "upload" : "photo", piece ? 40 : req.method === "POST" ? 15 : 240, req.method === "POST" ? 600 : 60)) return;

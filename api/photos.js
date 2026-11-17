@@ -27,7 +27,7 @@ async function remove(req, res, url) {
 
 module.exports = async (req, res) => {
   if (limited(req, res, "photos", 120)) return; // traffic guard (see _limit.js)
-  const url = new URL(req.url, "https://18k.bio");
+  const url = new URL(req.url, "https://18kbio.xyz");
   if (req.method === "DELETE") return remove(req, res, url);
   // ?profili=top  -> the most voted profile of the week in the Discord "profili" channel (for the home page)
   // ?profili=scan -> adds ✅ ❌ to profile links posted by hand there (opened every hour by GitHub Actions)

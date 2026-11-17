@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const code = raw.replace(/^(https?:\/\/)?(www\.)?(discord\.gg|discord\.com\/invite)\//i, "").replace(/[^a-z0-9-]/gi, "").slice(0, 40);
   if (!code) { res.statusCode = 400; return res.end(JSON.stringify({ error: "Manca l'invito." })); }
   try {
-    const r = await fetch(`https://discord.com/api/v10/invites/${code}?with_counts=true`, { headers: { "User-Agent": "DiscordBot (https://18k.bio, 1.0)" }, signal: AbortSignal.timeout(5000) });
+    const r = await fetch(`https://discord.com/api/v10/invites/${code}?with_counts=true`, { headers: { "User-Agent": "DiscordBot (https://18kbio.xyz, 1.0)" }, signal: AbortSignal.timeout(5000) });
     if (!r.ok) { res.statusCode = 404; return res.end(JSON.stringify({ error: "Invito non valido o scaduto." })); }
     const j = await r.json(), g = j.guild || {};
     res.setHeader("Cache-Control", "public, s-maxage=300, max-age=60");

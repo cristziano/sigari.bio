@@ -73,7 +73,7 @@ export function socialHref(sd, value) {
   return null; // no profile address for this platform: the icon copies the name
 }
 
-export const LINK_DOMAINS = [["18kbio.xyz", "il tuo link vero"], ["18k.bio", "classico"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
+export const LINK_DOMAINS = [["18kbio.xyz", "il tuo link vero"], ["18k.gin", "partner"], ["18k.xyz", "nuovo"], ["18k.gg", "gaming"], ["18k.lol", "meme"], ["18k.wtf", "caos"], ["18k.rip", "dark"], ["18k.fm", "musica"],
   ["18k.vip", "lusso"], ["18k.ink", "arte"], ["18k.cc", "corto"], ["18kt.bio", "oro"], ["x18k.bio", "collab"]];
 
 export const MUSIC_POS = [["top", "In cima"], ["name", "Sotto il nome"], ["bio", "Sotto la descrizione"], ["bottom", "In fondo"], ["float-r", "Fluttuante a destra"], ["float-l", "Fluttuante a sinistra"]];
@@ -465,8 +465,8 @@ export function linkId(l) {
 }
 const DT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 const B64 = /^[a-z0-9+/=]{8,2400}$/i;
-// the old example link pointed to 18k.bio, which is NOT ours (someone else's site, its icon showed up): use ours
-const fixOldExample = u => /^https?:\/\/(www\.)?18k\.bio\/?$/i.test(u) ? "https://18kbio.xyz" : u;
+// 18k.bio is NOT our domain (it is someone else's site): every link to it goes to ours, same path
+const fixOldExample = u => u.replace(/^(https?:\/\/)?(www\.)?18k\.bio(?=\/|$|\?|#)/i, "https://18kbio.xyz");
 function normLink(l) {
   const lock = isObj(l?.lock) && B64.test(l.lock.s || "") && B64.test(l.lock.iv || "") && B64.test(l.lock.ct || "") ? { s: l.lock.s, iv: l.lock.iv, ct: l.lock.ct } : null;
   return {
@@ -1722,7 +1722,7 @@ function playlistPlayer(onEvent) {
 /* ---------- Video widgets ---------- */
 
 function twitchEmbed(channel) {
-  const host = typeof location !== "undefined" ? location.hostname : "18k.bio";
+  const host = typeof location !== "undefined" ? location.hostname : "18kbio.xyz";
   return { src: `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}&muted=true&autoplay=false`, height: 210 };
 }
 export function youtubeWidget(v) {
@@ -2262,7 +2262,9 @@ export function mountProfile(root, input, opts = {}) {
         const iconUrl = url || (l.password && safeLinkUrl(l.url));
         if (a.buttons.icons && iconUrl && /^https?:/.test(iconUrl) && !l.lock) {
           const ic = el("img"); ic.alt = ""; ic.loading = "lazy";
-          ic.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(iconUrl).hostname)}&sz=64`;
+          const ih = new URL(iconUrl).hostname.replace(/^www\./, "");
+          // links to our own site show our logo (not a favicon guessed by Google)
+          ic.src = /^(18kbio\.xyz|18kbio\.vercel\.app)$/i.test(ih) ? "/apple-touch-icon.png" : `https://www.google.com/s2/favicons?domain=${encodeURIComponent(ih)}&sz=64`;
           ic.addEventListener("error", () => ic.remove(), { once: true });
           n.appendChild(ic);
         }

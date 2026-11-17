@@ -32,7 +32,7 @@ async function readPage(origin) {
 
 module.exports = async (req, res) => {
   if (limited(req, res, "profile", 180)) return; // traffic guard (see _limit.js)
-  const url = new URL(req.url, "https://18k.bio");
+  const url = new URL(req.url, "https://18kbio.xyz");
   const handle = String(url.searchParams.get("h") || "").replace(/^@/, "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
   const origin = "https://" + (req.headers["x-forwarded-host"] || req.headers.host || "18kbio.xyz");
   let html;
