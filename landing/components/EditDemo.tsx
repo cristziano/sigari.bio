@@ -183,7 +183,7 @@ export default function EditDemo() {
               <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
               <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
               <div className="relative aspect-[9/19] overflow-hidden rounded-[38px] bg-[#050505]">
-                <div ref={pv} className="demo-pv absolute inset-0" />
+                <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
                 <span aria-hidden className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-[22px] w-[34%] -translate-x-1/2 rounded-full bg-black" />
                 <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />
               </div>

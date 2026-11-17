@@ -4,6 +4,6 @@
 export default function AuroraBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black
-      bg-[radial-gradient(55%_40%_at_75%_0%,rgba(255,255,255,.045),transparent_70%),radial-gradient(45%_35%_at_10%_100%,rgba(255,255,255,.03),transparent_70%)]" />
+      bg-[radial-gradient(55%_40%_at_75%_0%,rgba(255,255,255,.06),transparent_70%),radial-gradient(45%_35%_at_10%_100%,rgba(255,255,255,.042),transparent_70%)]" />
   );
 }

@@ -96,7 +96,9 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   68% { transform: rotate(-.3deg) translate(-1px, 0); }
   85%, 100% { transform: none; }
 }
-.demo-pv > .pk { position: absolute; left: 0; top: 0; width: 142.85%; height: 142.85%; transform: scale(.7); transform-origin: 0 0; }
+/* the profile is drawn bigger and shrunk, so it fits the phone like on a real one */
+.demo-pv { position: absolute; width: 142.85%; height: 142.85%; transform: scale(.7); transform-origin: 0 0; }
+@media (max-width: 900px) { .demo-pv { width: 166.66%; height: 166.66%; transform: scale(.6); } }
 .demo-pv a, .demo-pv button { pointer-events: none; }
 
 /* ---------- cards: film grain ---------- */
@@ -106,3 +108,11 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
   .hx-name i { opacity: 1; transform: none; filter: none; }
 }
+
+/* ---------- "Tre passi": the columns of real profiles on the sides of the panel ---------- */
+.rail { animation: rail 26s linear infinite; will-change: transform; }
+.rail.down { animation-direction: reverse; }
+@keyframes rail { to { transform: translateY(-50%); } }
+.feat-on { animation: featOn 5s var(--ease-out) infinite; animation-delay: calc(var(--i) * 1s); }
+@keyframes featOn { 0%, 20% { color: #000; background: #fff; border-color: #fff; } 24%, 100% { color: var(--color-muted); background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .rail, .feat-on { animation: none; } }

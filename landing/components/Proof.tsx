@@ -7,7 +7,7 @@ import { firebase } from "@/lib/site";
 import { useT } from "@/lib/i18n";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type Pro = { handle: string; name: string; avatar: string; banner: string; views: number; accent: string };
+export type Pro = { handle: string; name: string; avatar: string; banner: string; views: number; accent: string; socials: string[] };
 
 let topP: Promise<{ list: Pro[]; count: number | null }> | null = null;
 /** The most visited public profiles with a photo, plus how many profiles exist (shared with the Weekly section) */
@@ -18,7 +18,7 @@ export function topProfiles() {
       const p = d.data() || {};
       const bg = p.appearance?.bg || {};
       return { handle: d.id, name: String(p.displayName || d.id).slice(0, 40), avatar: p.avatarUrl || "", banner: p.banner || bg.poster || (bg.type === "image" ? bg.image || "" : ""),
-        views: Number(p.views) || 0, accent: p.appearance?.colors?.accent || "" };
+        views: Number(p.views) || 0, accent: p.appearance?.colors?.accent || "", socials: Object.keys(p.socials || {}).filter(k => p.socials[k]) };
     }).filter((p: Pro) => p.avatar && !p.handle.startsWith("_")).slice(0, 8);
     let count: number | null = null;
     try { count = (await fs.getCountFromServer(fs.collection(db, "profiles"))).data().count; } catch { count = null; }

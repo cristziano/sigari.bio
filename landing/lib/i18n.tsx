@@ -27,6 +27,10 @@ const D = {
     "Your 18kbio ID card, with your @ on it. Pick the photo, stickers, border and how it opens. Your profile gets a \"show my card\" button: whoever presses it watches it open."],
   cardsSee: ["Questa è la carta di @1 ↗", "This is @1's card ↗"], cardsCta: ["CREA LA TUA", "MAKE YOURS"],
   howT1: ["Tre passi.", "Three steps."], howT2: ["Un minuto.", "One minute."],
+  howChips: ["Gratis|Solo tuo|Pronto in un minuto", "Free|Only yours|Ready in a minute"],
+  howRarity: ["rarità", "rarity"], howRarities: ["leggendaria|epica|rara|classica", "legendary|epic|rare|classic"],
+  howFeats: ["Link|Musica|Statistiche|Carta|QR", "Links|Music|Stats|Card|QR"],
+  howReal: ["profili veri su 18kbio", "real profiles on 18kbio"],
   howTypeTop: ["scrivi la tua @ in cima alla pagina", "type your @ at the top of the page"],
   howSteps: [["Prendi la tua @|Scegli il nome: 18kbio.xyz/iltuonome è tuo, nessun altro può averlo.", "Componi il profilo|Colori, sfondo, musica, link e la tua carta. Lo vedi cambiare mentre lo fai.", "Condividilo ovunque|Nella bio di TikTok e Instagram, nello stato di Discord o con il QR."].join("\n"),
     ["Claim your @|Pick the name: 18kbio.xyz/yourname is yours, nobody else can have it.", "Build your profile|Colours, background, music, links and your card. You watch it change as you go.", "Share it everywhere|In your TikTok and Instagram bio, your Discord status or with the QR."].join("\n")],
@@ -75,7 +79,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("it");
   useEffect(() => {
     const q = new URLSearchParams(location.search).get("lang");
-    const pick = (q === "en" || q === "it" ? q : navigator.language.toLowerCase().startsWith("it") ? "it" : "en") as Lang;
+    // Italian is the default; English only when the browser asks for English and Italian is not among its languages
+    const langs = (navigator.languages?.length ? navigator.languages : [navigator.language]).map(l => l.toLowerCase());
+    const auto = langs.some(l => l.startsWith("it")) ? "it" : langs[0]?.startsWith("en") ? "en" : "it";
+    const pick = (q === "en" || q === "it" ? q : auto) as Lang;
     setLangState(pick);
   }, []);
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
