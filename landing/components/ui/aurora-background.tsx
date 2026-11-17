@@ -22,7 +22,8 @@ void main(){
   float silk=smoothstep(.3,.78,f);            // soft light and dark folds
   float edge=smoothstep(.035,0.,abs(r.x-.52));  // thin bright line along a fold
   float v=pow(silk,1.7)*.85+edge*.55*silk;
-  gl_FragColor=vec4(vec3(.043+v*amp),1.);       // matte black + the silk
+  float left=mix(1.55,1.,smoothstep(0.,.7,gl_FragCoord.x/res.x)); // a bit stronger on the left side
+  gl_FragColor=vec4(vec3(.043+v*amp*left),1.);   // matte black + the silk
 }`;
 
 export default function AuroraBackground() {
@@ -47,7 +48,7 @@ export default function AuroraBackground() {
     const size = () => { c.width = Math.max(2, Math.round(innerWidth * scale)); c.height = Math.max(2, Math.round(innerHeight * scale)); gl.viewport(0, 0, c.width, c.height); gl.uniform2f(uRes, c.width, c.height); };
     size();
     // more visible behind the hero, very dark and delicate everywhere else
-    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .32 + (.13 - .32) * k; };
+    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .34 + (.2 - .34) * k; };
     const t0 = performance.now();
     const draw = () => { gl.uniform1f(uT, (performance.now() - t0) / 1000); gl.uniform1f(uAmp, amp()); gl.drawArrays(gl.TRIANGLES, 0, 3); };
 

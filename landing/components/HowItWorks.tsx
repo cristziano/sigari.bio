@@ -13,106 +13,196 @@ const ease = [0.23, 1, 0.32, 1] as const;
 const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
 // eslint-disable-next-line @next/next/no-img-element
 const Logo = ({ s, className = "size-4" }: { s: string; className?: string }) => <img src={`${ICONS}${s}.svg`} alt={s} className={`${className} [filter:invert(1)]`} loading="lazy" onError={e => { e.currentTarget.style.visibility = "hidden"; }} />;
-const QR = ({ className = "size-4" }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" aria-label="QR" className={`${className} fill-white`}><path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm8-2h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm2 2h2v2h-2zm-6 2h2v2h-2zm4 0h2v4h-2zm-4 2h2v2h-2zm4 2h2v2h-2z" /></svg>
-);
 const piece = (d: number) => ({ initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { duration: .45, delay: d, ease } });
 
-/** 1: your address, with the real check of the name typed at the top of the page and its rarity */
+/** the name typed at the top, or example names that type themselves while it is empty */
+const EXAMPLES = ["iltuonome", "giulia_", "darkwave", "marco", "sofi"];
+function useTypedName() {
+  const { handle } = useHandle();
+  const [demo, setDemo] = useState(EXAMPLES[0]);
+  useEffect(() => {
+    if (handle || reducedMotion()) return;
+    let w = 0, n = EXAMPLES[0].length, del = true, id: ReturnType<typeof setTimeout>;
+    const step = () => {
+      if (del) { n--; if (n <= 0) { del = false; w = (w + 1) % EXAMPLES.length; } }
+      else { n++; if (n >= EXAMPLES[w].length) { del = true; setDemo(EXAMPLES[w]); id = setTimeout(step, 1600); return; } }
+      setDemo(EXAMPLES[w].slice(0, Math.max(0, n)));
+      id = setTimeout(step, del ? 45 : 90);
+    };
+    id = setTimeout(step, 1400);
+    return () => clearTimeout(id);
+  }, [handle]);
+  return handle || demo;
+}
+
+/** 1: a real browser window with your address, the live check of the name and its rarity */
 function SceneClaim() {
   const { handle, status } = useHandle();
   const { t, list } = useT();
-  const [name, pips] = rarity(handle || "tuonome");
-  const names = list("howRarities"), idx = ["leggendaria", "epica", "rara", "classica"].indexOf(name);
+  const name = useTypedName();
+  const [rname, pips] = rarity(handle || "tuonome");
+  const names = list("howRarities"), idx = ["leggendaria", "epica", "rara", "classica"].indexOf(rname);
+  const len = (handle || "").length;
   return (
-    <div className="grid w-full max-w-[420px] gap-4">
-      <motion.div {...piece(0)} className="overflow-hidden rounded-2xl border border-white/15 bg-black">
-        <div className="flex items-center gap-1.5 border-b border-white/10 px-3 py-2.5">{[0, 1, 2].map(i => <i key={i} className="size-2.5 rounded-full bg-white/15" />)}</div>
-        <div className="flex items-center gap-2 px-4 py-5 text-[clamp(17px,2vw,24px)] font-medium tracking-[-.02em]">
-          <svg viewBox="0 0 16 16" aria-hidden className="size-4 shrink-0 fill-none stroke-[#8a8a8a] [stroke-width:1.6]"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>
-          <span className="truncate"><span className="text-[#8a8a8a]">18kbio.xyz/</span><span className="text-white">{handle || t("placeholder")}</span></span>
-          <span className="inline-block h-[1em] w-[2px] shrink-0 animate-pulse bg-white" />
+    <div className="grid w-full max-w-[440px] gap-3">
+      <motion.div {...piece(0)} className="overflow-hidden rounded-2xl border border-white/15 bg-[#050505] shadow-[0_30px_60px_-30px_rgba(0,0,0,1)]">
+        {/* tab bar */}
+        <div className="flex items-end gap-2 bg-[#111] px-3 pt-2.5">
+          <span className="flex gap-1.5 pb-2.5">{["#3a3a3a", "#3a3a3a", "#3a3a3a"].map((c, i) => <i key={i} className="size-2.5 rounded-full" style={{ background: c }} />)}</span>
+          <span className="ml-2 flex min-w-0 max-w-[60%] items-center gap-2 rounded-t-lg bg-[#050505] px-3 py-1.5 text-[11.5px] text-[#bdbdbd]">
+            <b className="grid size-4 shrink-0 place-items-center rounded-[4px] bg-white text-[7px] font-black text-black">18k</b>
+            <span className="truncate">@{name || "…"} · 18kbio</span><span aria-hidden className="text-[#666]">×</span>
+          </span>
         </div>
+        {/* address bar */}
+        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2.5">
+          <span aria-hidden className="text-[13px] text-[#666]">↻</span>
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-[#141414] px-3 py-1.5 text-[clamp(13px,1.5vw,16px)]">
+            <svg viewBox="0 0 16 16" aria-hidden className="size-3.5 shrink-0 fill-none stroke-[#8a8a8a] [stroke-width:1.6]"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>
+            <span className="truncate"><span className="text-[#8a8a8a]">18kbio.xyz/</span><span className="font-medium text-white">{name}</span></span>
+            <span className="inline-block h-[1em] w-[2px] shrink-0 animate-pulse bg-white" />
+          </div>
+        </div>
+        {/* the page loading */}
+        <div className="flex items-center gap-3 px-4 py-4">
+          <span className="sk size-11 shrink-0 rounded-full" />
+          <span className="grid flex-1 gap-2"><span className="sk h-2.5 w-2/5 rounded" /><span className="sk h-2 w-3/5 rounded" /></span>
+        </div>
+        <div className="grid gap-2 px-4 pb-4"><span className="sk h-8 rounded-lg" /><span className="sk h-8 rounded-lg" /></div>
       </motion.div>
-      <motion.div {...piece(.12)} className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-[#8a8a8a]">{t("howState")}</p>
-          <p className={`mt-2 flex items-center gap-2 text-[15px] font-semibold ${status.kind === "ok" ? "text-[#3ddc84]" : "text-white"}`}>
-            <i className={`size-2 shrink-0 rounded-full ${status.kind === "ok" ? "bg-[#3ddc84]" : status.kind === "no" ? "bg-white" : "bg-[#555]"}`} />
-            <span className="truncate">{!handle ? t("howTypeTop") : status.kind === "ok" ? t("howFree") : status.kind === "no" ? t("howTaken") : t("stWait")}</span>
+      <motion.div {...piece(.12)} className="grid grid-cols-3 gap-2.5">
+        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[.14em] text-[#8a8a8a]">{t("howState")}</p>
+          <p className={`mt-1.5 flex items-center gap-1.5 text-[13px] font-semibold ${status.kind === "ok" ? "text-[#3ddc84]" : "text-white"}`}>
+            <i className={`size-2 shrink-0 rounded-full ${status.kind === "ok" ? "animate-pulse bg-[#3ddc84]" : status.kind === "no" ? "bg-white" : "bg-[#555]"}`} />
+            <span className="truncate">{!handle ? t("howTry") : status.kind === "ok" ? t("howFree") : status.kind === "no" ? t("howTaken") : t("stWait")}</span>
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-[#8a8a8a]">{t("howRarity")}</p>
-          <p className="mt-2 flex items-center gap-2 text-[15px] font-semibold">{names[idx]}
-            <span className="flex gap-0.5">{[0, 1, 2, 3].map(i => <i key={i} className={`h-3.5 w-1.5 rounded-sm ${i < pips ? "bg-white" : "bg-white/15"}`} />)}</span>
+        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[.14em] text-[#8a8a8a]">{t("howRarity")}</p>
+          <p className="mt-1.5 flex items-center gap-1.5 text-[13px] font-semibold">{names[idx]}
+            <span className="flex gap-0.5">{[0, 1, 2, 3].map(i => <i key={i} className={`h-3 w-1 rounded-sm ${i < pips ? "bg-white" : "bg-white/15"}`} />)}</span>
           </p>
-          <p className="mt-1 text-[11.5px] text-[#8a8a8a]">{t("howRarityWhy")}</p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[.14em] text-[#8a8a8a]">{t("howLen")}</p>
+          <p className="mt-1.5 text-[13px] font-semibold">{len}<span className="text-[#8a8a8a]">/20</span></p>
+          <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-white/10"><span className="block h-full rounded-full bg-white transition-[width] duration-300" style={{ width: `${len * 5}%` }} /></span>
         </div>
       </motion.div>
+      <p className="text-right text-[11px] text-[#8a8a8a]">{t("howRarityWhy")}</p>
     </div>
   );
 }
 
-/** 2: your profile, built piece by piece with the name typed at the top */
+/** 2: your profile, like a real one: moving banner, chrome ring on the photo, badges, links, the music player and the card button */
 function SceneCompose() {
-  const { handle } = useHandle();
   const { t, list } = useT();
-  const name = handle || t("placeholder");
+  const name = useTypedName();
   const [l1, l2] = list("howLinks");
   return (
-    <div className="w-[min(310px,100%)] overflow-hidden rounded-[28px] border border-white/15 bg-[#0b0b0b] shadow-[0_40px_80px_-40px_rgba(0,0,0,1)]">
-      <motion.div {...piece(0)} className="relative h-20 overflow-hidden border-b border-white/10 bg-[#151515]">
-        <span aria-hidden className="absolute -right-2 -top-6 text-[110px] font-bold leading-none tracking-[-.06em] text-white/[.06]">@</span>
+    <div className="w-[min(320px,100%)] overflow-hidden rounded-[28px] border border-white/15 bg-[#0b0b0b] shadow-[0_40px_80px_-40px_rgba(0,0,0,1)]">
+      <motion.div {...piece(0)} className="banner-silk relative h-24 border-b border-white/10">
+        <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-[10.5px] font-medium text-white/80 backdrop-blur-sm">♪ {t("howNow")}</span>
       </motion.div>
       <div className="px-5 pb-5">
-        <motion.div {...piece(.08)} className="relative z-10 -mt-9 grid size-[72px] place-items-center rounded-full border-4 border-[#0b0b0b] bg-white text-[28px] font-bold uppercase text-black">{name.slice(0, 1)}</motion.div>
+        <motion.div {...piece(.08)} className="relative z-10 -mt-10 w-fit">
+          <span className="ring-chrome grid size-[78px] place-items-center rounded-full p-[3px]">
+            <span className="grid size-full place-items-center rounded-full border-[3px] border-[#0b0b0b] bg-white text-[28px] font-bold uppercase text-black">{(name || "i").slice(0, 1)}</span>
+          </span>
+          <i aria-hidden className="absolute bottom-1.5 right-1.5 size-3.5 rounded-full border-[3px] border-[#0b0b0b] bg-[#3ddc84]" />
+        </motion.div>
         <motion.div {...piece(.16)} className="mt-2">
-          <b className="block truncate text-[20px] tracking-[-.02em]">{name}</b>
-          <span className="text-[13px] text-[#8a8a8a]">18kbio.xyz/{name}</span>
+          <span className="flex items-center gap-2">
+            <b className="truncate text-[20px] tracking-[-.02em]">{name || "…"}</b>
+            <span className="shrink-0 rounded-md border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold">✦ {t("howNew")}</span>
+          </span>
+          <span className="text-[12.5px] text-[#8a8a8a]">18kbio.xyz/{name}</span>
           <p className="mt-2 text-[13px] leading-[1.45] text-[#bdbdbd]">{t("howBio")}</p>
         </motion.div>
         <motion.div {...piece(.24)} className="mt-3 flex gap-2">
-          {["discord", "instagram", "tiktok", "spotify"].map(n => <span key={n} className="grid size-9 place-items-center rounded-xl border border-white/12 bg-white/[.04]"><Logo s={n} className="size-4" /></span>)}
+          {["discord", "instagram", "tiktok", "spotify", "youtube"].map(n => <span key={n} className="grid size-9 place-items-center rounded-xl border border-white/12 bg-white/[.04] transition-colors hover:bg-white/15"><Logo s={n} className="size-4" /></span>)}
         </motion.div>
-        <motion.div {...piece(.32)} className="mt-4 grid gap-2">
-          {[l1, l2].map((l, i) => <span key={l} className={`${i ? "max-md:hidden " : ""}flex items-center justify-between rounded-xl border border-white/15 px-3.5 py-2.5 text-[13.5px] font-medium`}>{l}<span aria-hidden className="text-[#8a8a8a]">↗</span></span>)}
-        </motion.div>
-        <motion.div {...piece(.4)} className="mt-2 flex items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-black">
-          <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-black text-[10px] text-white">▶</span>
+        <div className="mt-4 grid gap-2">
+          {[[l1, "instagram"], [l2, "youtube"]].map(([l, ic], i) => (
+            <motion.span key={l} {...piece(.32 + i * .08)} className={`${i ? "max-md:hidden " : ""}link-shine relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/15 px-3 py-2.5 text-[13.5px] font-medium`}>
+              <Logo s={ic} className="size-4" /><span className="flex-1">{l}</span><span aria-hidden className="text-[#8a8a8a]">↗</span>
+            </motion.span>
+          ))}
+        </div>
+        <motion.div {...piece(.48)} className="mt-2 flex items-center gap-3 rounded-xl bg-white px-2.5 py-2 text-black">
+          <span aria-hidden className="flex h-9 w-9 shrink-0 items-end justify-center gap-[3px] rounded-lg bg-black px-1.5 pb-2">
+            {[0, 1, 2, 3].map(i => <i key={i} className="eq-bar block w-[3px] rounded-sm bg-white" style={{ animationDelay: `${-i * .27}s` }} />)}
+          </span>
           <span className="min-w-0 flex-1">
             <b className="block text-[13px] leading-tight">{t("howMusic")}</b>
+            <span className="block text-[11px] text-black/55">{t("howArtist")}</span>
             <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-black/15"><span className="music-bar block h-full rounded-full bg-black" /></span>
           </span>
+          <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-black text-[10px] text-white">❚❚</span>
         </motion.div>
+        <motion.span {...piece(.56)} className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-white/20 py-2 text-[12.5px] font-medium">
+          <svg viewBox="0 0 24 24" aria-hidden className="size-4 fill-none stroke-current [stroke-width:1.6]"><rect x="2" y="5" width="20" height="14" rx="3" /><path d="M6 15h6M6 11h3" /><circle cx="17" cy="11" r="2" /></svg>{t("howCardBtn")}
+        </motion.span>
       </div>
     </div>
   );
 }
 
-/** 3: one link sent everywhere, and what it carries */
+/** a QR made of squares (decoration, the real one is in the dashboard) */
+function QRBig() {
+  const cells: React.ReactNode[] = [];
+  let s = 7;
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const finder = (x: number, y: number) => x < 7 && y < 7 || x > 13 && y < 7 || x < 7 && y > 13;
+  for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+    const on = finder(x, y) ? (() => { const fx = x > 13 ? x - 14 : x, fy = y > 13 ? y - 14 : y; return fx === 0 || fy === 0 || fx === 6 || fy === 6 || (fx > 1 && fx < 5 && fy > 1 && fy < 5); })() : r() > .52;
+    if (on) cells.push(<rect key={x + "-" + y} x={x} y={y} width="1" height="1" />);
+  }
+  return <svg viewBox="-1 -1 23 23" className="size-full fill-black" aria-label="QR">{cells}</svg>;
+}
+
+/** 3: one link sent everywhere: light runs from your link to every app; "copia" turns into "copiato"; your QR */
 function SceneShare() {
-  const { handle } = useHandle();
   const { t, list } = useT();
-  const shown = handle || t("placeholder");
-  const APPS: [string, number, number][] = [["tiktok", 14, 14], ["instagram", 86, 16], ["discord", 8, 58], ["x", 92, 56], ["whatsapp", 28, 90], ["qr", 72, 90]];
+  const name = useTypedName();
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (reducedMotion()) return;
+    const id = setInterval(() => setCopied(c => !c), 2200);
+    return () => clearInterval(id);
+  }, []);
+  const APPS: [string, number, number, string][] = [["tiktok", 13, 14, "bio"], ["instagram", 87, 14, "bio"], ["discord", 7, 56, "stato"], ["x", 93, 56, "bio"], ["whatsapp", 30, 92, "storia"]];
   return (
-    <div className="grid w-full max-w-[460px] gap-5">
+    <div className="grid w-full max-w-[470px] gap-4">
       <div className="relative aspect-[4/3] w-full">
         <svg viewBox="0 0 100 75" className="absolute inset-0 size-full" aria-hidden>
           {APPS.map(([a, x, y], i) => (
-            <motion.line key={a} x1="50" y1="37.5" x2={x} y2={y * .75} stroke="#fff" strokeOpacity=".3" strokeWidth=".35" strokeDasharray="1.2 1.2"
-              initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .8, delay: .15 + i * .1, ease }} />
+            <g key={a}>
+              <motion.line x1="50" y1="37.5" x2={x} y2={y * .75} stroke="#fff" strokeOpacity=".22" strokeWidth=".3" strokeDasharray="1 1"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .7, delay: .1 + i * .08, ease }} />
+              {!reducedMotion() && <motion.circle r=".9" fill="#fff" initial={{ cx: 50, cy: 37.5, opacity: 0 }} animate={{ cx: [50, x], cy: [37.5, y * .75], opacity: [0, 1, 0] }}
+                transition={{ duration: 1.6, delay: .8 + i * .35, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }} />}
+            </g>
           ))}
         </svg>
-        <motion.span initial={{ scale: .85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: .45, ease }}
-          className="absolute left-1/2 top-1/2 max-w-[80%] -translate-x-1/2 -translate-y-1/2 truncate whitespace-nowrap rounded-full bg-white px-4 py-2 text-[14px] font-semibold text-black shadow-[0_0_0_6px_rgba(255,255,255,.08)]">18kbio.xyz/{shown}</motion.span>
-        {APPS.map(([a, x, y], i) => (
-          <motion.span key={a} initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .35, delay: .5 + i * .1, ease }}
-            className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl border border-white/15 bg-[#111]" style={{ left: x + "%", top: y + "%" }}>
-            {a === "qr" ? <QR /> : <Logo s={a} />}
+        <motion.div initial={{ scale: .85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: .45, ease }}
+          className="absolute left-1/2 top-1/2 flex max-w-[86%] -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full bg-white py-1 pl-4 pr-1 text-black shadow-[0_0_0_6px_rgba(255,255,255,.08),0_0_50px_rgba(255,255,255,.15)]">
+          <span className="truncate text-[13.5px] font-semibold">18kbio.xyz/{name}</span>
+          <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11.5px] font-semibold transition-colors ${copied ? "bg-[#3ddc84] text-black" : "bg-black text-white"}`}>{copied ? `✓ ${t("howCopied")}` : t("howCopy")}</span>
+        </motion.div>
+        {APPS.map(([a, x, y, label], i) => (
+          <motion.span key={a} initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .35, delay: .4 + i * .08, ease }}
+            className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1" style={{ left: x + "%", top: y + "%" }}>
+            <span className="grid size-11 place-items-center rounded-xl border border-white/15 bg-[#111]"><Logo s={a} /></span>
+            <span className="rounded bg-black/60 px-1.5 text-[10px] text-[#bdbdbd]">{label}</span>
           </motion.span>
         ))}
+        <motion.span initial={{ opacity: 0, scale: .7, rotate: -8 }} animate={{ opacity: 1, scale: 1, rotate: -6 }} transition={{ duration: .45, delay: .8, ease }}
+          className="absolute bottom-[-2%] right-[6%] grid w-[22%] gap-1 rounded-xl bg-white p-1.5 shadow-[0_20px_40px_-15px_rgba(0,0,0,1)]">
+          <span className="aspect-square w-full"><QRBig /></span>
+          <span className="text-center text-[9px] font-semibold text-black">{t("howQr")}</span>
+        </motion.span>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         {list("howFeats").map((f, i) => <span key={f} style={{ ["--i" as string]: i }} className="feat-on rounded-full border border-white/15 px-3 py-1.5 text-[12px] font-medium text-muted">{f}</span>)}
@@ -200,9 +290,9 @@ export default function HowItWorks() {
           </ol>
           </div>
           {/* the scene of the current step */}
-          <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[28px] border border-white/10 bg-[#080808]/80 p-5 md:col-start-1 md:row-start-1 md:h-[min(560px,74%)] md:flex-none md:p-10">
+          <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[28px] border border-white/10 bg-[#080808]/80 p-5 md:col-start-1 md:row-start-1 md:h-[min(600px,80%)] md:flex-none md:p-8">
             <AnimatePresence mode="wait">
-              <motion.div key={active} className="grid w-full place-items-center max-md:scale-[.6]" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              <motion.div key={active} className="grid w-full place-items-center max-md:scale-[.54]" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -14 }} transition={{ duration: .3, ease }}>
                 <Scene />
               </motion.div>

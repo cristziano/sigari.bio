@@ -143,20 +143,15 @@ export default function EditDemo() {
 
   return (
     <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="px-4 py-12 sm:px-[clamp(16px,6vw,96px)] md:py-16">
-      {/* left: the phone that changes; right: the title on top and the steps under it. The whole block fits one screen. */}
-      <div className="mx-auto grid max-w-[1080px] items-center gap-x-[clamp(24px,5vw,72px)] gap-y-6 max-md:grid-cols-[minmax(0,.85fr)_minmax(0,1fr)] md:grid-cols-[auto_minmax(0,1fr)]">
-        <h2 className="text-[clamp(30px,4.4vw,56px)] font-bold leading-[1.02] tracking-[-.045em] max-md:col-span-2 md:col-start-2 md:row-start-1 md:self-end">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
+      {/* left: the phone that changes; right: the title on top and the steps under it */}
+      <div className="mx-auto grid max-w-[1080px] items-center gap-x-[clamp(24px,5vw,72px)] gap-y-6 md:grid-cols-[auto_minmax(0,1fr)]">
+        <h2 className="text-[clamp(30px,4.4vw,56px)] font-bold leading-[1.02] tracking-[-.045em] md:col-start-2 md:row-start-1 md:self-end">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
 
-        {/* the phone */}
+        {/* the phone: the same frame as the dashboard preview (360 px wide, up to 720 px tall, thin border, 34 px corners),
+            with the profile drawn at its real size, exactly like there */}
         <div className="grid place-items-center md:col-start-1 md:row-span-2 md:row-start-1">
-          <div ref={phone} className="demo-phone relative w-[min(190px,44vw)] rounded-[40px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[8px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] md:w-[min(290px,calc(66svh*.53))] md:rounded-[46px] md:p-[9px]">
-            <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
-            <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
-            <div className="relative aspect-[9/16.5] overflow-hidden rounded-[32px] bg-[#050505] md:rounded-[38px]">
-              <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
-              <span aria-hidden className="pointer-events-none absolute left-1/2 top-2 z-10 h-[18px] w-[34%] -translate-x-1/2 rounded-full bg-black md:top-2.5 md:h-[22px]" />
-              <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />
-            </div>
+          <div ref={phone} className="demo-phone relative h-[min(560px,72svh)] w-full max-w-[360px] overflow-hidden rounded-[34px] border border-[#2c2c2c] bg-black md:h-[min(720px,calc(84svh*var(--vz,1)))] md:w-[360px]">
+            <div ref={pv} className="demo-pv absolute inset-0" />
           </div>
         </div>
 

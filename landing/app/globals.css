@@ -95,8 +95,6 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   85%, 100% { transform: none; }
 }
 /* the profile is drawn bigger and shrunk, so it fits the phone like on a real one */
-.demo-pv { position: absolute; width: 151.5%; height: 151.5%; transform: scale(.66); transform-origin: 0 0; }
-@media (max-width: 767px) { .demo-pv { width: 181.8%; height: 181.8%; transform: scale(.55); } }
 .demo-pv a, .demo-pv button { pointer-events: none; }
 
 /* ---------- cards: film grain ---------- */
@@ -129,3 +127,16 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 .spark-2 { width: 7px; height: 7px; animation-delay: -1.2s; }
 @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.3) rotate(0deg); } 45% { opacity: 1; transform: scale(1) rotate(45deg); } 60% { opacity: .9; } }
 @media (prefers-reduced-motion: reduce) { .chrome-frame::before, .spark { animation: none; } .spark { opacity: .8; } }
+
+/* "Tre passi" scenes: page loading, moving banner, chrome ring, equalizer, light sweeping over the links */
+.sk { display: block; background: #161616; position: relative; overflow: hidden; }
+.sk::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgb(255 255 255 / .07), transparent); animation: skLoad 1.6s ease-in-out infinite; }
+@keyframes skLoad { to { transform: translateX(100%); } }
+.banner-silk { background: radial-gradient(60% 120% at 20% 0%, #3a3a3a, transparent 60%), radial-gradient(50% 100% at 85% 100%, #2a2a2a, transparent 60%), #121212; background-size: 200% 200%; animation: bannerDrift 9s ease-in-out infinite alternate; }
+@keyframes bannerDrift { to { background-position: 100% 60%; } }
+.ring-chrome { background: conic-gradient(from var(--ang), #ffffff, #8d95a1, #2b2f35, #e4e9ef, #ffffff, #6d7580, #ffffff); animation: spinBorder 4s linear infinite; }
+.eq-bar { height: 40%; animation: eq .9s ease-in-out infinite alternate; }
+@keyframes eq { 0% { height: 25%; } 50% { height: 90%; } 100% { height: 45%; } }
+.link-shine::after { content: ""; position: absolute; inset: 0; transform: translateX(-110%); background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .1), transparent 70%); animation: linkShine 3.6s ease-in-out infinite; }
+@keyframes linkShine { 60%, 100% { transform: translateX(110%); } }
+@media (prefers-reduced-motion: reduce) { .sk::after, .banner-silk, .ring-chrome, .eq-bar, .link-shine::after { animation: none; } }
