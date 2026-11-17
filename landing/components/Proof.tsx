@@ -52,7 +52,7 @@ export default function Proof() {
           ))}
         </span>
         <span className="text-left leading-tight">
-          <b className="block whitespace-nowrap text-[15px] font-semibold">{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</b>
+          <b className="block whitespace-nowrap text-[15px] font-semibold">{data.count ? t("proofCount", { n: data.count >= 10 ? fmt(Math.floor(data.count / 10) * 10) + "+" : fmt(data.count) }) : t("proofTitle")}</b>
           <span className="whitespace-nowrap text-[13px] text-muted transition-colors group-hover:text-white">{t("proofAll")}</span>
         </span>
         <span aria-hidden className="ml-1 grid size-9 place-items-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-1">→</span>
