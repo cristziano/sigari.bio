@@ -200,7 +200,6 @@ export default function Hero() {
           </span>
         ))}
       </div>
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
 
       <div className="relative z-[2] flex w-full flex-col items-center px-4 pb-44 pt-[100px] text-center md:pb-40">
         <motion.a href="/esplora" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: .2 }}

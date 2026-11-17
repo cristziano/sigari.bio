@@ -3,7 +3,7 @@
 // the four steps (colours, background, fonts, socials) build the style in stop motion.
 // The style is @1's when it has a photo or a background, otherwise a ready-made one.
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView } from "motion/react";
+import { useInView } from "motion/react";
 import { HANDLE_RE, kit, profileOfOne, reducedMotion } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
@@ -17,18 +17,18 @@ const ease = [0.23, 1, 0.32, 1] as const;
 function Tool({ i }: { i: number }) {
   const chip = "rounded-lg border border-line-2 px-2.5 py-1 text-[12px] text-muted";
   if (i === 0) return (
-    <div className="flex gap-2">{["#ffffff", "#ff3b6b", "#3b82f6", "#3ddc84", "#ffb547", "#111111"].map(c => (
-      <span key={c} className="size-7 rounded-full border border-white/20" style={{ background: c }} />))}</div>
+    <div className="flex flex-wrap gap-1.5">{["#ffffff", "#ff3b6b", "#3b82f6", "#3ddc84", "#ffb547"].map(c => (
+      <span key={c} className="size-6 rounded-full border border-white/20" style={{ background: c }} />))}</div>
   );
   if (i === 1) return <div className="flex flex-wrap gap-2">{["foto", "GIF", "video", "colore"].map(x => <span key={x} className={chip}>{x}</span>)}</div>;
   if (i === 2) return (
-    <div className="flex gap-2">{[["Aa", "Geist"], ["Aa", "Instrument Serif"], ["Aa", "Unbounded"], ["Aa", "Geist Mono"]].map(([a, f]) => (
-      <span key={f} className="grid size-9 place-items-center rounded-lg border border-line-2 text-[15px]" style={{ fontFamily: f, fontStyle: f.includes("Serif") ? "italic" : undefined }}>{a}</span>))}</div>
+    <div className="flex flex-wrap gap-1.5">{[["Aa", "Geist"], ["Aa", "Instrument Serif"], ["Aa", "Unbounded"], ["Aa", "Geist Mono"]].map(([a, f]) => (
+      <span key={f} className="grid size-8 place-items-center rounded-lg border border-line-2 text-[15px]" style={{ fontFamily: f, fontStyle: f.includes("Serif") ? "italic" : undefined }}>{a}</span>))}</div>
   );
   return (
-    <div className="flex gap-2">{["discord", "instagram", "tiktok", "spotify", "youtube"].map(s => (
+    <div className="flex flex-wrap gap-1.5">{["discord", "instagram", "tiktok", "spotify"].map(s => (
       // eslint-disable-next-line @next/next/no-img-element
-      <span key={s} className="grid size-9 place-items-center rounded-lg border border-line-2"><img src={`${ICONS}${s}.svg`} alt="" className="size-4 [filter:invert(1)]" loading="lazy" /></span>))}</div>
+      <span key={s} className="grid size-8 place-items-center rounded-lg border border-line-2"><img src={`${ICONS}${s}.svg`} alt="" className="size-4 [filter:invert(1)]" loading="lazy" /></span>))}</div>
   );
 }
 
@@ -131,46 +131,27 @@ export default function EditDemo() {
   return (
     <section ref={sec} id="index" aria-label={`${t("demoT1")} ${t("demoT2")}`} className="px-4 py-14 sm:px-[clamp(16px,6vw,96px)] md:py-24">
       <div className="mx-auto max-w-[1180px]">
-        <h2 className="text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("demoT1")}<br /><span className="text-quiet">{t("demoT2")}</span></h2>
+        <h2 className="text-[clamp(34px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("demoT1")}<br /><span className="chrome">{t("demoT2")}</span></h2>
 
         <div className="mt-10 grid items-center gap-10 min-[901px]:grid-cols-[minmax(0,1fr)_minmax(0,400px)] min-[901px]:gap-[clamp(32px,6vw,96px)]">
           <div className="min-w-0 max-[900px]:order-2">
-            {/* the four steps: tabs on phones, a list on computers */}
-            <div role="tablist" aria-label={t("demoT1")} className="grid grid-cols-4 gap-1 rounded-2xl border border-line p-1 min-[901px]:hidden">
-              {steps.map(([b], i) => (
-                <button key={i} type="button" role="tab" aria-selected={i === cur} onClick={() => { setAuto(false); setStep(i); }}
-                  className={`relative min-h-11 overflow-hidden rounded-xl px-1 text-[13px] font-medium transition-colors ${i === cur ? "bg-white text-black" : "text-muted"}`}>
-                  {b.split(" ")[0]}
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 min-[901px]:hidden">
-              <AnimatePresence mode="wait">
-                <motion.div key={cur} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: .25, ease }}>
-                  <p className="text-[15px] text-muted">{steps[cur][1]}</p>
-                  <div className="mt-3"><Tool i={cur} /></div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <ol className="demo-steps hidden min-[901px]:grid">
-              {steps.map(([b, s], i) => (
-                <li key={i}>
-                  <button type="button" aria-pressed={i === step} className={`${i === step ? "on" : ""} ${i === step && auto ? "run" : ""}`}
-                    onClick={() => { setAuto(false); setStep(i); }}>
-                    <b className="flex items-center gap-3"><span aria-hidden className="grid size-8 place-items-center rounded-lg border border-line-2"><StepIcon i={i} /></span>{b}</b><span>{s}</span>
-                    <AnimatePresence initial={false}>
-                      {i === step && (
-                        <motion.span key="tool" className="!block overflow-hidden" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .35, ease }}>
-                          <span className="!block pt-3"><Tool i={i} /></span>
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                    <i className="dbar" aria-hidden key={i === step ? `${step}${auto}` : "x"} />
+            {/* the four steps: four live tiles, each showing its tool; the current one lights up and fills its bar */}
+            <div role="tablist" aria-label={t("demoT1")} className="grid grid-cols-2 gap-3">
+              {steps.map(([title], i) => {
+                const on = i === cur;
+                return (
+                  <button key={i} type="button" role="tab" aria-selected={on} onClick={() => { setAuto(false); setStep(i); }}
+                    className={`demo-tile relative flex min-h-[132px] flex-col justify-between gap-4 overflow-hidden rounded-2xl border p-4 text-left transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 ${on ? "border-white/70 bg-white/[.07]" : "border-white/10 bg-[#0b0b0b]"}`}>
+                    <span className="flex items-center gap-2.5">
+                      <span aria-hidden className={`grid size-8 shrink-0 place-items-center rounded-lg transition-colors duration-300 ${on ? "bg-white text-black" : "border border-white/15 text-[#bdbdbd]"}`}><StepIcon i={i} /></span>
+                      <b className={`text-[17px] font-semibold tracking-[-.02em] transition-colors duration-300 ${on ? "text-white" : "text-[#9a9a9a]"}`}>{title}</b>
+                    </span>
+                    <span className={`block transition-opacity duration-300 ${on ? "opacity-100" : "opacity-45"}`}><Tool i={i} /></span>
+                    <i aria-hidden key={on ? `${step}${auto}` : "x"} className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-white ${on && auto && step >= 0 ? "tile-bar" : on ? "" : "scale-x-0"}`} />
                   </button>
-                </li>
-              ))}
-            </ol>
+                );
+              })}
+            </div>
 
             <a href={guestHref("/dashboard")} className="group mt-8 inline-flex min-h-[48px] items-center gap-2.5 rounded-xl bg-white px-5 text-[15px] font-semibold text-black transition-transform active:scale-[.97]">
               {t("demoTry")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>

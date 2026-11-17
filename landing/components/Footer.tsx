@@ -13,7 +13,7 @@ export function Footer() {
     <footer id="footer" className="relative overflow-hidden border-t border-line px-4 pt-12 sm:px-[clamp(16px,6vw,96px)]">
       <div className="mx-auto grid max-w-[1180px] grid-cols-3 gap-x-4 gap-y-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div className="col-span-3 md:col-span-1">
-          <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]">18k<span className="font-normal text-[#b0b0b0]">bio</span></a>
+          <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]"><span className="chrome">18k<span className="font-normal">bio</span></span></a>
           <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-[#c8c8c8]">{t("footTag")}</p>
           <a href="#top" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
         </div>

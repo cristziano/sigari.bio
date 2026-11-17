@@ -27,7 +27,7 @@
 
 /* on computers the site is shown at 90% (like the other pages); --vz keeps full-screen heights full */
 @media (min-width: 1100px) { html.z90 { zoom: .9; --vz: 1.1112; } }
-html { background: #000; color-scheme: dark; color: var(--color-fg); scrollbar-color: #2a2a2a #000; scrollbar-width: thin; -webkit-text-size-adjust: 100%; }
+html { background: #121212; color-scheme: dark; color: var(--color-fg); scrollbar-color: #2a2a2a #121212; scrollbar-width: thin; -webkit-text-size-adjust: 100%; }
 body { background: transparent; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
 ::selection { background: #fff; color: #000; }
 :focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 6px; }
@@ -70,22 +70,21 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 
 /* ---------- hero: the name "18kbio" in italic serif, letters in one by one, then a slow wave of light ---------- */
 .hx-name { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+/* Y2K chrome: polished silver inside the letters (a dark horizon line in the middle, light at the top and bottom) */
+.chrome, .hx-name i { background: linear-gradient(180deg, #ffffff 0%, #eef2f7 22%, #a9b1bc 44%, #5a616b 52%, #6f7883 58%, #c9d0d9 80%, #ffffff 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.hx-name i { padding-right: .06em; margin-right: -.06em; }
+/* small numbers: silver from light to soft grey, no dark line (it would look like a strike-through) */
+.chrome-soft { background: linear-gradient(180deg, #ffffff 0%, #e6ebf1 45%, #9ba4b0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
 .hx-name i { display: inline-block; font-style: inherit; opacity: 0; transform: translateY(.35em) rotate(6deg); filter: blur(6px);
   animation: hxIn 900ms var(--ease-out) forwards, hxWave 5.5s ease-in-out infinite; animation-delay: var(--d), calc(var(--d) + 1.6s); }
 @keyframes hxIn { to { opacity: 1; transform: none; filter: none; } }
 @keyframes hxWave { 0%, 70%, 100% { text-shadow: none; } 80% { text-shadow: 0 0 18px rgb(255 255 255 / .55); } }
 
 /* ---------- live demo: the steps list and the phone (stop motion) ---------- */
-.demo-steps button { position: relative; display: grid; gap: 4px; width: 100%; text-align: left; padding: 18px 0 20px; border-top: 1px solid var(--color-line);
-  color: var(--color-muted); cursor: pointer; transition: color 200ms ease; }
-.demo-steps b { font-size: clamp(20px, 2vw, 26px); letter-spacing: -.03em; color: var(--color-quiet); transition: color 200ms ease; }
-.demo-steps button > span { font-size: 15px; max-width: 44ch; }
-.demo-steps button.on > b, .demo-steps button.on > span { color: var(--color-fg); }
-.demo-steps .dbar { position: absolute; left: 0; top: -1px; height: 1px; width: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
-.demo-steps button.on .dbar { transform: scaleX(1); }
-.demo-steps button.run .dbar { transform: scaleX(0); animation: demobar 3.2s steps(8, end) forwards; }
-@keyframes demobar { to { transform: scaleX(1); } }
-@media (hover: hover) and (pointer: fine) { .demo-steps button:hover b { color: var(--color-fg); } }
+/* "Lo cambi come vuoi": the bar under the current tile fills while that step plays */
+.tile-bar { animation: tileBar 3.4s linear forwards; }
+@keyframes tileBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .demo-phone.snap { animation: snapframes .48s steps(1, end); }
 @keyframes snapframes {
   0% { transform: rotate(-2.2deg) translate(-6px, 4px); }
@@ -109,26 +108,12 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 }
 
 /* ---------- "Tre passi": the columns of real profiles on the sides of the panel ---------- */
-.rail { animation: rail 26s linear infinite; will-change: transform; }
-.rail.down { animation-direction: reverse; }
-@keyframes rail { to { transform: translateY(-50%); } }
 .feat-on { animation: featOn 5s var(--ease-out) infinite; animation-delay: calc(var(--i) * 1s); }
 @keyframes featOn { 0%, 20% { color: #000; background: #fff; border-color: #fff; } 24%, 100% { color: var(--color-muted); background: transparent; } }
-@media (prefers-reduced-motion: reduce) { .rail, .feat-on { animation: none; } }
+.music-bar { width: 30%; animation: musicBar 6s linear infinite; }
+@keyframes musicBar { from { width: 8%; } to { width: 92%; } }
+@media (prefers-reduced-motion: reduce) { .feat-on, .music-bar, .tile-bar { animation: none; } }
 
-/* ---------- page background: rows of real addresses sliding slowly (no gradients) ---------- */
-.bg-row { display: flex; width: max-content; white-space: pre; animation: bgRow 150s linear infinite; will-change: transform; }
-.bg-row.rev { animation-direction: reverse; }
-.bg-row-line { color: transparent; -webkit-text-stroke: 1px rgb(255 255 255 / .075); }
-@keyframes bgRow { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .bg-row { animation: none; } }
 
-/* ---------- social spheres along the page ---------- */
-.sd-orb { display: grid; place-items: center; translate: -50% -50%; border-radius: 50%; border: 1px solid rgb(255 255 255 / .14);
-  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.30), rgba(255,255,255,.06) 42%, rgba(0,0,0,.55) 100%);
-  box-shadow: inset 0 -8px 18px rgba(0,0,0,.6), inset 0 2px 6px rgba(255,255,255,.2), 0 16px 36px rgba(0,0,0,.55);
-  animation: sdFloat 10s ease-in-out infinite alternate; will-change: transform; }
-.sd-logo { width: 42%; height: 42%; filter: invert(1); animation: sdIn .9s var(--ease-out) both; }
-@keyframes sdFloat { from { transform: translateY(-10px) rotate(-4deg); } to { transform: translateY(12px) rotate(5deg); } }
-@keyframes sdIn { from { opacity: 0; transform: scale(.4) rotate(-30deg); } to { opacity: .9; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .sd-orb, .sd-logo { animation: none; } }
+
+

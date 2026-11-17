@@ -53,7 +53,7 @@ export default function Cards() {
         <h2 className="m-0 px-4 pt-[72px] max-md:order-1 md:p-0 font-wide text-[clamp(40px,8vw,120px)] font-bold leading-[.85] tracking-[-.04em] text-[#e0e0e0] mix-blend-difference md:col-span-2 md:mt-[clamp(28px,calc(7vh*var(--vz,1)),80px)]">
           {[t("cardsT1"), t("cardsT2")].map((l, i) => (
             <span key={i} className="block overflow-hidden">
-              <motion.span className="block" initial={{ y: "100%" }} animate={seen ? { y: 0 } : undefined} transition={{ duration: .9, ease: [0.23, 1, 0.32, 1], delay: i * .12 }}>{l}</motion.span>
+              <motion.span className={`block ${i ? "chrome" : ""}`} initial={{ y: "100%" }} animate={seen ? { y: 0 } : undefined} transition={{ duration: .9, ease: [0.23, 1, 0.32, 1], delay: i * .12 }}>{l}</motion.span>
             </span>
           ))}
         </h2>

@@ -3,7 +3,6 @@ import { HandleProvider } from "@/lib/handle";
 import { LangProvider, useT } from "@/lib/i18n";
 import Proof from "@/components/Proof";
 import AuroraBackground from "@/components/ui/aurora-background";
-import SocialDrift from "@/components/ui/social-drift";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Cards from "@/components/Cards";
@@ -25,13 +24,12 @@ function Page() {
       <AuroraBackground />
       <Nav />
       <main id="main" className="relative isolate">
-        <SocialDrift />
         <Hero />
         <Cards />
         <HowItWorks />
         <EditDemo />
-        <Stats />
         <Proof />
+        <Stats />
         <Plans />
       </main>
       <Footer />

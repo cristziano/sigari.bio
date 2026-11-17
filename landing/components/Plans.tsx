@@ -22,7 +22,7 @@ export default function Plans() {
                 <b className="text-lg">{t("freeName")}</b>
                 <p className="mt-2 max-w-[52ch] text-sm leading-[1.5] text-muted">{t("freeSub")}</p>
               </div>
-              <div className="text-[44px] font-extrabold leading-none tracking-[-.04em]">0€ <small className="text-sm font-normal tracking-normal text-muted">{t("forever")}</small></div>
+              <div className="text-[44px] font-extrabold leading-none tracking-[-.04em]"><span className="chrome-soft">0€</span> <small className="text-sm font-normal tracking-normal text-muted">{t("forever")}</small></div>
             </div>
             <ul className="mt-5 grid gap-x-6 gap-y-3.5 border-t border-line pt-5 sm:grid-cols-2">
               {free.map(([b, s]) => (
@@ -36,7 +36,7 @@ export default function Plans() {
           <div className="shine-border flex flex-col rounded-[18px] border border-line bg-[linear-gradient(160deg,rgba(255,255,255,.06),transparent_45%)] p-6">
             <div className="flex items-center justify-between"><b className="text-lg">{t("proName")}</b><span className="rounded-md border border-line-2 px-2 py-1 font-mono text-[11px] text-muted">{t("proTag")}</span></div>
             <p className="mt-2 text-sm leading-[1.5] text-muted">{t("proSub")}</p>
-            <div className="mt-5 text-[32px] font-extrabold tracking-[-.04em]">{t("proPrice")}</div>
+            <div className="chrome-soft mt-5 w-fit text-[32px] font-extrabold tracking-[-.04em]">{t("proPrice")}</div>
             <ul className="mb-6 mt-4 grid gap-2.5 border-t border-line pt-4">
               {pro.map((b, i) => <li key={b} className="flex items-center gap-3 text-sm text-[#d4d4d4]"><span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg border border-line-2 text-[13px]">{["✦", "◎", "↗"][i] || "✦"}</span>{b}</li>)}
             </ul>
