@@ -179,10 +179,10 @@ export default function EditDemo() {
 
           {/* the phone */}
           <div className="grid place-items-center max-[900px]:order-1">
-            <div ref={phone} className="demo-phone relative w-[min(270px,72vw,calc(74svh*.47))] rounded-[46px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[9px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] min-[901px]:w-[min(330px,calc(78svh*.47))]">
+            <div ref={phone} className="demo-phone relative w-[min(270px,72vw,calc(70svh*.53))] rounded-[46px] bg-[linear-gradient(145deg,#2a2a2a,#0c0c0c_40%,#1c1c1c)] p-[9px] shadow-[0_50px_100px_-40px_rgba(0,0,0,1),inset_0_0_0_1px_rgba(255,255,255,.12)] min-[901px]:w-[min(340px,calc(76svh*.53))]">
               <span aria-hidden className="absolute -left-[3px] top-[22%] h-12 w-[3px] rounded-l bg-[#2a2a2a]" />
               <span aria-hidden className="absolute -right-[3px] top-[28%] h-16 w-[3px] rounded-r bg-[#2a2a2a]" />
-              <div className="relative aspect-[9/19] overflow-hidden rounded-[38px] bg-[#050505]">
+              <div className="relative aspect-[9/16.5] overflow-hidden rounded-[38px] bg-[#050505]">
                 <div className="demo-pv absolute left-0 top-0"><div ref={pv} className="absolute inset-0" /></div>
                 <span aria-hidden className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-[22px] w-[34%] -translate-x-1/2 rounded-full bg-black" />
                 <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-[38px] bg-[linear-gradient(120deg,rgba(255,255,255,.07),transparent_35%)]" />

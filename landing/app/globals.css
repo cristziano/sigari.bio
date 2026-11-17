@@ -97,8 +97,8 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
   85%, 100% { transform: none; }
 }
 /* the profile is drawn bigger and shrunk, so it fits the phone like on a real one */
-.demo-pv { position: absolute; width: 142.85%; height: 142.85%; transform: scale(.7); transform-origin: 0 0; }
-@media (max-width: 900px) { .demo-pv { width: 166.66%; height: 166.66%; transform: scale(.6); } }
+.demo-pv { position: absolute; width: 121.95%; height: 121.95%; transform: scale(.82); transform-origin: 0 0; }
+@media (max-width: 900px) { .demo-pv { width: 138.9%; height: 138.9%; transform: scale(.72); } }
 .demo-pv a, .demo-pv button { pointer-events: none; }
 
 /* ---------- cards: film grain ---------- */
