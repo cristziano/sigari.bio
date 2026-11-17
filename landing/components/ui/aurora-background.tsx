@@ -1,9 +1,13 @@
 "use client";
-// Background of the whole page: a very soft, still glow (the idea of the 21st.dev "Aurora Background",
-// made minimal). No blur filter and no animation: it costs nothing while scrolling.
+// Background of the whole page: big soft lights that drift slowly behind every section, plus a faint dot grid.
+// Only gradients moved with transform (no blur filter, no backdrop-blur): smooth while scrolling.
 export default function AuroraBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black
-      bg-[radial-gradient(55%_40%_at_75%_0%,rgba(255,255,255,.06),transparent_70%),radial-gradient(45%_35%_at_10%_100%,rgba(255,255,255,.042),transparent_70%)]" />
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-black">
+      <i className="glow g1" />
+      <i className="glow g2" />
+      <i className="glow g3" />
+      <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(rgba(255,255,255,.07)_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(90%_80%_at_50%_50%,#000,transparent)]" />
+    </div>
   );
 }
