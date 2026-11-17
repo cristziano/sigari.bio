@@ -465,11 +465,13 @@ export function linkId(l) {
 }
 const DT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 const B64 = /^[a-z0-9+/=]{8,2400}$/i;
+// the old example link pointed to 18k.bio, which is NOT ours (someone else's site, its icon showed up): use ours
+const fixOldExample = u => /^https?:\/\/(www\.)?18k\.bio\/?$/i.test(u) ? "https://18kbio.xyz" : u;
 function normLink(l) {
   const lock = isObj(l?.lock) && B64.test(l.lock.s || "") && B64.test(l.lock.iv || "") && B64.test(l.lock.ct || "") ? { s: l.lock.s, iv: l.lock.iv, ct: l.lock.ct } : null;
   return {
     id: linkId(l), type: l?.type === "header" ? "header" : "link",
-    title: String(l?.title || "").slice(0, 60), url: lock ? "" : String(l?.url || "").slice(0, 600), hidden: !!l?.hidden,
+    title: String(l?.title || "").slice(0, 60), url: lock ? "" : fixOldExample(String(l?.url || "").slice(0, 600)), hidden: !!l?.hidden,
     featured: !!l?.featured, start: DT.test(l?.start || "") ? l.start : "", end: DT.test(l?.end || "") ? l.end : "",
     password: String(l?.password || "").slice(0, 64), lock
   };

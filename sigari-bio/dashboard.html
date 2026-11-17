@@ -4479,7 +4479,7 @@
   const tplKey = (t, source) => source && source.id ? source.id : "builtin:" + t.id;
   function miniPreview(box, appearanceObj, thumb) {
     const a = previewAppearance(appearanceObj, thumb);
-    miniMounts.push(mountProfile(box, { handle, displayName: draft.displayName || handle, bio: "", links: [{ title: "Il mio link", url: "https://18k.bio" }], appearance: a }, { preview: true, entrance: false }));
+    miniMounts.push(mountProfile(box, { handle, displayName: draft.displayName || handle, bio: "", links: [{ title: "Il mio link", url: "https://18kbio.xyz" }], appearance: a }, { preview: true, entrance: false }));
   }
   // One card per template: preview (click to try it on your profile), favourite star, part picker, Use
   function tplCard(t, meta, source) {
@@ -5721,7 +5721,7 @@
     try { saved = JSON.parse(store.get(DRAFT_KEY) || "null"); } catch (_) { saved = null; }
     const wanted = (params.get("handle") || saved?.handle || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
     handle = wanted.length >= 1 ? wanted : "ospite";
-    const base = saved || { displayName: handle, bio: "", tags: [], location: "", avatarUrl: "", links: [{ title: "Il mio primo link", url: "https://18k.bio", hidden: false }], socials: {}, weekly: null, appearance: {} };
+    const base = saved || { displayName: handle, bio: "", tags: [], location: "", avatarUrl: "", links: [{ title: "Il mio primo link", url: "https://18kbio.xyz", hidden: false }], socials: {}, weekly: null, appearance: {} };
     draft = snapshot(base);
     savedJSON = saved ? JSON.stringify(snapshot(saved)) : "";
     if (!saved) savedJSON = JSON.stringify(snapshot(base));
