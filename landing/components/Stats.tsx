@@ -3,20 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { reducedMotion } from "@/lib/site";
+import { useT } from "@/lib/i18n";
 
 const DAYS = 30, ROWS = 12;
 const rng = (s: number) => () => (s = (s * 16807) % 2147483647) / 2147483647;
 const make = (base: number, amp: number, s: number) => { const r = rng(s); return Array.from({ length: DAYS }, (_, i) => Math.round((base + amp * (.4 + .3 * Math.sin(i / 4.3) + .3 * r())) * (.75 + i / DAYS * .5))); };
 const SETS = {
-  views: { data: make(260, 380, 7), label: "visite al profilo", tab: "visite", delta: "+18%" },
-  clicks: { data: make(70, 150, 11), label: "clic sui link", tab: "clic", delta: "+9%" },
-  plays: { data: make(30, 110, 23), label: "ascolti", tab: "ascolti", delta: "+31%" },
+  views: { data: make(260, 380, 7), delta: "+18%" },
+  clicks: { data: make(70, 150, 11), delta: "+9%" },
+  plays: { data: make(30, 110, 23), delta: "+31%" },
 };
 type Metric = keyof typeof SETS;
 const sum = (a: number[]) => a.reduce((s, v) => s + v, 0);
 
-function Odometer({ n }: { n: number }) {
-  const s = n.toLocaleString("it-IT");
+function Odometer({ n, loc }: { n: number; loc: string }) {
+  const s = n.toLocaleString(loc);
   return (
     <div className="odo tabnum" aria-label={s}>
       {[...s].map((c, i) => /\d/.test(c)
@@ -27,6 +28,10 @@ function Odometer({ n }: { n: number }) {
 }
 
 export default function Stats() {
+  const { t, list, lang } = useT();
+  const loc = lang === "it" ? "it-IT" : "en-US";
+  const KEYS = Object.keys(SETS) as Metric[];
+  const label = (m: Metric) => list("statsLabels")[KEYS.indexOf(m)];
   const box = useRef<HTMLDivElement>(null);
   const cv = useRef<HTMLCanvasElement>(null);
   const seen = useInView(box, { once: true, amount: .2 });
@@ -101,7 +106,7 @@ export default function Stats() {
     if (x === st.current.hover) return;
     st.current.hover = x;
     const d = new Date(); d.setDate(d.getDate() - (DAYS - 1 - x));
-    setTip({ x: (x + .5) / DAYS * 100, text: `${d.toLocaleDateString("it-IT", { day: "numeric", month: "short" })} · ${SETS[metric].data[x].toLocaleString("it-IT")} ${SETS[metric].label.split(" ")[0]}` });
+    setTip({ x: (x + .5) / DAYS * 100, text: `${d.toLocaleDateString(loc, { day: "numeric", month: "short" })} · ${SETS[metric].data[x].toLocaleString(loc)} ${list("statsTabs")[KEYS.indexOf(metric)]}` });
     draw();
   };
   const leave = () => { st.current.hover = -1; setTip(null); draw(); };
@@ -109,35 +114,35 @@ export default function Stats() {
   return (
     <section id="stats" className="px-4 py-24 sm:px-[clamp(16px,6vw,96px)]">
       <div className="mx-auto max-w-[1180px]">
-        <h2 className="text-[clamp(36px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">Ogni visita conta. <span className="text-quiet">Davvero.</span></h2>
-        <p className="mt-4 max-w-[60ch] text-base leading-[1.55] text-muted">Un contatore pubblico sulla tua pagina e, nella dashboard, ogni giorno in un colpo d&apos;occhio: visite, clic, ascolti. Passa il mouse sui punti.</p>
+        <h2 className="text-[clamp(36px,5vw,64px)] font-bold leading-[1.02] tracking-[-.045em]">{t("statsT1")} <span className="text-quiet">{t("statsT2")}</span></h2>
+        <p className="mt-4 max-w-[60ch] text-base leading-[1.55] text-muted">{t("statsSub")}</p>
 
         <motion.div ref={box} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .8, ease: [0.23, 1, 0.32, 1] }}
           className="mt-10 overflow-hidden rounded-[18px] border border-line bg-s1">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line p-3.5">
-            <div role="group" aria-label="Cosa mostrare" className="flex rounded-[10px] border border-line p-[3px] font-mono text-xs">
-              {(Object.keys(SETS) as Metric[]).map(k => (
+            <div role="group" aria-label={t("statsGroup")} className="flex rounded-[10px] border border-line p-[3px] font-mono text-xs">
+              {KEYS.map((k, i) => (
                 <button key={k} type="button" aria-pressed={metric === k} onClick={() => setMetric(k)}
-                  className={`rounded-[7px] px-3 py-1.5 transition-colors ${metric === k ? "bg-white text-black" : "text-muted hover:text-white"}`}>{SETS[k].tab}</button>
+                  className={`rounded-[7px] px-3 py-1.5 transition-colors ${metric === k ? "bg-white text-black" : "text-muted hover:text-white"}`}>{list("statsTabs")[i]}</button>
               ))}
             </div>
-            <span className="flex items-center gap-2 font-mono text-[11px] text-muted"><i aria-hidden className="size-1.5 animate-pulse rounded-full bg-[#555]" />dati di esempio · ultimi 30 giorni</span>
+            <span className="flex items-center gap-2 font-mono text-[11px] text-muted"><i aria-hidden className="size-1.5 animate-pulse rounded-full bg-[#555]" />{t("statsSample")}</span>
           </div>
           <div className="grid items-end gap-6 p-4 md:grid-cols-[auto_1fr]">
             <div>
-              <Odometer n={total} />
+              <Odometer n={total} loc={loc} />
               <div className="mt-3 flex items-center gap-2.5">
                 <span className="rounded-[5px] bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-black">{SETS[metric].delta}</span>
-                <small className="font-mono text-xs text-muted">{SETS[metric].label}</small>
+                <small className="font-mono text-xs text-muted">{label(metric)}</small>
               </div>
             </div>
             <div className="relative h-[180px]">
-              <canvas ref={cv} role="img" aria-label="Grafico a punti degli ultimi 30 giorni" className="size-full" onPointerMove={move} onPointerLeave={leave} />
+              <canvas ref={cv} role="img" aria-label={t("statsChart")} className="size-full" onPointerMove={move} onPointerLeave={leave} />
               {tip && <div className="pointer-events-none absolute -top-2 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-white px-2 py-1 font-mono text-[11px] text-black" style={{ left: tip.x + "%" }}>{tip.text}</div>}
             </div>
           </div>
           <div className="grid grid-cols-2 border-t border-line md:grid-cols-4">
-            {[["visitatori unici", "8.311"], ["tempo medio", "0:41"], ["arrivano da", "discord 46%"], ["link più cliccato", "Ultima uscita"]].map(([k, v], i) => (
+            {list("statsFoot").map((k, i) => [k, list("statsFootV")[i]]).map(([k, v], i) => (
               <div key={k} className={`grid gap-1 p-3.5 ${i % 2 ? "border-l" : ""} ${i > 1 ? "border-t md:border-t-0" : ""} md:border-l border-line ${i === 0 ? "md:border-l-0" : ""}`}>
                 <small className="font-mono text-[11px] text-muted">{k}</small><b className="text-sm">{v}</b>
               </div>

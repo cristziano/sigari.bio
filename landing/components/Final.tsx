@@ -4,16 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
 import Claim from "./Claim";
 import { focusClaim, useHandle } from "@/lib/handle";
+import { useT, type Lang } from "@/lib/i18n";
 
 export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
   const ref = useRef<HTMLElement>(null);
   const seen = useInView(ref, { once: true, amount: .3 });
   const inView = useInView(ref, { amount: .2 });
   useEffect(() => onSeen(inView), [inView, onSeen]);
+  const { t } = useT();
   return (
     <section ref={ref} id="final" className="flex flex-col items-center px-4 pb-28 pt-20 text-center">
       <h2 className="text-[clamp(36px,5.6vw,72px)] font-bold leading-[1.05] tracking-[-.045em]">
-        La tua identità, su <b className="hx-name">{seen ? [..."18kbio"].map((c, i) => <i key={i} style={{ ["--d" as string]: `${(.1 + i * .07).toFixed(2)}s` }}>{c}</i>) : <span className="opacity-0">18kbio</span>}</b>
+        {t("finalT")} <b className="hx-name">{seen ? [..."18kbio"].map((c, i) => <i key={i} style={{ ["--d" as string]: `${(.1 + i * .07).toFixed(2)}s` }}>{c}</i>) : <span className="opacity-0">18kbio</span>}</b>
       </h2>
       <Claim id="h2in" className="mt-8 text-left" />
     </section>
@@ -21,14 +23,18 @@ export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
 }
 
 export function Footer() {
+  const { t, lang, setLang } = useT();
   return (
     <footer className="border-t border-line px-4 py-7 font-mono text-xs text-muted sm:px-[clamp(16px,10vw,144px)]">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <span>Fatto da 18k, tutti i diritti riservati. · <a href="/privacy" className="hover:text-white">Privacy</a> · <a href="/termini" className="hover:text-white">Termini</a></span>
-        <nav aria-label="Piè di pagina" className="flex gap-5">
-          <a href="/accedi" className="hover:text-white">accedi</a>
-          <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="hover:text-white">prendila</a>
+        <span>{t("rights")} · <a href="/privacy" className="hover:text-white">{t("privacy")}</a> · <a href="/termini" className="hover:text-white">{t("terms")}</a></span>
+        <nav aria-label={t("footNav")} className="flex flex-wrap items-center gap-5">
+          <a href="/accedi" className="hover:text-white">{t("login")}</a>
+          <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="hover:text-white">{t("footClaim")}</a>
           <a href="https://discord.gg/18k" target="_blank" rel="noopener" className="hover:text-white">discord</a>
+          <span role="group" aria-label={t("langSwitch")} className="flex gap-1">
+            {(["it", "en"] as Lang[]).map(l => <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={`uppercase ${lang === l ? "text-white underline underline-offset-4" : "hover:text-white"}`}>{l}</button>)}
+          </span>
         </nav>
       </div>
     </footer>
@@ -38,6 +44,7 @@ export function Footer() {
 /** Phones: after the hero, a small bar at the bottom brings you back to the claim box */
 export function Dock({ hidden }: { hidden: boolean }) {
   const { handle } = useHandle();
+  const { t } = useT();
   const [past, setPast] = useState(false);
   useEffect(() => {
     const el = document.getElementById("h1in"); if (!el) return;
@@ -51,8 +58,8 @@ export function Dock({ hidden }: { hidden: boolean }) {
           className="fixed inset-x-3 bottom-3 z-40 md:hidden">
           <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }}
             className="flex items-center justify-between gap-3 rounded-[14px] border border-line-2 bg-black/90 py-2 pl-4 pr-2 backdrop-blur-md">
-            <span className="truncate font-mono text-[13px] text-muted">18kbio.xyz/{handle || "tuonome"}</span>
-            <span className="btn !min-h-9">Prendila</span>
+            <span className="truncate font-mono text-[13px] text-muted">18kbio.xyz/{handle || t("placeholder")}</span>
+            <span className="btn !min-h-9">{t("take")}</span>
           </a>
         </motion.div>
       )}
@@ -63,6 +70,7 @@ export function Dock({ hidden }: { hidden: boolean }) {
 /** Things the old page did on load: remember the referral, the "account deleted" notice, the smooth wheel */
 export function PageEffects() {
   const [bye, setBye] = useState(false);
+  const { t } = useT();
   useEffect(() => {
     const q = new URLSearchParams(location.search);
     // ?ref=name: who invited you, remembered for 30 days (read at sign up)
@@ -73,7 +81,7 @@ export function PageEffects() {
   }, []);
   return bye ? (
     <div role="status" className="fixed left-1/2 top-[76px] z-[200] -translate-x-1/2 rounded-full bg-white px-4 py-2.5 text-[13px] font-medium text-black shadow-[0_10px_30px_rgba(0,0,0,.5)]">
-      Account eliminato. Ci dispiace vederti andare: la tua @ adesso è libera.
+      {t("bye")}
     </div>
   ) : null;
 }

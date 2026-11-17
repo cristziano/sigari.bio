@@ -3,8 +3,9 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { HANDLE_RE, RESERVED, firebase } from "./site";
 
-export type Status = { kind: "" | "wait" | "ok" | "no"; text: string };
-const HINT: Status = { kind: "", text: "da 1 a 20 tra lettere, numeri o _" };
+/** what the claim box says under the field; the words come from i18n (stHint, stFree, …) */
+export type Status = { kind: "" | "wait" | "ok" | "no"; code: "stHint" | "stWait" | "stFree" | "stTaken" | "stReserved" | "stOffline" | "stEmpty" };
+const HINT: Status = { kind: "", code: "stHint" };
 
 type Ctx = {
   handle: string;
@@ -27,8 +28,8 @@ export function HandleProvider({ children }: { children: ReactNode }) {
     const h = handle, mine = ++seq.current;
     setAvail(null);
     if (!h) { setStatus(HINT); return; }
-    if (RESERVED.includes(h)) { setAvail(false); setStatus({ kind: "no", text: `@${h} è riservata` }); return; }
-    setStatus({ kind: "wait", text: "controllo…" });
+    if (RESERVED.includes(h)) { setAvail(false); setStatus({ kind: "no", code: "stReserved" }); return; }
+    setStatus({ kind: "wait", code: "stWait" });
     const t = setTimeout(async () => {
       try {
         const { db, fs } = await firebase();
@@ -36,9 +37,9 @@ export function HandleProvider({ children }: { children: ReactNode }) {
         if (mine !== seq.current) return;
         const free = !snap.exists();
         setAvail(free);
-        setStatus(free ? { kind: "ok", text: `@${h} è libera` } : { kind: "no", text: `@${h} è già presa` });
+        setStatus(free ? { kind: "ok", code: "stFree" } : { kind: "no", code: "stTaken" });
       } catch {
-        if (mine === seq.current) setStatus({ kind: "", text: "non riesco a controllare ora, lo vediamo all'iscrizione" });
+        if (mine === seq.current) setStatus({ kind: "", code: "stOffline" });
       }
     }, 320);
     return () => clearTimeout(t);
