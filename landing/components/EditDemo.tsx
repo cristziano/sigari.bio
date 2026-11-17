@@ -33,6 +33,18 @@ function Tool({ i }: { i: number }) {
   );
 }
 
+
+/** the four step icons, all drawn with the same thin line */
+const PATHS = [
+  "M12 3a9 9 0 1 0 0 18c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A4.6 4.6 0 0 0 21 9.8C21 6 17 3 12 3ZM7.5 11.5h.01M10 7.5h.01M15 7.5h.01",
+  "M4 5h16v14H4zM4 15l4.5-4.5 4 4 2.5-2.5L20 17",
+  "M4 19 9.5 5h1L16 19M6.3 14h7.4M17 19v-5.5a2.5 2.5 0 0 1 5 0V19",
+  "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
+];
+function StepIcon({ i }: { i: number }) {
+  return <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1.6]"><path d={PATHS[i]} /></svg>;
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function EditDemo() {
   const sec = useRef<HTMLElement>(null);
@@ -146,7 +158,7 @@ export default function EditDemo() {
                 <li key={i}>
                   <button type="button" aria-pressed={i === step} className={`${i === step ? "on" : ""} ${i === step && auto ? "run" : ""}`}
                     onClick={() => { setAuto(false); setStep(i); }}>
-                    <b className="flex items-center gap-3"><span aria-hidden className="grid size-8 place-items-center rounded-lg border border-line-2 text-[15px] font-normal">{["◐", "▦", "Aa", "@"][i]}</span>{b}</b><span>{s}</span>
+                    <b className="flex items-center gap-3"><span aria-hidden className="grid size-8 place-items-center rounded-lg border border-line-2"><StepIcon i={i} /></span>{b}</b><span>{s}</span>
                     <AnimatePresence initial={false}>
                       {i === step && (
                         <motion.span key="tool" className="!block overflow-hidden" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .35, ease }}>
