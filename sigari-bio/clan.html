@@ -52,7 +52,7 @@
 <link rel="stylesheet" href="ui.css">
 </head>
 <body>
-<header class="top"><a class="logo" href="/">18k<span>.bio</span></a><span class="sp"></span><a href="explore.html" style="font-size:13px;color:#aaa">esplora</a><a class="btn" href="dashboard.html#clans" style="height:36px;font-size:13px">I tuoi clan</a></header>
+<header class="top"><a class="logo" href="/">18k<span>.bio</span></a><span class="sp"></span><a href="/esplora" style="font-size:13px;color:#aaa">esplora</a><a class="btn" href="/dashboard#clans" style="height:36px;font-size:13px">I tuoi clan</a></header>
 <main id="main"><p class="note">Carico…</p></main>
 <script type="module">
   const $ = id => document.getElementById(id);
@@ -68,7 +68,7 @@
     const main = $("main");
     if (!snap.exists()) {
       main.replaceChildren(h("div", "tag", tag), h("h1", null, "Questa TAG è libera."), h("p", "desc", "Nessuno ha ancora creato un clan con questo nome. Può essere il tuo."));
-      const row = h("div", "row"); const a = h("a", "btn", "Crea il clan"); a.href = "/dashboard.html#clans"; row.appendChild(a); main.appendChild(row);
+      const row = h("div", "row"); const a = h("a", "btn", "Crea il clan"); a.href = "/dashboard#clans"; row.appendChild(a); main.appendChild(row);
       return;
     }
     const c = snap.data(), color = safeHex(c.color);
@@ -80,7 +80,7 @@
     const viewsB = stat("…", "visite in totale");
     stat("@" + c.owner, "capo");
     const row = h("div", "row");
-    const join = h("a", "btn", "Entra nel clan"); join.href = `/dashboard.html?join=${c.tag}#clans`;
+    const join = h("a", "btn", "Entra nel clan"); join.href = `/dashboard?join=${c.tag}#clans`;
     const share = h("button", "ghost", "Copia il link"); share.type = "button"; share.style.background = "none"; share.style.color = "#fff"; share.style.cursor = "pointer";
     share.addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); share.textContent = "Copiato"; } catch (_) { share.textContent = location.href; } });
     row.append(join, share);

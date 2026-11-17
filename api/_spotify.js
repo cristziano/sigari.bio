@@ -57,7 +57,7 @@ async function handle(req, res, url) {
     const [payload, sig] = String(url.searchParams.get("state") || "").split(".");
     let st = null;
     try { if (sig && sig === sign(payload)) st = JSON.parse(Buffer.from(payload, "base64url").toString()); } catch (_) { st = null; }
-    const back = hash => { res.statusCode = 302; res.setHeader("Location", `https://${st && SITES.includes(st.s) ? st.s : "18kbio.xyz"}/dashboard.html#${hash}`); res.end(); };
+    const back = hash => { res.statusCode = 302; res.setHeader("Location", `https://${st && SITES.includes(st.s) ? st.s : "18kbio.xyz"}/dashboard#${hash}`); res.end(); };
     if (!st || Date.now() - st.t > 15 * 60e3) return back("spotify-error=" + encodeURIComponent("Collegamento scaduto, riprova."));
     if (url.searchParams.get("error")) return back("spotify-error=" + encodeURIComponent("Collegamento annullato."));
     try {

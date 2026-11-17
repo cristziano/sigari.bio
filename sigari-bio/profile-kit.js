@@ -1816,7 +1816,7 @@ function guestbookNode(actions) {
     if (!text) return;
     bt.disabled = true; out.textContent = "…";
     try { await actions.guestbook.sign(text); f.reset(); out.textContent = "Firmato."; paint(await actions.guestbook.list()); }
-    catch (err) { out.innerHTML = ""; if (err && err.login) { out.append("Per firmare serve un account. "); const a = el("a", null, "Accedi"); a.href = "/login.html?mode=login"; out.appendChild(a); } else out.textContent = "Non firmato. Riprova."; }
+    catch (err) { out.innerHTML = ""; if (err && err.login) { out.append("Per firmare serve un account. "); const a = el("a", null, "Accedi"); a.href = "/login?mode=login"; out.appendChild(a); } else out.textContent = "Non firmato. Riprova."; }
     bt.disabled = false;
   });
   return f;
@@ -2068,7 +2068,7 @@ export function mountProfile(root, input, opts = {}) {
       const cl = el("div", "pk-clans");
       [p.primaryClan, ...p.clans.filter(t => t !== p.primaryClan)].forEach(t => {
         const x = el("a", t === p.primaryClan ? "primary" : "", "[" + t + "]");
-        x.href = "/clan.html?tag=" + t; x.title = t === p.primaryClan ? "Clan principale" : "Clan";
+        x.href = "/clan?tag=" + t; x.title = t === p.primaryClan ? "Clan principale" : "Clan";
         cl.appendChild(x);
       });
       nameBox.appendChild(cl);

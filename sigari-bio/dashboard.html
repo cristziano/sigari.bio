@@ -938,7 +938,7 @@
 
 <section class="dash hidden" id="dash">
   <aside class="side">
-    <a class="logo" href="index.html">18k<span>.bio</span></a>
+    <a class="logo" href="/">18k<span>.bio</span></a>
     <div class="side-search">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="setSearch" type="search" placeholder="Cerca…" autocomplete="off" aria-label="Cerca un'impostazione">
@@ -965,7 +965,7 @@
 
   <main class="main" id="main">
     <div class="mtop">
-      <a class="mlogo" href="index.html">18k<span>.bio</span></a>
+      <a class="mlogo" href="/">18k<span>.bio</span></a>
       <span class="mtitle" id="mTitle"></span>
       <button class="ghost-btn sm" id="openPreview" type="button">Anteprima</button>
       <select class="text" id="mnav" aria-label="Sezione"></select>
@@ -975,7 +975,7 @@
       <div class="guestbar hidden" id="guestbar">
         <span class="gb-short">Modalità prova: le modifiche restano su questo telefono.</span>
         <span class="gb-long">Stai provando senza account. <b id="guestHandle">@ospite</b> non è ancora tua e le modifiche restano solo su questo dispositivo.</span>
-        <a class="save-btn" id="guestClaim" href="login.html">Registrati e salva</a>
+        <a class="save-btn" id="guestClaim" href="/login">Registrati e salva</a>
       </div>
       <input type="checkbox" id="themeToggle" class="sr-only" aria-label="Tema chiaro">
       <button type="button" class="cmdk-btn" id="cmdkBtn" aria-label="Cosa vuoi cambiare?"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Cosa vuoi cambiare?</span><kbd>Ctrl K</kbd></button>
@@ -985,7 +985,7 @@
     <section class="view hidden" id="view-overview">
       <h2>Panoramica</h2>
       <p class="desc">Il tuo account a colpo d'occhio.</p>
-      <a class="explore-hero" href="explore.html">
+      <a class="explore-hero" href="/esplora">
         <span><b>Esplora tutti i profili</b><small>Guarda chi c'è su 18k.bio, cerca una @ e lascia un like ♥</small></span>
         <span class="eh-go">Apri ↗</span>
       </a>
@@ -1792,7 +1792,7 @@
       <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Clan</h2>
       <p class="desc">Un gruppo con la sua TAG riservata, da 2 a 4 caratteri. Puoi stare in 3 clan: il principale appare per primo, pieno, sotto il tuo nome.</p>
-      <div class="card hidden" id="clanGuest" style="margin-top:22px"><p>I clan servono un account.</p><div class="row"><a class="save-btn" href="login.html?from=ospite" style="display:inline-flex;align-items:center;text-decoration:none">Registrati</a></div></div>
+      <div class="card hidden" id="clanGuest" style="margin-top:22px"><p>I clan servono un account.</p><div class="row"><a class="save-btn" href="/login?from=ospite" style="display:inline-flex;align-items:center;text-decoration:none">Registrati</a></div></div>
       <div id="clanUser">
         <div class="label section-label">i tuoi clan <span class="val" id="clanCount">0/3</span></div>
         <div class="clan-list" id="clanMine"></div>
@@ -1915,7 +1915,7 @@
       <div id="settingsGuest" class="card hidden" style="margin-top:22px">
         <p>Stai usando la dashboard senza account.</p>
         <p class="hint">Registrati per prendere la tua @, salvare il profilo online, pubblicare template e partecipare al topic. Tutto quello che hai fatto qui viene portato nel nuovo account.</p>
-        <div class="row"><a class="save-btn" id="settingsClaim" href="login.html" style="display:inline-flex;align-items:center;text-decoration:none">Registrati e salva</a><a class="ghost-btn" href="login.html?mode=login">Ho già un account</a></div>
+        <div class="row"><a class="save-btn" id="settingsClaim" href="/login" style="display:inline-flex;align-items:center;text-decoration:none">Registrati e salva</a><a class="ghost-btn" href="/login?mode=login">Ho già un account</a></div>
       </div>
       <div id="settingsUser">
         <div class="label section-label">identità</div>
@@ -1976,7 +1976,7 @@
       <div class="label section-label">i tuoi dati</div>
       <div class="card">
         <p class="hint">Un file con tutto quello che hai messo su 18k.bio: profilo, link, aspetto, carta. Lo puoi tenere come copia.</p>
-        <div class="row" style="margin-top:10px"><button class="ghost-btn" id="exportData" type="button">Scarica i miei dati</button><a class="ghost-btn" href="privacy.html" target="_blank" style="text-decoration:none">Privacy</a><a class="ghost-btn" href="termini.html" target="_blank" style="text-decoration:none">Termini</a></div>
+        <div class="row" style="margin-top:10px"><button class="ghost-btn" id="exportData" type="button">Scarica i miei dati</button><a class="ghost-btn" href="/privacy" target="_blank" style="text-decoration:none">Privacy</a><a class="ghost-btn" href="/termini" target="_blank" style="text-decoration:none">Termini</a></div>
       </div>
     </section>
 
@@ -2181,7 +2181,7 @@
   // showView("customize#c-colors") opens the page and scrolls to that part
   function showView(target) {
     let [name, anchor] = String(target || "").split("#");
-    if (name === "explore") { location.href = "explore.html"; return; }
+    if (name === "explore") { location.href = "/esplora"; return; }
     if (name === "templates") { name = "customize"; anchor = "c-bg"; } // templates are put aside for now
     if (!$("view-" + name)) name = "overview";
     stopFeed();
@@ -3438,7 +3438,7 @@
   const reqWait = () => { let n = 0; try { n = +store.get(REQ_KEY) || 0; } catch (_) { n = 0; } return n > Date.now() ? n : 0; };
   function paintReqState() {
     const n = reqWait(), out = $("phReqOut");
-    if (mode === "guest") { out.innerHTML = 'Per fare una richiesta serve un account. <a href="login.html" style="color:var(--fg)">Registrati</a>'; return; }
+    if (mode === "guest") { out.innerHTML = 'Per fare una richiesta serve un account. <a href="/login" style="color:var(--fg)">Registrati</a>'; return; }
     if (n) out.textContent = "Prossima richiesta dal " + new Date(n).toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" }) + ".";
   }
   function showFound(list) {
@@ -4370,7 +4370,7 @@
   // Only errors of OUR code: browser extensions (crypto wallets, translators, ad blockers) inject
   // their scripts in the page and their errors are not ours (e.g. "window.ethereum...")
   const NOT_OURS = /ResizeObserver|Script error|ethereum|web3|solana|phantom|metamask|tronweb|__gCrWeb|webkit-masked-url|extension:\/\/|chrome-extension|moz-extension|safari-(web-)?extension/i;
-  const ourFile = f => { try { const u = new URL(f, location.href); return u.origin === location.origin && /\.(js|html)$/.test(u.pathname); } catch (_) { return false; } };
+  const ourFile = f => { try { const u = new URL(f, location.href); return u.origin === location.origin && (/\.(js|html)$/.test(u.pathname) || /^\/(dashboard|login|clan|paste|esplora|privacy|termini)?$/.test(u.pathname)); } catch (_) { return false; } };
   addEventListener("error", e => {
     if (!e.message || NOT_OURS.test(e.message + " " + (e.filename || "") + " " + ((e.error && e.error.stack) || ""))) return;
     if (!ourFile(e.filename) || (/\.html$/.test(e.filename) && e.lineno <= 1)) return; // line 1 of the page = injected from outside
@@ -4596,7 +4596,7 @@
           tools.innerHTML = `<select aria-label="Visibilità"><option value="public">Pubblico</option><option value="unlisted">Non in elenco</option><option value="private">Privato</option></select><button type="button" class="ghost-btn sm" data-copy>Link</button><button type="button" class="ghost-btn sm" data-del>Elimina</button>`;
           tools.querySelector("select").value = t.visibility;
           tools.querySelector("select").addEventListener("change", async e => { try { await F.updateDoc(F.doc(db, "templates", t.id), { visibility: e.target.value }); communityCache = null; setStatus("Visibilità aggiornata.", "ok"); } catch (err) { setStatus(friendly(err), "err"); } });
-          tools.querySelector("[data-copy]").addEventListener("click", async () => { const url = `${PUBLIC}/dashboard.html?template=${t.id}`; try { await navigator.clipboard.writeText(url); setStatus("Link copiato: chi lo apre può usare il template.", "ok"); } catch (_) { setStatus(url); } });
+          tools.querySelector("[data-copy]").addEventListener("click", async () => { const url = `${PUBLIC}/dashboard?template=${t.id}`; try { await navigator.clipboard.writeText(url); setStatus("Link copiato: chi lo apre può usare il template.", "ok"); } catch (_) { setStatus(url); } });
           tools.querySelector("[data-del]").addEventListener("click", async () => { if (!confirm(`Eliminare "${t.name}"?`)) return; try { await F.deleteDoc(F.doc(db, "templates", t.id)); communityCache = null; renderTemplates(); } catch (err) { setStatus(friendly(err), "err"); } });
           card.querySelector(".tpl-body").appendChild(tools);
           return card;
@@ -4902,7 +4902,7 @@
       checks: publishChecks(), dirty: isDirty(), lastAt: pub.at, busy: pub.busy, error: pub.error,
       onPublish: () => doPublish("live"), onDraft: () => doPublish("draft"),
       onOpen: () => window.open(`${PUBLIC}/${handle}`, "_blank", "noopener"),
-      onGo: v => showView(v), onClaim: () => { location.href = "login.html"; }
+      onGo: v => showView(v), onClaim: () => { location.href = "/login"; }
     };
     if (pubUI) return pubUI.render(props);
     if (!pubLoading) pubLoading = import("./publish-panel.js").then(m => { $("publishRoot").replaceChildren(); pubUI = m.mount($("publishRoot")); return pubUI; })
@@ -4970,7 +4970,7 @@
       await F.deleteDoc(F.doc(db, "users", uid)).catch(() => {});
       await A.deleteUser(account);
       store.set(DRAFT_KEY, "");
-      location.replace("index.html?addio=1");
+      location.replace("/?addio=1");
     } catch (err) {
       setFormStatus("deleteStatus", err && err.code === "auth/requires-recent-login" ? "Per sicurezza esci, rientra e riprova subito." : "Non riuscito: " + friendly(err), "err");
     }
@@ -5005,9 +5005,9 @@
     } catch (err) { setFormStatus("pwStatus", friendly(err), "err"); }
   });
   $("logoutBtn").addEventListener("click", async () => {
-    if (mode === "guest") { location.href = "login.html?mode=login"; return; }
+    if (mode === "guest") { location.href = "/login?mode=login"; return; }
     try { const { A, auth } = await firebase(); await A.signOut(auth); } catch (_) { /* already out */ }
-    location.replace("index.html");
+    location.replace("/");
   });
 
   /* =========================================================
@@ -5271,7 +5271,7 @@
           meta.append(b, sm);
           const owner = d && d.ownerUid === uid;
           const tools = document.createElement("div"); tools.className = "row";
-          tools.innerHTML = `${draft.primaryClan === tag ? "" : `<button type="button" class="ghost-btn sm" data-primary="${tag}">Rendi principale</button>`}<a class="ghost-btn sm" href="clan.html?tag=${tag}" target="_blank" rel="noopener">Pagina</a>${owner ? `<button type="button" class="ghost-btn sm" data-manage="${tag}">Membri</button>` : ""}<button type="button" class="ghost-btn sm" data-leave="${tag}">${owner && (d.members || 0) <= 1 ? "Elimina" : "Esci"}</button>`;
+          tools.innerHTML = `${draft.primaryClan === tag ? "" : `<button type="button" class="ghost-btn sm" data-primary="${tag}">Rendi principale</button>`}<a class="ghost-btn sm" href="/clan?tag=${tag}" target="_blank" rel="noopener">Pagina</a>${owner ? `<button type="button" class="ghost-btn sm" data-manage="${tag}">Membri</button>` : ""}<button type="button" class="ghost-btn sm" data-leave="${tag}">${owner && (d.members || 0) <= 1 ? "Elimina" : "Esci"}</button>`;
           row.append(pill, meta, tools);
           box.appendChild(row);
         }
@@ -5279,7 +5279,7 @@
       const top = await F.getDocs(F.query(F.collection(db, "clans"), F.orderBy("members", "desc"), F.limit(20)));
       const rows = top.docs.map(d => d.data());
       $("clanLb").replaceChildren(...rows.map((c, i) => {
-        const a = document.createElement("a"); a.className = "lb-row"; a.href = "clan.html?tag=" + c.tag; a.target = "_blank"; a.rel = "noopener";
+        const a = document.createElement("a"); a.className = "lb-row"; a.href = "/clan?tag=" + c.tag; a.target = "_blank"; a.rel = "noopener";
         const n = document.createElement("span"); n.className = "n"; n.textContent = String(i + 1).padStart(2, "0");
         const t = document.createElement("span"); t.textContent = `[${c.tag}] ${c.name}`;
         const m = document.createElement("small"); m.textContent = `${c.members || 0} membri`;
@@ -5452,7 +5452,7 @@
       const snap = await F.getDocs(F.query(F.collection(db, "pastes"), F.where("uid", "==", uid), F.limit(50)));
       const docs = snap.docs.sort((a, b) => (b.data().createdAt?.seconds || 0) - (a.data().createdAt?.seconds || 0));
       box.replaceChildren(...docs.map(d => {
-        const p = d.data(), url = `${SITE}/paste.html?id=${d.id}`;
+        const p = d.data(), url = `${SITE}/paste?id=${d.id}`;
         const card = document.createElement("div"); card.className = "active-card";
         const meta = document.createElement("div"); meta.className = "active-meta";
         const st = document.createElement("strong"); st.textContent = p.title || "Senza titolo";
@@ -5475,7 +5475,7 @@
     try {
       const { F, db } = await firebase();
       const ref = await F.addDoc(F.collection(db, "pastes"), { uid, author: handle, title: $("pasteTitle").value.trim().slice(0, 80), text: text.slice(0, 20000), createdAt: F.serverTimestamp() });
-      const url = `${SITE}/paste.html?id=${ref.id}`;
+      const url = `${SITE}/paste?id=${ref.id}`;
       $("pasteTitle").value = ""; $("pasteText").value = "";
       $("pasteHint").textContent = "";
       copyText(url, "Paste creato, link copiato.");
@@ -5692,7 +5692,7 @@
     if (mode === "guest") {
       $("guestbar").classList.remove("hidden");
       $("guestHandle").textContent = "@" + handle;
-      const claim = `login.html?handle=${encodeURIComponent(handle === "ospite" ? "" : handle)}&from=ospite`;
+      const claim = `/login?handle=${encodeURIComponent(handle === "ospite" ? "" : handle)}&from=ospite`;
       $("guestClaim").href = claim; $("settingsClaim").href = claim;
     }
     draft.appearance = normalizeAppearance(draft.appearance);
@@ -5784,7 +5784,7 @@
       if (!u) return startGuest();
       try {
         const snap = await F.F.getDoc(F.F.doc(F.db, "users", u.uid));
-        if (!snap.exists()) return location.replace("login.html");
+        if (!snap.exists()) return location.replace("/login");
         await startUser(u, snap.data());
       } catch (err) {
         $("loading").textContent = "Impossibile caricare il profilo. Ricarica la pagina o accedi di nuovo.";

@@ -73,7 +73,7 @@
 <div class="msg" id="msg"><span class="loading">caricamento…</span></div>
 <div class="dock"><a class="brand" href="/" id="brand" aria-label="Vai a 18k.bio e crea il tuo profilo"><i>18k.bio</i><span>· crea il tuo profilo →</span></a>
 <button class="like-btn hidden" id="likeBtn" type="button" aria-pressed="false" aria-label="Metti like"><span class="lh"></span><b id="likeN">0</b></button><button class="report-btn hidden" id="reportBtn" type="button">segnala</button></div>
-<div class="like-tip hidden" id="likeTip">Accedi per mettere like. <a id="likeLogin" href="/login.html">Accedi</a></div>
+<div class="like-tip hidden" id="likeTip">Accedi per mettere like. <a id="likeLogin" href="/login">Accedi</a></div>
 <dialog class="report" id="reportDlg">
   <form method="dialog" id="reportForm">
     <b>Segnala questo profilo</b>
@@ -183,7 +183,7 @@
       } catch (_) { /* unknown */ }
       return taken
         ? show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"])
-        : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login.html?handle=" + encodeURIComponent(handle)]);
+        : show("@" + handle + " è libera", "Nessuno l'ha ancora presa. Può essere tua.", ["Prendila", "/login?handle=" + encodeURIComponent(handle)]);
     }
     if (!preview && data.disabled) return show("Account disattivato", "@" + handle + " ha messo in pausa il suo profilo.", ["Vai a 18k.bio", "/"]);
     if (!preview && data.draft) return show("@" + handle, "Questo profilo non è ancora online.", ["Vai a 18k.bio", "/"]);
@@ -241,7 +241,7 @@
       mountProfile(document.getElementById("root"), p, { preview: false, onEvent: () => {}, actions: {} });
       const bar = document.createElement("div");
       bar.className = "own-bar";
-      bar.innerHTML = `<span><b>Anteprima</b> · solo tu la vedi, il profilo non è online</span><a href="/dashboard.html#publish">Pubblica</a>`;
+      bar.innerHTML = `<span><b>Anteprima</b> · solo tu la vedi, il profilo non è online</span><a href="/dashboard#publish">Pubblica</a>`;
       document.body.appendChild(bar);
       return;
     }

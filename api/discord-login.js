@@ -3,7 +3,7 @@ const { limited } = require("./_limit");
 // gives Firebase a signed "custom token" for the uid discord:<id>.
 //   1. GET /api/discord-login            -> sends the user to Discord to say yes
 //   2. GET /api/discord-login?code=...   -> Discord comes back here; we read who it is and go back
-//      to login.html#dt=<token>&dn=<name>&de=<email> (after "#", so it never reaches any server log)
+//      to /login#dt=<token>&dn=<name>&de=<email> (after "#", so it never reaches any server log)
 // Needs two Vercel variables (never in the code): DISCORD_CLIENT_SECRET (Discord app > OAuth2)
 // and FIREBASE_SERVICE_ACCOUNT (Firebase > Impostazioni progetto > Account di servizio > chiave JSON).
 const crypto = require("crypto");
@@ -30,7 +30,7 @@ function customToken(uid, claims) {
 // then send the person to the site address they started from (only our own addresses).
 const HOME = "18kbio.vercel.app";
 const SITES = ["18kbio.xyz", "www.18kbio.xyz", "18kbio.vercel.app"];
-const back = (res, hash, site) => { res.statusCode = 302; res.setHeader("Location", (site && SITES.includes(site) ? `https://${site}` : "") + "/login.html#" + hash); res.end(); };
+const back = (res, hash, site) => { res.statusCode = 302; res.setHeader("Location", (site && SITES.includes(site) ? `https://${site}` : "") + "/login#" + hash); res.end(); };
 
 module.exports = async (req, res) => {
   if (limited(req, res, "login", 30)) return; // traffic guard (see _limit.js)
@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
     if (linking) {
       // back to the dashboard with the Discord id and name: the profile icon will open discord.com/users/<id>
       res.statusCode = 302;
-      res.setHeader("Location", (SITES.includes(site) ? `https://${site}` : "") + "/dashboard.html#" + new URLSearchParams({ dlink: me.id, dname: me.username || "" }).toString());
+      res.setHeader("Location", (SITES.includes(site) ? `https://${site}` : "") + "/dashboard#" + new URLSearchParams({ dlink: me.id, dname: me.username || "" }).toString());
       return res.end();
     }
     const token = customToken("discord:" + me.id, { discord: me.id });

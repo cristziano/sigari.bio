@@ -883,8 +883,8 @@
     <a href="#plans">piani</a>
   </nav>
   <div class="nav-r">
-    <a class="explore-pill" href="explore.html">esplora</a>
-    <a class="ghost" href="login.html?mode=login" id="navLogin">accedi</a>
+    <a class="explore-pill" href="/esplora">esplora</a>
+    <a class="ghost" href="/login?mode=login" id="navLogin">accedi</a>
     <a class="btn" href="#top" id="navClaim" data-mag data-focus-claim>Prendi la tua @</a>
   </div>
 </header>
@@ -927,7 +927,7 @@
           <span class="rar" data-rarity hidden><span class="lbl" data-rarity-name></span><span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>
         </div>
       </form>
-      <div class="hx-alt"><a class="hx-explore" href="explore.html">Esplora i profili <span aria-hidden="true">→</span></a></div>
+      <div class="hx-alt"><a class="hx-explore" href="/esplora">Esplora i profili <span aria-hidden="true">→</span></a></div>
       <div class="moods" hidden><div class="seg"><button type="button" data-mood="smoke" aria-pressed="true">fumo</button></div></div>
     </div>
 
@@ -935,7 +935,7 @@
   </section>
 
   <!-- INDEX -->
-  <a class="explore-band" href="explore.html" aria-label="Esplora tutti i profili">
+  <a class="explore-band" href="/esplora" aria-label="Esplora tutti i profili">
     <span class="eb-k">esplora</span>
     <span class="eb-t">Tutti i profili. <em>Guarda, cerca, metti like.</em></span>
     <span class="eb-go">Apri esplora ↗</span>
@@ -950,7 +950,7 @@
       <h2 class="tc-title">LA TUA<br>CARTA</h2>
       <div class="tc-box"><b>Cos'è la carta?</b><p>È la tua carta d'identità di 18k.bio, con la tua @ sopra. Scegli foto, sticker, bordo e come si apre. Sul tuo profilo c'è il tasto "mostra la mia carta": chi lo preme la vede aprirsi.</p><a href="/1" class="tc-see">Questa è la carta di @1 ↗</a></div>
       <div class="tc-foot">
-        <a href="dashboard.html#card" class="tc-cta" data-guest>CREA LA TUA</a>
+        <a href="/dashboard#card" class="tc-cta" data-guest>CREA LA TUA</a>
       </div>
     </div>
     <div class="tc-contours" aria-hidden="true"></div>
@@ -970,7 +970,7 @@
           <li><button type="button" data-step="2"><b>Font ed effetti</b><span>20 font e gli effetti sul nome.</span><i class="dbar"></i></button></li>
           <li><button type="button" data-step="3"><b>Social</b><span>Discord, Instagram, TikTok, Spotify e tutti gli altri.</span><i class="dbar"></i></button></li>
         </ol>
-        <a class="hx-explore demo-go" href="dashboard.html" data-guest>Prova a modificarlo tu <span aria-hidden="true">→</span></a>
+        <a class="hx-explore demo-go" href="/dashboard" data-guest>Prova a modificarlo tu <span aria-hidden="true">→</span></a>
       </div>
       <div class="demo-r">
         <div class="demo-phone"><div class="demo-pv" id="demoPv"></div></div>
@@ -1059,7 +1059,7 @@
         <p class="sub">Prendine uno e cambialo come vuoi: colori, font, sfondo, musica, tutto. Puoi prendere anche solo un pezzo, oppure pubblicare il tuo.</p>
       </div></div>
       <div class="tg" id="tplGrid"></div>
-      <div class="tg-cta rv"><span><b>Hai fatto qualcosa di bello?</b> Pubblicalo come template e guarda quante persone lo usano.</span><a class="btn" href="dashboard.html#templates" data-guest>Apri i template</a></div>
+      <div class="tg-cta rv"><span><b>Hai fatto qualcosa di bello?</b> Pubblicalo come template e guarda quante persone lo usano.</span><a class="btn" href="/dashboard#templates" data-guest>Apri i template</a></div>
     </div>
   </section>
 
@@ -1078,7 +1078,7 @@
           <h3 id="tpTitle"></h3>
           <p id="tpHint"></p>
           <div class="tp-cd" id="tpCd" aria-label="Tempo che manca alla fine del topic"></div>
-          <a class="btn" href="dashboard.html#topic" data-guest>Partecipa</a>
+          <a class="btn" href="/dashboard#topic" data-guest>Partecipa</a>
         </div>
         <ol class="tp-steps">
           <li><b>01</b><span>Metti la tua risposta sul profilo, dalla dashboard.</span></li>
@@ -1258,8 +1258,8 @@
 
 <footer>
   <div class="foot">
-    <span>Fatto da 18k, tutti i diritti riservati. · <a href="privacy.html" style="color:inherit">Privacy</a> · <a href="termini.html" style="color:inherit">Termini</a></span>
-    <nav aria-label="Piè di pagina"><a href="login.html?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
+    <span>Fatto da 18k, tutti i diritti riservati. · <a href="/privacy" style="color:inherit">Privacy</a> · <a href="/termini" style="color:inherit">Termini</a></span>
+    <nav aria-label="Piè di pagina"><a href="/login?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
   </div>
 </footer>
 
@@ -1339,7 +1339,7 @@
       const { auth, au } = await firebase();
       au.onAuthStateChanged(auth, user => {
         if (!user) return;
-        const c = $("#navClaim"); c.textContent = "Dashboard"; c.href = "dashboard.html"; c.removeAttribute("data-focus-claim");
+        const c = $("#navClaim"); c.textContent = "Dashboard"; c.href = "/dashboard"; c.removeAttribute("data-focus-claim");
         $("#navLogin").hidden = true;
       });
     } catch (_) { /* offline: the page works without it */ }
@@ -1520,7 +1520,7 @@
       if (!state.handle) setStatus("", "prima scrivi la @ che vuoi");
       return;
     }
-    location.href = "login.html?handle=" + encodeURIComponent(state.handle);
+    location.href = "/login?handle=" + encodeURIComponent(state.handle);
   }));
   $$("[data-focus-claim]").forEach(a => a.addEventListener("click", e => {
     if (!a.hasAttribute("data-focus-claim")) return;
@@ -1981,7 +1981,7 @@
     const grid = $("#tplGrid");
     const items = GALLERY.map((t, i) => {
       const [w, r, y, ar] = MESS[i % MESS.length];
-      return `<div class="tg-item rv" style="--d:${(i % 6) * .05}s;--z:${(i * 7) % 5 + 1}"><a class="tg-card" data-guest data-tpl-id="${t.id}" href="dashboard.html" style="--w:${w}px;--r:${r}deg;--y:${y}px;--ar:${ar}" aria-label="Usa questo template"><div class="tg-pv"><div></div></div><span class="tg-use">usalo →</span></a></div>`;
+      return `<div class="tg-item rv" style="--d:${(i % 6) * .05}s;--z:${(i * 7) % 5 + 1}"><a class="tg-card" data-guest data-tpl-id="${t.id}" href="/dashboard" style="--w:${w}px;--r:${r}deg;--y:${y}px;--ar:${ar}" aria-label="Usa questo template"><div class="tg-pv"><div></div></div><span class="tg-use">usalo →</span></a></div>`;
     });
     grid.innerHTML = items.join("");
     $$(".tg-item", grid).forEach(card => io.observe(card));

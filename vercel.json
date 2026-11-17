@@ -10,6 +10,30 @@
       "destination": "/sigari-bio/explore.html"
     },
     {
+      "source": "/dashboard",
+      "destination": "/sigari-bio/dashboard.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/sigari-bio/login.html"
+    },
+    {
+      "source": "/clan",
+      "destination": "/sigari-bio/clan.html"
+    },
+    {
+      "source": "/paste",
+      "destination": "/sigari-bio/paste.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/sigari-bio/privacy.html"
+    },
+    {
+      "source": "/termini",
+      "destination": "/sigari-bio/termini.html"
+    },
+    {
       "source": "/:handle(@[a-zA-Z0-9_]{1,20})",
       "destination": "/api/profile?h=:handle"
     },
@@ -86,6 +110,88 @@
           "value": "public, max-age=604800, stale-while-revalidate=86400"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/dashboard.html",
+      "destination": "/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/login.html",
+      "destination": "/login",
+      "permanent": true
+    },
+    {
+      "source": "/clan.html",
+      "destination": "/clan",
+      "permanent": true
+    },
+    {
+      "source": "/paste.html",
+      "destination": "/paste",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/termini.html",
+      "destination": "/termini",
+      "permanent": true
+    },
+    {
+      "source": "/explore.html",
+      "destination": "/esplora",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/dashboard.html",
+      "destination": "/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/login.html",
+      "destination": "/login",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/clan.html",
+      "destination": "/clan",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/paste.html",
+      "destination": "/paste",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/termini.html",
+      "destination": "/termini",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/explore.html",
+      "destination": "/esplora",
+      "permanent": true
+    },
+    {
+      "source": "/sigari-bio/index.html",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
