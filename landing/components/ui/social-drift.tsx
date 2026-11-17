@@ -24,10 +24,10 @@ export default function SocialDrift() {
       setIcons(cur => {
         const free = POOL.filter(p => !cur.includes(p));
         const next = [...cur];
-        for (let k = 0; k < 2; k++) next[Math.floor(Math.random() * next.length)] = free.splice(Math.floor(Math.random() * free.length), 1)[0];
+        for (let k = 0; k < 3; k++) next[Math.floor(Math.random() * next.length)] = free.splice(Math.floor(Math.random() * free.length), 1)[0];
         return next;
       });
-    }, 2600);
+    }, 1500);
     return () => clearInterval(id);
   }, []);
   return (
