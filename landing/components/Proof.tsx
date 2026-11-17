@@ -9,11 +9,12 @@ import { useT } from "@/lib/i18n";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Pro = { handle: string; name: string; avatar: string; banner: string; views: number; accent: string; socials: string[] };
 
-let topP: Promise<{ list: Pro[]; count: number | null }> | null = null;
+let topP: Promise<{ list: Pro[]; count: number | null; handles: string[] }> | null = null;
 /** The most visited public profiles with a photo, plus how many profiles exist (shared with the Weekly section) */
 export function topProfiles() {
   topP ??= firebase().then(async ({ db, fs }) => {
     const snap = await fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.orderBy("views", "desc"), fs.limit(24)));
+    const handles: string[] = snap.docs.map((d: any) => d.id).filter((h: string) => !h.startsWith("_"));
     const list: Pro[] = snap.docs.map((d: any) => {
       const p = d.data() || {};
       const bg = p.appearance?.bg || {};
@@ -22,7 +23,7 @@ export function topProfiles() {
     }).filter((p: Pro) => p.avatar && !p.handle.startsWith("_")).slice(0, 8);
     let count: number | null = null;
     try { count = (await fs.getCountFromServer(fs.collection(db, "profiles"))).data().count; } catch { count = null; }
-    return { list, count };
+    return { list, count, handles };
   });
   topP.catch(() => { topP = null; });
   return topP;
