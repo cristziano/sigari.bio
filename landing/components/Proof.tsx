@@ -38,21 +38,26 @@ export default function Proof() {
   if (!data || !data.list.length) return null;
   const fmt = (n: number) => n.toLocaleString(lang === "it" ? "it-IT" : "en-US");
 
-  // a quiet strip, not a showcase: small faces, the count, a link to explore
+  // one button: the faces of real profiles, how many there are, and the way to explore them
   return (
-    <section aria-label={t("proofTitle")} className="px-4 py-10 sm:px-[clamp(16px,6vw,96px)]">
-      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: .8 }}
-        className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[13px] text-muted opacity-70 transition-opacity hover:opacity-100">
-        <span className="flex -space-x-2">
-          {data.list.map(p => (
-            <a key={p.handle} href={"/" + p.handle} title={"@" + p.handle} aria-label={"@" + p.handle}
-              className="size-8 rounded-full border-2 border-black bg-[#1c1c1c] bg-cover bg-center grayscale transition-[filter,transform] duration-200 hover:z-10 hover:-translate-y-0.5 hover:grayscale-0"
+    <section aria-label={t("proofTitle")} className="flex justify-center px-4 py-12">
+      <motion.a href="/esplora" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .6 }}
+        whileHover={{ y: -2 }} whileTap={{ scale: .97 }}
+        className="group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02))] py-2 pl-2 pr-5 shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_14px_40px_-18px_rgba(0,0,0,.9)] transition-colors hover:border-white/35">
+        {/* a light that slides across on hover */}
+        <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-[left,opacity] duration-700 group-hover:left-[110%] group-hover:opacity-100" />
+        <span className="flex -space-x-2.5">
+          {data.list.slice(0, 6).map(p => (
+            <span key={p.handle} className="size-10 rounded-full border-2 border-[#0b0b0b] bg-[#1c1c1c] bg-cover bg-center grayscale transition-[filter] duration-300 group-hover:grayscale-0"
               style={{ backgroundImage: url(p.avatar) }} />
           ))}
         </span>
-        <span>{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</span>
-        <a href="/esplora" className="underline-offset-4 transition-colors hover:text-white hover:underline">{t("proofAll")} →</a>
-      </motion.div>
+        <span className="text-left leading-tight">
+          <b className="block text-[15px] font-semibold">{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</b>
+          <span className="text-[13px] text-muted transition-colors group-hover:text-white">{t("proofAll")}</span>
+        </span>
+        <span aria-hidden className="ml-1 grid size-9 place-items-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-1">→</span>
+      </motion.a>
     </section>
   );
 }
