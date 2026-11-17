@@ -6,7 +6,7 @@ Landing page, login, dashboard e pagina pubblica del profilo. Ogni pagina è un 
 
 ```
 sigari-bio/
-├── index.html        Landing: hero con profilo da personalizzare dal vivo, statistiche, template, topic, clan, partner, FAQ
+├── landing/          (creata dalla build) la landing in Next.js: il codice sta in ../landing/, Vercel la costruisce a ogni deploy
 ├── login.html        Login e registrazione (?handle=nome, /accedi apre il login, ?from=ospite porta il profilo dell'ospite nell'account)
 ├── dashboard.html    Dashboard: anche senza account (modalità ospite, salva nel browser)
 ├── profile.html      Pagina pubblica, servita su 18kbio.xyz/nome (in locale: profile.html?u=nome)
@@ -51,7 +51,7 @@ Fuori da questa cartella: `api/profile.js` è una funzione di Vercel. Quando qua
 
 ## Avvio in locale
 
-Apri la cartella in VS Code e avvia **Live Server** su `index.html`. La pagina pubblica in locale: `profile.html?u=nome`.
+Apri la cartella in VS Code e avvia **Live Server** su `dashboard.html` (la landing: `cd landing && npm install && npm run dev`). La pagina pubblica in locale: `profile.html?u=nome`.
 
 ## Dominio e prefissi
 
@@ -67,7 +67,7 @@ Per accenderli (lo fa chi gestisce Vercel e Firebase, ancora da fare):
 - **Comprare** 18k.bio e i prefissi che si vogliono usare.
 - **Vercel → Settings → Domains**: aggiungere ogni dominio. Il codice funziona su tutti senza modifiche, perché le rotte `/nome` e `/@nome` valgono per qualsiasi dominio.
 - **Firebase → Authentication → Settings → Authorized domains**: aggiungerli (senza, il login con Google non va).
-- **Indirizzi assoluti**: `og:image` in index.html, `robots.txt`, `sitemap.xml` (oggi puntano a 18kbio.vercel.app, che funziona): passarli a 18k.bio.
+- **Indirizzi assoluti**: `og:image` in landing/app/layout.tsx, `robots.txt`, `sitemap.xml` (oggi puntano a 18kbio.vercel.app, che funziona): passarli a 18k.bio.
 
 Tutto il resto (link interni, profili, foto, API) usa l'indirizzo da cui si apre il sito, quindi funziona con qualsiasi dominio.
 

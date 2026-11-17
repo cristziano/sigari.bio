@@ -257,7 +257,7 @@ export function mountCard(root, card, data, opts = {}) {
     const handle = info.handle || "tuonome";
     const name = `@${handle}`;
     txt.replaceChildren();
-    if (cur.showBrand) { const b = h("div", "k4-brand"); b.dataset.part = "brand"; b.innerHTML = "18k<i>.bio</i>"; txt.appendChild(b); }
+    if (cur.showBrand) { const b = h("div", "k4-brand"); b.dataset.part = "brand"; b.innerHTML = "18k<i>bio</i>"; txt.appendChild(b); }
     if (cur.showAvatar) {
       const a = h("div", "k4-av"); a.dataset.part = "avatar";
       if (info.avatarUrl) { const i = h("img"); i.alt = ""; i.src = info.avatarUrl; i.onerror = () => { a.textContent = handle[0].toUpperCase(); }; a.appendChild(i); }

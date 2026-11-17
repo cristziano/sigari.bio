@@ -1,9 +1,11 @@
 {
+  "buildCommand": "cd landing && npm ci --no-audit --no-fund && npm run build && rm -rf node_modules .next out",
+  "outputDirectory": ".",
   "cleanUrls": false,
   "rewrites": [
     {
       "source": "/",
-      "destination": "/sigari-bio/index.html"
+      "destination": "/sigari-bio/landing/index.html"
     },
     {
       "source": "/esplora",

@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/* 18kbio landing — the same rules as sigari-bio/DESIGN.md: black and white, Geist,
+   Geist Mono only for @names, links and numbers, Unbounded only for the logo. */
+@theme {
+  --color-bg: #000;
+  --color-s1: #0a0a0a;
+  --color-s2: #141414;
+  --color-fg: #f4f4f4;
+  --color-muted: #9a9a9a;
+  --color-quiet: #5f5f5f;
+  --color-line: rgb(255 255 255 / .10);
+  --color-line-2: rgb(255 255 255 / .20);
+  --font-sans: "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-brand: "Unbounded", "Geist", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-wide: "Syncopate", "Unbounded", sans-serif;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.77, 0, .175, 1);
+}
+
+/* on computers the site is shown at 90% (like the other pages); --vz keeps full-screen heights full */
+@media (min-width: 1100px) { html.z90 { zoom: .9; --vz: 1.1112; } }
+html { background: #000; color: var(--color-fg); scrollbar-color: #2a2a2a #000; scrollbar-width: thin; -webkit-text-size-adjust: 100%; }
+body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+::selection { background: #fff; color: #000; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 6px; }
+@keyframes tick { 50% { opacity: .15; } }
+.tabnum { font-variant-numeric: tabular-nums; }
+.vh { min-height: calc(100vh * var(--vz, 1)); min-height: calc(100svh * var(--vz, 1)); }
+
+/* buttons: one white, one outline; press = scale(.97) */
+.btn, .btn-2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 8px;
+  font: 600 14px/1 var(--font-sans); letter-spacing: -.01em; transition: transform 140ms var(--ease-out), background-color 200ms, border-color 200ms; white-space: nowrap; }
+.btn { background: #fff; color: #000; }
+.btn-2 { border: 1px solid var(--color-line-2); color: #fff; background: rgb(255 255 255 / .02); }
+.btn:active, .btn-2:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: #e6e6e6; }
+  .btn-2:hover { border-color: rgb(255 255 255 / .45); background: rgb(255 255 255 / .06); }
+}
+@media (pointer: coarse) { .btn, .btn-2 { min-height: 44px; } }
+
+/* ---------- claim box ---------- */
+.claim-bar { display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 14px; border: 1px solid var(--color-line-2); border-radius: 12px; background: #0a0a0a;
+  transition: border-color 200ms; }
+.claim-bar:focus-within { border-color: rgb(255 255 255 / .5); }
+.claim-bar[data-kind="ok"] { border-color: rgb(255 255 255 / .75); }
+.claim-bar[data-kind="no"] { border-color: #ff5a5a; }
+.claim-bar input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 15px var(--font-mono); padding: 10px 0; caret-color: #fff; }
+.claim-bar input::placeholder { color: #4d4d4d; }
+.claim-bar .pre { font: 400 15px var(--font-mono); color: #8a8a8a; }
+.shake { animation: shake 360ms var(--ease-out); }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+/* ---------- hero: the name "18kbio" in italic serif, letters in one by one, then a slow wave of light ---------- */
+.hx-name { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.hx-name i { display: inline-block; font-style: inherit; opacity: 0; transform: translateY(.35em) rotate(6deg); filter: blur(6px);
+  animation: hxIn 900ms var(--ease-out) forwards, hxWave 5.5s ease-in-out infinite; animation-delay: var(--d), calc(var(--d) + 1.6s); }
+@keyframes hxIn { to { opacity: 1; transform: none; filter: none; } }
+@keyframes hxWave { 0%, 70%, 100% { text-shadow: none; } 80% { text-shadow: 0 0 18px rgb(255 255 255 / .55); } }
+
+/* ---------- live demo: the steps list and the phone (stop motion) ---------- */
+.demo-steps button { position: relative; display: grid; gap: 4px; width: 100%; text-align: left; padding: 18px 0 20px; border-top: 1px solid var(--color-line);
+  color: var(--color-muted); cursor: pointer; transition: color 200ms ease; }
+.demo-steps b { font-size: clamp(20px, 2vw, 26px); letter-spacing: -.03em; color: var(--color-quiet); transition: color 200ms ease; }
+.demo-steps span { font-size: 15px; max-width: 44ch; }
+.demo-steps button.on b, .demo-steps button.on span { color: var(--color-fg); }
+.demo-steps .dbar { position: absolute; left: 0; top: -1px; height: 1px; width: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
+.demo-steps button.on .dbar { transform: scaleX(1); }
+.demo-steps button.run .dbar { transform: scaleX(0); animation: demobar 3.2s steps(8, end) forwards; }
+@keyframes demobar { to { transform: scaleX(1); } }
+@media (hover: hover) and (pointer: fine) { .demo-steps button:hover b { color: var(--color-fg); } }
+.demo-phone.snap { animation: snapframes .48s steps(1, end); }
+@keyframes snapframes {
+  0% { transform: rotate(-2.2deg) translate(-6px, 4px); }
+  17% { transform: rotate(1.6deg) translate(5px, -3px) scale(1.01); }
+  34% { transform: rotate(-1deg) translate(-3px, -2px); }
+  51% { transform: rotate(.8deg) translate(2px, 2px); }
+  68% { transform: rotate(-.3deg) translate(-1px, 0); }
+  85%, 100% { transform: none; }
+}
+.demo-pv > .pk { position: absolute; left: 0; top: 0; width: 142.85%; height: 142.85%; transform: scale(.7); transform-origin: 0 0; }
+.demo-pv a, .demo-pv button { pointer-events: none; }
+
+/* ---------- cards: film grain ---------- */
+.tc-grain { opacity: .15; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+/* ---------- stats: odometer ---------- */
+.odo { display: flex; font: 700 clamp(54px, 7vw, 104px)/1 var(--font-sans); letter-spacing: -.06em; font-variant-numeric: tabular-nums; height: 1em; overflow: hidden; }
+.odo .d { display: inline-block; height: 1em; overflow: hidden; }
+.odo .d > span { display: flex; flex-direction: column; transition: transform 900ms var(--ease-out); }
+.odo .d i { font-style: normal; height: 1em; line-height: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+  .hx-name i { opacity: 1; transform: none; filter: none; }
+}
