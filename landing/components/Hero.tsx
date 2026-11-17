@@ -1,36 +1,64 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { motion } from "motion/react";
+// Hero. Base: "Shape Landing Hero" by Kokonut UI (21st.dev, MIT): soft pill shapes that drop in and float.
+// Rebuilt in black and white for 18kbio, with glass spheres carrying social logos on the sides
+// (they float and move a little with the mouse, the far ones blurred) and a fine dot grid behind.
+import { useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import Claim from "./Claim";
-import { kit } from "@/lib/site";
-import { useHandle } from "@/lib/handle";
+import { reducedMotion } from "@/lib/site";
 import { useT } from "@/lib/i18n";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
+const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
 
 // a word that rises out of its own box
 function Word({ children, i }: { children: React.ReactNode; i: number }) {
   return (
     <span className="inline-block overflow-hidden pb-[.08em] -mb-[.08em] align-top">
-      <motion.span className="inline-block" initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: .9, ease: EASE, delay: .08 + i * .06 }}>{children}</motion.span>
+      <motion.span className="inline-block" initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: .9, ease: EASE, delay: .3 + i * .06 }}>{children}</motion.span>
     </span>
   );
 }
 
-function Globe() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  const api = useRef<{ setName(n: string): void } | null>(null);
-  const { handle } = useHandle();
-  useEffect(() => {
-    let alive = true;
-    kit.globe().then(m => { if (alive && ref.current) { api.current = m.mountGlobe(ref.current); api.current?.setName(handle); } }).catch(() => {});
-    return () => { alive = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => { api.current?.setName(handle); }, [handle]);
+/** a soft pill that drops in, then floats (Kokonut UI's ElegantShape, in greys) */
+function Pill({ className, delay, w, h, rotate, tint }: { className: string; delay: number; w: number; h: number; rotate: number; tint: string }) {
   return (
-    <motion.canvas ref={ref} aria-hidden initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.6, ease: EASE, delay: .2 }}
-      className="pointer-events-none absolute z-[1] max-[860px]:bottom-[-22%] max-[860px]:h-[62%] max-[860px]:w-full max-[860px]:!opacity-55 min-[861px]:right-0 min-[861px]:top-0 min-[861px]:h-full min-[861px]:w-[62%]" />
+    <motion.div aria-hidden className={`absolute ${className}`} initial={{ opacity: 0, y: -150, rotate: rotate - 15 }} animate={{ opacity: 1, y: 0, rotate }}
+      transition={{ duration: 2.4, delay, ease: [0.23, 0.86, 0.39, 0.96], opacity: { duration: 1.2 } }}>
+      <motion.div animate={{ y: [0, 15, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} style={{ width: w, height: h }} className="relative">
+        <div className={`absolute inset-0 rounded-full border-2 border-white/[.12] bg-gradient-to-r to-transparent backdrop-blur-[2px] shadow-[0_8px_32px_0_rgba(255,255,255,.06)] after:absolute after:inset-0 after:rounded-full after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,.16),transparent_70%)] ${tint}`} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+type Orb = { icon: string; x: string; y: string; size: number; depth: number; dur: number; mobile?: boolean };
+// near = big and sharp, far = small, blurred, faint
+const ORBS: Orb[] = [
+  { icon: "discord", x: "6%", y: "22%", size: 84, depth: 1, dur: 7, mobile: true },
+  { icon: "spotify", x: "14%", y: "68%", size: 58, depth: .6, dur: 9 },
+  { icon: "tiktok", x: "3%", y: "84%", size: 40, depth: .3, dur: 11 },
+  { icon: "instagram", x: "88%", y: "18%", size: 72, depth: .9, dur: 8, mobile: true },
+  { icon: "youtube", x: "80%", y: "74%", size: 92, depth: 1, dur: 10 },
+  { icon: "twitch", x: "93%", y: "52%", size: 44, depth: .35, dur: 12 },
+  { icon: "x", x: "24%", y: "10%", size: 36, depth: .25, dur: 13 },
+  { icon: "telegram", x: "70%", y: "8%", size: 40, depth: .3, dur: 9 },
+];
+
+function GlassOrb({ o, mx, my }: { o: Orb; mx: MotionValue<number>; my: MotionValue<number> }) {
+  const x = useTransform(mx, v => v * 26 * o.depth), y = useTransform(my, v => v * 20 * o.depth);
+  const far = o.depth < .5;
+  return (
+    <motion.div aria-hidden style={{ left: o.x, top: o.y, x, y, filter: far ? `blur(${(1 - o.depth) * 3}px)` : undefined, opacity: .35 + o.depth * .55 }}
+      className={`absolute -translate-x-1/2 -translate-y-1/2 ${o.mobile ? "" : "max-md:hidden"}`}
+      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1.2, ease: EASE, delay: .4 + o.depth * .5 }}>
+      <motion.div animate={reducedMotion() ? undefined : { y: [0, -14, 0], rotate: [0, 4, 0] }} transition={{ duration: o.dur, repeat: Infinity, ease: "easeInOut" }}
+        style={{ width: o.size, height: o.size }}
+        className="grid place-items-center rounded-full border border-white/15 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,.38),rgba(255,255,255,.07)_42%,rgba(0,0,0,.55)_100%)] shadow-[inset_0_-8px_18px_rgba(0,0,0,.6),inset_0_2px_6px_rgba(255,255,255,.25),0_18px_40px_rgba(0,0,0,.6)] backdrop-blur-[3px]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`${ICONS}${o.icon}.svg`} alt="" className="size-[42%] opacity-90 [filter:invert(1)]" loading="lazy" />
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -38,29 +66,55 @@ export default function Hero() {
   const name = "18kbio";
   const { t } = useT();
   const words = t("h1a").split(" ");
+  const mxRaw = useMotionValue(0), myRaw = useMotionValue(0);
+  const mx = useSpring(mxRaw, { stiffness: 40, damping: 18 }), my = useSpring(myRaw, { stiffness: 40, damping: 18 });
+
+  useEffect(() => {
+    if (reducedMotion()) return;
+    const move = (e: PointerEvent) => { if (e.pointerType !== "mouse") return; mxRaw.set(e.clientX / innerWidth - .5); myRaw.set(e.clientY / innerHeight - .5); };
+    addEventListener("pointermove", move, { passive: true });
+    return () => removeEventListener("pointermove", move);
+  }, [mxRaw, myRaw]);
+
   return (
-    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex flex-col justify-center overflow-hidden bg-black max-[860px]:min-h-[770px]">
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_60%_at_20%_40%,rgba(255,255,255,.07),transparent_70%)]" />
-      <Globe />
-      <div className="relative z-[2] flex flex-col items-start px-4 pb-24 pt-[110px] text-left sm:px-[clamp(16px,6vw,96px)] sm:pt-[120px]">
-        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="flex flex-col items-start text-[clamp(40px,6.4vw,92px)] font-bold leading-[1.02] tracking-[-.045em]">
-          <span aria-hidden>{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{i < words.length - 1 ? " " : ""}</span>)}</span>
-          <span aria-hidden>
+    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden bg-black max-md:min-h-[720px]">
+      {/* dot grid + a soft light in the middle + two big blurred spheres that breathe on the sides */}
+      <div aria-hidden className="absolute inset-0 -z-10 opacity-60 [background-image:radial-gradient(rgba(255,255,255,.09)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(70%_60%_at_50%_45%,#000,transparent)]" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_42%,rgba(255,255,255,.07),transparent_70%)]" />
+      {[["-left-[14%] top-[18%]", 0], ["-right-[12%] top-[38%]", 2.5]].map(([pos, d]) => (
+        <motion.div key={pos as string} aria-hidden className={`absolute -z-10 size-[44vw] max-w-[620px] rounded-full bg-[radial-gradient(circle_at_40%_35%,rgba(255,255,255,.14),rgba(255,255,255,.03)_55%,transparent_70%)] blur-[40px] ${pos}`}
+          animate={reducedMotion() ? undefined : { scale: [1, 1.08, 1], opacity: [.8, 1, .8] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: d as number }} />
+      ))}
+
+      <div aria-hidden className="absolute inset-0 overflow-hidden">
+        <Pill delay={.3} w={600} h={140} rotate={12} tint="from-white/[.10]" className="left-[-12%] top-[16%] md:left-[-5%] md:top-[20%]" />
+        <Pill delay={.5} w={500} h={120} rotate={-15} tint="from-white/[.07]" className="right-[-8%] top-[72%] md:right-[0%] md:top-[76%]" />
+        <Pill delay={.4} w={300} h={80} rotate={-8} tint="from-white/[.08]" className="bottom-[5%] left-[4%] md:bottom-[9%] md:left-[10%]" />
+        <Pill delay={.6} w={200} h={60} rotate={20} tint="from-white/[.10]" className="right-[14%] top-[10%] md:right-[20%] md:top-[14%]" />
+        <Pill delay={.7} w={150} h={40} rotate={-25} tint="from-white/[.06]" className="left-[20%] top-[5%] md:left-[24%] md:top-[9%]" />
+        {ORBS.map(o => <GlassOrb key={o.icon} o={o} mx={mx} my={my} />)}
+      </div>
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70" />
+
+      <div className="relative z-[2] flex w-full flex-col items-center px-4 pb-20 pt-[110px] text-center">
+        <motion.a href="/esplora" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: .2 }}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/[.1] bg-white/[.04] px-3 py-1 text-[13px] text-muted transition-colors hover:border-white/25 hover:text-white">
+          <i aria-hidden className="size-2 rounded-full bg-white/80" /> {t("exploreBtn")} <span aria-hidden>→</span>
+        </motion.a>
+        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="text-[clamp(44px,7.4vw,108px)] font-bold leading-[1.02] tracking-[-.045em]">
+          <span aria-hidden className="block">{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{i < words.length - 1 ? " " : ""}</span>)}</span>
+          <span aria-hidden className="block">
             <Word i={words.length}>{t("h1b")}</Word>{" "}
-            <b className="hx-name">{[...name].map((ch, i) => <i key={i} style={{ ["--d" as string]: `${(.47 + i * .07).toFixed(2)}s` }}>{ch}</i>)}</b>
+            <b className="hx-name">{[...name].map((ch, i) => <i key={i} style={{ ["--d" as string]: `${(.7 + i * .07).toFixed(2)}s` }}>{ch}</i>)}</b>
           </span>
         </h1>
-        <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, ease: EASE, delay: .55 }}
-          className="mt-[22px] max-w-[46ch] text-[clamp(15px,1.4vw,17px)] leading-[1.55] text-muted [text-wrap:pretty]">
+        <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: EASE, delay: .75 }}
+          className="mt-6 max-w-[46ch] text-[clamp(15px,1.4vw,18px)] leading-[1.55] text-muted [text-wrap:pretty]">
           {t("heroDesc")}
         </motion.p>
-        <motion.div className="mt-[30px] w-full" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, ease: EASE, delay: .68 }}>
+        <motion.div className="mt-9 flex w-full justify-center text-left" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: EASE, delay: .9 }}>
           <Claim id="h1in" />
         </motion.div>
-        <motion.a href="/esplora" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .8, delay: .85 }}
-          className="group mt-7 inline-flex min-h-[46px] items-center gap-2.5 rounded-xl border border-white/55 px-5 text-[15px] font-semibold transition-colors active:scale-[.97] hover:border-white hover:bg-white/14">
-          {t("exploreBtn")} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-        </motion.a>
       </div>
     </section>
   );

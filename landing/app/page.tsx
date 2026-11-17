@@ -25,11 +25,11 @@ function Page() {
       <Nav />
       <main id="main">
         <Hero />
-        <Proof />
         <Cards />
         <EditDemo />
         <Stats />
         <Weekly />
+        <Proof />
         <Plans />
         <Final onSeen={setAtFinal} />
       </main>
