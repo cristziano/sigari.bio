@@ -80,6 +80,7 @@ function SceneClaim() {
 /** 2: a real profile of the site, built piece by piece, with its socials as logos */
 function SceneCompose() {
   const top = useTop();
+  const { t, lang } = useT();
   const p = top[0];
   if (!p) return null;
   const acc = p.accent && p.accent.toLowerCase() !== "#ffffff" ? p.accent : "#ffffff";
@@ -97,7 +98,7 @@ function SceneCompose() {
             {socials.map(s => <span key={s} className="grid size-8 place-items-center rounded-full border border-line-2"><Logo s={s} className="size-3.5" /></span>)}
           </motion.div>
         )}
-        <motion.span {...piece(.55)} className="mt-4 block rounded-xl border py-2.5 text-[13px]" style={{ borderColor: acc + "55", color: acc }}>{p.views.toLocaleString("it-IT")} visite</motion.span>
+        <motion.span {...piece(.55)} className="mt-4 block rounded-xl border py-2.5 text-[13px]" style={{ borderColor: acc + "55", color: acc }}>{p.views.toLocaleString(lang === "it" ? "it-IT" : "en-US")} {t("howVisits")}</motion.span>
       </div>
     </a>
   );

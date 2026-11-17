@@ -31,6 +31,7 @@ const D = {
   howRarity: ["rarità", "rarity"], howRarities: ["leggendaria|epica|rara|classica", "legendary|epic|rare|classic"],
   howFeats: ["Link|Musica|Statistiche|Carta|QR", "Links|Music|Stats|Card|QR"],
   howReal: ["profili veri su 18kbio", "real profiles on 18kbio"],
+  howVisits: ["visite", "visits"],
   howTypeTop: ["scrivi la tua @ in cima alla pagina", "type your @ at the top of the page"],
   howSteps: [["Prendi la tua @|Scegli il nome: 18kbio.xyz/iltuonome è tuo, nessun altro può averlo.", "Componi il profilo|Colori, sfondo, musica, link e la tua carta. Lo vedi cambiare mentre lo fai.", "Condividilo ovunque|Nella bio di TikTok e Instagram, nello stato di Discord o con il QR."].join("\n"),
     ["Claim your @|Pick the name: 18kbio.xyz/yourname is yours, nobody else can have it.", "Build your profile|Colours, background, music, links and your card. You watch it change as you go.", "Share it everywhere|In your TikTok and Instagram bio, your Discord status or with the QR."].join("\n")],
