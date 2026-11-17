@@ -7,7 +7,7 @@ const { discord, guildOf, ALBUMS } = require("./_discord");
 
 const YES = "✅", NO = "❌";
 const LINK = /(?:18kbio\.xyz|18k\.bio|18kbio\.vercel\.app)\/@?([a-z0-9_]{1,20})(?![a-z0-9_])/i;
-const NOT_HANDLES = ["api", "sigari-bio", "dashboard", "login", "explore", "esplora", "clan", "paste", "privacy", "termini", "index"];
+const NOT_HANDLES = ["api", "sigari-bio", "dashboard", "login", "explore", "esplora", "clan", "paste", "privacy", "termini", "index", "accedi"];
 
 let chanP = null;
 function profilesChannel() {

@@ -7,7 +7,7 @@ Landing page, login, dashboard e pagina pubblica del profilo. Ogni pagina è un 
 ```
 sigari-bio/
 ├── index.html        Landing: hero con profilo da personalizzare dal vivo, statistiche, template, topic, clan, partner, FAQ
-├── login.html        Login e registrazione (?handle=nome, ?mode=login, ?from=ospite porta il profilo dell'ospite nell'account)
+├── login.html        Login e registrazione (?handle=nome, /accedi apre il login, ?from=ospite porta il profilo dell'ospite nell'account)
 ├── dashboard.html    Dashboard: anche senza account (modalità ospite, salva nel browser)
 ├── profile.html      Pagina pubblica, servita su 18kbio.xyz/nome (in locale: profile.html?u=nome)
 ├── explore.html      Esplora i profili: nuovi, più visti, cerca una @

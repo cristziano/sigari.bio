@@ -28,6 +28,6 @@ export async function setLike(F, db, app, handle, on) {
   await b.commit();
 }
 
-export const loginUrl = () => "/login?mode=login&next=" + encodeURIComponent(location.pathname + location.search);
+export const loginUrl = () => "/accedi?next=" + encodeURIComponent(location.pathname + location.search);
 
 export const HEART = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4.5 7 4.5c2 0 3.8 1.1 5 2.8 1.2-1.7 3-2.8 5-2.8 3.4 0 5.6 3.1 4.3 6.6-1.8 4.8-9.3 9.4-9.3 9.4z" fill="currentColor"/></svg>';

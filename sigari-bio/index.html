@@ -884,7 +884,7 @@
   </nav>
   <div class="nav-r">
     <a class="explore-pill" href="/esplora">esplora</a>
-    <a class="ghost" href="/login?mode=login" id="navLogin">accedi</a>
+    <a class="ghost" href="/accedi" id="navLogin">accedi</a>
     <a class="btn" href="#top" id="navClaim" data-mag data-focus-claim>Prendi la tua @</a>
   </div>
 </header>
@@ -1259,7 +1259,7 @@
 <footer>
   <div class="foot">
     <span>Fatto da 18k, tutti i diritti riservati. · <a href="/privacy" style="color:inherit">Privacy</a> · <a href="/termini" style="color:inherit">Termini</a></span>
-    <nav aria-label="Piè di pagina"><a href="/login?mode=login">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
+    <nav aria-label="Piè di pagina"><a href="/accedi">accedi</a><a href="#top" data-focus-claim>prendila</a><a href="https://discord.gg/18k" target="_blank" rel="noopener">discord</a></nav>
   </div>
 </footer>
 
@@ -1280,7 +1280,7 @@
     document.body.appendChild(n); setTimeout(() => n.remove(), 6000);
     history.replaceState(null, "", location.pathname);
   }
-  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini", "accedi"];
   const state = { handle: "", avail: null, mood: "smoke" };
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* storage blocked */ } } };
   const rarity = h => h.length <= 3 ? ["leggendaria", 4] : h.length === 4 ? ["epica", 3] : h.length === 5 ? ["rara", 2] : ["classica", 1];
@@ -1309,7 +1309,7 @@
   function renderBoard() {
     if (!boardSeen) return;
     const h = state.handle;
-    flapTo(board[0], center("18K.BIO/"));
+    flapTo(board[0], center("18KBIO/"));
     flapTo(board[1], center("@" + (h || "TUONOME")));
     const st = !h ? "PRENDILA" : state.avail === true ? "LIBERA" : state.avail === false ? "GIA PRESA" : rarity(h)[0].toUpperCase();
     flapTo(board[2], center(st));
@@ -1901,7 +1901,7 @@
       ["pixel", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="dith"></div>${brand()}<div class="who" style="font:400 8cqw 'Silkscreen', monospace;text-shadow:0 0 0 #000, 2px 2px 0 #000">${AT()}</div><div class="num" style="bottom:26%;font-family:'Silkscreen',monospace;font-size:3.6cqw">${num()}</div>`]],
       ["polaroid", () => ["light", `<div style="position:absolute;inset:0;background:#d9d9d9"></div><div class="pol" style="left:${R(46, 58)}%;top:${R(6, 14)}%;transform:rotate(${R(-12, 12)}deg)"><img src="${photo(pick(PHOTOS), 500)}" alt="" loading="lazy"></div><div class="tape" style="left:${R(56, 66)}%;top:${R(2, 6)}%;transform:rotate(${R(-20, 20)}deg)"></div>${brand()}<div class="who" style="font:400 9cqw 'Permanent Marker', cursive">${AT()}</div>${stk(pick(["heart", "star", "flower"]), R(8, 30), R(56, 64), 10, R(-20, 20))}`]],
       ["cromo", () => ["light", `<div style="position:absolute;inset:0;background:conic-gradient(from ${R(0, 360)}deg at ${R(30, 70)}% ${R(30, 70)}%, #f5f5f5, #6f6f6f, #fdfdfd, #3c3c3c, #e0e0e0, #8a8a8a, #f5f5f5)"></div>${brand()}<div class="num">${num()}</div><div class="who" style="font:400 7cqw 'Rubik Mono One', sans-serif;text-shadow:0 1px 0 rgba(255,255,255,.8), 0 -1px 0 rgba(0,0,0,.4)">${AT()}</div><div class="meta2">VALIDA<br>PER SEMPRE</div>`]],
-      ["scontrino", () => ["light", `<div style="position:absolute;inset:0;background:#f4f2ee"></div><div class="lines" style="left:6%;top:9%;font:400 3.6cqw/1.35 'Space Mono', monospace">18K.BIO  ·  SCONTRINO\n------------------------\n1x NOME ........... ${AT()}\n1x GLOW ........... SÌ\n1x FUMO ........... 80%\nTOTALE ............ 0,00€</div><div class="bar" style="left:6%;bottom:9%"></div><div class="meta2" style="font-family:'Space Mono',monospace">GRAZIE<br>E ARRIVEDERCI</div>`]],
+      ["scontrino", () => ["light", `<div style="position:absolute;inset:0;background:#f4f2ee"></div><div class="lines" style="left:6%;top:9%;font:400 3.6cqw/1.35 'Space Mono', monospace">18KBIO  ·  SCONTRINO\n------------------------\n1x NOME ........... ${AT()}\n1x GLOW ........... SÌ\n1x FUMO ........... 80%\nTOTALE ............ 0,00€</div><div class="bar" style="left:6%;bottom:9%"></div><div class="meta2" style="font-family:'Space Mono',monospace">GRAZIE<br>E ARRIVEDERCI</div>`]],
       ["rivista", () => ["", `<img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy"><div class="shade2"></div><div class="big" style="left:5%;top:4%;font:italic 700 15cqw 'Bodoni Moda', serif;letter-spacing:-.04em">18K</div><div class="who" style="font:italic 400 7.5cqw 'Bodoni Moda', serif">${AT()}</div><div class="meta2" style="font-family:'Bodoni Moda',serif;font-style:italic">numero ${Math.floor(R(1, 40))}<br>bianco e nero</div>`]],
       ["glitch", () => ["", `<div style="position:absolute;inset:0;background:#000"></div><img class="ph" src="${photo(pick(PHOTOS))}" alt="" loading="lazy" style="opacity:.35;clip-path:inset(${R(10, 40)}% 0 ${R(20, 40)}% 0);transform:translateX(${R(-6, 6)}%)"><div class="who" style="bottom:auto;top:${R(30, 50)}%;font:400 12cqw 'Rubik Glitch', sans-serif">${AT()}</div>${brand()}<div class="num">${num()}</div>`]],
       ["minimal", () => ["light", `<div style="position:absolute;inset:0;background:#fafafa"></div><div class="big" style="right:${R(4, 12)}%;top:${R(4, 20)}%;font:400 46cqw 'Major Mono Display', monospace;color:#111">@</div>${brand()}<div class="who" style="font:500 5.4cqw var(--sans);letter-spacing:-.02em">${AT()}</div><div class="meta2">${rarity(state.handle || "tuonome")[0]}</div>`]],

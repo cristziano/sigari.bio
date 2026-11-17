@@ -1915,7 +1915,7 @@
       <div id="settingsGuest" class="card hidden" style="margin-top:22px">
         <p>Stai usando la dashboard senza account.</p>
         <p class="hint">Registrati per prendere la tua @, salvare il profilo online, pubblicare template e partecipare al topic. Tutto quello che hai fatto qui viene portato nel nuovo account.</p>
-        <div class="row"><a class="save-btn" id="settingsClaim" href="/login" style="display:inline-flex;align-items:center;text-decoration:none">Registrati e salva</a><a class="ghost-btn" href="/login?mode=login">Ho già un account</a></div>
+        <div class="row"><a class="save-btn" id="settingsClaim" href="/login" style="display:inline-flex;align-items:center;text-decoration:none">Registrati e salva</a><a class="ghost-btn" href="/accedi">Ho già un account</a></div>
       </div>
       <div id="settingsUser">
         <div class="label section-label">identità</div>
@@ -2959,7 +2959,7 @@
   /* =========================================================
      Carta: the identity card editor (studio) and the public link
      ========================================================= */
-  const RESERVED_NAMES = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
+  const RESERVED_NAMES = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini", "accedi"];
   const cardInfo = () => ({ handle, avatarUrl: draft.avatarUrl, displayName: draft.displayName });
   let cardThumb = null, cardStage = null, selSticker = "";
   const C = {
@@ -5005,7 +5005,7 @@
     } catch (err) { setFormStatus("pwStatus", friendly(err), "err"); }
   });
   $("logoutBtn").addEventListener("click", async () => {
-    if (mode === "guest") { location.href = "/login?mode=login"; return; }
+    if (mode === "guest") { location.href = "/accedi"; return; }
     try { const { A, auth } = await firebase(); await A.signOut(auth); } catch (_) { /* already out */ }
     location.replace("/");
   });

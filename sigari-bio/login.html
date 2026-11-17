@@ -180,7 +180,7 @@
   <div class="wrap">
     <a class="logo" href="/">18k<span>bio</span></a>
     <a class="back" href="/">&larr; Torna alla home</a>
-    <span class="brand-id">18K.BIO / ACCESSO</span>
+    <span class="brand-id">18KBIO / ACCESSO</span>
     <h1 id="authTitle">Prendi la tua @.</h1>
     <p class="sub" id="authSub">Hai già un account? <a id="toggleMode">Accedi</a></p>
 
@@ -233,7 +233,7 @@
 <section class="auth hidden" id="pick">
   <div class="wrap">
     <a class="logo" href="/">18k<span>bio</span></a>
-    <span class="brand-id">18K.BIO / ULTIMO PASSO</span>
+    <span class="brand-id">18KBIO / ULTIMO PASSO</span>
     <h1>Scegli la tua @.</h1>
     <p class="sub">Ultimo passo: sarà il tuo link <b id="pickUrl">18kbio.xyz/…</b></p>
     <form id="pickForm" novalidate>
@@ -277,7 +277,7 @@
   // 18kbio.xyz/<name> is the profile address, so the names of the site's own pages are reserved
   // ?next=/path brings the user back after login (e.g. to like a profile); only paths on this site
   const NEXT = (() => { const n = new URLSearchParams(location.search).get("next") || ""; return /^\/(?!\/)[\w\-./?=&%@]*$/.test(n) ? n : "/dashboard"; })();
-  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini"];
+  const RESERVED = ["api", "404", "www", "admin", "dashboard", "login", "explore", "esplora", "clan", "clans", "paste", "profile", "index", "settings", "help", "sigari", "studios", "404studios", "18k", "privacy", "termini", "accedi"];
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -324,6 +324,12 @@
 
   function setMode(m) {
     mode = m;
+    // clean address: /accedi or /login (the other ?params stay)
+    if (/^\/(login|accedi)$/.test(location.pathname)) {
+      const q = new URLSearchParams(location.search); q.delete("mode");
+      const s = q.toString();
+      history.replaceState(null, "", (m === "login" ? "/accedi" : "/login") + (s ? "?" + s : "") + location.hash);
+    }
     const signup = m === "signup";
     $("authTitle").textContent = signup ? "Crea il tuo account." : "Eccoti di nuovo.";
     $("authSub").firstChild.textContent = signup ? "Hai già un account? " : "Sei nuovo? ";
@@ -565,7 +571,7 @@
 
   // Coming from the landing page: ?handle=name prefills the @, ?mode=login opens the login form.
   const params = new URLSearchParams(location.search);
-  setMode(params.get("mode") === "login" ? "login" : "signup");
+  setMode(location.pathname.startsWith("/accedi") || params.get("mode") === "login" ? "login" : "signup");
   const preset = (params.get("handle") || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
   if (params.get("from") === "ospite") {
     $("authTitle").textContent = "Salva il tuo profilo.";

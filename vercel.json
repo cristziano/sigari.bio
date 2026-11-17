@@ -18,6 +18,10 @@
       "destination": "/sigari-bio/login.html"
     },
     {
+      "source": "/accedi",
+      "destination": "/sigari-bio/login.html"
+    },
+    {
       "source": "/clan",
       "destination": "/sigari-bio/clan.html"
     },
@@ -90,7 +94,7 @@
       ]
     },
     {
-      "source": "/(dashboard|login)(.html)?",
+      "source": "/(dashboard|login|accedi)(.html)?",
       "headers": [
         {
           "key": "X-Frame-Options",

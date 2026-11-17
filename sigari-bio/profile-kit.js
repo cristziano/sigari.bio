@@ -1818,7 +1818,7 @@ function guestbookNode(actions) {
     if (!text) return;
     bt.disabled = true; out.textContent = "…";
     try { await actions.guestbook.sign(text); f.reset(); out.textContent = "Firmato."; paint(await actions.guestbook.list()); }
-    catch (err) { out.innerHTML = ""; if (err && err.login) { out.append("Per firmare serve un account. "); const a = el("a", null, "Accedi"); a.href = "/login?mode=login"; out.appendChild(a); } else out.textContent = "Non firmato. Riprova."; }
+    catch (err) { out.innerHTML = ""; if (err && err.login) { out.append("Per firmare serve un account. "); const a = el("a", null, "Accedi"); a.href = "/accedi"; out.appendChild(a); } else out.textContent = "Non firmato. Riprova."; }
     bt.disabled = false;
   });
   return f;
