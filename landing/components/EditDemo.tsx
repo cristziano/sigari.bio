@@ -1,6 +1,6 @@
 "use client";
 // "Lo cambi come vuoi": the real profile of @1 built step by step on a phone, in stop motion.
-// If @1 can't be read, a full example profile is shown, never an empty phone.
+// If @1 can't be read or is still plain, a full example profile is shown, never an empty phone.
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { kit, profileOfOne, reducedMotion } from "@/lib/site";
@@ -34,7 +34,9 @@ export default function EditDemo() {
       const p = await profileOfOne();
       const plain = pk.normalizeAppearance({ ...pk.DEFAULT_APPEARANCE, effect: "none" });
       let full: any, who: any;
-      if (p) {
+      // @1 is used only if it has something to show (a photo or a background); otherwise the example
+      const rich = p && (p.avatarUrl || (p.appearance?.bg && p.appearance.bg.type && p.appearance.bg.type !== "color"));
+      if (rich) {
         const pa = p.appearance || {};
         full = pk.normalizeAppearance({ ...pa, effect: pa.effect || "none", music: { ...(pa.music || {}), type: "none" }, sfx: { ...(pa.sfx || {}), on: false } });
         who = { handle: "1", displayName: p.displayName || "1", bio: p.bio || "", avatarUrl: p.avatarUrl || "", banner: p.banner, badges: p.badges || [], views: p.views || 0,
