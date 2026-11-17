@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
 import Claim from "./Claim";
 import { focusClaim, useHandle } from "@/lib/handle";
-import { useT, type Lang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
   const ref = useRef<HTMLElement>(null);
@@ -23,7 +23,7 @@ export function Final({ onSeen }: { onSeen: (v: boolean) => void }) {
 }
 
 export function Footer() {
-  const { t, lang, setLang } = useT();
+  const { t } = useT();
   return (
     <footer className="border-t border-line px-4 py-7 font-mono text-xs text-muted sm:px-[clamp(16px,10vw,144px)]">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -32,9 +32,6 @@ export function Footer() {
           <a href="/accedi" className="hover:text-white">{t("login")}</a>
           <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="hover:text-white">{t("footClaim")}</a>
           <a href="https://discord.gg/18k" target="_blank" rel="noopener" className="hover:text-white">discord</a>
-          <span role="group" aria-label={t("langSwitch")} className="flex gap-1">
-            {(["it", "en"] as Lang[]).map(l => <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={`uppercase ${lang === l ? "text-white underline underline-offset-4" : "hover:text-white"}`}>{l}</button>)}
-          </span>
         </nav>
       </div>
     </footer>

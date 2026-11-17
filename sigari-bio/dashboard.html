@@ -128,12 +128,17 @@
   .st-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 12px; border:1px solid var(--b); border-radius:12px; font-size:13.5px; }
   .st-row b { font-family:"Geist Mono",monospace; } .st-row span { color:var(--m); flex:1; min-width:140px; }
   .st-dot { margin-left:auto; min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:#e5484d; color:#fff; font:700 10.5px/18px "Geist",sans-serif; text-align:center; }
-  .soontag { margin-left:auto; position:relative; font:600 9.5px "Geist Mono",monospace; letter-spacing:.12em; color:var(--d); padding:2px 6px; border:1px dashed var(--b); border-radius:6px; }
+  .soontag { margin-left:auto; font:500 10.5px "Geist",sans-serif; color:var(--m); padding:2px 8px; background:rgba(255,255,255,.06); border-radius:999px; }
   #nav button:has(.soontag) > span:not(.soontag), #nav button:has(.soontag) svg { opacity:.45; }
   .view.soon { position:relative; }
-  .view.soon > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
-  .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:10px; padding:26px 16px; margin-bottom:-120px; text-align:center; pointer-events:none; }
-  .soon-veil span { font-size:13px; color:var(--m); }
+  .view.soon > :not(.soon-veil) { opacity:.22; filter:grayscale(1); pointer-events:none; user-select:none; }
+  /* "In arrivo": one quiet card in the middle, the part behind simply faded */
+  .soon-veil { position:sticky; top:30%; z-index:5; display:flex; flex-direction:column; align-items:center; gap:6px; width:max-content; max-width:min(340px, 90%); margin:0 auto -120px; padding:18px 22px; text-align:center; pointer-events:none;
+    background:rgba(10,10,10,.92); border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 50px -20px rgba(0,0,0,.9); }
+  .soon-veil span { font-size:13px; color:var(--m); line-height:1.45; }
+  .soon-t { display:inline-flex; align-items:center; gap:8px; font:600 16px/1.2 "Geist",sans-serif; letter-spacing:-.01em; color:var(--fg); }
+  .soon-t i { width:7px; height:7px; border-radius:50%; background:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.12); animation:soonPulse 2.4s ease-in-out infinite; }
+  @keyframes soonPulse { 50% { opacity:.35; } }
   /* picker: centred window, dark page around it; bottom sheet on phones */
   .pkr { position:fixed; inset:0; z-index:4500; display:grid; place-items:center; padding:16px; background:rgba(0,0,0,0); backdrop-filter:blur(0); -webkit-backdrop-filter:blur(0); transition:background .2s, backdrop-filter .2s; }
   .pkr.in { background:rgba(0,0,0,.74); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
@@ -237,21 +242,11 @@
   .dc-link-t span { font-size:13px; color:var(--m); }
   /* one card "coming soon" (e.g. Last.fm): greyed out, not clickable, the label in the middle */
   .soon-card { position:relative; overflow:hidden; }
-  .soon-card > :not(.soon-veil) { opacity:.28; filter:grayscale(1) blur(1.2px); pointer-events:none; user-select:none; }
-  .soon-card .soon-veil { position:absolute; inset:0; top:0; justify-content:center; margin:0; padding:12px; }
+  .soon-card > :not(.soon-veil) { opacity:.22; filter:grayscale(1); pointer-events:none; user-select:none; }
+  .soon-card .soon-veil { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%); justify-content:center; margin:0; padding:12px 18px; }
   .soon-mini { min-height:64px; }
   .soon-mini .soon-veil { flex-direction:row; padding:0 12px; }
-  .soon-mini .soon-veil b { font-size:20px; }
-  .glitch { position:relative; display:inline-block; font:800 clamp(30px,6vw,56px)/1 "Geist Mono",monospace; letter-spacing:-.02em; color:var(--fg); }
-  .glitch::before, .glitch::after { content:attr(data-text); position:absolute; inset:0; overflow:hidden; }
-  .glitch::before { color:#ff2a6d; animation:gl1 2.6s infinite steps(1,end); mix-blend-mode:screen; }
-  .glitch::after { color:#05d9e8; animation:gl2 2.1s infinite steps(1,end); mix-blend-mode:screen; }
-  @keyframes gl1 { 0%,100%{clip-path:inset(0 0 100% 0);transform:none} 8%{clip-path:inset(10% 0 60% 0);transform:translate(-4px,1px)} 12%{clip-path:inset(55% 0 20% 0);transform:translate(3px,-1px)} 16%{clip-path:inset(0 0 100% 0)} 54%{clip-path:inset(30% 0 45% 0);transform:translate(-3px,0)} 58%{clip-path:inset(0 0 100% 0)} }
-  @keyframes gl2 { 0%,100%{clip-path:inset(100% 0 0 0);transform:none} 20%{clip-path:inset(70% 0 5% 0);transform:translate(4px,0)} 24%{clip-path:inset(20% 0 65% 0);transform:translate(-3px,1px)} 28%{clip-path:inset(100% 0 0 0)} 76%{clip-path:inset(40% 0 40% 0);transform:translate(2px,-1px)} 80%{clip-path:inset(100% 0 0 0)} }
-  .soontag::after { content:""; }
-  #nav button:hover .soontag { animation:gl3 .4s steps(2,end) 2; }
-  @keyframes gl3 { 50% { transform:translate(-1px,1px) skewX(-8deg); color:#ff2a6d; } }
-  @media (prefers-reduced-motion:reduce) { .glitch::before, .glitch::after { animation:none; } }
+  .soon-mini .soon-veil { gap:10px; }
   .gc-quiet .label, .gc-quiet input { opacity:.8; }
   .nav-group summary { list-style:none; display:flex; align-items:center; justify-content:space-between; padding:8px 12px; font:500 11px "Geist Mono",monospace; letter-spacing:.06em; text-transform:lowercase; color:var(--d); cursor:pointer; user-select:none; border-radius:8px; }
   .nav-group summary::-webkit-details-marker { display:none; }
@@ -1653,7 +1648,7 @@
 
       <div class="label section-label">spotify</div>
       <div class="card lf-card sp-card soon-card">
-        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Spotify arriva presto.</span></div>
+        <div class="soon-veil"><b class="soon-t"><i aria-hidden="true"></i>In arrivo</b><span>Spotify arriva presto.</span></div>
         <div class="lf-row">
           <div class="lf-logo" aria-hidden="true" style="background:#1db954;color:#000">sp</div>
           <div class="lf-txt"><b id="spState">Spotify non collegato</b><span>Collegalo: sul profilo appare la canzone che stai ascoltando adesso.</span></div>
@@ -1664,7 +1659,7 @@
 
       <div class="label section-label">last.fm</div>
       <div class="card lf-card soon-card">
-        <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Last.fm arriva presto.</span></div>
+        <div class="soon-veil"><b class="soon-t"><i aria-hidden="true"></i>In arrivo</b><span>Last.fm arriva presto.</span></div>
         <div class="lf-row">
           <div class="lf-logo" aria-hidden="true">as</div>
           <div class="lf-txt"><b id="lfState">Last.fm non collegato</b><span id="lfSub">Collega il tuo account: sul profilo appaiono la tua foto Last.fm, quanti ascolti hai e cosa stai ascoltando adesso.</span></div>
@@ -1768,7 +1763,7 @@
     </section>
 
     <section class="view hidden soon" id="view-topic">
-      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
+      <div class="soon-veil"><b class="soon-t"><i aria-hidden="true"></i>In arrivo</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Topic della settimana</h2>
       <p class="desc">Ogni settimana c'è una cosa da mettere sul profilo. Chi la fa meglio vince il badge e finisce in cima alla pagina principale.</p>
       <div class="topic-hero" style="margin-top:22px">
@@ -1789,7 +1784,7 @@
     </section>
 
     <section class="view hidden soon" id="view-clans">
-      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
+      <div class="soon-veil"><b class="soon-t"><i aria-hidden="true"></i>In arrivo</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Clan</h2>
       <p class="desc">Un gruppo con la sua TAG riservata, da 2 a 4 caratteri. Puoi stare in 3 clan: il principale appare per primo, pieno, sotto il tuo nome.</p>
       <div class="card hidden" id="clanGuest" style="margin-top:22px"><p>I clan servono un account.</p><div class="row"><a class="save-btn" href="/login?from=ospite" style="display:inline-flex;align-items:center;text-decoration:none">Registrati</a></div></div>
@@ -1817,7 +1812,7 @@
     </section>
 
     <section class="view hidden soon" id="view-inbox">
-      <div class="soon-veil"><b class="glitch" data-text="COMING SOON">COMING SOON</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
+      <div class="soon-veil"><b class="soon-t"><i aria-hidden="true"></i>In arrivo</b><span>Arriva presto. Intanto puoi dare un'occhiata.</span></div>
       <h2>Messaggi</h2>
       <p class="desc">Il modulo contatti, la newsletter e il guestbook del tuo profilo. Attivali qui, poi salva.</p>
       <div class="card" style="margin-top:22px">
@@ -2164,7 +2159,7 @@
     let closed = [];
     // First visit: only the essentials open, the rest one tap away
     try { const s = store.get(NAV_KEY); closed = s ? JSON.parse(s) : ["avanzate", "community", "image host"]; } catch (_) { closed = []; }
-    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag === "soon" ? '<span class="soontag" data-text="SOON">SOON</span>' : tag === "staff" ? '<span class="newtag">staff</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
+    const item = ([v, label, icon, tag]) => `<button type="button" data-view="${v}"${v === "customize" ? ' class="main-item"' : ""}>${I(icon)}<span>${label}</span>${v === "links" ? '<span class="nbadge" id="linkBadge">0</span>' : v === "explore" ? '<span class="ext">↗</span>' : tag === "soon" ? '<span class="soontag">presto</span>' : tag === "staff" ? '<span class="newtag">staff</span>' : tag ? `<span class="newtag">${tag}</span>` : ""}</button>`;
     $("nav").innerHTML = NAV.map(([group, items]) => !group ? `<div class="nav-top">${items.map(item).join("")}</div>` : `<details class="nav-group"${closed.includes(group) ? "" : " open"} data-group="${group}"><summary><span>${group}</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary><div class="group-items">${items.map(item).join("")}</div></details>`).join("")
       + `<div class="nav-foot">${FOOT.map(item).join("")}</div>`;
     $("mnav").innerHTML = NAV.map(([group, items]) => `<optgroup label="${group}">${items.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`).join("") + `<optgroup label="altro">${FOOT.map(([v, label]) => `<option value="${v}">${label}</option>`).join("")}</optgroup>`;

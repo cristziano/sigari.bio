@@ -34,39 +34,25 @@ export default function Proof() {
   const { t, lang } = useT();
   const [data, setData] = useState<{ list: Pro[]; count: number | null } | null>(null);
   useEffect(() => { topProfiles().then(setData).catch(() => setData({ list: [], count: null })); }, []);
-  // no grey placeholders while loading (site rule): the section appears when the profiles arrive
+  // no grey placeholders while loading (site rule): the strip appears when the profiles arrive
   if (!data || !data.list.length) return null;
   const fmt = (n: number) => n.toLocaleString(lang === "it" ? "it-IT" : "en-US");
 
+  // a quiet strip, not a showcase: small faces, the count, a link to explore
   return (
-    <section aria-label={t("proofTitle")} className="border-y border-line px-4 py-14 sm:px-[clamp(16px,6vw,96px)]">
-      <div className="mx-auto max-w-[1180px]">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.05] tracking-[-.04em]">{t("proofTitle")} <span className="text-quiet">{t("proofGrey")}</span></h2>
-          <div className="flex items-center gap-4">
-            {data.count ? <span className="flex items-center gap-2 font-mono text-xs text-muted"><i aria-hidden className="size-1.5 rounded-full bg-[#3ddc84]" />{t("proofCount", { n: fmt(data.count) })}</span> : null}
-            <a href="/esplora" className="btn-2">{t("proofAll")} →</a>
-          </div>
-        </div>
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {data.list.map((p, i) => (
-            <motion.li key={p.handle} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ duration: .5, delay: (i % 4) * .06, ease: [0.23, 1, 0.32, 1] }}>
-              <a href={"/" + p.handle} className="group block overflow-hidden rounded-[14px] border border-line bg-s1 transition-[border-color,transform] duration-200 hover:-translate-y-1 hover:border-line-2"
-                  style={p.accent && p.accent.toLowerCase() !== "#ffffff" ? { ["--acc" as string]: p.accent } : undefined}>
-                  <div className="h-[72px] bg-s2 bg-cover bg-center opacity-80 transition-opacity group-hover:opacity-100" style={p.banner ? { backgroundImage: url(p.banner) } : undefined} />
-                  <div className="px-3.5 pb-3.5">
-                    <div className="-mt-6 size-12 rounded-full border-[3px] border-s1 bg-[#1c1c1c] bg-cover bg-center" style={{ backgroundImage: url(p.avatar) }} />
-                    <b className="mt-2 block truncate text-sm">{p.name}</b>
-                    <span className="flex items-center justify-between gap-2 font-mono text-[11px] text-muted">
-                      <span className="truncate">/{p.handle}</span><span className="shrink-0 tabnum">{fmt(p.views)} {t("proofViews")}</span>
-                    </span>
-                  </div>
-                </a>
-            </motion.li>
+    <section aria-label={t("proofTitle")} className="px-4 py-10 sm:px-[clamp(16px,6vw,96px)]">
+      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: .8 }}
+        className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[13px] text-muted opacity-70 transition-opacity hover:opacity-100">
+        <span className="flex -space-x-2">
+          {data.list.map(p => (
+            <a key={p.handle} href={"/" + p.handle} title={"@" + p.handle} aria-label={"@" + p.handle}
+              className="size-8 rounded-full border-2 border-black bg-[#1c1c1c] bg-cover bg-center grayscale transition-[filter,transform] duration-200 hover:z-10 hover:-translate-y-0.5 hover:grayscale-0"
+              style={{ backgroundImage: url(p.avatar) }} />
           ))}
-        </ul>
-      </div>
+        </span>
+        <span>{data.count ? t("proofCount", { n: fmt(data.count) }) : t("proofTitle")}</span>
+        <a href="/esplora" className="underline-offset-4 transition-colors hover:text-white hover:underline">{t("proofAll")} →</a>
+      </motion.div>
     </section>
   );
 }

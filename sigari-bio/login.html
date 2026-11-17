@@ -27,11 +27,6 @@
 
   /* Lava lamp background */
   .lava { position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none; background:#000; }
-  .blob { position:absolute; border-radius:50%; background:#fff; opacity:var(--int); filter:blur(80px); animation:drift 38s ease-in-out infinite alternate; }
-  .blob:nth-child(1){ width:420px; height:420px; left:-80px; top:-60px; background:#e8e8e8; }
-  .blob:nth-child(2){ width:520px; height:520px; right:-120px; top:30%; background:#9a9a9a; animation-duration:46s; animation-delay:-8s; }
-  .blob:nth-child(3){ width:360px; height:360px; left:30%; bottom:-120px; animation-duration:52s; animation-delay:-20s; }
-  .blob:nth-child(4){ width:300px; height:300px; left:55%; top:10%; background:#6e6e6e; animation-duration:44s; animation-delay:-14s; }
   @keyframes drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(120px,-80px) scale(1.1)} 100%{transform:translate(-60px,100px) scale(.92)} }
 
   /* Page: content scrolls normally, footer sits at the bottom of the flow */
@@ -82,16 +77,17 @@
   /* ===== Mercury login ===== */
   body { background:#050505; }
   .svg-hidden { position:absolute; width:0; height:0; }
-  /* slime: barely visible drops that melt into each other (gooey filter) and wobble slowly */
-  .stage { position:fixed; inset:0; z-index:0; filter:url(#gooey); opacity:.09; pointer-events:none; overflow:hidden; }
-  @media (max-width:700px){ .stage { opacity:.06; } }
-  .mblob { position:absolute; border-radius:46% 54% 58% 42% / 52% 44% 56% 48%; background:radial-gradient(circle at 32% 28%, #fff 0, #d6d6d6 18%, #8a8a8a 55%, #3a3a3a 100%);
-    animation:mfloat 26s infinite alternate ease-in-out, mslime 9s infinite alternate ease-in-out; transition:margin .4s cubic-bezier(.23,1,.32,1); }
-  @keyframes mslime { 0% { border-radius:46% 54% 58% 42% / 52% 44% 56% 48%; } 50% { border-radius:58% 42% 40% 60% / 42% 60% 40% 58%; } 100% { border-radius:40% 60% 54% 46% / 60% 38% 62% 40%; } }
-  @keyframes mfloat { 0% { transform:translate(0,0) scale(1); } 33% { transform:translate(10vw,calc(20vh * var(--vz, 1))) scale(1.2); } 66% { transform:translate(-5vw,calc(10vh * var(--vz, 1))) scale(.8); } 100% { transform:translate(5vw,calc(-10vh * var(--vz, 1))) scale(1.1); } }
-  @media (prefers-reduced-motion:reduce){ .mblob { animation:none; } }
-  .mblob::after { content:""; position:absolute; left:22%; top:16%; width:22%; height:14%; border-radius:50%; background:rgba(255,255,255,.7); filter:blur(4px); }
 
+  /* on the sides: glass spheres with social logos (other ones than the landing), floating, the far ones blurred */
+  .orbs { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .orb { position:absolute; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.14);
+    background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.36), rgba(255,255,255,.06) 42%, rgba(0,0,0,.6) 100%);
+    box-shadow:inset 0 -8px 18px rgba(0,0,0,.6), inset 0 2px 6px rgba(255,255,255,.22), 0 18px 40px rgba(0,0,0,.6);
+    transform:translate(-50%,-50%); animation:orbFloat var(--t,9s) ease-in-out infinite; transition:translate .5s cubic-bezier(.23,1,.32,1); }
+  .orb img { width:42%; height:42%; filter:invert(1); opacity:.9; }
+  @keyframes orbFloat { 50% { transform:translate(-50%,calc(-50% - 14px)) rotate(4deg); } }
+  @media (max-width:760px){ .orb.far { display:none; } }
+  @media (prefers-reduced-motion:reduce){ .orb { animation:none; } }
   .wrap { max-width:440px; }
   .auth { align-items:center; }
   .logo { margin:0; text-align:left; }
@@ -147,21 +143,25 @@
   <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
   <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
 </filter></defs></svg>
-<div class="stage" id="stage" aria-hidden="true"></div>
+<div class="orbs" id="orbs" aria-hidden="true"></div>
 <script>
-  // Mercury: 6 drops with random size/place, they float and follow the mouse a little
+  // Spheres with logos on the left and right edges; they drift a little with the mouse (the near ones more)
   (function () {
-    var st = document.getElementById("stage"), blobs = [];
-    for (var i = 0; i < 6; i++) {
-      var b = document.createElement("div"), s = Math.random() * 200 + 150;
-      b.className = "mblob";
-      b.style.cssText = "width:" + s + "px;height:" + s + "px;left:" + (Math.random() * 80 + 10) + "%;top:" + (Math.random() * 80 + 10) + "%;animation-delay:" + (Math.random() * -20) + "s;animation-duration:" + (Math.random() * 15 + 15) + "s";
-      st.appendChild(b); blobs.push(b);
-    }
+    var box = document.getElementById("orbs"), ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
+    // [logo, left %, top %, size px, depth 0..1]
+    var ORBS = [["github", 7, 20, 80, 1], ["soundcloud", 15, 70, 56, .6], ["reddit", 4, 88, 38, .3], ["steam", 26, 9, 36, .25],
+      ["snapchat", 90, 16, 70, .9], ["pinterest", 82, 78, 88, 1], ["threads", 95, 50, 42, .35], ["applemusic", 72, 7, 38, .3]];
+    var els = ORBS.map(function (o) {
+      var d = document.createElement("div"), img = document.createElement("img");
+      d.className = "orb" + (o[4] < .5 ? " far" : "");
+      d.style.cssText = "left:" + o[1] + "%;top:" + o[2] + "%;width:" + o[3] + "px;height:" + o[3] + "px;opacity:" + (.35 + o[4] * .55) + ";--t:" + (7 + (1 - o[4]) * 6) + "s" + (o[4] < .5 ? ";filter:blur(" + ((1 - o[4]) * 3).toFixed(1) + "px)" : "");
+      img.src = ICONS + o[0] + ".svg"; img.alt = ""; img.loading = "lazy";
+      d.appendChild(img); box.appendChild(d); return d;
+    });
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     document.addEventListener("mousemove", function (e) {
-      var x = e.clientX / innerWidth, y = e.clientY / innerHeight;
-      blobs.forEach(function (b, i) { var sp = (i + 1) * 20; b.style.marginLeft = x * sp + "px"; b.style.marginTop = y * sp + "px"; });
+      var x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+      els.forEach(function (el, i) { var k = ORBS[i][4]; el.style.translate = (x * 26 * k).toFixed(1) + "px " + (y * 20 * k).toFixed(1) + "px"; });
     });
   })();
 </script>

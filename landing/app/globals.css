@@ -16,6 +16,11 @@
   --font-brand: "Unbounded", "Geist", system-ui, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
   --font-wide: "Syncopate", "Unbounded", sans-serif;
+  /* shadcn/ui names, mapped to the same black and white */
+  --color-background: #000; --color-foreground: #f4f4f4; --color-muted-foreground: #9a9a9a; /* "muted" stays our grey text colour */
+  --color-border: rgb(255 255 255 / .10); --color-ring: #fff;
+  --color-primary: #fff; --color-primary-foreground: #000; --color-secondary: rgb(255 255 255 / .10); --color-secondary-foreground: #fff;
+  --color-destructive: #ff5a5a; --color-destructive-foreground: #fff;
   --ease-out: cubic-bezier(.23, 1, .32, 1);
   --ease-in-out: cubic-bezier(.77, 0, .175, 1);
 }

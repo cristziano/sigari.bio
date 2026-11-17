@@ -1,6 +1,6 @@
 "use client";
 // Italian and English. The language comes from the browser (Italian for Italian browsers, English otherwise)
-// and the IT / EN switch in the menu remembers the choice.
+// (?lang=it or ?lang=en forces one).
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Lang = "it" | "en";
@@ -29,22 +29,17 @@ const D = {
   demoT1: ["Lo cambi come vuoi.", "Change it your way."], demoT2: ["Lo vedi subito.", "See it right away."],
   demoSteps: [["Colori|Ogni colore del profilo è tuo: testo, bottoni, bordi.", "Sfondo|Una foto, una GIF o un video dietro al profilo.", "Font ed effetti|20 font e gli effetti sul nome.", "Social|Discord, Instagram, TikTok, Spotify e tutti gli altri."].join("\n"),
     ["Colours|Every colour is yours: text, buttons, borders.", "Background|A photo, a GIF or a video behind your profile.", "Fonts and effects|20 fonts and effects on your name.", "Socials|Discord, Instagram, TikTok, Spotify and all the rest."].join("\n")],
-  demoVibe: ["Scegli un vibe: il telefono usa il tuo nome", "Pick a vibe: the phone uses your name"],
   demoBio: ["nero, bianco e senza filtri", "black, white and no filters"],
   demoTry: ["Prova a modificarlo tu", "Try editing it yourself"],
   statsT1: ["Ogni visita conta.", "Every visit counts."], statsT2: ["Davvero.", "Really."],
   statsSub: ["Un contatore pubblico sulla tua pagina e, nella dashboard, ogni giorno in un colpo d'occhio: visite, clic, da dove arrivano e da cosa.",
     "A public counter on your page and, in your dashboard, every day at a glance: visits, clicks, where they come from and on what."],
-  statsMonth: ["Il tuo mese, rispetto a quello prima", "Your month, compared with the one before"],
   statsTiles: ["visite|visitatori unici|clic sui link|tempo medio", "views|unique visitors|link clicks|average time"],
-  statsSample: ["dati di esempio", "sample data"],
-  statsSources: ["Da dove arrivano", "Where they come from"], statsDirect: ["Diretto", "Direct"],
-  statsDevices: ["Da cosa ti guardano", "What they watch you on"], statsPhone: ["telefono", "phone"], statsDesktop: ["computer", "computer"],
-  wkTitle: ["Il profilo della settimana", "Profile of the week"],
-  wkSub: ["Il più votato sul nostro Discord. Condividi il tuo con /condividi nel canale profili: ogni settimana il vincitore finisce qui.", "The most voted on our Discord. Share yours with /condividi in the profiles channel: every week the winner lands here."],
-  wkBtn: ["Entra nel Discord", "Join the Discord"], wkVotes: ["✅ {n} voti questa settimana", "✅ {n} votes this week"], wkVote1: ["✅ 1 voto questa settimana", "✅ 1 vote this week"],
-  wkMost: ["Il più visto adesso: il vincitore della settimana arriva dai voti su Discord", "Most viewed right now: the weekly winner comes from Discord votes"],
-  wkOpen: ["Apri il profilo di @{h}", "Open @{h}'s profile"],
+  statsChartTitle: ["Visite al giorno, ultimi 30 giorni", "Visits per day, last 30 days"],
+  statsSample: ["dati di esempio · passa sopra la curva", "sample data · move over the curve"],
+  statsDevices: ["Da cosa ti guardano", "What they watch you on"], statsPhoneTitle: ["Quasi tutti dal telefono", "Almost all from a phone"], statsDesktop: ["computer", "computer"],
+  statsGrowth: ["Da dove crescono", "Where it grows"],
+  statsGrowthA: ["Le visite da TikTok sono salite del", "Visits from TikTok went up"], statsGrowthB: ["rispetto al mese prima.", "compared with the month before."],
   plansT: ["Piani", "Plans"],
   plansLead: ["Tutto quello che 18kbio sa fare oggi è gratis. Premium porterà solo cose nuove: niente di quello che è gratis diventerà a pagamento.",
     "Everything 18kbio can do today is free. Premium will only bring new things: nothing free today will become paid."],
@@ -65,24 +60,20 @@ const D = {
   rights: ["Fatto da 18k, tutti i diritti riservati.", "Made by 18k, all rights reserved."], privacy: ["Privacy", "Privacy"], terms: ["Termini", "Terms"],
   footClaim: ["prendila", "claim it"], footNav: ["Piè di pagina", "Footer"], sections: ["Sezioni", "Sections"],
   bye: ["Account eliminato. Ci dispiace vederti andare: la tua @ adesso è libera.", "Account deleted. Sorry to see you go: your @ is free again."],
-  langSwitch: ["Lingua", "Language"],
 } satisfies Record<string, Pair | Item>;
 
 export type Key = keyof typeof D;
-type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (k: Key, vars?: Record<string, string | number>) => string; list: (k: Key, sep?: string) => string[] };
+type Ctx = { lang: Lang; t: (k: Key, vars?: Record<string, string | number>) => string; list: (k: Key, sep?: string) => string[] };
 const LangCtx = createContext<Ctx | null>(null);
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("it");
   useEffect(() => {
-    let saved: string | null = null;
-    try { saved = localStorage.getItem("18k-lang"); } catch { /* storage blocked */ }
     const q = new URLSearchParams(location.search).get("lang");
-    const pick = (q === "en" || q === "it" ? q : saved === "en" || saved === "it" ? saved : navigator.language.toLowerCase().startsWith("it") ? "it" : "en") as Lang;
+    const pick = (q === "en" || q === "it" ? q : navigator.language.toLowerCase().startsWith("it") ? "it" : "en") as Lang;
     setLangState(pick);
   }, []);
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
-  const setLang = (l: Lang) => { setLangState(l); try { localStorage.setItem("18k-lang", l); } catch { /* storage blocked */ } };
   const i = lang === "it" ? 0 : 1;
   const t: Ctx["t"] = (k, vars) => {
     let s = (D[k] as readonly string[])[i];
@@ -90,7 +81,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
     return s;
   };
   const list: Ctx["list"] = (k, sep = "|") => t(k).split(sep);
-  return <LangCtx.Provider value={{ lang, setLang, t, list }}>{children}</LangCtx.Provider>;
+  return <LangCtx.Provider value={{ lang, t, list }}>{children}</LangCtx.Provider>;
 }
 
 export function useT() {

@@ -8,7 +8,6 @@ import Hero from "@/components/Hero";
 import Cards from "@/components/Cards";
 import EditDemo from "@/components/EditDemo";
 import Stats from "@/components/Stats";
-import Weekly from "@/components/Weekly";
 import Plans from "@/components/Plans";
 import { Dock, Final, Footer, PageEffects } from "@/components/Final";
 
@@ -28,7 +27,6 @@ function Page() {
         <Cards />
         <EditDemo />
         <Stats />
-        <Weekly />
         <Proof />
         <Plans />
         <Final onSeen={setAtFinal} />
