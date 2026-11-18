@@ -54,6 +54,7 @@ export default function Cards() {
           {[t("cardsT1"), t("cardsT2")].map((l, i) => (
             <span key={i} className="block overflow-hidden">
               <motion.span className={`block ${i ? "chrome" : ""}`} initial={{ y: "100%" }} animate={seen ? { y: 0 } : undefined} transition={{ duration: .9, ease: [0.23, 1, 0.32, 1], delay: i * .12 }}>{l}</motion.span>
+              {i === 0 && " "}
             </span>
           ))}
         </h2>

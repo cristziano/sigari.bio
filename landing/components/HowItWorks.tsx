@@ -10,9 +10,11 @@ import { rarity, reducedMotion } from "@/lib/site";
 import { useT } from "@/lib/i18n";
 
 const ease = [0.23, 1, 0.32, 1] as const;
-const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
+// social icons (simple-icons, CC0) saved inside the site, no external requests
+const ICONS = "/sigari-bio/landing/icons/";
+const NAMES: Record<string, string> = {"discord":"Discord","instagram":"Instagram","tiktok":"TikTok","spotify":"Spotify","youtube":"YouTube","x":"X","whatsapp":"WhatsApp"};
 // eslint-disable-next-line @next/next/no-img-element
-const Logo = ({ s, className = "size-4" }: { s: string; className?: string }) => <img src={`${ICONS}${s}.svg`} alt={s} className={`${className} [filter:invert(1)]`} loading="lazy" onError={e => { e.currentTarget.style.visibility = "hidden"; }} />;
+const Logo = ({ s, className = "size-4" }: { s: string; className?: string }) => <img src={`${ICONS}${s}.svg`} alt={NAMES[s] ?? s} className={`${className} [filter:invert(1)]`} loading="lazy" onError={e => { e.currentTarget.style.visibility = "hidden"; }} />;
 const piece = (d: number) => ({ initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { duration: .45, delay: d, ease } });
 
 /** the name typed at the top, or example names that type themselves while it is empty */

@@ -31,7 +31,7 @@ export default function Plans() {
                 </li>
               ))}
             </ul>
-            <a href="#top" onClick={claim} className="btn mt-6 w-full sm:w-auto">{t("claimNav")}</a>
+            <a href="#h1in" onClick={claim} className="btn mt-6 w-full sm:w-auto">{t("claimNav")}</a>
           </div>
           <div className="shine-border flex flex-col rounded-[18px] border border-line bg-[linear-gradient(160deg,rgba(255,255,255,.06),transparent_45%)] p-6">
             <div className="flex items-center justify-between"><b className="text-lg">{t("proName")}</b><span className="rounded-md border border-line-2 px-2 py-1 font-mono text-[11px] text-muted">{t("proTag")}</span></div>
@@ -40,7 +40,7 @@ export default function Plans() {
             <ul className="mb-6 mt-4 grid gap-2.5 border-t border-line pt-4">
               {pro.map((b, i) => <li key={b} className="flex items-center gap-3 text-sm text-[#d4d4d4]"><span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg border border-line-2 text-[13px]">{["✦", "◎", "↗"][i] || "✦"}</span>{b}</li>)}
             </ul>
-            <a href="#top" onClick={claim} className="btn-2 mt-auto w-full">{t("proBtn")}</a>
+            <a href="#h1in" onClick={claim} className="btn-2 mt-auto w-full">{t("proBtn")}</a>
           </div>
         </div>
       </div>

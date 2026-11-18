@@ -40,7 +40,7 @@ export default function Nav() {
           {!logged && <a href="/accedi" className="hidden px-2 text-[13px] text-muted transition-colors hover:text-white sm:inline">{t("login")}</a>}
           {logged
             ? <a href="/dashboard" className="btn !min-h-9 !text-[13px]">{t("dashboard")}</a>
-            : <a href="#top" onClick={e => { e.preventDefault(); focusClaim(); }} className="btn !min-h-9 !text-[13px]">{t("claimNav")}</a>}
+            : <a href="#h1in" onClick={e => { e.preventDefault(); focusClaim(); }} className="btn !min-h-9 !text-[13px]">{t("claimNav")}</a>}
         </div>
       </header>
     </>

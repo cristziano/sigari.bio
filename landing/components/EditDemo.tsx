@@ -10,7 +10,9 @@ import { useT } from "@/lib/i18n";
 
 const STEP_MS = 3400;
 const EXAMPLE_STYLE = "night-drive";
-const ICONS = "https://cdn.jsdelivr.net/npm/simple-icons@11.14.0/icons/";
+// social icons (simple-icons, CC0) saved inside the site, no external requests
+const ICONS = "/sigari-bio/landing/icons/";
+const NAMES: Record<string, string> = {"discord":"Discord","instagram":"Instagram","tiktok":"TikTok","spotify":"Spotify","youtube":"YouTube","x":"X","whatsapp":"WhatsApp"};
 const ease = [0.23, 1, 0.32, 1] as const;
 
 /** a small picture of the tool each step uses in the dashboard */
@@ -25,7 +27,7 @@ function Tool({ i }: { i: number }) {
   return (
     <div className="flex flex-wrap gap-1.5">{["discord", "instagram", "tiktok", "spotify"].map(s => (
       // eslint-disable-next-line @next/next/no-img-element
-      <span key={s} className="grid size-8 place-items-center rounded-lg border border-line-2"><img src={`${ICONS}${s}.svg`} alt="" className="size-4 [filter:invert(1)]" loading="lazy" /></span>))}</div>
+      <span key={s} className="grid size-8 place-items-center rounded-lg border border-line-2"><img src={`${ICONS}${s}.svg`} alt={NAMES[s] ?? s} className="size-4 [filter:invert(1)]" loading="lazy" /></span>))}</div>
   );
 }
 

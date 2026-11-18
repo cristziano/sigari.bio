@@ -15,7 +15,7 @@ export function Footer() {
         <div className="col-span-3 md:col-span-1">
           <a href="#top" onClick={claim} className="font-brand text-[22px] font-semibold tracking-[-.02em]"><span className="chrome">18k<span className="font-normal">bio</span></span></a>
           <p className="mt-3 max-w-[30ch] text-sm leading-[1.55] text-[#c8c8c8]">{t("footTag")}</p>
-          <a href="#top" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
+          <a href="#h1in" onClick={claim} className="btn mt-6">{t("claimNav")}</a>
         </div>
         <nav aria-label={t("footProduct")} className={col}>
           <b className="mb-1 text-[13px] font-semibold text-white">{t("footProduct")}</b>
