@@ -26,7 +26,7 @@
 }
 
 /* on computers the site is shown at 90% (like the other pages); --vz keeps full-screen heights full */
-@media (min-width: 1100px) { html.z90 { zoom: .9; --vz: 1.1112; } }
+@media (min-width: 768px) { html.z90 { zoom: .9; --vz: 1.1112; } }
 html { background: #0b0b0b; color-scheme: dark; color: var(--color-fg); scrollbar-color: #2a2a2a #0b0b0b; scrollbar-width: thin; -webkit-text-size-adjust: 100%; }
 body { background: transparent; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
 ::selection { background: #fff; color: #000; }
