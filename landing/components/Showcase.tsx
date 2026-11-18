@@ -228,11 +228,11 @@ export default function Showcase() {
   if (shown && !shown.length) return null; // nothing to show: no empty box
 
   return (
-    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative h-[480px] w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] sm:h-[480px] md:h-[min(760px,calc(88svh*var(--vz,1)))]">
+    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative h-[420px] w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] sm:h-[480px] md:h-[min(760px,calc(88svh*var(--vz,1)))]">
       {shown && (
-        // on phones the ring is wider than the screen, so the front profile is big and the others peek in from the sides
-        <WarpCarousel className="max-sm:!absolute max-sm:!left-[-45%] max-sm:!w-[190%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
-          background="#0b0b0b" glow="#8c8c8c" warp={0} plainBack ariaLabel={t("showTitle")}
+        // on phones the ring is a bit wider than the screen: bigger cards, and the morph at the edges still shows
+        <WarpCarousel className="max-sm:!absolute max-sm:!left-[-12.5%] max-sm:!w-[125%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
+          background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack ariaLabel={t("showTitle")}
           font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
       )}
     </section>

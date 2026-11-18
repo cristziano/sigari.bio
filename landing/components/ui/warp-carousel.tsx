@@ -3,7 +3,7 @@
 // Warp Carousel by Louis Studios.
 // 140+ more hand-made React components at https://studios.lou15.com/?ref=21st-code
 // Changes for 18kbio: a card can paint itself (`paint`, used for real profiles), a click on the
-// front card calls `onFrontClick`, the edge glow keeps its colour, and `plainBack` keeps turned cards readable. Everything else is the original component.
+// front card calls `onFrontClick`, the edge glow keeps its colour, `plainBack` keeps turned cards readable and `chroma` can turn off the colour split of the flare. Everything else is the original component.
 
 import * as React from "react";
 
@@ -63,6 +63,8 @@ export interface WarpCarouselProps {
   font?: string;
   /** Show a card seen from behind the right way round instead of mirrored (WebGL only). */
   plainBack?: boolean;
+  /** Split the colours (cyan, blue and amber ghosts) in the edge flare. Off keeps the morph but in the cards' own colours. */
+  chroma?: boolean;
   /** Freeze the animation at this many seconds of autoplay time. For stills and tests. */
   seconds?: number;
   /** Accessible name for the carousel region. */
@@ -632,6 +634,7 @@ uniform vec3 uBg;
 uniform float uWarp;
 uniform float uMix;
 uniform float uBack;
+uniform float uChroma;
 out vec4 outColor;
 
 const float F = ${FOCAL.toFixed(2)};
@@ -755,7 +758,7 @@ vec3 render(vec2 pu, float halfH, int base){
   }
   // flare zone: one lens sample per channel. The smear is a widened texture footprint, so it stays smooth
   // with no tap banding; vertically red is spread furthest and blue least, which gives the cyan then blue rim
-  float e = 0.064 * uWarp * smoothstep(275.0, 360.0, au);
+  float e = 0.064 * uWarp * uChroma * smoothstep(275.0, 360.0, au);
   float S0 = lensS(au);
   float sg = pu.x < 0.0 ? -1.0 : 1.0;
   float blur = 1.0 + 30.0 * pow(smoothstep(240.0, 340.0, au), 1.5) * uWarp;
@@ -766,7 +769,7 @@ vec3 render(vec2 pu, float halfH, int base){
   for (int ch = 0; ch < 3; ch++){
     // each channel reads a slightly different strip at the outer edge: red nearest the centre, blue furthest,
     // so cards entering or leaving the flare split into cyan, blue and amber ghosts
-    float off = uWarp * (ch == 0 ? -20.92 : (ch == 1 ? 0.0 : 11.91));
+    float off = uWarp * uChroma * (ch == 0 ? -20.92 : (ch == 1 ? 0.0 : 11.91));
     float h = lensH(au) + off * smoothstep(289.8, 344.9, au);
     float h0 = lensH(au - 0.5) + off * smoothstep(289.8, 344.9, au - 0.5);
     float h1 = lensH(au + 0.5) + off * smoothstep(289.8, 344.9, au + 0.5);
@@ -829,7 +832,7 @@ function createGL(canvas: HTMLCanvasElement): GLState | null {
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
   const tex = gl.createTexture()!;
   const loc: Record<string, WebGLUniformLocation | null> = {};
-  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix", "uBack"]) loc[n] = gl.getUniformLocation(prog, n);
+  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix", "uBack", "uChroma"]) loc[n] = gl.getUniformLocation(prog, n);
   const aniso = gl.getExtension("EXT_texture_filter_anisotropic");
   (tex as unknown as { aniso: unknown }).aniso = aniso;
   return { gl, prog, tex, loc, layers: 0, texW: 0 };
@@ -1022,6 +1025,7 @@ export function WarpCarousel({
   warp = 1,
   font = DEFAULT_FONT,
   plainBack = false,
+  chroma = true,
   seconds,
   ariaLabel = "Stat cards",
   className,
@@ -1234,6 +1238,7 @@ export function WarpCarousel({
         gl.uniform1f(loc.uWarp, Math.max(0, Math.min(1, warp)));
         gl.uniform1f(loc.uMix, mix);
         gl.uniform1f(loc.uBack, plainBack ? 1 : 0);
+        gl.uniform1f(loc.uChroma, chroma ? 1 : 0);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       } else if (ctx2d) {
         const css = `rgb(${bg[0]}, ${bg[1]}, ${bg[2]})`;
@@ -1351,7 +1356,7 @@ export function WarpCarousel({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list, background, glow, warp, font, N, plainBack]);
+  }, [list, background, glow, warp, font, N, plainBack, chroma]);
 
   React.useEffect(() => {
     if (seconds !== undefined) handles.current.draw();
