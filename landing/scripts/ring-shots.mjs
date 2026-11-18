@@ -75,6 +75,9 @@ async function main() {
   // on Vercel: a Chromium made for servers (it brings its own system files); elsewhere the one of Playwright
   let browser;
   if (process.env.VERCEL) {
+    // it unpacks its own system libraries only when it believes it runs on Amazon's Node 20/22 servers,
+    // which is what Vercel's build machines are: so it is told (before it loads)
+    process.env.AWS_LAMBDA_JS_RUNTIME ||= "nodejs22.x";
     const { default: chromium } = await import("@sparticuz/chromium");
     browser = await pw.launch({ executablePath: await chromium.executablePath(), args: chromium.args, headless: true });
   } else {
