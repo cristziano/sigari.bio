@@ -3,7 +3,7 @@
 // Warp Carousel by Louis Studios.
 // 140+ more hand-made React components at https://studios.lou15.com/?ref=21st-code
 // Changes for 18kbio: a card can paint itself (`paint`, used for real profiles), a click on the
-// front card calls `onFrontClick`, the edge glow keeps its colour, `plainBack` keeps turned cards readable `chroma` can turn off the colour split of the flare, `maxDpr` caps the resolution, and nothing is drawn while the ring rests. Everything else is the original component.
+// front card calls `onFrontClick`, the edge glow keeps its colour, `plainBack` keeps turned cards readable `chroma` can turn off the colour split of the flare, `maxDpr` caps the resolution, `clear` lets the page show through, and nothing is drawn while the ring rests. Everything else is the original component.
 
 import * as React from "react";
 
@@ -67,6 +67,8 @@ export interface WarpCarouselProps {
   chroma?: boolean;
   /** Highest device pixel ratio the stage is drawn at. Lower is lighter on the GPU. */
   maxDpr?: number;
+  /** No stage colour: the page shows through, only the cards and their glow are drawn (WebGL only). */
+  clear?: boolean;
   /** Freeze the animation at this many seconds of autoplay time. For stills and tests. */
   seconds?: number;
   /** Accessible name for the carousel region. */
@@ -637,6 +639,7 @@ uniform float uWarp;
 uniform float uMix;
 uniform float uBack;
 uniform float uChroma;
+uniform float uClear;
 out vec4 outColor;
 
 const float F = ${FOCAL.toFixed(2)};
@@ -740,24 +743,25 @@ vec4 glowAt(vec2 pu, float halfH, int base){
   return sum;
 }
 
-vec3 stage(vec2 pu, float halfH, int base){
+// premultiplied colour of the stage behind the cards (alpha 1, or only the glow when the stage is clear)
+vec4 stage(vec2 pu, float halfH, int base){
   vec4 g = glowAt(pu, halfH, base);
-  if (g.a <= 0.0) return uBg;
-  float I = clamp(g.a, 0.0, 1.0);
-  vec3 drop = uBg - g.rgb / g.a;
+  float I = g.a > 0.0 ? clamp(g.a, 0.0, 1.0) : 0.0;
+  vec3 gc = g.a > 0.0 ? g.rgb / g.a : vec3(0.0);
+  // 18kbio: a clear stage lets the page show through; only the cards and their glow are drawn
+  if (uClear > 0.5) return vec4(gc * I, I);
   // 18kbio: the same falloff on every channel, so a neutral glow stays neutral (the original 0.8/1.6/1.0 tinted it pink)
-  return uBg - drop * pow(vec3(I), vec3(1.0));
+  return vec4(uBg - (uBg - gc) * I, 1.0);
 }
 
-vec3 render(vec2 pu, float halfH, int base){
+vec4 over(vec4 c, vec4 bg){ return vec4(c.rgb + (1.0 - c.a) * bg.rgb, c.a + (1.0 - c.a) * bg.a); }
+
+vec4 render(vec2 pu, float halfH, int base){
   // stages wider than 5:4 simply run the outermost flare column on to the edge
   float au = min(abs(pu.x), 360.0);
   float px = 1.0 / uUnit;
-  vec3 bg = stage(pu, halfH, base);
-  if (au < 236.0 || uWarp <= 0.0) {
-    vec4 c = scene(pu, px, px, base);
-    return c.rgb + (1.0 - c.a) * bg;
-  }
+  vec4 bg = stage(pu, halfH, base);
+  if (au < 236.0 || uWarp <= 0.0) return over(scene(pu, px, px, base), bg);
   // flare zone: one lens sample per channel. The smear is a widened texture footprint, so it stays smooth
   // with no tap banding; vertically red is spread furthest and blue least, which gives the cyan then blue rim
   float e = 0.064 * uWarp * uChroma * smoothstep(275.0, 360.0, au);
@@ -773,9 +777,9 @@ vec3 render(vec2 pu, float halfH, int base){
     float fx = px * max(abs(lensH(au + 0.5) - lensH(au - 0.5)), 0.02) * blur;
     vec4 c = scene(vec2(sg * h, pu.y / S0), fx, px / S0 * fyb, base);
     c.rgb = min(c.rgb * gain, vec3(c.a));
-    return c.rgb + (1.0 - c.a) * bg;
+    return over(c, bg);
   }
-  vec3 acc;
+  vec4 acc = vec4(0.0);
   for (int ch = 0; ch < 3; ch++){
     // each channel reads a slightly different strip at the outer edge: red nearest the centre, blue furthest,
     // so cards entering or leaving the flare split into cyan, blue and amber ghosts
@@ -787,7 +791,9 @@ vec3 render(vec2 pu, float halfH, int base){
     float S = S0 * (ch == 0 ? 1.0 + e : (ch == 1 ? 1.0 : 1.0 - e));
     vec4 c = scene(vec2(sg * h, pu.y / S), fx, px / S * fyb, base);
     c.rgb = min(c.rgb * gain, vec3(c.a));
-    acc[ch] = (c.rgb + (1.0 - c.a) * bg)[ch];
+    vec4 o = over(c, bg);
+    acc[ch] = o[ch];
+    if (ch == 1) acc.a = o.a;
   }
   return acc;
 }
@@ -796,9 +802,9 @@ void main(){
   vec2 fc = gl_FragCoord.xy;
   vec2 pu = (fc - 0.5 * uRes) / uUnit;
   float halfH = 0.5 * uRes.y / uUnit;
-  vec3 col = render(pu, halfH, 0);
+  vec4 col = render(pu, halfH, 0);
   if (uMix > 0.0) col = mix(col, render(pu, halfH, 4), uMix);
-  outColor = vec4(col, 1.0);
+  outColor = col;
 }`;
 
 interface GLState {
@@ -810,8 +816,9 @@ interface GLState {
   texW: number;
 }
 
-function createGL(canvas: HTMLCanvasElement): GLState | null {
-  const gl = canvas.getContext("webgl2", { antialias: false, alpha: false, premultipliedAlpha: false, preserveDrawingBuffer: false });
+function createGL(canvas: HTMLCanvasElement, clear = false): GLState | null {
+  // a clear stage needs a see-through canvas (colours are premultiplied by the shader)
+  const gl = canvas.getContext("webgl2", { antialias: false, alpha: clear, premultipliedAlpha: true, preserveDrawingBuffer: false });
   if (!gl) return null;
   const sh = (type: number, src: string) => {
     const s = gl.createShader(type)!;
@@ -842,7 +849,7 @@ function createGL(canvas: HTMLCanvasElement): GLState | null {
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
   const tex = gl.createTexture()!;
   const loc: Record<string, WebGLUniformLocation | null> = {};
-  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix", "uBack", "uChroma"]) loc[n] = gl.getUniformLocation(prog, n);
+  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix", "uBack", "uChroma", "uClear"]) loc[n] = gl.getUniformLocation(prog, n);
   const aniso = gl.getExtension("EXT_texture_filter_anisotropic");
   (tex as unknown as { aniso: unknown }).aniso = aniso;
   return { gl, prog, tex, loc, layers: 0, texW: 0 };
@@ -1037,6 +1044,7 @@ export function WarpCarousel({
   plainBack = false,
   chroma = true,
   maxDpr = 2,
+  clear = false,
   seconds,
   ariaLabel = "Stat cards",
   className,
@@ -1124,7 +1132,7 @@ export function WarpCarousel({
     const wrap = wrapRef.current;
     const canvas = canvasRef.current;
     if (!wrap || !canvas) return;
-    let gls: GLState | null = createGL(canvas);
+    let gls: GLState | null = createGL(canvas, clear);
     let ctx2d: CanvasRenderingContext2D | null = null;
     if (!gls) ctx2d = canvas.getContext("2d");
     let cardCanvases: HTMLCanvasElement[] = [];
@@ -1250,6 +1258,8 @@ export function WarpCarousel({
         gl.uniform1f(loc.uMix, mix);
         gl.uniform1f(loc.uBack, plainBack ? 1 : 0);
         gl.uniform1f(loc.uChroma, chroma ? 1 : 0);
+        gl.uniform1f(loc.uClear, clear ? 1 : 0);
+        if (clear) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       } else if (ctx2d) {
         const css = `rgb(${bg[0]}, ${bg[1]}, ${bg[2]})`;
@@ -1340,7 +1350,7 @@ export function WarpCarousel({
     const onRestored = () => {
       if (!lost) return;
       lost = false;
-      gls = createGL(canvas);
+      gls = createGL(canvas, clear);
       texW = 0;
       resize();
       kick();
@@ -1375,7 +1385,7 @@ export function WarpCarousel({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list, background, glow, warp, font, N, plainBack, chroma, maxDpr]);
+  }, [list, background, glow, warp, font, N, plainBack, chroma, maxDpr, clear]);
 
   React.useEffect(() => {
     if (seconds !== undefined) handles.current.draw();
@@ -1466,7 +1476,7 @@ export function WarpCarousel({
         minHeight: 420,
         aspectRatio: "5 / 4",
         overflow: "hidden",
-        background,
+        background: clear ? "transparent" : background,
         touchAction: "pan-y",
         userSelect: "none",
         cursor: "grab",

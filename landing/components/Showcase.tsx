@@ -1,13 +1,14 @@
 "use client";
-// A ring of real profiles that turns by itself (WarpCarousel), right under the hero. No title, no text:
-// only the profiles. Each card is drawn like the profile itself: its own background (image, a frame of its
-// video, gradient or colour, with its dim and tint), its photo, name, @, bio and link buttons, in its colours.
+// A ring of real profiles that turns by itself (WarpCarousel), on the right of the hero. No title, no text.
+// Each card IS the profile: it is opened off screen with the same code as the profile page
+// (profile-kit) and photographed (modern-screenshot); that photo is the card. If a browser won't let the
+// photo be used (old Safari), the card is drawn from the profile's own data instead.
 // Only the profiles that Esplora already shows (public and listed, the owner's choice), the most visited first.
 // Click the front card to open that profile. If profiles can't be read, nothing is shown.
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { WarpCarousel, type WarpCard } from "@/components/ui/warp-carousel";
-import { firebase } from "@/lib/site";
+import { firebase, kit } from "@/lib/site";
 import { useT } from "@/lib/i18n";
 
 const MAX = 8; // enough to fill the ring with no repeats
@@ -97,7 +98,7 @@ function painter(p: any, av: HTMLImageElement | null, bg: Pic | null, font: stri
   const border = c.border || "#2a2a2a";
   const name = (p.displayName || p.handle || "").trim() || p.handle;
   const bio = String((a.bioLines && a.bioLines.join(" ")) || p.bio || "").replace(/\s+/g, " ").trim();
-  const links = (p.links || []).filter((l: any) => l && !l.hidden && l.title && l.type !== "header").slice(0, 2);
+  const links = (p.links || []).filter((l: any) => l && !l.hidden && l.title && l.type !== "header" && l.url && l.url !== "#").slice(0, 2);
   const showViews = !(a.privacy && a.privacy.hideViews) && typeof p.views === "number";
   return (ctx: CanvasRenderingContext2D) => {
     // the profile's background, as the profile shows it
@@ -190,7 +191,49 @@ function painter(p: any, av: HTMLImageElement | null, bg: Pic | null, font: stri
   };
 }
 
-export default function Showcase() {
+// links to our own photos become same-site links, so the photo of the profile can read them
+const localize = (p: any) => JSON.parse(JSON.stringify(p).replace(/https?:\/\/(www\.)?18kbio\.(xyz|vercel\.app)(?=\/api\/photo)/g, location.origin));
+const BOX_W = 400, BOX_H = 500; // the card's 4:5 at a phone-like width
+const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
+const idle = () => new Promise<void>(r => ("requestIdleCallback" in window ? (window as any).requestIdleCallback(() => r(), { timeout: 1500 }) : setTimeout(r, 200)));
+
+/** opens the real profile off screen, waits for its pictures, and takes its photo */
+async function photograph(k: any, shot: any, p: any): Promise<HTMLCanvasElement | null> {
+  // on screen but invisible: off-screen pages don't load their pictures. The wrapper hides it (it is not
+  // part of the photo); the profile itself stays fully opaque, so the photo is not see-through
+  const wrap = document.createElement("div");
+  wrap.setAttribute("aria-hidden", "true");
+  wrap.style.cssText = `position:fixed;left:0;top:0;width:${BOX_W}px;height:${BOX_H}px;overflow:hidden;opacity:0;pointer-events:none;z-index:-1`;
+  const host = document.createElement("div");
+  host.style.cssText = `position:relative;width:${BOX_W}px;height:${BOX_H}px;overflow:hidden`;
+  wrap.appendChild(host);
+  document.body.appendChild(wrap);
+  let view: any = null;
+  try {
+    const prof = localize(k.normalizeProfile ? k.normalizeProfile({ ...p }) : p);
+    const a = prof.appearance || {};
+    // as in Esplora: no music, no entrance screen, no moving canvas effects
+    if (a.music) a.music.type = "none";
+    if (a.enter) a.enter.on = false;
+    if (["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"].includes(a.effect)) a.effect = "none";
+    view = k.mountProfile(host, prof, { preview: true, entrance: false });
+    // pictures and the first frame of a video background
+    const imgs = [...host.querySelectorAll("img")].map(im => (im as HTMLImageElement).decode().catch(() => {}));
+    const vids = [...host.querySelectorAll("video")].map(v => new Promise(r => { const vv = v as HTMLVideoElement; if (vv.readyState >= 2) r(0); else { vv.addEventListener("loadeddata", r, { once: true }); vv.addEventListener("error", r, { once: true }); } }));
+    await Promise.race([Promise.all([...imgs, ...vids]), wait(5000)]);
+    await wait(250); // fonts and the last layout
+    const cv: HTMLCanvasElement = await shot(host, { width: BOX_W, height: BOX_H, scale: 1.6, backgroundColor: "#000", timeout: 6000 });
+    cv.getContext("2d")!.getImageData(0, 0, 1, 1); // throws if the browser marked the photo as not usable
+    return cv;
+  } catch {
+    return null;
+  } finally {
+    try { view && view.destroy && view.destroy(); } catch { /* already gone */ }
+    wrap.remove();
+  }
+}
+
+export default function Showcase({ className = "" }: { className?: string }) {
   const { t, lang } = useT();
   const sec = useRef<HTMLElement>(null);
   const near = useInView(sec, { once: true, margin: "500px 0px" }); // read and draw only when you get close
@@ -210,14 +253,25 @@ export default function Showcase() {
             return p.appearance && p.avatarUrl && !p.private && !p.unlisted && !pr.private && !pr.unlisted && !pr.disabled;
           })
           .slice(0, MAX);
-        const out = await Promise.all(rows.map(async (p: any) => {
-          const b = (p.appearance && p.appearance.bg) || {};
-          const bgPic: Promise<Pic | null> = b.type === "image" ? loadImg(b.image)
-            : b.type === "video" ? (b.poster ? loadImg(b.poster) : loadFrame(b.video))
-            : Promise.resolve(null);
-          const [av, bg] = await Promise.all([loadImg(p.avatarUrl), bgPic]);
-          return { handle: p.handle, card: { title: p.displayName || p.handle, value: "@" + p.handle, footer: p.bio || "", paint: painter(p, av, bg, font, fmt(p.views || 0)) } };
-        }));
+        // the real profiles, photographed one at a time while the page is idle (the page stays smooth)
+        const [k, { domToCanvas }] = await Promise.all([kit.profile().catch(() => null), import("modern-screenshot")]);
+        const out: Shown[] = [];
+        for (const p of rows) {
+          if (off) return;
+          await idle();
+          const photo = k ? await photograph(k, domToCanvas, p) : null;
+          let paint: (ctx: CanvasRenderingContext2D) => void;
+          if (photo) paint = ctx => ctx.drawImage(photo, 0, 0, 256, 320);
+          else {
+            const b = (p.appearance && p.appearance.bg) || {};
+            const bgPic: Promise<Pic | null> = b.type === "image" ? loadImg(b.image)
+              : b.type === "video" ? (b.poster ? loadImg(b.poster) : loadFrame(b.video))
+              : Promise.resolve(null);
+            const [av, bg] = await Promise.all([loadImg(p.avatarUrl), bgPic]);
+            paint = painter(p, av, bg, font, fmt(p.views || 0));
+          }
+          out.push({ handle: p.handle, card: { title: p.displayName || p.handle, value: "@" + p.handle, footer: p.bio || "", paint } });
+        }
         if (!off) setShown(out.length >= 3 ? out : []);
       })
       .catch(() => { if (!off) setShown([]); });
@@ -228,13 +282,13 @@ export default function Showcase() {
   if (shown && !shown.length) return null; // nothing to show: no empty box
 
   return (
-    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative h-[420px] w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] sm:h-[480px] md:h-[min(620px,calc(74svh*var(--vz,1)))]">
-      {/* computer: narrower than the page and a little to the right */}
-      <div className="relative mx-auto size-full md:max-w-[1000px] md:[mask-image:linear-gradient(to_right,transparent,#000_9%,#000_91%,transparent)] lg:translate-x-[7%]">
+    <section ref={sec} id="profili" aria-label={t("showTitle")} className={`relative w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_12%,#000_88%,transparent)] ${className}`}>
+      {/* soft left and right edges, so the stage melts into the page */}
+      <div className="relative size-full [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
         {shown && (
           // on phones the ring is a bit wider than the screen: bigger cards, and the morph at the edges still shows
           <WarpCarousel className="max-sm:!absolute max-sm:!left-[-12.5%] max-sm:!w-[125%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
-            background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack maxDpr={1} ariaLabel={t("showTitle")}
+            background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack clear maxDpr={1} ariaLabel={t("showTitle")}
             font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
         )}
       </div>

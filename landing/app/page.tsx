@@ -6,7 +6,6 @@ import AuroraBackground from "@/components/ui/aurora-background";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Cards from "@/components/Cards";
-import Showcase from "@/components/Showcase";
 import EditDemo from "@/components/EditDemo";
 import HowItWorks from "@/components/HowItWorks";
 import Stats from "@/components/Stats";
@@ -26,7 +25,6 @@ function Page() {
       <Nav />
       <main id="main" className="relative isolate">
         <Hero />
-        <Showcase />
         <Cards />
         <HowItWorks />
         <EditDemo />

@@ -4,6 +4,7 @@
 // The placeholder types example names by itself while the field is empty. Plain matte black behind (the page background).
 import { useEffect, useRef, useState } from "react";
 import { HANDLE_RE, reducedMotion, sanitize } from "@/lib/site";
+import Showcase from "@/components/Showcase";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
@@ -65,14 +66,16 @@ export default function Hero() {
   };
 
   return (
-    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[740px]">
+    <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-lg:min-h-[740px]">
 
-      <div className="relative z-[2] flex w-full flex-col items-center px-4 pb-44 pt-[100px] text-center md:pb-40">
+      {/* computer: the title and the field on the left, the ring of real profiles on the right */}
+      <div className="relative z-[2] mx-auto grid w-full max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-4 px-4 pb-16 pt-[96px] lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] lg:pl-10 lg:pr-0 lg:pb-10">
+      <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
         <a href="/esplora" style={{ animationDelay: ".05s" }}
           className="rise mb-7 inline-flex items-center gap-2 rounded-full border border-white/[.1] bg-white/[.04] px-3 py-1 text-[13px] text-muted transition-colors hover:border-white/25 hover:text-white">
           <i aria-hidden className="size-2 rounded-full bg-white/80" /> {t("exploreBtn")} <span aria-hidden>→</span>
         </a>
-        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="text-[clamp(42px,7vw,100px)] font-bold leading-[1.02] tracking-[-.045em]">
+        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="text-[clamp(42px,6vw,92px)] font-bold leading-[1.02] tracking-[-.045em]">
           <span aria-hidden className="block">{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{" "}</span>)}</span>
           <span aria-hidden className="block">
             <Word i={words.length}>{t("h1b")}</Word>{" "}
@@ -98,7 +101,7 @@ export default function Hero() {
           </p>
 
           {/* the card with your @ when the name is free (it never pushes the page: it sits under the field) */}
-          <div aria-hidden={!card} className={`absolute inset-x-0 top-full mx-auto mt-3 w-full max-w-[400px] rounded-[22px] border border-white/15 bg-[#0b0b0b] p-4 shadow-[0_30px_60px_-30px_rgba(0,0,0,1)] transition-[opacity,transform] duration-300 motion-reduce:transition-none ${card ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}>
+          <div aria-hidden={!card} className={`absolute inset-x-0 top-full z-10 mx-auto mt-3 w-full max-w-[400px] lg:mx-0 rounded-[22px] border border-white/15 bg-[#0b0b0b] p-4 shadow-[0_30px_60px_-30px_rgba(0,0,0,1)] transition-[opacity,transform] duration-300 motion-reduce:transition-none ${card ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}>
             <div className="flex items-center gap-3">
               <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white text-[20px] font-bold uppercase text-black">{handle.slice(0, 1)}</span>
               <span className="min-w-0">
@@ -109,6 +112,8 @@ export default function Hero() {
             <a href="#cards" tabIndex={card ? 0 : -1} className="mt-4 block border-t border-white/10 pt-3 text-center text-[13px] font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{t("heroCard")}</a>
           </div>
         </form>
+      </div>
+      <Showcase className="h-[420px] max-lg:mt-28 sm:h-[480px] lg:h-[min(640px,calc(78svh*var(--vz,1)))]" />
       </div>
     </section>
   );
