@@ -38,7 +38,7 @@ const D = {
   howBio: ["La tua bio: due righe su chi sei e cosa fai.", "Your bio: two lines on who you are and what you do."],
   howLinks: ["Il tuo primo link|Un altro link", "Your first link|Another link"],
   howTry: ["prova a scriverla", "try typing it"], howLen: ["lunghezza", "length"], howNow: ["in ascolto", "now playing"], howNew: ["nuovo", "new"],
-  howArtist: ["il tuo artista", "your artist"], howCardBtn: ["mostra la mia carta", "show my card"], howCopy: ["copia", "copy"], howCopied: ["copiato", "copied"], howQr: ["il tuo QR", "your QR"],
+  howArtist: ["il tuo artista", "your artist"], howCardBtn: ["mostra la mia carta", "show my card"], howCopy: ["copia", "copy"], howCopied: ["copiato", "copied"],
   heroCard: ["E in più la tua carta ↓", "Plus your own card ↓"],
   howYou: ["il tuo profilo", "your profile"], howMusic: ["la tua musica", "your music"],
   howTypeTop: ["scrivi la tua @ in cima alla pagina", "type your @ at the top of the page"],

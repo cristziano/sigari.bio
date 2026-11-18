@@ -149,20 +149,7 @@ function SceneCompose() {
   );
 }
 
-/** a QR made of squares (decoration, the real one is in the dashboard) */
-function QRBig() {
-  const cells: React.ReactNode[] = [];
-  let s = 7;
-  const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  const finder = (x: number, y: number) => x < 7 && y < 7 || x > 13 && y < 7 || x < 7 && y > 13;
-  for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
-    const on = finder(x, y) ? (() => { const fx = x > 13 ? x - 14 : x, fy = y > 13 ? y - 14 : y; return fx === 0 || fy === 0 || fx === 6 || fy === 6 || (fx > 1 && fx < 5 && fy > 1 && fy < 5); })() : r() > .52;
-    if (on) cells.push(<rect key={x + "-" + y} x={x} y={y} width="1" height="1" />);
-  }
-  return <svg viewBox="-1 -1 23 23" className="size-full fill-black" aria-label="QR">{cells}</svg>;
-}
-
-/** 3: one link sent everywhere: light runs from your link to every app; "copia" turns into "copiato"; your QR */
+/** 3: one link sent everywhere: light runs from your link to every app; "copia" turns into "copiato" */
 function SceneShare() {
   const { t, list } = useT();
   const name = useTypedName();
@@ -198,11 +185,6 @@ function SceneShare() {
             <span className="rounded bg-black/60 px-1.5 text-[10px] text-[#bdbdbd]">{label}</span>
           </motion.span>
         ))}
-        <motion.span initial={{ opacity: 0, scale: .7, rotate: -8 }} animate={{ opacity: 1, scale: 1, rotate: -6 }} transition={{ duration: .45, delay: .8, ease }}
-          className="absolute bottom-[-2%] right-[6%] grid w-[22%] gap-1 rounded-xl bg-white p-1.5 shadow-[0_20px_40px_-15px_rgba(0,0,0,1)]">
-          <span className="aspect-square w-full"><QRBig /></span>
-          <span className="text-center text-[9px] font-semibold text-black">{t("howQr")}</span>
-        </motion.span>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         {list("howFeats").map((f, i) => <span key={f} style={{ ["--i" as string]: i }} className="feat-on rounded-full border border-white/15 px-3 py-1.5 text-[12px] font-medium text-muted">{f}</span>)}
