@@ -3,7 +3,7 @@
 // Warp Carousel by Louis Studios.
 // 140+ more hand-made React components at https://studios.lou15.com/?ref=21st-code
 // Changes for 18kbio: a card can paint itself (`paint`, used for real profiles), a click on the
-// front card calls `onFrontClick`, the edge glow keeps its colour, `plainBack` keeps turned cards readable and `chroma` can turn off the colour split of the flare. Everything else is the original component.
+// front card calls `onFrontClick`, the edge glow keeps its colour, `plainBack` keeps turned cards readable `chroma` can turn off the colour split of the flare, `maxDpr` caps the resolution, and nothing is drawn while the ring rests. Everything else is the original component.
 
 import * as React from "react";
 
@@ -65,6 +65,8 @@ export interface WarpCarouselProps {
   plainBack?: boolean;
   /** Split the colours (cyan, blue and amber ghosts) in the edge flare. Off keeps the morph but in the cards' own colours. */
   chroma?: boolean;
+  /** Highest device pixel ratio the stage is drawn at. Lower is lighter on the GPU. */
+  maxDpr?: number;
   /** Freeze the animation at this many seconds of autoplay time. For stills and tests. */
   seconds?: number;
   /** Accessible name for the carousel region. */
@@ -765,6 +767,14 @@ vec3 render(vec2 pu, float halfH, int base){
   float fyb = 1.0 + 15.0 * smoothstep(280.0, 352.0, au) * uWarp;
   // the stretched outer flare reads a touch brighter, as if lit through the lens
   float gain = 1.0 + 0.17 * smoothstep(285.0, 350.0, au) * uWarp;
+  // 18kbio: without the colour split all three channels are the same sample, so read it once (3x cheaper)
+  if (uChroma < 0.5) {
+    float h = lensH(au);
+    float fx = px * max(abs(lensH(au + 0.5) - lensH(au - 0.5)), 0.02) * blur;
+    vec4 c = scene(vec2(sg * h, pu.y / S0), fx, px / S0 * fyb, base);
+    c.rgb = min(c.rgb * gain, vec3(c.a));
+    return c.rgb + (1.0 - c.a) * bg;
+  }
   vec3 acc;
   for (int ch = 0; ch < 3; ch++){
     // each channel reads a slightly different strip at the outer edge: red nearest the centre, blue furthest,
@@ -1026,6 +1036,7 @@ export function WarpCarousel({
   font = DEFAULT_FONT,
   plainBack = false,
   chroma = true,
+  maxDpr = 2,
   seconds,
   ariaLabel = "Stat cards",
   className,
@@ -1141,7 +1152,7 @@ export function WarpCarousel({
     let unit = 1;
     const resize = () => {
       const r = wrap.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       W = Math.max(2, Math.round(r.width * dpr));
       H = Math.max(2, Math.round(r.height * dpr));
       if (canvas.width !== W) canvas.width = W;
@@ -1262,10 +1273,17 @@ export function WarpCarousel({
         request(lastIndex.current + p.stepN);
       }
       draw(now);
-      const busy = p.seconds === undefined && (L.mode !== "rest" || p.autoplay);
-      if (busy) raf = requestAnimationFrame(loop);
+      if (p.seconds !== undefined) return;
+      // 18kbio: at rest nothing moves, so no frames are drawn until the next spin (no work while waiting)
+      if (L.mode === "rest") {
+        if (p.autoplay) sleep = window.setTimeout(() => { sleep = 0; kick(); }, Math.max(0, (L.nextAuto - now) * 1000));
+        return;
+      }
+      raf = requestAnimationFrame(loop);
     };
+    let sleep = 0;
     const kick = () => {
+      if (sleep) { clearTimeout(sleep); sleep = 0; }
       if (!raf && !disposed && L.visible) raf = requestAnimationFrame(loop);
     };
     handles.current = { kick, draw: () => draw(performance.now() / 1000) };
@@ -1344,6 +1362,7 @@ export function WarpCarousel({
     return () => {
       disposed = true;
       if (raf) cancelAnimationFrame(raf);
+      if (sleep) clearTimeout(sleep);
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
@@ -1356,7 +1375,7 @@ export function WarpCarousel({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list, background, glow, warp, font, N, plainBack, chroma]);
+  }, [list, background, glow, warp, font, N, plainBack, chroma, maxDpr]);
 
   React.useEffect(() => {
     if (seconds !== undefined) handles.current.draw();

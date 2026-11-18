@@ -228,13 +228,16 @@ export default function Showcase() {
   if (shown && !shown.length) return null; // nothing to show: no empty box
 
   return (
-    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative h-[420px] w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] sm:h-[480px] md:h-[min(760px,calc(88svh*var(--vz,1)))]">
-      {shown && (
-        // on phones the ring is a bit wider than the screen: bigger cards, and the morph at the edges still shows
-        <WarpCarousel className="max-sm:!absolute max-sm:!left-[-12.5%] max-sm:!w-[125%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
-          background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack ariaLabel={t("showTitle")}
-          font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
-      )}
+    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative h-[420px] w-full overflow-hidden [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] sm:h-[480px] md:h-[min(620px,calc(74svh*var(--vz,1)))]">
+      {/* computer: narrower than the page and a little to the right */}
+      <div className="relative mx-auto size-full md:max-w-[1000px] md:[mask-image:linear-gradient(to_right,transparent,#000_9%,#000_91%,transparent)] lg:translate-x-[7%]">
+        {shown && (
+          // on phones the ring is a bit wider than the screen: bigger cards, and the morph at the edges still shows
+          <WarpCarousel className="max-sm:!absolute max-sm:!left-[-12.5%] max-sm:!w-[125%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
+            background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack maxDpr={1} ariaLabel={t("showTitle")}
+            font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
+        )}
+      </div>
     </section>
   );
 }
