@@ -141,7 +141,12 @@
     el.querySelector("b").textContent = "@" + p.handle;
     el.querySelector(".peek-open").href = profileUrl(p.handle);
     document.body.appendChild(el);
-    const m = mountProfile(el.querySelector(".peek-pv"), p, {});
+    // the preview is silent: no music and no click/hover sounds (the profile page itself keeps them)
+    const q = JSON.parse(JSON.stringify(p));
+    q.appearance.music.type = "none"; q.appearance.music.autoplay = false;
+    q.appearance.sfx = { ...q.appearance.sfx, hover: "none", click: "none", volume: 0 };
+    q.appearance.enter.on = false;
+    const m = mountProfile(el.querySelector(".peek-pv"), q, {});
     peek = { el, m };
     el.addEventListener("click", e => { if (e.target === el || e.target.closest(".peek-x")) closePeek(); });
     addEventListener("keydown", peekKey);

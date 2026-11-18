@@ -11,7 +11,7 @@ const D = {
   skip: ["Vai al contenuto", "Skip to content"],
   navFeatures: ["funzioni", "features"], navStats: ["statistiche", "stats"], navPlans: ["piani", "plans"],
   explore: ["esplora", "explore"], login: ["accedi", "log in"], claimNav: ["Prendi la tua @", "Claim your @"], dashboard: ["Dashboard", "Dashboard"],
-  h1a: ["Prendi la tua @", "Claim your @"], h1b: ["su", "on"],
+  h1a: ["La tua identità,", "Your identity,"], h1b: ["su", "on"],
   heroDesc: ["Link, social, musica e il tuo stile su un solo indirizzo: 18kbio.xyz/iltuonome. Gratis, per sempre.", "Links, socials, music and your own style on one address: 18kbio.xyz/yourname. Free, forever."],
   exploreBtn: ["Esplora i profili", "Browse profiles"],
   claimLabel: ["Scegli la tua @", "Pick your @"], placeholder: ["iltuonome", "yourname"], take: ["Prendila", "Claim it"],

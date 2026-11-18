@@ -195,7 +195,6 @@ function painter(p: any, av: HTMLImageElement | null, bg: Pic | null, font: stri
 const localize = (p: any) => JSON.parse(JSON.stringify(p).replace(/https?:\/\/(www\.)?18kbio\.(xyz|vercel\.app)(?=\/api\/photo)/g, location.origin));
 const BOX_W = 400, BOX_H = 500; // the card's 4:5 at a phone-like width
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
-const idle = () => new Promise<void>(r => ("requestIdleCallback" in window ? (window as any).requestIdleCallback(() => r(), { timeout: 1500 }) : setTimeout(r, 200)));
 
 /** opens the real profile off screen, waits for its pictures, and takes its photo */
 async function photograph(k: any, shot: any, p: any): Promise<HTMLCanvasElement | null> {
@@ -212,17 +211,22 @@ async function photograph(k: any, shot: any, p: any): Promise<HTMLCanvasElement 
   try {
     const prof = localize(k.normalizeProfile ? k.normalizeProfile({ ...p }) : p);
     const a = prof.appearance || {};
-    // as in Esplora: no music, no entrance screen, no moving canvas effects
-    if (a.music) a.music.type = "none";
+    // a lighter profile: no sound of any kind, no entrance screen, no moving effects, no players or widgets
+    // that load other sites (they would not be in the photo anyway), only the first links
+    if (a.music) { a.music.type = "none"; a.music.autoplay = false; }
+    if (a.sfx) { a.sfx.hover = "none"; a.sfx.click = "none"; a.sfx.volume = 0; }
     if (a.enter) a.enter.on = false;
-    if (["snow", "rain", "stars", "particles", "hearts", "matrix", "ascii"].includes(a.effect)) a.effect = "none";
+    a.effect = "none";
+    if (a.widgets) Object.assign(a.widgets, { twitch: "", youtube: "", spotify: "", roblox: "", discordServer: "", discordId: "", discordPresence: false, github: "", weather: "", gallery: false, guestbook: false, contact: false, newsletter: false });
+    prof.gallery = [];
+    if (Array.isArray(prof.links)) prof.links = prof.links.slice(0, 3);
     view = k.mountProfile(host, prof, { preview: true, entrance: false });
     // pictures and the first frame of a video background
     const imgs = [...host.querySelectorAll("img")].map(im => (im as HTMLImageElement).decode().catch(() => {}));
     const vids = [...host.querySelectorAll("video")].map(v => new Promise(r => { const vv = v as HTMLVideoElement; if (vv.readyState >= 2) r(0); else { vv.addEventListener("loadeddata", r, { once: true }); vv.addEventListener("error", r, { once: true }); } }));
-    await Promise.race([Promise.all([...imgs, ...vids]), wait(5000)]);
-    await wait(250); // fonts and the last layout
-    const cv: HTMLCanvasElement = await shot(host, { width: BOX_W, height: BOX_H, scale: 1.6, backgroundColor: "#000", timeout: 6000 });
+    await Promise.race([Promise.all([...imgs, ...vids]), wait(2500)]);
+    await wait(80); // the last layout
+    const cv: HTMLCanvasElement = await shot(host, { width: BOX_W, height: BOX_H, scale: 1.25, backgroundColor: "#000", timeout: 4000 });
     cv.getContext("2d")!.getImageData(0, 0, 1, 1); // throws if the browser marked the photo as not usable
     return cv;
   } catch {
@@ -232,6 +236,17 @@ async function photograph(k: any, shot: any, p: any): Promise<HTMLCanvasElement 
     wrap.remove();
   }
 }
+
+// the photos are kept in this browser, so the next visit shows the ring at once
+type Saved = { handle: string; title: string; stamp: string; img: string };
+const SAVE_KEY = "18kbio:ring:v1";
+function readSaved(): Saved[] {
+  try { const v = JSON.parse(localStorage.getItem(SAVE_KEY) || "[]"); return Array.isArray(v) ? v.filter(x => x && x.handle && x.img) : []; } catch { return []; }
+}
+function writeSaved(list: Saved[]) {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch { /* full or blocked: next time they are taken again */ }
+}
+const dataImg = (src: string) => new Promise<HTMLImageElement | null>(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
 
 export default function Showcase({ className = "" }: { className?: string }) {
   const { t, lang } = useT();
@@ -244,6 +259,22 @@ export default function Showcase({ className = "" }: { className?: string }) {
     let off = false;
     const font = getComputedStyle(document.body).fontFamily || "system-ui, sans-serif";
     const fmt = (n: number) => `${n.toLocaleString(lang === "it" ? "it-IT" : "en-US")} ${t("proofViews")}`;
+    const card = (handle: string, title: string, paint: (ctx: CanvasRenderingContext2D) => void): Shown =>
+      ({ handle, card: { title, value: "@" + handle, footer: "", paint } });
+    const fromImg = (im: HTMLImageElement) => (ctx: CanvasRenderingContext2D) => ctx.drawImage(im, 0, 0, 256, 320);
+
+    // 1. the photos of the last visit, saved in this browser: the ring shows at once
+    const saved = readSaved();
+    let shownSaved = false;
+    if (saved.length >= 3) {
+      Promise.all(saved.map(x => dataImg(x.img))).then(ims => {
+        if (off || ims.some(im => !im)) return;
+        setShown(saved.map((x, i) => card(x.handle, x.title, fromImg(ims[i]!))));
+        shownSaved = true;
+      });
+    }
+
+    // 2. the current list; only new or changed profiles are photographed again (two at a time)
     firebase()
       .then(({ db, fs }) => fs.getDocs(fs.query(fs.collection(db, "profiles"), fs.orderBy("views", "desc"), fs.limit(40))))
       .then(async (snap: any) => {
@@ -253,28 +284,41 @@ export default function Showcase({ className = "" }: { className?: string }) {
             return p.appearance && p.avatarUrl && !p.private && !p.unlisted && !pr.private && !pr.unlisted && !pr.disabled;
           })
           .slice(0, MAX);
-        // the real profiles, photographed one at a time while the page is idle (the page stays smooth)
+        const stamp = (p: any) => String((p.updatedAt && (p.updatedAt.seconds ?? p.updatedAt)) || "") + ":" + (p.views || 0);
+        const same = rows.length === saved.length && rows.every((p: any, i: number) => saved[i].handle === p.handle && saved[i].stamp === stamp(p));
+        if (same && saved.length >= 3) return; // nothing changed since the last visit
         const [k, { domToCanvas }] = await Promise.all([kit.profile().catch(() => null), import("modern-screenshot")]);
-        const out: Shown[] = [];
-        for (const p of rows) {
-          if (off) return;
-          await idle();
+        const out: (Shown | null)[] = new Array(rows.length).fill(null);
+        const keep: Saved[] = [];
+        const one = async (p: any, i: number) => {
+          const old = saved.find(x => x.handle === p.handle && x.stamp === stamp(p));
+          const im = old ? await dataImg(old.img) : null;
+          if (im) { out[i] = card(p.handle, p.displayName || p.handle, fromImg(im)); keep[i] = old!; return; }
           const photo = k ? await photograph(k, domToCanvas, p) : null;
-          let paint: (ctx: CanvasRenderingContext2D) => void;
-          if (photo) paint = ctx => ctx.drawImage(photo, 0, 0, 256, 320);
-          else {
-            const b = (p.appearance && p.appearance.bg) || {};
-            const bgPic: Promise<Pic | null> = b.type === "image" ? loadImg(b.image)
-              : b.type === "video" ? (b.poster ? loadImg(b.poster) : loadFrame(b.video))
-              : Promise.resolve(null);
-            const [av, bg] = await Promise.all([loadImg(p.avatarUrl), bgPic]);
-            paint = painter(p, av, bg, font, fmt(p.views || 0));
+          if (photo) {
+            out[i] = card(p.handle, p.displayName || p.handle, ctx => ctx.drawImage(photo, 0, 0, 256, 320));
+            try { keep[i] = { handle: p.handle, title: p.displayName || p.handle, stamp: stamp(p), img: photo.toDataURL("image/jpeg", .8) }; } catch { /* not saved */ }
+            return;
           }
-          out.push({ handle: p.handle, card: { title: p.displayName || p.handle, value: "@" + p.handle, footer: p.bio || "", paint } });
+          const b = (p.appearance && p.appearance.bg) || {};
+          const bgPic: Promise<Pic | null> = b.type === "image" ? loadImg(b.image) : b.type === "video" ? (b.poster ? loadImg(b.poster) : loadFrame(b.video)) : Promise.resolve(null);
+          const [av, bg] = await Promise.all([loadImg(p.avatarUrl), bgPic]);
+          out[i] = card(p.handle, p.displayName || p.handle, painter(p, av, bg, font, fmt(p.views || 0)));
+        };
+        let firstShown = shownSaved;
+        for (let i = 0; i < rows.length; i += 2) {
+          if (off) return;
+          await Promise.all(rows.slice(i, i + 2).map((p: any, j: number) => one(p, i + j)));
+          // the first three are enough to start turning (only when nothing was on screen yet)
+          const ready = out.filter(Boolean) as Shown[];
+          if (!firstShown && !shownSaved && ready.length >= 3 && i + 2 < rows.length) { setShown(ready); firstShown = true; }
         }
-        if (!off) setShown(out.length >= 3 ? out : []);
+        if (off) return;
+        const done = out.filter(Boolean) as Shown[];
+        setShown(done.length >= 3 ? done : []);
+        writeSaved(keep.filter(Boolean));
       })
-      .catch(() => { if (!off) setShown([]); });
+      .catch(() => { if (!off && !shownSaved) setShown([]); });
     return () => { off = true; };
   }, [near, lang, t]);
 
@@ -288,7 +332,7 @@ export default function Showcase({ className = "" }: { className?: string }) {
         {shown && (
           // on phones the ring is a bit wider than the screen: bigger cards, and the morph at the edges still shows
           <WarpCarousel className="max-sm:!absolute max-sm:!left-[-12.5%] max-sm:!w-[125%]" cards={shown.map(s => s.card)} onFrontClick={open} step={1} interval={3}
-            background="#0b0b0b" glow="#8c8c8c" warp={1} chroma={false} plainBack clear maxDpr={1} ariaLabel={t("showTitle")}
+            background="#0b0b0b" glow="#8c8c8c" warp={0.5} chroma={false} plainBack clear maxDpr={1} ariaLabel={t("showTitle")}
             font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
         )}
       </div>
