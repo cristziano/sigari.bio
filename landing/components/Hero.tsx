@@ -69,14 +69,14 @@ export default function Hero() {
     <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-lg:min-h-[740px]">
 
       {/* computer: the title and the field on the left, the ring of real profiles on the right */}
-      <div className="relative z-[2] mx-auto grid w-full max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-4 px-4 pb-16 pt-[96px] lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] lg:pl-10 lg:pr-0 lg:pb-10">
+      <div className="relative z-[2] mx-auto grid w-full max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center lg:[zoom:1.25] gap-4 px-4 pb-16 pt-[96px] lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] lg:pl-10 lg:pr-0 lg:pb-10">
       <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
         <a href="/esplora" style={{ animationDelay: ".05s" }}
           className="rise mb-7 inline-flex items-center gap-2 rounded-full border border-white/[.1] bg-white/[.04] px-3 py-1 text-[13px] text-muted transition-colors hover:border-white/25 hover:text-white">
           <i aria-hidden className="size-2 rounded-full bg-white/80" /> {t("exploreBtn")} <span aria-hidden>→</span>
         </a>
         {/* one line: "La tua identità, su 18kbio" */}
-        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="whitespace-nowrap text-[clamp(23px,8.4vw,44px)] font-bold leading-[1.05] tracking-[-.045em] sm:text-[clamp(36px,6.6vw,60px)] lg:text-[clamp(38px,3.9vw,64px)]">
+        <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="whitespace-nowrap text-[clamp(23px,8.4vw,44px)] font-bold leading-[1.05] tracking-[-.045em] sm:text-[clamp(36px,6.6vw,60px)] lg:text-[clamp(32px,3.2vw,56px)]">
           <span aria-hidden>
             {words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{" "}</span>)}
             <Word i={words.length}>{t("h1b")}</Word>{" "}
