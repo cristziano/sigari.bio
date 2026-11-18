@@ -140,3 +140,10 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 .link-shine::after { content: ""; position: absolute; inset: 0; transform: translateX(-110%); background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .1), transparent 70%); animation: linkShine 3.6s ease-in-out infinite; }
 @keyframes linkShine { 60%, 100% { transform: translateX(110%); } }
 @media (prefers-reduced-motion: reduce) { .sk::after, .banner-silk, .ring-chrome, .eq-bar, .link-shine::after { animation: none; } }
+
+/* hero entrance in plain CSS: it runs as soon as the page is painted, it doesn't wait for the scripts */
+@keyframes wordUp { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.word-up { animation: wordUp .8s cubic-bezier(.23, 1, .32, 1) both; }
+.rise { animation: rise .7s cubic-bezier(.23, 1, .32, 1) both; }
+@media (prefers-reduced-motion: reduce) { .word-up, .rise { animation: none; } }

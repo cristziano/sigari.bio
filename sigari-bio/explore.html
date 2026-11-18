@@ -10,6 +10,12 @@
 <title>Esplora · 18kbio</title>
 <meta name="description" content="I profili di 18kbio: i nuovi, i più visti, e cerca una @.">
 <meta name="theme-color" content="#000000">
+<!-- faster Esplora: everything the profiles need is fetched in parallel from the start -->
+<link rel="preconnect" href="https://firestore.googleapis.com">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="modulepreload" href="likes.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js" crossorigin>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-lite.js" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -169,19 +175,35 @@
   }
   $("q").addEventListener("input", () => { $("qClear").hidden = !$("q").value; });
   $("qClear").addEventListener("click", e => { e.preventDefault(); $("q").value = ""; $("qClear").hidden = true; $("q").dispatchEvent(new Event("input", { bubbles: true })); $("q").focus(); });
+  // the last list of each tab is kept in this browser: next time it shows at once, then updates itself
+  const CACHE = t => "esplora:" + t;
+  const asDocs = rows => rows.map(r => ({ id: r.id, data: () => r.d }));
+  function fromCache(t) { try { const v = JSON.parse(localStorage.getItem(CACHE(t)) || "null"); return Array.isArray(v) && v.length ? v : null; } catch (_) { return null; } }
+  function toCache(t, docs) {
+    const v = JSON.stringify(docs.map(d => ({ id: d.id, d: d.data() })));
+    try { if (v.length < 1500000) localStorage.setItem(CACHE(t), v); } catch (_) { /* full or blocked: it just won't be saved */ }
+    return v;
+  }
+  let shownKey = "";
   async function load() {
-    $("note").textContent = "Carico i profili…";
     const q = $("q").value.trim().toLowerCase().replace(/^@/, "").replace(/[^a-z0-9_]/g, "");
+    const cached = !q && fromCache(tab);
+    if (cached) { const k = tab + JSON.stringify(cached); if (k !== shownKey) { paint(asDocs(cached)); shownKey = k; } }
+    else $("note").textContent = "Carico i profili…";
+    if (!db) return; // the database is still loading: load() runs again as soon as it is ready
     try {
       let snap;
       if (q) snap = await F.getDocs(F.query(F.collection(db, "profiles"), F.orderBy(F.documentId()), F.startAt(q), F.endAt(q + ""), F.limit(30)));
       else snap = await F.getDocs(F.query(F.collection(db, "profiles"), F.orderBy(tab === "top" ? "views" : tab === "likes" ? "likes" : "updatedAt", "desc"), F.limit(48)));
-      paint(snap.docs);
-    } catch (_) { $("note").textContent = "Non riesco a caricare i profili adesso. Riprova tra poco."; }
+      if (q) { paint(snap.docs); shownKey = ""; return; }
+      const k = tab + toCache(tab, snap.docs);
+      if (k !== shownKey) { paint(snap.docs); shownKey = k; } // same list as the one on screen: leave it as it is
+    } catch (_) { if (!cached) $("note").textContent = "Non riesco a caricare i profili adesso. Riprova tra poco."; }
   }
   let timer = 0;
   $("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 300); });
   $("tabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; tab = b.dataset.t; [...$("tabs").children].forEach(x => x.classList.toggle("on", x === b)); $("q").value = ""; load(); });
+  load(); // the saved list (if any) right away, while the database loads
   (async () => {
     try {
       const base = "https://www.gstatic.com/firebasejs/10.12.5/";

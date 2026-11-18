@@ -3,7 +3,7 @@
 // when you stop between two steps the page settles on the nearest one, so you never land half way.
 // Left: the steps (the current one open, with its facts); right: the scene of that step, built with the name typed at the top.
 // No other user's profile: the scenes show your own @ (or "iltuonome").
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useHandle } from "@/lib/handle";
 import { rarity, reducedMotion } from "@/lib/site";
@@ -263,7 +263,8 @@ export default function HowItWorks() {
                       <motion.div key="open" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .35, ease }} className="overflow-hidden">
                         <p className="max-w-[40ch] pb-3 text-[15px] leading-[1.55] text-[#bdbdbd] max-md:text-[14px]">{text}</p>
                         <div className="flex flex-wrap gap-2 pb-3 max-md:hidden">
-                          {facts[i].map(f => <span key={f} className="rounded-lg border border-white/15 bg-white/[.04] px-2.5 py-1.5 text-[12.5px] font-medium">{f}</span>)}
+                          {/* the space after each chip keeps the words apart when the text is read or copied (flex hides it) */}
+                          {facts[i].map(f => <Fragment key={f}><span className="rounded-lg border border-white/15 bg-white/[.04] px-2.5 py-1.5 text-[12.5px] font-medium">{f}</span>{" "}</Fragment>)}
                         </div>
                       </motion.div>
                     )}

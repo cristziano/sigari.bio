@@ -40,7 +40,8 @@ export default function Plans() {
             <ul className="mb-6 mt-4 grid gap-2.5 border-t border-line pt-4">
               {pro.map((b, i) => <li key={b} className="flex items-center gap-3 text-sm text-[#d4d4d4]"><span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg border border-line-2 text-[13px]">{["✦", "◎", "↗"][i] || "✦"}</span>{b}</li>)}
             </ul>
-            <a href="#h1in" onClick={claim} className="btn-2 mt-auto w-full">{t("proBtn")}</a>
+            {/* Premium is not on sale yet: the honest next step is a free account (logged in users go straight to the dashboard) */}
+            <a href="/accedi?next=/dashboard" className="btn-2 mt-auto w-full">{t("proBtn")}</a>
           </div>
         </div>
       </div>

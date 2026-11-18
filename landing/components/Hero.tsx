@@ -3,19 +3,17 @@
 // when it is, a small card with your @ appears under it (and points to "La tua carta"). Clear the name and the card goes away.
 // The placeholder types example names by itself while the field is empty. Plain matte black behind (the page background).
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
 import { HANDLE_RE, reducedMotion, sanitize } from "@/lib/site";
 import { useHandle } from "@/lib/handle";
 import { useT } from "@/lib/i18n";
 
-const EASE = [0.23, 1, 0.32, 1] as const;
 const EXAMPLES = ["giulia_", "marco", "darkwave", "sofi", "lorenzo99", "angelo_"];
 
-// a word that rises out of its own box
+// a word that rises out of its own box (CSS animation: it starts as soon as the page is painted, before the scripts load)
 function Word({ children, i }: { children: React.ReactNode; i: number }) {
   return (
     <span className="inline-block overflow-hidden pb-[.08em] -mb-[.08em] align-top">
-      <motion.span className="inline-block" initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: .9, ease: EASE, delay: .3 + i * .06 }}>{children}</motion.span>
+      <span className="word-up inline-block" style={{ animationDelay: `${.08 + i * .05}s` }}>{children}</span>
     </span>
   );
 }
@@ -70,24 +68,24 @@ export default function Hero() {
     <section id="top" aria-label={t("h1a")} className="vh relative isolate flex items-center justify-center overflow-hidden max-md:min-h-[740px]">
 
       <div className="relative z-[2] flex w-full flex-col items-center px-4 pb-44 pt-[100px] text-center md:pb-40">
-        <motion.a href="/esplora" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE, delay: .2 }}
-          className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/[.1] bg-white/[.04] px-3 py-1 text-[13px] text-muted transition-colors hover:border-white/25 hover:text-white">
+        <a href="/esplora" style={{ animationDelay: ".05s" }}
+          className="rise mb-7 inline-flex items-center gap-2 rounded-full border border-white/[.1] bg-white/[.04] px-3 py-1 text-[13px] text-muted transition-colors hover:border-white/25 hover:text-white">
           <i aria-hidden className="size-2 rounded-full bg-white/80" /> {t("exploreBtn")} <span aria-hidden>→</span>
-        </motion.a>
+        </a>
         <h1 aria-label={`${t("h1a")} ${t("h1b")} 18kbio`} className="text-[clamp(42px,7vw,100px)] font-bold leading-[1.02] tracking-[-.045em]">
           <span aria-hidden className="block">{words.map((w, i) => <span key={w + i}><Word i={i}>{w}</Word>{" "}</span>)}</span>
           <span aria-hidden className="block">
             <Word i={words.length}>{t("h1b")}</Word>{" "}
-            <b className="hx-name">{[..."18kbio"].map((ch, i) => <i key={i} style={{ ["--d" as string]: `${(.7 + i * .07).toFixed(2)}s` }}>{ch}</i>)}</b>
+            <b className="hx-name">{[..."18kbio"].map((ch, i) => <i key={i} style={{ ["--d" as string]: `${(.3 + i * .05).toFixed(2)}s` }}>{ch}</i>)}</b>
           </span>
         </h1>
-        <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: EASE, delay: .75 }}
-          className="mt-5 max-w-[46ch] text-[clamp(15px,1.4vw,18px)] leading-[1.55] text-muted [text-wrap:pretty]">
+        <p style={{ animationDelay: ".3s" }}
+          className="rise mt-5 max-w-[46ch] text-[clamp(15px,1.4vw,18px)] leading-[1.55] text-muted [text-wrap:pretty]">
           {t("heroDesc")}
-        </motion.p>
+        </p>
 
         {/* the field */}
-        <motion.form onSubmit={submit} noValidate className="relative mt-8 w-full max-w-[470px] text-left" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: EASE, delay: .9 }}>
+        <form onSubmit={submit} noValidate className="rise relative mt-8 w-full max-w-[470px] text-left" style={{ animationDelay: ".4s" }}>
           <label className="sr-only" htmlFor="h1in">{t("claimLabel")}</label>
           <div ref={field} className="hero-field" data-kind={status.kind}>
             <span className="text-[#8a8a8a]">18kbio.xyz/</span>
@@ -110,7 +108,7 @@ export default function Hero() {
             </div>
             <a href="#cards" tabIndex={card ? 0 : -1} className="mt-4 block border-t border-white/10 pt-3 text-center text-[13px] font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{t("heroCard")}</a>
           </div>
-        </motion.form>
+        </form>
       </div>
     </section>
   );
