@@ -3,7 +3,7 @@
 // Warp Carousel by Louis Studios.
 // 140+ more hand-made React components at https://studios.lou15.com/?ref=21st-code
 // Changes for 18kbio: a card can paint itself (`paint`, used for real profiles), a click on the
-// front card calls `onFrontClick`, and the edge glow keeps its colour. Everything else is the original component.
+// front card calls `onFrontClick`, the edge glow keeps its colour, and `plainBack` keeps turned cards readable. Everything else is the original component.
 
 import * as React from "react";
 
@@ -61,6 +61,8 @@ export interface WarpCarouselProps {
   warp?: number;
   /** Font stack for all card copy. */
   font?: string;
+  /** Show a card seen from behind the right way round instead of mirrored (WebGL only). */
+  plainBack?: boolean;
   /** Freeze the animation at this many seconds of autoplay time. For stills and tests. */
   seconds?: number;
   /** Accessible name for the carousel region. */
@@ -629,6 +631,7 @@ uniform vec3 uGlowShape[8];
 uniform vec3 uBg;
 uniform float uWarp;
 uniform float uMix;
+uniform float uBack;
 out vec4 outColor;
 
 const float F = ${FOCAL.toFixed(2)};
@@ -688,6 +691,8 @@ vec4 shadeCard(vec4 pose, vec2 ps, float fx, float fy, out float depth){
   float cov = clamp(0.5 - d / fp, 0.0, 1.0);
   if (cov <= 0.0) return vec4(0.0);
   vec2 uv = vec2(s / CW + 0.5, 0.5 - y / CH);
+  // 18kbio: a card seen from behind shows its picture the right way round, not mirrored
+  if (uBack > 0.5 && c < 0.0) uv.x = 1.0 - uv.x;
   vec4 tex = textureGrad(uTex, vec3(uv, pose.w), vec2(fs / CW, 0.0), vec2(0.0, fyc / CH));
   depth = t;
   return vec4(tex.rgb, 1.0) * cov;
@@ -824,7 +829,7 @@ function createGL(canvas: HTMLCanvasElement): GLState | null {
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
   const tex = gl.createTexture()!;
   const loc: Record<string, WebGLUniformLocation | null> = {};
-  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix"]) loc[n] = gl.getUniformLocation(prog, n);
+  for (const n of ["uTex", "uRes", "uUnit", "uPose", "uGlowCol", "uGlowShape", "uBg", "uWarp", "uMix", "uBack"]) loc[n] = gl.getUniformLocation(prog, n);
   const aniso = gl.getExtension("EXT_texture_filter_anisotropic");
   (tex as unknown as { aniso: unknown }).aniso = aniso;
   return { gl, prog, tex, loc, layers: 0, texW: 0 };
@@ -1016,6 +1021,7 @@ export function WarpCarousel({
   glow,
   warp = 1,
   font = DEFAULT_FONT,
+  plainBack = false,
   seconds,
   ariaLabel = "Stat cards",
   className,
@@ -1227,6 +1233,7 @@ export function WarpCarousel({
         gl.uniform3f(loc.uBg, bg[0] / 255, bg[1] / 255, bg[2] / 255);
         gl.uniform1f(loc.uWarp, Math.max(0, Math.min(1, warp)));
         gl.uniform1f(loc.uMix, mix);
+        gl.uniform1f(loc.uBack, plainBack ? 1 : 0);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       } else if (ctx2d) {
         const css = `rgb(${bg[0]}, ${bg[1]}, ${bg[2]})`;
@@ -1344,7 +1351,7 @@ export function WarpCarousel({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list, background, glow, warp, font, N]);
+  }, [list, background, glow, warp, font, N, plainBack]);
 
   React.useEffect(() => {
     if (seconds !== undefined) handles.current.draw();
