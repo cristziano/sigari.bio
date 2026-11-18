@@ -121,4 +121,8 @@ async function main() {
   console.log("saved", list.length, "pictures");
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+// how the last run went, readable on the site (sigari-bio/ring/status.json): Vercel's build log is private
+const status = async (ok, msg) => {
+  try { await mkdir(OUT, { recursive: true }); await writeFile(join(OUT, "status.json"), JSON.stringify({ ok, msg: String(msg).slice(0, 1500), at: new Date().toISOString(), node: process.version }) + "\n"); } catch {}
+};
+main().then(() => status(true, "ok")).catch(async e => { console.error(e); await status(false, e && (e.stack || e.message) || e); process.exit(1); });
