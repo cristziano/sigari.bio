@@ -1,18 +1,20 @@
 // Takes the pictures of the profiles for the ring in the home page (sigari-bio/ring/).
 // The home only downloads these pictures: nothing is built while someone visits, so the ring shows at once.
-// Run by .github/workflows/ring.yml, only when started by hand (or here: node scripts/ring-shots.mjs).
+// It runs by itself every time Vercel publishes the site (vercel.json, buildCommand), so the pictures
+// follow the profiles without anyone doing anything. Here: node scripts/ring-shots.mjs (from landing/).
+// If it fails (no network, no browser) the build goes on: the home just keeps the pictures it already has.
 //
 // Which profiles: the same ones Esplora shows (public and listed: the owner's choice), the most visited first.
 // How: each profile is opened with the same code as its page (profile-kit.js), in a lighter version
 // (no music or sounds, no entrance screen, no moving effects, no widgets that load other sites, the first
 // 3 real links), and photographed at 400x500 (the card's 4:5).
-import { chromium } from "playwright";
+import { chromium as pw } from "playwright-core";
 import { createServer } from "node:http";
 import { createHash } from "node:crypto";
 import { readFile, writeFile, mkdir, readdir, unlink } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+const ROOT = new URL("../../", import.meta.url).pathname; // the repository
 const OUT = join(ROOT, "sigari-bio", "ring");
 const MAX = 8;
 const W = 400, H = 500, SCALE = 1.5;
@@ -70,7 +72,14 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   const server = await serve();
   const port = server.address().port;
-  const browser = await chromium.launch();
+  // on Vercel: a Chromium made for servers (it brings its own system files); elsewhere the one of Playwright
+  let browser;
+  if (process.env.VERCEL) {
+    const { default: chromium } = await import("@sparticuz/chromium");
+    browser = await pw.launch({ executablePath: await chromium.executablePath(), args: chromium.args, headless: true });
+  } else {
+    browser = await pw.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
+  }
   const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: SCALE });
   await page.goto(`http://127.0.0.1:${port}/__ring`);
   await page.waitForFunction(() => window.ready);

@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd landing && npm ci --no-audit --no-fund && npm run build && rm -rf node_modules .next out",
+  "buildCommand": "cd landing && npm ci --no-audit --no-fund && (node scripts/ring-shots.mjs || echo ring-skipped) && npm run build && rm -rf node_modules .next out",
   "outputDirectory": ".",
   "cleanUrls": false,
   "rewrites": [

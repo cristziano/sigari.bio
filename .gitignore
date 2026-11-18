@@ -1,2 +1,5 @@
 node_modules
 sigari-bio/landing/
+
+# pictures of the profiles for the home ring: made by Vercel at every publish (landing/scripts/ring-shots.mjs)
+sigari-bio/ring/

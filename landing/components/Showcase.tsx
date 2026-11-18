@@ -1,7 +1,7 @@
 "use client";
 // A ring of real profiles that turns by itself (WarpCarousel), on the right of the hero. No title, no text.
-// The cards are ready-made pictures of the profiles (sigari-bio/ring/, taken when asked by
-// scripts/ring-shots.mjs on GitHub): the page only downloads them, so the ring shows at once.
+// The cards are ready-made pictures of the profiles (sigari-bio/ring/, taken by Vercel at every publish with
+// landing/scripts/ring-shots.mjs): the page only downloads them, so the ring shows at once.
 // Only the profiles that Esplora already shows (public and listed, the owner's choice), the most visited first.
 // Click the front card to open that profile. If the pictures can't be read, nothing is shown.
 import { useEffect, useState } from "react";
