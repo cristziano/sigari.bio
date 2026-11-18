@@ -1,6 +1,7 @@
 "use client";
 // Background of the whole landing: a slow liquid "silk" in black and white (WebGL shader, no library).
-// Faint and sharp: it only gives the background a little movement (a bit more behind the hero, even less below).
+// Barely there: it only gives the background a little movement (a bit more behind the hero, even less below).
+// A fine moving film grain on top keeps the black from looking flat (see .grain in globals.css).
 // Light on purpose: drawn at low resolution and ~30 frames per second, paused when the tab is hidden,
 // a single still frame with prefers-reduced-motion. Without WebGL the page stays plain matte black.
 import { useEffect, useRef } from "react";
@@ -48,7 +49,7 @@ export default function AuroraBackground() {
     const size = () => { c.width = Math.max(2, Math.round(innerWidth * scale)); c.height = Math.max(2, Math.round(innerHeight * scale)); gl.viewport(0, 0, c.width, c.height); gl.uniform2f(uRes, c.width, c.height); };
     size();
     // more visible behind the hero, very dark and delicate everywhere else
-    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .11 + (.07 - .11) * k; };
+    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .065 + (.045 - .065) * k; };
     const t0 = performance.now();
     const draw = () => { gl.uniform1f(uT, (performance.now() - t0) / 1000); gl.uniform1f(uAmp, amp()); gl.drawArrays(gl.TRIANGLES, 0, 3); };
 
@@ -73,6 +74,8 @@ export default function AuroraBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-[#0b0b0b]">
       <canvas ref={cv} className="size-full" />
+      {/* fine film grain over everything: the black feels alive without a colour or a visible shape */}
+      <div className="grain" />
     </div>
   );
 }

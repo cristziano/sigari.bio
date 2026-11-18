@@ -147,3 +147,10 @@ body { background: transparent; font-family: var(--font-sans); -webkit-font-smoo
 .word-up { animation: wordUp .8s cubic-bezier(.23, 1, .32, 1) both; }
 .rise { animation: rise .7s cubic-bezier(.23, 1, .32, 1) both; }
 @media (prefers-reduced-motion: reduce) { .word-up, .rise { animation: none; } }
+
+/* film grain on the page background: fine noise that shifts a few times a second, very faint */
+.grain { position: absolute; inset: -50%; opacity: .055; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .9s steps(6) infinite; }
+@keyframes grain { 0% { transform: translate(0, 0); } 17% { transform: translate(-3%, 2%); } 33% { transform: translate(2%, -4%); } 50% { transform: translate(-4%, -1%); } 67% { transform: translate(3%, 3%); } 83% { transform: translate(-1%, 4%); } 100% { transform: translate(0, 0); } }
+@media (prefers-reduced-motion: reduce) { .grain { animation: none; } }
