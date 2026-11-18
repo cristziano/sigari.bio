@@ -1,6 +1,6 @@
 "use client";
 // Background of the whole landing: a slow liquid "silk" in black and white (WebGL shader, no library).
-// Faint: it only gives the background a little movement (a bit more behind the hero, even less below).
+// Faint and sharp: it only gives the background a little movement (a bit more behind the hero, even less below).
 // Light on purpose: drawn at low resolution and ~30 frames per second, paused when the tab is hidden,
 // a single still frame with prefers-reduced-motion. Without WebGL the page stays plain matte black.
 import { useEffect, useRef } from "react";
@@ -19,8 +19,8 @@ void main(){
   vec2 q=vec2(fbm(uv+s),fbm(uv+vec2(5.2,1.3)-s));
   vec2 r=vec2(fbm(uv+2.6*q+vec2(1.7,9.2)+s*1.3),fbm(uv+2.6*q+vec2(8.3,2.8)-s));
   float f=fbm(uv+2.2*r);
-  float silk=smoothstep(.3,.78,f);            // soft light and dark folds
-  float edge=smoothstep(.035,0.,abs(r.x-.52));  // thin bright line along a fold
+  float silk=smoothstep(.42,.64,f);           // folds with crisper edges
+  float edge=smoothstep(.016,0.,abs(r.x-.52));  // a thin, sharp bright line along a fold
   float v=pow(silk,1.7)*.85+edge*.55*silk;
   float left=mix(1.25,1.,smoothstep(0.,.7,gl_FragCoord.x/res.x)); // a touch stronger on the left side
   gl_FragColor=vec4(vec3(.043+v*amp*left),1.);   // matte black + the silk
@@ -44,11 +44,11 @@ export default function AuroraBackground() {
     const uRes = gl.getUniformLocation(pr, "res"), uT = gl.getUniformLocation(pr, "t"), uAmp = gl.getUniformLocation(pr, "amp");
 
     // low resolution: the silk is soft anyway, so it costs little
-    const scale = innerWidth < 768 ? .28 : .35;
+    const scale = innerWidth < 768 ? .45 : .55; // high enough for sharp lines, still light
     const size = () => { c.width = Math.max(2, Math.round(innerWidth * scale)); c.height = Math.max(2, Math.round(innerHeight * scale)); gl.viewport(0, 0, c.width, c.height); gl.uniform2f(uRes, c.width, c.height); };
     size();
     // more visible behind the hero, very dark and delicate everywhere else
-    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .17 + (.11 - .17) * k; };
+    const amp = () => { const k = Math.min(1, Math.max(0, (scrollY - innerHeight * .25) / (innerHeight * .75))); return .11 + (.07 - .11) * k; };
     const t0 = performance.now();
     const draw = () => { gl.uniform1f(uT, (performance.now() - t0) / 1000); gl.uniform1f(uAmp, amp()); gl.drawArrays(gl.TRIANGLES, 0, 3); };
 
