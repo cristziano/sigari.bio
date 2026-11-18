@@ -324,7 +324,7 @@ function meshGrid(mesh: string[] | undefined): [number, number, number][] {
   return out;
 }
 
-function paintMesh(ctx: CanvasRenderingContext2D, w: number, h: number, mesh: string[] | undefined) {
+export function paintMesh(ctx: CanvasRenderingContext2D, w: number, h: number, mesh: string[] | undefined) {
   const grid = meshGrid(mesh);
   const img = ctx.createImageData(w, h);
   const d = img.data;

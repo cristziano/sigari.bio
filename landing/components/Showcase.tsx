@@ -5,7 +5,7 @@
 // Click the front card (or the link under it) to open that profile. If profiles can't be read, the section hides.
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
-import { WarpCarousel, type WarpCard } from "@/components/ui/warp-carousel";
+import { WarpCarousel, WARP_CAROUSEL_CARDS, paintMesh, type WarpCard } from "@/components/ui/warp-carousel";
 import { firebase } from "@/lib/site";
 import { useT } from "@/lib/i18n";
 
@@ -45,88 +45,87 @@ function fit(ctx: CanvasRenderingContext2D, text: string, max: number) {
   return t.trimEnd() + "…";
 }
 
-function painter(p: any, av: HTMLImageElement | null, bg: HTMLImageElement | null, font: string, visits: string) {
+// the morphing mesh gradients of the component (its blue, green-orange and red cards; no violet) with their glow and accent
+const LOOKS = [0, 2, 3].map(i => WARP_CAROUSEL_CARDS[i]);
+// the green-orange card's own glow is lavender: a warm yellow instead (no violet on the site)
+const GLOWS = ["#12b0e8", "#f2c76b", "#6cc0ea"];
+
+/** a profile card in the component's own layout: mesh gradient, two-line title top left, ring of ticks
+ *  (here around the profile photo), thin footer bottom left */
+function painter(p: any, av: HTMLImageElement | null, look: WarpCard, font: string, visits: string) {
   const a = p.appearance || {};
   const name = (p.displayName || p.handle || "").trim() || p.handle;
   const bio = String((a.bioLines && a.bioLines[0]) || p.bio || "").replace(/\s+/g, " ").trim();
   const showViews = !(a.privacy && a.privacy.hideViews) && typeof p.views === "number";
+  const accent = look.accent || "#ffffff";
   return (ctx: CanvasRenderingContext2D) => {
-    // background: the profile's own image, darkened so the text reads; otherwise plain dark
-    ctx.fillStyle = "#121212";
-    ctx.fillRect(0, 0, 256, 320);
-    if (bg) {
-      ctx.save();
-      ctx.filter = "blur(1.5px)";
-      cover(ctx, bg, -4, -4, 264, 328);
-      ctx.restore();
-      ctx.fillStyle = "rgba(0,0,0,.38)";
-      ctx.fillRect(0, 0, 256, 320);
-    } else {
-      const g = ctx.createRadialGradient(128, 110, 10, 128, 110, 220);
-      g.addColorStop(0, "#2a2a2a");
-      g.addColorStop(1, "#0d0d0d");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, 256, 320);
-    }
-    const shade = ctx.createLinearGradient(0, 150, 0, 320);
-    shade.addColorStop(0, "rgba(0,0,0,0)");
-    shade.addColorStop(1, "rgba(0,0,0,.85)");
-    ctx.fillStyle = shade;
-    ctx.fillRect(0, 150, 256, 170);
+    // the mesh gradient fills the whole card (painted in pixels, so drawn without the card scale)
+    const m = ctx.getTransform();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    paintMesh(ctx, ctx.canvas.width, ctx.canvas.height, look.mesh);
+    ctx.setTransform(m);
+    ctx.textBaseline = "alphabetic";
 
-    // photo in a circle with a thin white ring
-    const cx = 128, cy = 118, r = 40;
+    // title, top left: name and @
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(255,255,255,.92)";
+    ctx.font = `300 11px ${font}`;
+    ctx.fillText(fit(ctx, name, 222), 17, 37);
+    ctx.fillStyle = "rgba(255,255,255,.7)";
+    ctx.fillText(fit(ctx, "@" + p.handle, 222), 17, 51);
+
+    // ring of ticks around the photo, brighter on top (as the component's "ring" card)
+    const cx = 128, cy = 156, r = 56;
+    for (let i = 0; i < 132; i++) {
+      const ang = (i / 132) * Math.PI * 2 - Math.PI / 2;
+      const seed = 0.5 + 0.5 * Math.sin(i * 12.9898) * Math.sin(i * 4.1414 + 1.3);
+      const top = 0.5 + 0.5 * Math.cos(ang + Math.PI / 2);
+      const len = 4 + 4.5 * Math.abs(seed) + 2 * top;
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.22 + 0.5 * top * top;
+      ctx.lineWidth = 1 + 0.7 * top;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * (r + 8), cy + Math.sin(ang) * (r + 8));
+      ctx.lineTo(cx + Math.cos(ang) * (r + 8 + len), cy + Math.sin(ang) * (r + 8 + len));
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // the photo
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.clip();
     if (av) cover(ctx, av, cx - r, cy - r, r * 2, r * 2);
     else {
-      ctx.fillStyle = "#222";
+      ctx.fillStyle = "rgba(0,0,0,.35)";
       ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
       ctx.fillStyle = "#fff";
-      ctx.font = `600 34px ${font}`;
+      ctx.font = `300 46px ${font}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(name.charAt(0).toUpperCase(), cx, cy + 2);
     }
     ctx.restore();
-    ctx.strokeStyle = "rgba(255,255,255,.85)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r + 1, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // name, @, first line of the bio
-    ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#fff";
-    ctx.font = `700 21px ${font}`;
-    ctx.fillText(fit(ctx, name, 224), 128, 192);
-    ctx.fillStyle = "rgba(255,255,255,.62)";
-    ctx.font = `500 11.5px ${font}`;
-    ctx.fillText("@" + p.handle, 128, 210);
+
+    // first line of the bio under the ring
     if (bio) {
-      ctx.fillStyle = "rgba(255,255,255,.85)";
-      ctx.font = `400 11px ${font}`;
-      ctx.fillText(fit(ctx, bio, 212), 128, 236);
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(255,255,255,.8)";
+      ctx.font = `300 9.5px ${font}`;
+      ctx.fillText(fit(ctx, bio, 220), 128, 254);
     }
 
-    // bottom line: the link and the visits
-    ctx.strokeStyle = "rgba(255,255,255,.12)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(16, 276);
-    ctx.lineTo(240, 276);
-    ctx.stroke();
-    ctx.font = `500 10px ${font}`;
+    // footer, bottom left (and visits on the right)
     ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255,255,255,.7)";
-    ctx.fillText(fit(ctx, "18kbio.xyz/" + p.handle, showViews ? 140 : 220), 16, 298);
+    ctx.fillStyle = "rgba(255,255,255,.88)";
+    ctx.font = `300 9.5px ${font}`;
+    ctx.fillText(fit(ctx, "18kbio.xyz/" + p.handle, showViews ? 140 : 222), 17, 295);
     if (showViews) {
       ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(255,255,255,.55)";
-      ctx.fillText(visits, 240, 298);
+      ctx.fillStyle = "rgba(255,255,255,.65)";
+      ctx.fillText(visits, 239, 295);
     }
   };
 }
@@ -152,11 +151,10 @@ export default function Showcase() {
             return p.appearance && p.avatarUrl && !p.private && !p.unlisted && !pr.private && !pr.unlisted && !pr.disabled;
           })
           .slice(0, MAX);
-        const out = await Promise.all(rows.map(async (p: any) => {
-          const a = p.appearance || {};
-          const bgSrc = a.bg && a.bg.type === "image" ? a.bg.image : (a.bg && a.bg.poster) || (a.banner && a.banner.type !== "none" ? a.banner.url : "");
-          const [av, bg] = await Promise.all([loadImg(p.avatarUrl), loadImg(bgSrc)]);
-          return { handle: p.handle, card: { title: p.displayName || p.handle, value: "@" + p.handle, footer: p.bio || "", paint: painter(p, av, bg, font, fmt(p.views || 0)) } };
+        const out = await Promise.all(rows.map(async (p: any, i: number) => {
+          const av = await loadImg(p.avatarUrl);
+          const look = LOOKS[i % LOOKS.length];
+          return { handle: p.handle, card: { title: p.displayName || p.handle, value: "@" + p.handle, footer: p.bio || "", glow: GLOWS[i % GLOWS.length], paint: painter(p, av, look, font, fmt(p.views || 0)) } };
         }));
         if (!off) setShown(out.length >= 3 ? out : []);
       })
@@ -169,16 +167,16 @@ export default function Showcase() {
   const cur = shown ? shown[idx % shown.length] : null;
 
   return (
-    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative px-4 pt-20 pb-8 md:pt-28">
-      <div className="mx-auto max-w-[1100px] text-center">
-        <h2 className="text-[clamp(32px,5vw,64px)] font-bold leading-[1.02] tracking-[-.04em]">
+    <section ref={sec} id="profili" aria-label={t("showTitle")} className="relative pt-20 pb-8 md:pt-28">
+      <div className="text-center">
+        <h2 className="px-4 text-[clamp(32px,5vw,64px)] font-bold leading-[1.02] tracking-[-.04em]">
           {t("showT1")} <span className="chrome">{t("showT2")}</span>
         </h2>
-        <p className="mx-auto mt-4 max-w-[48ch] text-[15px] leading-[1.55] text-muted">{t("showSub")}</p>
-        <div className="mt-8 h-[300px] overflow-hidden sm:h-[420px] rounded-[28px] border border-white/10 md:h-[min(560px,calc(68svh*var(--vz,1)))]">
+        <p className="mx-auto mt-4 max-w-[48ch] px-4 text-[15px] leading-[1.55] text-muted">{t("showSub")}</p>
+        <div className="mt-6 h-[360px] w-full sm:h-[480px] md:h-[min(760px,calc(88svh*var(--vz,1)))]">
           {shown && (
             <WarpCarousel cards={shown.map(s => s.card)} index={idx} onIndexChange={setIdx} onFrontClick={open}
-              step={1} interval={3.4} background="#0b0b0b" glow="#cfcfcf" warp={1} ariaLabel={t("showTitle")}
+              step={1} interval={3.4} background="#0b0b0b" warp={1} ariaLabel={t("showTitle")}
               font={getComputedStyle(document.body).fontFamily} style={{ minHeight: 0, aspectRatio: "auto" }} />
           )}
         </div>
